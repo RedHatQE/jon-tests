@@ -106,6 +106,7 @@
 			<sysproperty key="grinder.rhnreg_ks.username" value="${grinder.rhnreg_ks.username}"/>
 			<sysproperty key="grinder.rhnreg_ks.password" value="${grinder.rhnreg_ks.password}"/>
 			<sysproperty key="grinder.certificate" value="${grinder.certificate}"/>
+			<sysproperty key="grinder.packagefetchfailuretolerance" value="${grinder.packagefetchfailuretolerance}"/>
 			<sysproperty key="org.uncommons.reportng.escape-output" value="false"/>
 			<sysproperty key="org.uncommons.reportng.stylesheet" value="${webui-framework.dir}/web/reportng-custom.css"/>
 		</testng>
