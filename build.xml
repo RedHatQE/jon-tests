@@ -99,7 +99,7 @@
 				reporter="org.testng.reporters.JUnitXMLReporter"
 				listeners="com.redhat.qe.auto.testng.TestNGListener,com.redhat.qe.auto.bugzilla.BugzillaTestNGListener,org.uncommons.reportng.HTMLReporter">
 					
-			<xmlfileset dir="src/com/redhat/qe/grinder/tests" includes="grinder-testng.xml"/>
+			<xmlfileset dir="src/com/redhat/qe/grinder/tests" includes="GrinderTests.xml"/>
 			<sysproperty key="grinder.hostname" value="${grinder.hostname}"/>
 			<sysproperty key="grinder.rpm" value="${grinder.rpm}"/>
 			<sysproperty key="grinder.rhnreg_ks.serverUrl" value="${grinder.rhnreg_ks.serverUrl}"/>
