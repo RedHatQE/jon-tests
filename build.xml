@@ -6,7 +6,6 @@
 	<property name="lib.dir" location="lib" />
 	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
 	<property name="GrinderTests.report.dir" value="test-output/GrinderTestSuite"/>
-	<property name="CloudeCreateTests.report.dir" value="test-output/CloudeCreateTestSuite"/>
 	<property name="report.overnight.dir" value="test-output/JONFunctionalTestSuite"/>
 	<property name="newreport.dir" value="test-output-reportng"/>
 	<condition property="webui-framework.dir" value="../../webui-framework">
@@ -113,21 +112,6 @@
 		</testng>
 	</target>
 	
-	<target name="CloudeCreateTests" depends="compile-jon">
-		<testng classpathref="tests.cp" 
-				haltonfailure="false"
-				reporter="org.testng.reporters.JUnitXMLReporter"
-				listeners="com.redhat.qe.auto.testng.TestNGListener,com.redhat.qe.auto.bugzilla.BugzillaTestNGListener,org.uncommons.reportng.HTMLReporter">
-					
-			<xmlfileset dir="src/com/redhat/qe/cloude/tests" includes="CloudeCreateTests.xml"/>
-			<sysproperty key="ec2.awsAccessId" value="${ec2.awsAccessId}"/>
-			<sysproperty key="ec2.awsSecretKey" value="${ec2.awsSecretKey}"/>
-			<sysproperty key="ec2.sshPrivateKey" value="${ec2.sshPrivateKey}"/>
-			<sysproperty key="org.uncommons.reportng.escape-output" value="false"/>
-			<sysproperty key="org.uncommons.reportng.stylesheet" value="${webui-framework.dir}/web/reportng-custom.css"/>
-		</testng>
-	</target>
-	
 	<target name="reports">
 		<mkdir dir="${newreport.dir}" />
 			<junitreport todir="${newreport.dir}">
@@ -161,15 +145,5 @@
 			</junitreport>
 	</target>
 	
-	<target name="CloudeCreateTests.reports">
-		<mkdir dir="${newreport.dir}" />
-			<junitreport todir="${newreport.dir}">
-				<fileset dir="${CloudeCreateTests.report.dir}">
-					<include name="*.xml"/>
-					<exclude name="testng-failed.xml"/>
-				</fileset>
-				<report format="noframes" todir="${newreport.dir}"/>
-			</junitreport>
-	</target>
 
 </project>
