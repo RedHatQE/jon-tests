@@ -92,6 +92,25 @@
 			<sysproperty key="org.uncommons.reportng.stylesheet" value="${webui-framework.dir}/web/reportng-custom.css"/>
 		</testng>
 	</target>
+
+	<target name="jon30functional-testng" depends="compile-jon">
+		<testng classpathref="tests.cp" 
+				haltonfailure="false"
+				reporter="org.testng.reporters.JUnitXMLReporter"
+				listeners="com.redhat.qe.auto.selenium.TestNGListener,com.redhat.qe.auto.bugzilla.BugzillaTestNGListener,org.uncommons.reportng.HTMLReporter">
+								
+			<xmlfileset dir="src/com/redhat/qe/jon30/tests" includes="functional-testng.xml"/>
+			<sysproperty key="selenium.address" value="${selenium.address}"/>
+			<sysproperty key="jon.server.url" value="${jon.server.url}"/>
+			<sysproperty key="jon.version" value="${jon.version}"/>
+			<sysproperty key="jon.admin.user" value="${jon.admin.user}"/>
+			<sysproperty key="jon.admin.password" value="${jon.admin.password}"/>
+			<sysproperty key="jon.server.user" value="${jon.server.user}"/>
+			<sysproperty key="jon.agent.user" value="${jon.agent.user}"/>
+			<sysproperty key="org.uncommons.reportng.escape-output" value="false"/>
+			<sysproperty key="org.uncommons.reportng.stylesheet" value="${webui-framework.dir}/web/reportng-custom.css"/>
+		</testng>
+	</target>
 	
 	<target name="GrinderTests" depends="compile-jon">
 		<testng classpathref="tests.cp" 
@@ -145,5 +164,11 @@
 			</junitreport>
 	</target>
 	
+	<target name="clean">
+		<echo message="Cleaning ${test.build.dir}"/>
+		<delete failonerror="true" quiet="false" includeemptydirs="true">
+	    		<fileset dir="${test.build.dir}" includes="**/*"/>
+	      	</delete>
+	</target>	
 
 </project>
