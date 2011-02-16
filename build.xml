@@ -107,6 +107,7 @@
 			<sysproperty key="jon.admin.password" value="${jon.admin.password}"/>
 			<sysproperty key="jon.server.user" value="${jon.server.user}"/>
 			<sysproperty key="jon.agent.user" value="${jon.agent.user}"/>
+			<sysproperty key="jon.test.resources.dir" value="${basedir}/test-resources"/>
 			<sysproperty key="org.uncommons.reportng.escape-output" value="false"/>
 			<sysproperty key="org.uncommons.reportng.stylesheet" value="${webui-framework.dir}/web/reportng-custom.css"/>
 		</testng>
