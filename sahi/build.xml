@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="bids" default="runfftests">
         <property environment="env"/>
-        <property name="sahi.home" value="${env.SAHI_HOME}" location="/home/mfoley/sahi/" />
-        <property name="user.data" value="${env.SAHI_USERDATA_DIR}" location="/home/mfoley/sahi/userdata"  />
+        <property name="sahi.home" value="${env.SAHI_HOME}" location="/home/hudson/sahi" />
+        <property name="user.data" value="${env.SAHI_USERDATA_DIR}" location="./userdata"  />
         <property name="urlbase" value="http://localhost:7080/coregui/"/>
         <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="${sahi.home}/lib/ant-sahi.jar"/>
 
