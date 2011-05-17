@@ -1,0 +1,107 @@
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<style>
+/**
+ * Copyright  2006  V Narayan Raman
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+div{border:1px solid white;border-bottom:1px solid gray;padding:1px}
+a{text-decoration:none;color:white;}
+a.INFO{color:black}
+a.START,a.STOP{color:black;font-weight:bold;}
+div.INFO{background-color:white}
+div.SUCCESS{background-color:green;color:white}
+div.FAILURE,div.ERROR{background-color:red;color:white}
+a.CUSTOM, a.CUSTOM2, a.CUSTOM4{color:black}
+div.CUSTOM{background-color:yellow;}
+div.CUSTOM1{background-color:orange;}
+div.CUSTOM2{background-color:#EFEFEF;}
+div.CUSTOM3{background-color:green;}
+div.CUSTOM4{background-color:violet;}
+div.CUSTOM5{background-color:indigo;}
+a.SCRIPT{text-decoration:underline;}
+span.extra{color:#CCC;}
+div.SKIPPED{background-color:#eed;}
+a.SKIPPED{color:gray;}
+/**
+ * Copyright  2006  V Narayan Raman
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+table{border-top:1px solid gray;border-right:1px solid gray;border-spacing:0px;border-collapse:collapse;}
+td{border-bottom:1px solid gray;border-left:1px solid gray;padding:5px;text-align:right;}
+td a.SCRIPT{float:left;}
+tr.FAILURE{background-color:red;color:white;}
+tr.SUCCESS{background-color:green;color:white;}
+a{color:white;}
+</style></head>
+<table><tr><td>Test</td><td>Total Steps</td><td>Failures</td><td>Errors</td><td>Success Rate</td><td>Time Taken (ms)</td></tr><tr class="SUCCESS"><td>RHQSimple.sah</td><td>48</td><td>0</td><td>0</td><td>100%</td><td>41701</td></tr></table>
+<br/><div class="START"><a class="START">Starting script</a></div><div class="INFO"><a class="INFO" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=1#selected" title="scripts/RHQSimple.sah&n=1">_click(_image("rhq_logo_28px.png"));</a> <span class='extra'> at May 16, 2011 1:07:03 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=2#selected" title="scripts/RHQSimple.sah&n=2">_assertExists(_row(3));</a> <span class='extra'> at May 16, 2011 1:07:03 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=3#selected" title="scripts/RHQSimple.sah&n=3">_assert(_isVisible(_row(3)));</a> <span class='extra'> at May 16, 2011 1:07:03 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=4#selected" title="scripts/RHQSimple.sah&n=4">_assertEqual("", _getText(_row(3)));</a> <span class='extra'> at May 16, 2011 1:07:04 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=5#selected" title="scripts/RHQSimple.sah&n=5">_assertContainsText("", _row(3));</a> <span class='extra'> at May 16, 2011 1:07:04 PM</span></div>
+<div class="INFO"><a class="INFO" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=6#selected" title="scripts/RHQSimple.sah&n=6">_click(_label("User"));</a> <span class='extra'> at May 16, 2011 1:07:04 PM</span></div>
+<div class="INFO"><a class="INFO" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=7#selected" title="scripts/RHQSimple.sah&n=7">_click(_label("User"));</a> <span class='extra'> at May 16, 2011 1:07:04 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=8#selected" title="scripts/RHQSimple.sah&n=8">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:04 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=9#selected" title="scripts/RHQSimple.sah&n=9">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:05 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=10#selected" title="scripts/RHQSimple.sah&n=10">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:05 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=11#selected" title="scripts/RHQSimple.sah&n=11">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:05 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=12#selected" title="scripts/RHQSimple.sah&n=12">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:06 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=13#selected" title="scripts/RHQSimple.sah&n=13">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:06 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=14#selected" title="scripts/RHQSimple.sah&n=14">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:06 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=15#selected" title="scripts/RHQSimple.sah&n=15">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:06 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=16#selected" title="scripts/RHQSimple.sah&n=16">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:07 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=17#selected" title="scripts/RHQSimple.sah&n=17">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:07 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=18#selected" title="scripts/RHQSimple.sah&n=18">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:07 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=19#selected" title="scripts/RHQSimple.sah&n=19">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:07 PM</span></div>
+<div class="INFO"><a class="INFO" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=20#selected" title="scripts/RHQSimple.sah&n=20">_click(_label("Password"));</a> <span class='extra'> at May 16, 2011 1:07:07 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=21#selected" title="scripts/RHQSimple.sah&n=21">_assertExists(_label("Password"));</a> <span class='extra'> at May 16, 2011 1:07:08 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=22#selected" title="scripts/RHQSimple.sah&n=22">_assert(_isVisible(_label("Password")));</a> <span class='extra'> at May 16, 2011 1:07:08 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=23#selected" title="scripts/RHQSimple.sah&n=23">_assertEqual("Password", _getText(_label("Password")));</a> <span class='extra'> at May 16, 2011 1:07:08 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=24#selected" title="scripts/RHQSimple.sah&n=24">_assertContainsText("Password", _label("Password"));</a> <span class='extra'> at May 16, 2011 1:07:08 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=25#selected" title="scripts/RHQSimple.sah&n=25">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:08 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=26#selected" title="scripts/RHQSimple.sah&n=26">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:08 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=27#selected" title="scripts/RHQSimple.sah&n=27">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:09 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=28#selected" title="scripts/RHQSimple.sah&n=28">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:09 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=29#selected" title="scripts/RHQSimple.sah&n=29">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:09 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=30#selected" title="scripts/RHQSimple.sah&n=30">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:09 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=31#selected" title="scripts/RHQSimple.sah&n=31">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:09 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=32#selected" title="scripts/RHQSimple.sah&n=32">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:09 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=33#selected" title="scripts/RHQSimple.sah&n=33">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:10 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=34#selected" title="scripts/RHQSimple.sah&n=34">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:10 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=35#selected" title="scripts/RHQSimple.sah&n=35">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:10 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=36#selected" title="scripts/RHQSimple.sah&n=36">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:10 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=37#selected" title="scripts/RHQSimple.sah&n=37">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:10 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=38#selected" title="scripts/RHQSimple.sah&n=38">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:10 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=39#selected" title="scripts/RHQSimple.sah&n=39">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:11 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=40#selected" title="scripts/RHQSimple.sah&n=40">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:11 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=41#selected" title="scripts/RHQSimple.sah&n=41">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:11 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=42#selected" title="scripts/RHQSimple.sah&n=42">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:11 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=43#selected" title="scripts/RHQSimple.sah&n=43">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:11 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=44#selected" title="scripts/RHQSimple.sah&n=44">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:11 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=45#selected" title="scripts/RHQSimple.sah&n=45">_assertExists(_cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:12 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=46#selected" title="scripts/RHQSimple.sah&n=46">_assert(_isVisible(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:12 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=47#selected" title="scripts/RHQSimple.sah&n=47">_assertEqual("Login", _getText(_cell("Login")));</a> <span class='extra'> at May 16, 2011 1:07:12 PM</span></div>
+<div class="SUCCESS"><a class="SUCCESS" href="/_s_/dyn/Log_highlight?href=scripts/RHQSimple.sah&n=48#selected" title="scripts/RHQSimple.sah&n=48">_assertContainsText("Login", _cell("Login"));</a> <span class='extra'> at May 16, 2011 1:07:12 PM</span></div>
+<div class="STOP"><a class="STOP">Stopping script</a></div>
