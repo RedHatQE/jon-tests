@@ -1,1 +1,0 @@
-locatorBuilder.js is used to provide Selenium recording capability on non firefox browsers using the Sahi architecture.
