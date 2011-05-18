@@ -1,64 +1,24 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="demo" default="sahitests">
-    <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="lib/ant-sahi.jar"/>
-
-    <target name="RHQ tests" description="run RHQ sahi tests">
-        <parallel>
-            <sequential>
+<project name="demo" default="rhq_tests">
+	<property name="user.data" value="${env.SAHI_USERDATA_DIR}" location="."/>
+    <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="/home/dgao/sahi/lib/ant-sahi.jar"/>
+    <target name="rhq_tests" description="run RHQ sahi tests">
+    <!--
                 <waitfor maxwait="3" maxwaitunit="minute" checkevery="100">
-                    <http url="http://localhost:7080/coregui/"/>
+                    <http url="http://10.16.79.219:7080"/>
                 </waitfor>
-
-                <antcall target="proxyon"/>
-
-                <sahi suite="../scripts/demo.suite"
-                    browser="/usr/bin/firefox"
-                    baseurl="http://localhost:7080/coregui/"
+	-->
+                <sahi suite="${user.data}/RHQCreateInventoryGroup.sah"
+                    browser="firefox"
+                    baseurl="http://10.16.79.219:7080"
                     sahihost="localhost"
                     sahiport="9999"
                     failureproperty="sahi.failed"
                     haltonfailure="false"
                     threads="2"
-                    logdir="/usr/mfoley/sahi/RHQ-Sahi.log"
-                    />
-
-                <antcall target="proxyoff"/>
-
-                <antcall target="stop-web"/>
-                <antcall target="failsahi"/>
-            </sequential>
-            <antcall target="start-web"/>
-        </parallel>
+                    >
+				</sahi>
     </target>
-
-    <target name="failsahi" if="sahi.failed">
-        <fail message="Sahi tests failed!"/>
-    </target>
-
-
-
-    <target name="sahireport" description="show report">
-        <exec command="C:\\Program Files\\Internet Explorer\\iexplore.exe file:///C:/my/sahi/logs/playback/"/>
-    </target>
-
-    <target name="start" description="starts proxy">
-        <java classname="net.sf.sahi.Proxy" fork="true" dir="bin">
-            <classpath location="lib/sahi.jar"/>
-        </java>
-    </target>
-
-    <target name="proxyon">
-        <exec executable="tools/toggle_IE_proxy.exe">
-            <arg value="enable"/>
-        </exec>
-    </target>
-    
-    <target name="proxyoff">
-        <exec executable="tools/toggle_IE_proxy.exe">
-            <arg value="disable"/>
-        </exec>
-    </target>
-
 </project>
 
 
