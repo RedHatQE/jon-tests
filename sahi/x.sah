@@ -1,0 +1,2 @@
+_click(_cell("All Groups"));
+_click(_link("Logout"));

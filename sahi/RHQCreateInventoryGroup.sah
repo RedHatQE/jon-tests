@@ -1,0 +1,14 @@
+_setValue(_textbox("user"), "rhqadmin");
+_setValue(_password("password"), "rhqadmin");
+_click(_cell("Login"));
+_click(_link("Inventory"));
+_click(_cell("All Groups"));
+_click(_cell("New"));
+_setValue(_textbox("name"), "hello_world");
+_setValue(_textarea("description"), "fdafdas");
+_click(_cell("Next"));
+_click(_cell("Finish"));
+_click(_div("hello_world"));
+_click(_cell("Delete"));
+_click(_cell("Yes"));
+_click(_link("Logout"));
