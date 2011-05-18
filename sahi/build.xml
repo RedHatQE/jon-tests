@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="demo" default="rhq_tests">
+	<property environment="env"/>
 	<property name="user.data" value="${env.SAHI_USERDATA_DIR}" location="."/>
-    <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="/home/dgao/sahi/lib/ant-sahi.jar"/>
-    <target name="rhq_tests" description="run RHQ sahi tests">
+	<property name="sahi.dir" value="${env.SAHI_BASE}" location="."/>
+    <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="${env.SAHI_BASE}/lib/ant-sahi.jar"/>
     <!--
-                <waitfor maxwait="3" maxwaitunit="minute" checkevery="100">
-                    <http url="http://10.16.79.219:7080"/>
-                </waitfor>
-	-->
-                <sahi suite="${user.data}/RHQCreateInventoryGroup.sah"
-                    browser="firefox"
-                    baseurl="http://10.16.79.219:7080"
-                    sahihost="localhost"
-                    sahiport="9999"
-                    failureproperty="sahi.failed"
-                    haltonfailure="false"
-                    threads="2"
-                    >
-				</sahi>
+    <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="/home/dgao/sahi/lib/ant-sahi.jar"/>
+    -->
+    <target name="rhq_tests" description="run RHQ sahi tests">
+		<sahi suite="${user.data}/RHQCreateInventoryGroup.sah"
+			browser="firefox"
+			baseurl="http://10.16.79.219:7080"
+			sahihost="localhost"
+			sahiport="9999"
+			failureproperty="sahi.failed"
+			haltonfailure="false"
+			threads="2"
+		>
+		</sahi>
     </target>
 </project>
-
-
