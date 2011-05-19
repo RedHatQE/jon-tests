@@ -9,7 +9,7 @@
     -->
     <target name="rhq_tests" description="run RHQ sahi tests">
 		<sahi suite="${user.data}/RHQCreateInventoryGroup.sah"
-			browser="firefox --display:1.0"
+			browser="firefox --display=:1.0"
 			baseurl="http://10.16.79.219:7080"
 			sahihost="localhost"
 			sahiport="9999"
