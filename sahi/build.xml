@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="sahi_eval" default="rhq_tests">
 	<property environment="env"/>
-	<property name="user.data" value="${env.SAHI_USERDATA_DIR}" location="."/>
+	<property name="user.data" value="${env.SAHI_USERDATA_DIR}" location="./scripts"/>
 	<property name="sahi.dir" value="${env.SAHI_BASE}" location="."/>
     <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="${env.SAHI_BASE}/lib/ant-sahi.jar"/>
     <!--
