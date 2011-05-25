@@ -1,4 +1,5 @@
 RHQ-Login.sah
 RHQ-CreateUser.sah
+RHQ-CreateRole.sah
 RHQCreateInventoryGroup.sah
 RHQ-Logout.sah
