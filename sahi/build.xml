@@ -8,7 +8,7 @@
     <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="/home/dgao/sahi/lib/ant-sahi.jar"/>
     -->
     <target name="rhq_tests" description="run RHQ sahi tests">
-		<sahi suite="${user.data}/RHQCreateInventoryGroup.sah"
+		<sahi suite="${user.data}/functional_test.suite"
 			browser="firefox --display=:1.0"
 			baseurl="http://10.16.79.219:7080"
 			sahihost="localhost"

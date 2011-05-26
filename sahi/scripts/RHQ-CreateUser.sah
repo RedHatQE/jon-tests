@@ -1,0 +1,16 @@
+_click(_link("Administration"));
+_click(_cell("Users"));
+_click(_cell("New"));
+_setvalue(_textbox, "name"), "test_user");
+_setvalue(_password, "password"), "redhat");
+_setvalue(_password, "passwordVerify"), "redhat");
+_setvalue(_textbox, "firstName"), "test");
+_setvalue(_textbox, "lastName"), "user");
+_setvalue(_textbox, "email"), "test_user@qa_redhat.com");
+_setvalue(_textbox, "phoneNumber"), "123-456-7890");
+_setvalue(_textbox, "department"), "QE");
+_click(_div("All Resources Role"));
+_click(_cell("Save"));
+_click(_div("test_user"));
+_click(_cell("Delete"));
+_click(_cell("Yes"));
