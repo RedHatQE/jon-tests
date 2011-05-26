@@ -33,6 +33,7 @@
 	<taskdef name="testng" classpathref="utils.cp" classname="org.testng.TestNGAntTask" />
 
 	<target name="combine">
+		<mkdir dir="${test.build.dir}" />
 		<exec executable="/usr/bin/python">
 			<arg value="scripts/join.py"/>
 		</exec>
@@ -40,7 +41,7 @@
 
     <target name="rhq_tests" description="run RHQ sahi tests" depends="combine">
 		<sahi suite="${test.build.dir}/combined_test_script.sah"
-			browser="firefox"
+			browser="firefox --display=:1.0"
 			baseurl="http://10.16.79.219:7080"
 			sahihost="localhost"
 			sahiport="9999"
