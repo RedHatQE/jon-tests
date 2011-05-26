@@ -18,7 +18,7 @@
 		<fileset dir="${webui-framework.dir}/lib">
 			<include name="*.jar" />
 		</fileset>
-		<fileset dir="${sahi.dir}/lib">
+		<fileset dir="${env.SAHI_BASE}/lib">
 			<include name="*.jar" />
 		</fileset>
 	</path>
