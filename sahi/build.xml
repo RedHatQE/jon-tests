@@ -3,20 +3,85 @@
 	<property environment="env"/>
 	<property name="user.data" value="${env.SAHI_USERDATA_DIR}" location="./scripts"/>
 	<property name="sahi.dir" value="${env.SAHI_BASE}" location="."/>
+	<property environment="env" />
+	<property name="test.build.dir" location="bin" />
+	<property name="test.src.dir" location="src" />
+	<property name="test.output.dir" location="test-output" />
+	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
+	<condition property="webui-framework.dir" value="../../../webui-framework">
+		<not>
+			<isset property="webui-framework.dir"/>
+		</not>
+	</condition>
+
+	<path id="utils.cp">
+		<fileset dir="${webui-framework.dir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${env.SAHI_BASE}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<path id="tests.cp">
+		<pathelement location="${test.build.dir}" />
+		<pathelement location="${webui-framework.dir}/bin" />
+		<path refid="utils.cp" />
+	</path>
+
     <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="${env.SAHI_BASE}/lib/ant-sahi.jar"/>
-    <!--
-    <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="/home/dgao/sahi/lib/ant-sahi.jar"/>
-    -->
-    <target name="rhq_tests" description="run RHQ sahi tests">
-		<sahi suite="${user.data}/functional_test.suite"
+	<taskdef name="testng" classpathref="utils.cp" classname="org.testng.TestNGAntTask" />
+
+	<target name="combine">
+		<mkdir dir="${test.build.dir}" />
+		<exec executable="/usr/bin/python">
+			<arg value="scripts/join.py"/>
+		</exec>
+	</target>
+
+    <target name="rhq_tests" description="run RHQ sahi tests" depends="combine">
+		<sahi suite="${test.build.dir}/combined_test_script.sah"
 			browser="firefox --display=:1.0"
 			baseurl="http://10.16.79.219:7080"
 			sahihost="localhost"
 			sahiport="9999"
 			failureproperty="sahi.failed"
 			haltonfailure="false"
-			threads="2"
+			threads="1"
 		>
 		</sahi>
     </target>
+
+	<target name="deps">
+		<echo message="Compiling dependencies in ${webui-framework.dir}" />
+
+		<ant antfile="${webui-framework.dir}/build.xml">
+			<property name="basedir" value="${webui-framework.dir}" />
+		</ant>
+	</target>
+
+	<target name="compile" depends="">
+		<echo message="Compiling testsuite in ${basedir}" />
+		<antcall target="deps" />
+		<mkdir dir="${test.build.dir}" />
+
+		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" classpathref="tests.cp" debug="on">
+			<compilerarg value="-Xlint"/>
+		</javac>
+		<echo message="Done." />
+	</target>
+
+	<target name="api" description="run RHQ sahi java test" depends="compile">
+		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
+			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="testng.xml"/>
+		</testng>
+	</target>
+
+	<target name="clean">
+		<echo message="Cleaning ${test.build.dir}"/>
+		<delete failonerror="true" quiet="false" includeemptydirs="true">
+	    		<fileset dir="${test.build.dir}" includes="**/*"/>
+	      	</delete>
+		<delete dir="${test.output.dir}"/>
+	</target>
 </project>
