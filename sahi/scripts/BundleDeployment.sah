@@ -1,0 +1,12 @@
+_click(_link("Bundles"));
+_click(_image("opener_closed.png"));
+_click(_div("an example bundle"));
+_click(_cell("Deploy"));
+_setValue(_textbox("name"), "testDeploy");
+_setValue(_textbox("deployDir"), "/NotBackdUp/venky");
+_click(_image("isc_2K5"));
+_click(_div("testplatform"));
+_click(_cell("Next"));
+_click(_cell("Next"));
+_click(_cell("Next"));
+_click(_cell("Next"));

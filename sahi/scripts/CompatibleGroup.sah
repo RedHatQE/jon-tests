@@ -1,0 +1,9 @@
+_click(_link("Inventory"));
+_click(_cell("Compatible Groups"));
+_click(_cell("New"));
+_setValue(_textbox("name"), "testCompatible");
+_click(_cell("Next"));
+_click(_image("isc_2TR"));
+_click(_cell("pickListCellSelectedDark"));
+_click(_div("suniltest"));
+_click(_image("right_Disabled.png"));

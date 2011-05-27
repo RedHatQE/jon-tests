@@ -1,0 +1,10 @@
+_click(_link("Administration"));
+_click(_cell("Users"));
+_click(_cell("New"));
+_setValue(_textbox("name"), "testuser");
+_setValue(_password("password"), "redhat");
+_setValue(_textbox("firstName"), "test");
+_setValue(_textbox("emailAddress"), "test@redhat.com");
+_setValue(_password("passwordVerify"), "redhat");
+_setValue(_textbox("lastName"), "user");
+_click(_cell("Save"));
