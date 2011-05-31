@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<project name="sahi_eval" default="rhq_tests">
+<project name="sahi_eval" default="compile">
 	<property environment="env"/>
 	<property name="user.data" value="${env.SAHI_USERDATA_DIR}" location="./scripts"/>
 	<property name="sahi.dir" value="${env.SAHI_BASE}" location="."/>
@@ -34,7 +34,7 @@
 
     <target name="rhq_tests" description="run RHQ sahi tests">
 		<sahi suite="${user.data}/functional_test.suite"
-			browser="firefox --display=:1.0"
+			browser="firefox"
 			baseurl="http://10.16.79.219:7080"
 			sahihost="localhost"
 			sahiport="9999"
@@ -65,7 +65,7 @@
 		<echo message="Done." />
 	</target>
 
-	<target name="api" description="run RHQ sahi java test" depends="compile">
+	<target name="run" description="run RHQ sahi java test" depends="compile">
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
 			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="testng.xml"/>
 		</testng>
