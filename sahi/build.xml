@@ -34,7 +34,7 @@
 
     <target name="rhq_tests" description="run RHQ sahi tests">
 		<sahi suite="${user.data}/functional_test.suite"
-			browser="firefox"
+			browser="firefox --display=:1.0"
 			baseurl="http://10.16.79.219:7080"
 			sahihost="localhost"
 			sahiport="9999"
