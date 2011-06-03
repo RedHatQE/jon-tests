@@ -1,0 +1,11 @@
+_click(_link("Bundles"));
+_click(_cell("New"));
+_click(_radio("URL"));
+_setValue(_textbox("url"), "http://10.65.201.169/app.zip");
+_click(_cell("Next"));
+_click(_cell("Next"));
+_click(_cell("Cancel"));
+-click(_cell("New"));
+_click(_radio("URL"));
+_setValue(_textbox("url"), "http://10.65.201.169/app.zip");
+_click(_cell("Cancel"));
