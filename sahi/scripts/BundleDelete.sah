@@ -1,0 +1,3 @@
+_click(_div("newtest1"));
+_click(_cell("Delete"));
+_click(_cell("Yes"));

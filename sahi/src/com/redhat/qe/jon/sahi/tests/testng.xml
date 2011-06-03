@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="RHQ_4.0_UI_Test">
+	<test name="InventoryTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.InventoryTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="inventoryTest"/>
+			</run>
+		</groups>
+	</test>
+</suite>
