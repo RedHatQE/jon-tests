@@ -3,6 +3,7 @@ RHQ-CreateUser.sah
 RHQ-CreateRole.sah
 RHQCreateInventoryGroup.sah
 RHQ-BundleNavigation.sah
+RHQ-InventorySummary.sah
 RHQ-RoleCreateManageBundles.sah
 RHQ-UserMangeSecurityPermissions.sah
 RHQ-BundleNavigation.sah
