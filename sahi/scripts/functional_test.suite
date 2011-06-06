@@ -4,4 +4,7 @@ RHQ-CreateRole.sah
 RHQCreateInventoryGroup.sah
 RHQ-InventorySummary.sah
 RHQ-UserMangeSecurityPermissions.sah
+RHQ-CreateCompatibleGroup.sah
+RHQ-CreateMixedGroups.sah
+RHQ-CreateAllGroups.sah
 RHQ-Logout.sah
