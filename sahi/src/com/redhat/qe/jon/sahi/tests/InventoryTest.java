@@ -3,6 +3,7 @@ package com.redhat.qe.jon.sahi.tests;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 
 import com.redhat.qe.auto.testng.TestNGUtils;
@@ -12,6 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InventoryTest extends SahiTestScript{
+	@BeforeMethod(groups="inventoryTest")
+	public void nap() {
+		sahiTasks.waitFor(5000);
+	}
+
 	@Test (groups="inventoryTest", dataProvider="groupData")
 	public void createGroups(String groupName, String groupDesc) {
 		sahiTasks.createGroup(groupName, groupDesc);
