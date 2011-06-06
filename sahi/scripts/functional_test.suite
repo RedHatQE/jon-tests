@@ -7,4 +7,5 @@ RHQ-UserMangeSecurityPermissions.sah
 RHQ-CreateCompatibleGroup.sah
 RHQ-CreateMixedGroups.sah
 RHQ-CreateAllGroups.sah
+RHQ-NavigateThruCompatibleGroup.sah
 RHQ-Logout.sah
