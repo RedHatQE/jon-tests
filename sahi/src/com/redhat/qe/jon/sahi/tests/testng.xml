@@ -12,4 +12,16 @@
 			</run>
 		</groups>
 	</test>
+	<test name="BundleTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.BundleTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="bundleTest"/>
+			</run>
+		</groups>
+	</test>
 </suite>
