@@ -10,4 +10,5 @@ RHQ-CreateAllGroups.sah
 RHQ-NavigateThruCompatibleGroup.sah
 RHQ-RoleCreationAndValidations.sah
 RHQ-UserCreationWithRoleVerification.sah
+RHQ-UserCreationWithLogin.sah
 RHQ-Logout.sah
