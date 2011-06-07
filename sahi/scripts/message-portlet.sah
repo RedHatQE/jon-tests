@@ -1,0 +1,5 @@
+_setValue(_textbox("user"), "rhqadmin");
+_setValue(_password("password"), "rhqadmin");
+_click(_cell("Login"));
+_click(_heading1("Welcome to RHQ"));
+_click(_link("Logout"));

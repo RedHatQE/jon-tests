@@ -1,0 +1,8 @@
+_setValue(_textbox("user"), "invalid");
+_setValue(_password("password"), "invalid");
+_click(_cell("Login"));
+_setValue(_textbox("user"), "rhqadmin");
+_setValue(_password("password"), "");
+_setValue(_textbox("user"), "invalid");
+_setValue(_password("password"), "invalid");
+_click(_cell("Login"));
