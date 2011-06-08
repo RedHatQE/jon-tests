@@ -7,8 +7,8 @@ RHQ-UserMangeSecurityPermissions.sah
 RHQ-CreateCompatibleGroup.sah
 RHQ-CreateMixedGroups.sah
 RHQ-CreateAllGroups.sah
-RHQ-NavigateThruCompatibleGroup.sah
 RHQ-RoleCreationAndValidations.sah
 RHQ-UserCreationWithRoleVerification.sah
 RHQ-UserCreationWithLogin.sah
+RHQ-AccessToGroupConfigToUserWithoutPermissions.sah
 RHQ-Logout.sah
