@@ -11,5 +11,3 @@ _assertExists(_cell("Saved search created successfully"));
 _click(_image("gwt-Image[1]"));
 _assertExists(_cell("Saved search deletion success"));
 _click(_cell("Inventory Summary"));
-
-
