@@ -2,11 +2,11 @@ RHQ-Login.sah
 RHQ-CreateUser.sah
 RHQ-CreateRole.sah
 RHQCreateInventoryGroup.sah
+RHQ-InventorySummary.sah
 RHQ-UserMangeSecurityPermissions.sah
 RHQ-CreateCompatibleGroup.sah
 RHQ-CreateMixedGroups.sah
 RHQ-CreateAllGroups.sah
-RHQ-NavigateThruCompatibleGroup.sah
 RHQ-RoleCreationAndValidations.sah
 RHQ-UserCreationWithRoleVerification.sah
 RHQ-UserCreationWithLogin.sah
