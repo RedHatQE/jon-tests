@@ -19,6 +19,8 @@ public abstract class SahiTestScript extends TestScript {
 	protected String sahiBaseDir			= System.getProperty("jon.sahi.base.dir", "/home/hudson/sahi");
 	protected String sahiUserdataDir		= System.getProperty("jon.sahi.userdata.dir", sahiBaseDir+"/userdata");
 
+	protected String bundleHostURL			= System.getProperty("jon.bundleServer.url");
+
 	public SahiTestScript() {
 		super();
 
