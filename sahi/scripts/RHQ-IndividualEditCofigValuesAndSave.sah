@@ -1,0 +1,14 @@
+_click(_link("Inventory"));
+_click(_cell("Servers"));
+_click(_link("RHQ Agent"));
+_click(_image("Inventory_grey_16.png"));
+_click(_cell("Alerts"));
+_click(_cell("Monitoring"));
+_click(_cell("Events"));
+_click(_cell("Operations"));
+_click(_cell("Configuration"));
+_setValue(_textbox("rhq.agent.plugins.availability-scan.period-secs"), "325");
+_click(_cell("Save"));
+_click(_cell("Current"));
+_click(_div("Communication Security"));
+_click(_link("Inventory"));
