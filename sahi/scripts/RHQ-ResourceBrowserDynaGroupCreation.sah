@@ -1,0 +1,16 @@
+_click(_link("Inventory"));
+_click(_cell("Dynagroup Definitions"));
+_click(_cell("New"));
+_setValue(_textbox("name"), "testDynaGroup");
+_setValue(_textarea("description"), "Desc");
+_setValue(_textarea("expression"), "groupby resource.trait[jboss.system:type=Server:VersionName]\nresource.type.plugin = JBossAS\nresource.type.name = JBossAS Server");
+_click(_cell("Save & Recalculate"));
+_assertExists(_cell("You have successfully recalculated this group definition"));
+_click(_bold("Back to List"));
+_click(_link("testDynaGroup"));
+_click(_bold("Back to List"));
+_click(_div("groupby resource.trait[jboss.system:type=Server:VersionName] resource.type.plugin = JBossAS resource.type.name = JBossAS Server"));
+_click(_cell("Delete"));
+_click(_cell("Yes"));
+_assertExists(_cell("You have successfully deleted [1] group definitions"));
+

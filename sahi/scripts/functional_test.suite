@@ -13,4 +13,8 @@ RHQ-UserCreationWithLogin.sah
 RHQ-AccessToGroupConfigToUserWithoutPermissions.sah
 RHQ-CreatingNewDashBoardAddingProtlets.sah
 RHQ-IndividualEditCofigValuesAndSave.sah
+RHQ-ResourceBrowserDynaGroupCreation.sah
+RHQ-ResourceBrowserAvailabilityColumnsInGroupDefinitions.sah
+RHQ-ResourceBrowserAvailabilityColumnsInGroups.sah
+RHQ-ResourceBrowserSubtabNavigation.sah
 RHQ-Logout.sah

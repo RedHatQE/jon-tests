@@ -1,0 +1,6 @@
+_click(_link("Inventory"));
+_click(_cell("Compatible Groups"));
+_click(_cell("Dynagroup Definitions"));
+_click(_cell("All Groups"));
+_click(_cell("Mixed Groups"));
+_click(_div("Problem Groups"));
