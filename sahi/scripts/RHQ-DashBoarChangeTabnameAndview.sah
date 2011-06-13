@@ -1,0 +1,6 @@
+_click(_cell("New Dashboard"));
+_setValue(_textbox("name"), "Test");
+_click(_link("Dashboard"));
+_click(_cell("Test"));
+_click(_image("close.png[1]"));
+_click(_cell("Yes"));
