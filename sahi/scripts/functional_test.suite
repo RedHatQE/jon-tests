@@ -19,4 +19,8 @@ RHQ-ResourceBrowserAvailabilityColumnsInGroups.sah
 RHQ-ResourceBrowserSubtabNavigation.sah
 RHQ-ResourceBrowserCheckSearchTextBoxGroups.sah
 RHQ-DashBoarChangeTabnameAndview.sah
+RHQ-ExpandAndCollapseSectionsUnderReportMenu.sah
+RHQ-RecentOperationsVerifyAncestryColumn.sah
+RHQ-RecentOperationScheduleAndDelete.sah
+RHQ-RecentOperationScheduleAndForcedDelete.sah
 RHQ-Logout.sah

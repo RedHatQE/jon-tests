@@ -1,0 +1,18 @@
+_click(_link("Reports"));
+_click(_image("opener_opened.png"));
+_click(_image("opener_opened.png"));
+_click(_image("opener_closed.png"));
+_click(_div("Tags"));
+_click(_cell("Suspect Metrics"));
+_click(_cell("Configuration History"));
+_click(_cell("Recent Operations"));
+_click(_cell("Recent Alerts"));
+_click(_cell("Alert Definitions"));
+_click(_cell("imgSectionHeaderTitleopened"));
+_click(_cell("Inventory Summary"));
+_click(_cell("Platform Utilization"));
+_click(_image("opener_closed.png"));
+_click(_cell("Subsystems"));
+_click(_image("opener_closed.png"));
+_click(_image("opener_closed.png"));
+_click(_link("Reports"));

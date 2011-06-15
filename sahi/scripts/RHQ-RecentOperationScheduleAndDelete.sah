@@ -1,0 +1,13 @@
+_click(_link("Inventory"));
+_click(_cell("Servers"));
+_click(_link("RHQAgent"));
+_click(_cell("Operations"));
+_click(_cell("New"));
+_setValue(_div("selectItemText"), "g");
+_setValue(_div("selectItemText"), "g");
+_click(_cell("Schedule"));
+_click(_link("Reports"));
+_click(_cell("Recent Operations"));
+_click(_div("RHQ Agent"));
+_click(_cell("Delete"));
+_click(_cell("Yes"));
