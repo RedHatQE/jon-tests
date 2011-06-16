@@ -1,0 +1,18 @@
+_click(_link("Administration"));
+_click(_cell("Templates"));
+_assertExists(_cell("Platforms"));
+_assertExists(_cell("Name"));
+_assertExists(_cell("Enabled Alert Templates"));
+_assertExists(_cell("Disabled Alert Templates"));
+_assertExists(_cell("Enabled Metric Templates"));
+_assertExists(_cell("Disabled Metric Templates"));
+_click(_image("opener_opened.png"));
+_assertExists(_cell("Platform Services"));
+_assertExists(_cell("Platforms"));
+_assertExists(_cell("Name"));
+_assertExists(_cell("Enabled Alert Templates"));
+_assertExists(_cell("Disabled Alert Templates"));
+_assertExists(_cell("Enabled Metric Templates"));
+_assertExists(_cell("Disabled Metric Templates"));
+_click(_image("opener_opened.png"));
+_click(_link("Administration"));
