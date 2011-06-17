@@ -25,4 +25,7 @@ RHQ-RecentOperationScheduleAndDelete.sah
 RHQ-RecentOperationScheduleAndForcedDelete.sah
 RHQ-MainViewCheckForNameExapansionInServerSection.sah
 RHQ-MainViewVerifyColumnsForPlatformsAndPlatformServices.sah
+RHQ-RecentOperaionsRefreshButtonFunctionality.sah
+RHQ-RecentOperationsCorrectIconsForOperationStatusDropdown.sah
+RHQ-RecentOperationsQuickLinks.sah
 RHQ-Logout.sah
