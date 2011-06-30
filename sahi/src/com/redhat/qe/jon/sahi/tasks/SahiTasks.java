@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
+import org.testng.Assert;
 
 public class SahiTasks extends ExtendedSahi {
 	public SahiTasks(String browserPath, String browserName, String browserOpt, String sahiBaseDir, String sahiUserdataDir) {
@@ -49,5 +50,16 @@ public class SahiTasks extends ExtendedSahi {
 		this.div(bundleName).click();
 		this.cell("Delete").click();
 		this.cell("Yes").click();
+	}
+	
+public void topLevelMenusExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
 	}
 }
