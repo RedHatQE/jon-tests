@@ -10,7 +10,6 @@ public class TopLevelMenusTest extends SahiTestScript {
 	public void topLevelMenusExist() {
 		
        sahiTasks.topLevelMenusExist();        		
-				
 	}
 	
 	@Test
