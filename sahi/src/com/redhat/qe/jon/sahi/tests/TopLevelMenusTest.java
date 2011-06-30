@@ -4,7 +4,7 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 import org.testng.annotations.Test;
 
-public class TopLevelMenusTest  extends SahiTestScript {
+public class TopLevelMenusTest extends SahiTestScript {
 	
 	@Test
 	public void topLevelMenusExist() {
