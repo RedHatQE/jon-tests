@@ -100,5 +100,19 @@ public class SahiTasks extends ExtendedSahi {
 		
 	}
 	
+	// ***************************************************************************
+	// Reports
+	// ***************************************************************************
+	public void inventoryReport() {
+		this.link("Reports").click();
+		this.cell("Inventory Summary").click();
+		
+	}
+	public void platformUtilization() {
+		this.link("Reports").click();
+		this.cell("Platform Utilization").click();
+	}
+	
+	
 	
 }
