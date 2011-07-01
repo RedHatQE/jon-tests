@@ -51,8 +51,10 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Delete").click();
 		this.cell("Yes").click();
 	}
-	
-public void topLevelMenusExist() {
+	// ***************************************************************************
+	// Menus
+	// ***************************************************************************
+	public void topLevelMenusExist() {
 		
 		Assert.assertTrue(this.link("Dashboard").exists());
 		Assert.assertTrue(this.link("Inventory").exists());
@@ -62,4 +64,28 @@ public void topLevelMenusExist() {
 		Assert.assertTrue(this.link("Help").exists());
 		Assert.assertTrue(this.link("Logout").exists());
 	}
+	
+	// ***************************************************************************
+	// Users and Groups
+	// ***************************************************************************
+	public void createDeleteUser() {
+		this.link("Administration").click();
+		this.cell("Users").click();
+		this.cell("New").click();
+		this.textbox("name").setValue("test1");
+		this.password("password").setValue("password");
+		this.textbox("firstName").setValue("testfirstname");
+		this.textbox("emailAddress").setValue("testemail@redhat.com");
+		this.textbox("department").setValue("testdepartment");
+		this.password("passwordVerify").setValue("password");
+		this.textbox("lastName").setValue("testlastname");
+		this.textbox("phoneNumber").setValue("999 999-9999");
+		this.cell("Save").click();
+		this.div("test1").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		
+	}
+	
+	
 }
