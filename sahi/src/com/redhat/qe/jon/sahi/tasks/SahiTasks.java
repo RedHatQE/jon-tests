@@ -87,5 +87,17 @@ public class SahiTasks extends ExtendedSahi {
 		
 	}
 	
+	public void createDeleteRole() {
+		this.link("Administration").click();
+		this.cell("Roles").click();
+		this.cell("New").click();
+		this.textbox("name").setValue("testrole");
+		this.textbox("description").setValue("testdescription");
+		this.cell("Save").click();
+		this.div("testrole").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+	}
+	
 	
 }

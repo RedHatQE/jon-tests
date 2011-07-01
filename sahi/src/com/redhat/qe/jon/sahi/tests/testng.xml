@@ -48,4 +48,16 @@
 			</run>
 		</groups>
 	</test>
+	<test name="CreateDeleteRoleTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.CreateDeleteRoleTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="CreateDeleteRoleTest"/>
+			</run>
+		</groups>
+	</test>
 </suite>
