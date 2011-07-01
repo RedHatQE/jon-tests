@@ -97,6 +97,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.div("testrole").click();
 		this.cell("Delete").click();
 		this.cell("Yes").click();
+		
 	}
 	
 	

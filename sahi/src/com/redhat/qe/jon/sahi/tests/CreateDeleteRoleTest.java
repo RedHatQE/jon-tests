@@ -6,7 +6,6 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 public class CreateDeleteRoleTest  extends SahiTestScript  {
 
-
 	@Test (groups="CreateDeleteRoleTest")
 	public void createDeleteUserTest() {
 		
