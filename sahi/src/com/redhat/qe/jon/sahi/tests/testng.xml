@@ -24,4 +24,16 @@
 			</run>
 		</groups>
 	</test>
+	<test name="TopLevelMenusTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.TopLevelMenusTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="TopLevelMenusTest"/>
+			</run>
+		</groups>
+	</test>
 </suite>

@@ -6,13 +6,13 @@ import org.testng.annotations.Test;
 
 public class TopLevelMenusTest extends SahiTestScript {
 	
-	@Test
+	@Test (groups="TopLevelMenusTest")
 	public void topLevelMenusExist() {
 		
        sahiTasks.topLevelMenusExist();        		
 	}
 	
-	@Test
+	@Test (groups="TopLevelMenusTest")
 	public void topLevelMenusAreClickable() {
 		
 	}
