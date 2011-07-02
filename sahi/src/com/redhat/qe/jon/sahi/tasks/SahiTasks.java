@@ -113,6 +113,29 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Platform Utilization").click();
 	}
 	
+	public void suspectMetrics() {
+		this.link("Reports").click();
+		this.cell("Suspect Metrics").click();
+	}
 	
+	public void configurationHistory() {
+		this.link("Reports").click();
+		this.cell("Configuration History").click();
+	}
+	
+	public void recentOperations() {
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+	}
+	
+	public void recentAlerts() {
+		this.link("Reports").click();
+		this.cell("Recent Alerts").click();
+	}
+	
+	public void alertDefinitions() {
+		this.link("Reports").click();
+		this.cell("Alert Definitions").click();
+	}
 	
 }
