@@ -31,6 +31,69 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Yes").click();
 	}
 
+	//***************************************************************************
+	//Compatible Group Creation
+	//*****************************************************************
+	
+	public void createCompatibleGroup(String compGroupName, String groupDesc) {
+		// TODO Auto-generated method stub
+		
+		 this.link("Inventory").click();
+		 this.waitFor(5000);
+		 this.cell("Compatible Groups").click();
+		 this.cell("New").click();
+		 this.textbox("name").setValue(compGroupName);
+		 this.textarea("description").setValue(groupDesc);
+		 this.cell("Next").click();
+		 this.textbox("search").setValue("rhq agent");
+		 this.div("RHQ Agent").click();
+		 this.image("right.png").click();
+		 this.cell("Finish").click();
+		
+	}
+	
+	public void deleteCompGroup(String compGroupName) {
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("Compatible Groups").click();
+		this.div("compatible group").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+	}
+
+
+        //***************************************************************************
+	//Mixed Group Creation
+	//*****************************************************************
+	
+	public void createMixedGroup(String mixedGroupName, String groupDesc){
+		
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("Mixed Groups").click();
+		this.cell("New").click();
+		this.textbox("name").setValue(mixedGroupName);
+		this.textarea("description").setValue(groupDesc);
+		this.cell("Next").click();
+		this.textbox("search").setValue("rhq agent");
+		this.div("RHQ Agent").click();
+		this.image("right.png").click();
+		this.waitFor(5000);
+		this.textbox("search").setValue("cron");
+		this.div("Cron").click();
+		this.image("right.png").click();
+		this.cell("Finish").click();
+		
+	}
+	public void deleteMixedGroup(String compGroupName) {
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("Mixed Groups").click();
+		this.div("mixed group").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+	}
+
 	// ***************************************************************************
 	// Bundle
 	// ***************************************************************************
