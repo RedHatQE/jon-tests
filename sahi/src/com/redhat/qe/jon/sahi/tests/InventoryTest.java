@@ -50,6 +50,7 @@ public class InventoryTest extends SahiTestScript{
 	@Test (groups="inventoryTest", dataProvider="mixedGroup", dependsOnMethods= {"createMixedGroups"})
 	public void deleteMixedGroups(String mixedGroup, String groupDesc){
 		sahiTasks.deleteMixedGroup(mixedGroup);
+	}
 		
 	@DataProvider(name="groupData")
 	public Object[][] groupData() {
