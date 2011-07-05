@@ -298,7 +298,11 @@ public class SahiTasks extends ExtendedSahi {
 	}
 	
 	public void newDashboard() {
-		//todo        
+		this.link("Dashboard").click();     
+		this.cell("New Dashboard").click();
+		this.textbox("name").setValue("test");
+		this.image("close.png[1]").click();
+		this.cell("Yes").click();
 	}
 	
 }

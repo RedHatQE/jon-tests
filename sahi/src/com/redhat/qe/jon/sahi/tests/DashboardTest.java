@@ -18,13 +18,13 @@ public class DashboardTest  extends SahiTestScript  {
 	@Test (groups="DashboardTest")
 	public void editDashboard() {
 		
-		sahiTasks.editDashboard();
+		//sahiTasks.editDashboard();
              		
 	}
 	
 	@Test (groups="DashboardTest")
 	public void newDashboard() {
-		//todo   
+		sahiTasks.newDashboard(); 
              		
 	}
 	
