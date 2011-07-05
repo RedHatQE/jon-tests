@@ -298,7 +298,7 @@ public class SahiTasks extends ExtendedSahi {
 	}
 	
 	public void newDashboard() {
-		//todo 
+		//todo        
 	}
 	
 }
