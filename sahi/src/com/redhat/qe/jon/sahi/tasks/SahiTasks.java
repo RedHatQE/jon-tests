@@ -138,4 +138,21 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Alert Definitions").click();
 	}
 	
+	// ***************************************************************************
+	// Dashboard
+	// ***************************************************************************
+	
+	public void clickDashboardTopLevelMenu () {
+		this.link("Dashboard").click();
+	}
+	
+	public void editDashboard() {
+		this.cell("Edit Mode").click();
+		this.cell("View Mode").click();
+	}
+	
+	public void newDashboard() {
+		//todo 
+	}
+	
 }

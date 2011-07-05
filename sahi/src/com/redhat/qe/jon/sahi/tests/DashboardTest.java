@@ -3,19 +3,22 @@ package com.redhat.qe.jon.sahi.tests;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 
 public class DashboardTest  extends SahiTestScript  {
 	
 	
 	@Test (groups="DashboardTest")
 	public void viewDashboard() {
-		//todo
+		
+		sahiTasks.clickDashboardTopLevelMenu(); 
              		
 	}
 	
 	@Test (groups="DashboardTest")
 	public void editDashboard() {
-		//todo
+		
+		sahiTasks.editDashboard();
              		
 	}
 	
