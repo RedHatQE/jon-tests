@@ -200,5 +200,88 @@ public class SahiTasks extends ExtendedSahi {
 		this.link("Reports").click();
 		this.cell("Alert Definitions").click();
 	}
+	//******************************************************************
+	//Resource 
+	//******************************************************************
+	public void checkResourceBrowserAvailabilityColumnsInGroupDef( ){
+			
+		this.link("Inventory").click();
+		this.cell("Dynagroup Definitions").click();
+		this.cell("Name").exists();
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Expression Set").exists());
+		org.testng.Assert.assertTrue(this.cell("Last Calculation Time").exists());
+	}
+		
+	public void checkResourceBrowserAvailabilityColumnsInEachGroup(){
+		this.link("Inventory").click();
+		this.cell("All Groups").click();
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Type").exists());
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Plugin").exists());
+		org.testng.Assert.assertTrue(this.cell("Descendants").exists());
+		this.cell("Compatible Groups").click();
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Type").exists());
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Plugin").exists());
+		org.testng.Assert.assertTrue(this.cell("Descendants").exists());
+		this.cell("Mixed Groups").click();
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Type").exists());
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Plugin").exists());
+		org.testng.Assert.assertTrue(this.cell("Descendants").exists());
+		this.cell("Problem Groups").click();
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Type").exists());
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Plugin").exists());
+		org.testng.Assert.assertTrue(this.cell("Descendants").exists());
+		this.link("Inventory").click();
+		
+	}
+		
+		
+	public void checkSearchTextBoxInEachResourceBrowserGroup(){
+		this.link("Inventory").click();
+		this.cell("All Groups").click();
+		org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+		this.cell("Compatible Groups").click();
+		org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+		this.cell("Mixed Groups").click();
+		org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+		this.cell("Problem Groups").click();
+		org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+		this.link("Inventory").click();
+	}
+		
+	public void createDyanGroup(String groupName, String groupDesc){
+		this.link("Inventory").click();
+		this.cell("Dynagroup Definitions").click();
+		this.cell("New").click();
+		this.textbox("name").setValue(groupName);
+		this.textarea("description").setValue(groupDesc);
+		this.textarea("expression").setValue("groupby resource.trait[jboss.system:type=Server:VersionName]\nresource.type.plugin = JBossAS\nresource.type.name = JBossAS Server");
+		this.cell("Save & Recalculate").click();
+		org.testng.Assert.assertTrue(this.cell("You have successfully recalculated this group definition").exists());
+		this.bold("Back to List").click();
+		this.link(groupName).click();
+		this.bold("Back to List").click();						
+	}		
+		
+	public void deleteDynaGroup(String groupDesc){
+		this.link("Inventory").click();
+		this.cell("Dynagroup Definitions").click();
+		this.div(groupDesc).click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+	}
 	
 }
