@@ -72,7 +72,7 @@
 			</run>
 		</groups>
 	</test>
-	<test name="ReportsTest">
+	<test name="DashboardTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.DashboardTest" />
 		</classes>
