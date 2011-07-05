@@ -31,6 +31,69 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Yes").click();
 	}
 
+	//***************************************************************************
+	//Compatible Group Creation
+	//*****************************************************************
+	
+	public void createCompatibleGroup(String compGroupName, String groupDesc) {
+		// TODO Auto-generated method stub
+		
+		 this.link("Inventory").click();
+		 this.waitFor(5000);
+		 this.cell("Compatible Groups").click();
+		 this.cell("New").click();
+		 this.textbox("name").setValue(compGroupName);
+		 this.textarea("description").setValue(groupDesc);
+		 this.cell("Next").click();
+		 this.textbox("search").setValue("rhq agent");
+		 this.div("RHQ Agent").click();
+		 this.image("right.png").click();
+		 this.cell("Finish").click();
+		
+	}
+	
+	public void deleteCompGroup(String compGroupName) {
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("Compatible Groups").click();
+		this.div("compatible group").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+	}
+
+
+        //***************************************************************************
+	//Mixed Group Creation
+	//*****************************************************************
+	
+	public void createMixedGroup(String mixedGroupName, String groupDesc){
+		
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("Mixed Groups").click();
+		this.cell("New").click();
+		this.textbox("name").setValue(mixedGroupName);
+		this.textarea("description").setValue(groupDesc);
+		this.cell("Next").click();
+		this.textbox("search").setValue("rhq agent");
+		this.div("RHQ Agent").click();
+		this.image("right.png").click();
+		this.waitFor(5000);
+		this.textbox("search").setValue("cron");
+		this.div("Cron").click();
+		this.image("right.png").click();
+		this.cell("Finish").click();
+		
+	}
+	public void deleteMixedGroup(String compGroupName) {
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("Mixed Groups").click();
+		this.div("mixed group").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+	}
+
 	// ***************************************************************************
 	// Bundle
 	// ***************************************************************************
@@ -136,6 +199,89 @@ public class SahiTasks extends ExtendedSahi {
 	public void alertDefinitions() {
 		this.link("Reports").click();
 		this.cell("Alert Definitions").click();
+	}
+	//******************************************************************
+	//Resource 
+	//******************************************************************
+	public void checkResourceBrowserAvailabilityColumnsInGroupDef( ){
+			
+		this.link("Inventory").click();
+		this.cell("Dynagroup Definitions").click();
+		this.cell("Name").exists();
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Expression Set").exists());
+		org.testng.Assert.assertTrue(this.cell("Last Calculation Time").exists());
+	}
+		
+	public void checkResourceBrowserAvailabilityColumnsInEachGroup(){
+		this.link("Inventory").click();
+		this.cell("All Groups").click();
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Type").exists());
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Plugin").exists());
+		org.testng.Assert.assertTrue(this.cell("Descendants").exists());
+		this.cell("Compatible Groups").click();
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Type").exists());
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Plugin").exists());
+		org.testng.Assert.assertTrue(this.cell("Descendants").exists());
+		this.cell("Mixed Groups").click();
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Type").exists());
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Plugin").exists());
+		org.testng.Assert.assertTrue(this.cell("Descendants").exists());
+		this.cell("Problem Groups").click();
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Description").exists());
+		org.testng.Assert.assertTrue(this.cell("Type").exists());
+		org.testng.Assert.assertTrue(this.cell("Name").exists());
+		org.testng.Assert.assertTrue(this.cell("Plugin").exists());
+		org.testng.Assert.assertTrue(this.cell("Descendants").exists());
+		this.link("Inventory").click();
+		
+	}
+		
+		
+	public void checkSearchTextBoxInEachResourceBrowserGroup(){
+		this.link("Inventory").click();
+		this.cell("All Groups").click();
+		org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+		this.cell("Compatible Groups").click();
+		org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+		this.cell("Mixed Groups").click();
+		org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+		this.cell("Problem Groups").click();
+		org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+		this.link("Inventory").click();
+	}
+		
+	public void createDyanGroup(String groupName, String groupDesc){
+		this.link("Inventory").click();
+		this.cell("Dynagroup Definitions").click();
+		this.cell("New").click();
+		this.textbox("name").setValue(groupName);
+		this.textarea("description").setValue(groupDesc);
+		this.textarea("expression").setValue("groupby resource.trait[jboss.system:type=Server:VersionName]\nresource.type.plugin = JBossAS\nresource.type.name = JBossAS Server");
+		this.cell("Save & Recalculate").click();
+		org.testng.Assert.assertTrue(this.cell("You have successfully recalculated this group definition").exists());
+		this.bold("Back to List").click();
+		this.link(groupName).click();
+		this.bold("Back to List").click();						
+	}		
+		
+	public void deleteDynaGroup(String groupDesc){
+		this.link("Inventory").click();
+		this.cell("Dynagroup Definitions").click();
+		this.div(groupDesc).click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
 	}
 	
 	// ***************************************************************************
