@@ -320,5 +320,77 @@ public class SahiTasks extends ExtendedSahi {
 		this.image("close.png[1]").click();
 		this.cell("Yes").click();
 	}
+
+	// ***************************************************************************
+	// Administration 
+	// ***************************************************************************
+	
+	public void createUser(String userName, String password, String firstname, String secondname, String email){
+		this.link("Administration").click();
+		this.cell("Users").click();
+		this.cell("New").click();
+		this.textbox("name").setValue(userName);
+		this.password("password").setValue(password);
+		this.password("passwordVerify").setValue(password);
+		this.textbox("firstName").setValue(firstname);
+		this.textbox("lastName").setValue(secondname);
+		this.textbox("emailAddress").setValue(email);
+		this.div("Super User Role").click();
+		this.image("right.png").click();
+		this.cell("Save").click();
+	}
+	
+	public void deleteUser(String userName){
+		this.link("Administration").click();
+		this.cell("Users").click();
+		this.div(userName).click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+	}
+	
+	public void createRoleWithValidations(String roleName, String roleDesc){
+		this.link("Administration").click();
+		this.cell("Roles").click();
+		this.cell("New").click();
+		this.textbox("name").setValue(roleName);
+		this.textbox("description").setValue("Description");
+		this.image("permission_disabled_11.png").click();
+		this.image("unchecked.png").click();
+		org.testng.Assert.assertTrue(this.image("permission_enabled_11.png").exists());
+		this.cell("Resource Groups").click();
+		this.cell("Users").click();
+		this.cell("LDAP Groups").click();
+		org.testng.Assert.assertTrue(this.cell("NOTE: The LDAP security integration is not configured. To configure LDAP, go to System Settings.").exists());
+		this.cell("Save").click();
+
+	}
+	
+	public void deleteRole(String roleName){
+		this.link("Administration").click();
+		this.cell("Roles").click();
+		this.div(roleName).click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		
+	}
+	
+	
+	public void userCreationWithRoleVerification(String userName, String password, String firstname, String secondname, String email, String roleName, String roleDesc){
+		createUser(userName, password,firstname,secondname, email);
+		createRoleWithValidations(roleName,roleDesc);
+		this.link("Administration").click();
+		this.cell("Roles").click();
+		this.cell("Users").click();
+		org.testng.Assert.assertTrue(this.div(userName).exists());
+//			this.div(userName).click();
+//			this.image("right.png").click();
+		this.div("testuser").doubleClick();
+		this.cell("Save").click();
+		deleteRole(roleName);
+		deleteUser(userName);
+		
+		
+	}
+	
 	
 }
