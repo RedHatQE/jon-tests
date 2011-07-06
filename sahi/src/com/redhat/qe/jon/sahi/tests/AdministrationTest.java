@@ -12,22 +12,22 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 public class AdministrationTest extends SahiTestScript {
 	
 	
-	/*@Test(groups="userRoleCreation", dataProvider="userdata")
+	@Test(groups="userRoleCreation", dataProvider="userdata")
 	public void createUsers(String userName, String password, String firstname, String secondname, String email){
 		sahiTasks.createUser(userName, password, firstname, secondname, email);
 	}
 	@Test(groups="userRoleCreation",dataProvider="userdata", dependsOnMethods={"createUsers"})
 	public void deleteUsers(String userName, String password, String firstname, String secondname, String email){
 		sahiTasks.deleteUser(userName);
-	}*/
-	/*@Test(groups="userRoleCreation", dataProvider="roledata")
+	}
+	@Test(groups="userRoleCreation", dataProvider="roledata")
 	public void roleCreationWithValidations(String roleName, String roleDesc){
 		sahiTasks.createRoleWithValidations(roleName, roleDesc);
 	}
 	@Test(groups="userRoleCreation",dataProvider="roledata", dependsOnMethods={"roleCreationWithValidations"})
 	public void deleteRoles(String roleName, String roleDesc){
 		sahiTasks.deleteRole(roleName);
-	}*/
+	}
 	@Test(groups="userRoleCreation", dataProvider="userCreationWithRoleVerifications")
 	public void userCreationWithRoleVerifications(String userName, String password, String firstname, String secondname, String email, String roleName, String roleDesc){
 		sahiTasks.userCreationWithRoleVerification(userName, password, firstname, secondname, email, roleName, roleDesc);
