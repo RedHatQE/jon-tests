@@ -113,7 +113,7 @@
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.HelpTest" />
 		</classes>
-		<groups>
+		<groups> 
 			<run>
 				<include name="setup"/>
 				<include name="teardown"/>

@@ -435,7 +435,7 @@ public class SahiTasks extends ExtendedSahi {
     
     public void helpHowToSearchBar() {
     	this.link("Help").click();
-    	this.cell("How to use the Search Bar").click();
+    	this.cell("How to use the Search Bar").click(); 
 	}
     
     
