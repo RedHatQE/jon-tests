@@ -84,4 +84,32 @@
 			</run>
 		</groups>
 	</test>
+
+	<test name="Resources">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.ResourceTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="resourceTest"/>
+			</run>
+		</groups>
+	</test>
+	<test name="Administation">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AdministrationTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="userRoleCreation"/>
+			</run>
+		</groups>
+	</test>
+
+
+	
 </suite>
