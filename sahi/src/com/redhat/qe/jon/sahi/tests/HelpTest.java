@@ -56,5 +56,26 @@ public class HelpTest  extends SahiTestScript  {
 		sahiTasks.helpHowToSearchBar();
 		        		
 	}
+	
+	@Test (groups="HelpTest")
+	public void helpCollapseExpandProduct() {
+		
+		sahiTasks.collapseExpandProduct();
+		        		
+	}
+	
+	@Test (groups="HelpTest")
+	public void helpCollapseExpandDocumentation() {
+		
+		sahiTasks.collapseExpandDocumentation();
+		        		
+	}
+	
+	@Test (groups="HelpTest")
+	public void helpCollapseExpandTutorial() {
+		
+		sahiTasks.collapseExpandTutorial();
+		        		
+	}
 
 }

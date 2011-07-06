@@ -438,6 +438,20 @@ public class SahiTasks extends ExtendedSahi {
     	this.cell("How to use the Search Bar").click(); 
 	}
     
+    public void collapseExpandProduct() {
+    	this.cell("Product").click();
+    	this.cell("Product").click();
+    }
+    
+    public void collapseExpandDocumentation() {
+    	this.cell("Documentation").click();
+    	this.cell("Documentation").click();
+    }
+    
+    public void collapseExpandTutorial() {
+    	this.cell("Tutorial").click();
+    	this.cell("Tutorial").click();
+    }
     
 	
 }
