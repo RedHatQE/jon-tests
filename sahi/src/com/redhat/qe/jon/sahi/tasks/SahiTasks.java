@@ -388,4 +388,56 @@ public class SahiTasks extends ExtendedSahi {
 	}
 	
 	
+	//******************************************************************
+	//Help
+	//******************************************************************
+	
+	public void helpAbout() {
+		this.link("Help").click();
+		this.cell("About").click();
+		this.cell("Close").click();
+	}
+	
+    public void helpFAQ() {
+    	this.link("Help").click();
+    	this.cell("Frequently Asked Questions (FAQ)").click();
+	}
+    
+    public void helpDocumentation() {
+    	this.link("Help").click();
+    	this.cell("Documentation Set").click();
+	}
+	
+    
+    public void helpAPI() {
+    	this.link("Help").click();
+    	this.cell("API Javadoc").click();
+	}
+    
+    
+    public void helpDemoAllDemos() {
+    	this.link("Help").click();
+    	this.cell("Demo: All Demos").click();
+    	
+	}
+	
+    public void helpDemoBundles() {
+    	this.link("Help").click();
+    	this.cell("Demo: Bundle Provisioning").click();
+    	
+	}
+    
+    public void helpHowToGroupDefinitions() {
+    	this.link("Help").click();
+    	this.cell("How to build Group Definitions").click();
+	}
+	
+    
+    public void helpHowToSearchBar() {
+    	this.link("Help").click();
+    	this.cell("How to use the Search Bar").click();
+	}
+    
+    
+	
 }

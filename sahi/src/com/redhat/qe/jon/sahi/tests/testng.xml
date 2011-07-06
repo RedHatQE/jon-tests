@@ -109,7 +109,18 @@
 			</run>
 		</groups>
 	</test>
-
+    <test name="HelpTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.HelpTest" />
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="HelpTest"/>
+			</run>
+		</groups>
+	</test>
 
 	
 </suite>
