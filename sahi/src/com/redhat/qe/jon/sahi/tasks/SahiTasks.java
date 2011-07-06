@@ -200,6 +200,17 @@ public class SahiTasks extends ExtendedSahi {
 		this.link("Reports").click();
 		this.cell("Alert Definitions").click();
 	}
+	
+	public void expandCollapseSections() {
+		this.image("opener_closed.png").click();
+		this.image("opener_opened.png[1]").click();
+		this.image("opener_closed.png").click();
+		this.image("opener_opened.png").click();
+	}
+	
+	
+	
+	
 	//******************************************************************
 	//Resource 
 	//******************************************************************

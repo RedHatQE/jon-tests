@@ -49,4 +49,11 @@ public class ReportsTest  extends SahiTestScript  {
 		
        sahiTasks.alertDefinitions();        		
 	}
+	
+	@Test (groups="ReportsTest")
+	public void expandAndCollapseSectionsReportTest() {
+		
+       sahiTasks.expandCollapseSections();            		
+	}
+	
 }
