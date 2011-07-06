@@ -53,7 +53,7 @@ public class ReportsTest  extends SahiTestScript  {
 	@Test (groups="ReportsTest")
 	public void expandAndCollapseSectionsReportTest() {
 		
-       sahiTasks.expandCollapseSections();          		
+       sahiTasks.expandCollapseSections();            		
 	}
 	
 }

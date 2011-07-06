@@ -208,12 +208,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.image("opener_opened.png").click();
 	}
 	
-	public void expandCollapseSections() {
-		this.image("opener_closed.png").click();
-		this.image("opener_opened.png[1]").click();
-		this.image("opener_closed.png").click();
-		this.image("opener_opened.png").click();
-	}
+	
 	
 	
 	//******************************************************************
