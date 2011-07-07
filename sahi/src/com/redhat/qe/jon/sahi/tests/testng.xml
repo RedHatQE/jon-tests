@@ -36,30 +36,8 @@
 			</run>
 		</groups>
 	</test>
-	<test name="CreateDeleteUserTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.CreateDeleteUserTest"/>
-		</classes>
-		<groups>
-			<run>
-				<include name="setup"/>
-				<include name="teardown"/>
-				<include name="CreateDeleteUserTest"/>
-			</run>
-		</groups>
-	</test>
-	<test name="CreateDeleteRoleTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.CreateDeleteRoleTest" />
-		</classes>
-		<groups>
-			<run>
-				<include name="setup"/>
-				<include name="teardown"/>
-				<include name="CreateDeleteRoleTest"/>
-			</run>
-		</groups>
-	</test>
+	
+	
 	<test name="ReportsTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.ReportsTest" />
