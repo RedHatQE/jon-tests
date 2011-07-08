@@ -99,6 +99,18 @@
 			</run>
 		</groups>
 	</test>
+	<test name="RecentOperations">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.RecentOperationsTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="recentOperations"/>
+			</run>
+		</groups>
+	</test>
 
 	
 </suite>
