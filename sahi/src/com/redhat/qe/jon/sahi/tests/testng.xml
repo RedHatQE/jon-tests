@@ -83,8 +83,8 @@
 			<run>
 				<include name="setup"/>
 				<include name="teardown"/>
-				<inlcude name="userCreation">
-				<inlcude name="roleCreation">
+				<inlcude name="userCreation"/>
+				<inlcude name="roleCreation"/>
 				<include name="userRoleCreation"/>
 
 			</run>
