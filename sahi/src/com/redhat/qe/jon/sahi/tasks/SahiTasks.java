@@ -452,6 +452,72 @@ public class SahiTasks extends ExtendedSahi {
     	this.cell("Tutorial").click();
     	this.cell("Tutorial").click();
     }
+
+
+	//************************************************************
+	// Recent Operations
+	//*************************************************************
+		
+	public void createRecentOperationsSchedule(){
+			
+		this.link("Inventory").click();
+		this.cell("Servers").click();
+		this.link("RHQ Agent").click();
+		this.cell("Operations").click();
+		this.cell("New").click();
+		this.div("selectItemText").setValue("g");
+		this.waitFor(5000);
+		this.div("selectItemText").setValue("g");			
+		this.cell("Schedule").click();
+		
+	}
+	
+	public void deleteRecentOperationsSchedule(){
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+		this.div("RHQ Agent").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		this.link("Inventory").click();
+		
+	}
+	
+	public void recentOperationsForceDelete(){
+		createRecentOperationsSchedule();
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+		this.div("RHQ Agent").click();
+		this.cell("Force Delete").click();
+		this.cell("Yes").click();
+		this.link("Inventory").click();
+				
+	}
+	
+	public void recentOperationsQuickLinks(){
+		createRecentOperationsSchedule();
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+		this.link("RHQ Agent").click();
+		this.image("row_collapsed.png").click();
+		this.cell("Recent Operations").click();
+		this.div("Get Plugin Info").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		this.link("Inventory").click();
+		
+	}
+	public void opreationsWithRefreshButtonFunctionality(){
+		createRecentOperationsSchedule();
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+		this.cell("Refresh").click();
+		this.div("Get Info On All Plugins").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		this.cell("Inventory").click();
+		
+		
+	}
     
 	
 }
