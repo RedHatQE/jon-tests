@@ -63,7 +63,7 @@
 		</groups>
 	</test>
 
-	<test name="Resources">
+	<test name="ResourcesTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.ResourceTest"/>
 		</classes>
@@ -75,7 +75,7 @@
 			</run>
 		</groups>
 	</test>
-	<test name="Administation">
+	<test name="AdministrationTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AdministrationTest"/>
 		</classes>
@@ -83,9 +83,9 @@
 			<run>
 				<include name="setup"/>
 				<include name="teardown"/>
-				<inlcude name="userCreation"/>
-				<inlcude name="roleCreation"/>
-				<include name="userRoleCreation"/>
+				<inlcude name="user"/>
+				<inlcude name="role"/>
+				<include name="userAndRole"/>
 
 			</run>
 		</groups>
@@ -102,7 +102,7 @@
 			</run>
 		</groups>
 	</test>
-	<test name="RecentOperations">
+	<test name="RecentOperationsTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.RecentOperationsTest"/>
 		</classes>
