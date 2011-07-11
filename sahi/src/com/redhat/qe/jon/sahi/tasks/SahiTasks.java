@@ -127,6 +127,82 @@ public class SahiTasks extends ExtendedSahi {
 		Assert.assertTrue(this.link("Help").exists());
 		Assert.assertTrue(this.link("Logout").exists());
 	}
+	public void topLevelMenuDashboardExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuInventoryExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuReportExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+
+	public void topLevelMenuBundlesExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuAdministrationExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuHelpExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuLogoutExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
 	
 	// ***************************************************************************
 	// Users and Groups
