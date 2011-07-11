@@ -83,8 +83,8 @@
 			<run>
 				<include name="setup"/>
 				<include name="teardown"/>
-				<inlcude name="user"/>
-				<inlcude name="role"/>
+				<include name="user"/>
+				<include name="role"/>
 				<include name="userAndRole"/>
 
 			</run>
