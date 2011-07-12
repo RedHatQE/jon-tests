@@ -36,30 +36,8 @@
 			</run>
 		</groups>
 	</test>
-	<test name="CreateDeleteUserTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.CreateDeleteUserTest"/>
-		</classes>
-		<groups>
-			<run>
-				<include name="setup"/>
-				<include name="teardown"/>
-				<include name="CreateDeleteUserTest"/>
-			</run>
-		</groups>
-	</test>
-	<test name="CreateDeleteRoleTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.CreateDeleteRoleTest" />
-		</classes>
-		<groups>
-			<run>
-				<include name="setup"/>
-				<include name="teardown"/>
-				<include name="CreateDeleteRoleTest"/>
-			</run>
-		</groups>
-	</test>
+	
+	
 	<test name="ReportsTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.ReportsTest" />
@@ -85,7 +63,7 @@
 		</groups>
 	</test>
 
-	<test name="Resources">
+	<test name="ResourcesTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.ResourceTest"/>
 		</classes>
@@ -97,7 +75,7 @@
 			</run>
 		</groups>
 	</test>
-	<test name="Administation">
+	<test name="AdministrationTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AdministrationTest"/>
 		</classes>
@@ -105,11 +83,48 @@
 			<run>
 				<include name="setup"/>
 				<include name="teardown"/>
-				<include name="userRoleCreation"/>
+				<include name="user"/>
+				<include name="role"/>
+				<include name="userAndRole"/>
+
 			</run>
 		</groups>
 	</test>
-
-
+    <test name="HelpTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.HelpTest" />
+		</classes>
+		<groups> 
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="HelpTest"/>
+			</run>
+		</groups>
+	</test>
+	<test name="RecentOperationsTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.RecentOperationsTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="recentOperations"/>
+			</run>
+		</groups>
+	</test>
+    <test name="DriftTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.DriftTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="DriftTest"/>
+			</run>
+		</groups>
+	</test>
 	
 </suite>

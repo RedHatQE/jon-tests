@@ -127,6 +127,82 @@ public class SahiTasks extends ExtendedSahi {
 		Assert.assertTrue(this.link("Help").exists());
 		Assert.assertTrue(this.link("Logout").exists());
 	}
+	public void topLevelMenuDashboardExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuInventoryExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuReportExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+
+	public void topLevelMenuBundlesExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuAdministrationExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuHelpExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
+	
+	public void topLevelMenuLogoutExist() {
+		
+		Assert.assertTrue(this.link("Dashboard").exists());
+		Assert.assertTrue(this.link("Inventory").exists());
+		Assert.assertTrue(this.link("Reports").exists());
+		Assert.assertTrue(this.link("Bundles").exists());
+		Assert.assertTrue(this.link("Administration").exists());
+		Assert.assertTrue(this.link("Help").exists());
+		Assert.assertTrue(this.link("Logout").exists());
+	}
 	
 	// ***************************************************************************
 	// Users and Groups
@@ -387,5 +463,137 @@ public class SahiTasks extends ExtendedSahi {
 		
 	}
 	
+	
+	//******************************************************************
+	//Help
+	//******************************************************************
+	
+	public void helpAbout() {
+		this.link("Help").click();
+		this.cell("About").click();
+		this.cell("Close").click();
+	}
+	
+    public void helpFAQ() {
+    	this.link("Help").click();
+    	this.cell("Frequently Asked Questions (FAQ)").click();
+	}
+    
+    public void helpDocumentation() {
+    	this.link("Help").click();
+    	this.cell("Documentation Set").click();
+	}
+	
+    
+    public void helpAPI() {
+    	this.link("Help").click();
+    	this.cell("API Javadoc").click();
+	}
+    
+    
+    public void helpDemoAllDemos() {
+    	this.link("Help").click();
+    	this.cell("Demo: All Demos").click();
+    	
+	}
+	
+    public void helpDemoBundles() {
+    	this.link("Help").click();
+    	this.cell("Demo: Bundle Provisioning").click();
+    	
+	}
+    
+    public void helpHowToGroupDefinitions() {
+    	this.link("Help").click();
+    	this.cell("How to build Group Definitions").click();
+	}
+	
+    
+    public void helpHowToSearchBar() {
+    	this.link("Help").click();
+    	this.cell("How to use the Search Bar").click(); 
+	}
+    
+    public void collapseExpandProduct() {
+    	this.cell("Product").click();
+    	this.cell("Product").click();
+    }
+    
+    public void collapseExpandDocumentation() {
+    	this.cell("Documentation").click();
+    	this.cell("Documentation").click();
+    }
+    
+    public void collapseExpandTutorial() {
+    	this.cell("Tutorial").click();
+    	this.cell("Tutorial").click();
+    }
+
+
+	//************************************************************
+	// Recent Operations
+	//*************************************************************
+		
+	public void createRecentOperationsSchedule(){
+			
+		this.link("Inventory").click();
+		this.cell("Servers").click();
+		this.link("RHQ Agent").click();
+		this.cell("Operations").click();
+		this.cell("New").click();
+		this.div("selectItemText").setValue("g");
+		this.waitFor(5000);
+		this.div("selectItemText").setValue("g");			
+		this.cell("Schedule").click();
+		
+	}
+	
+	public void deleteRecentOperationsSchedule(){
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+		this.div("RHQ Agent").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		this.link("Inventory").click();
+		
+	}
+	
+	public void recentOperationsForceDelete(){
+		createRecentOperationsSchedule();
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+		this.div("RHQ Agent").click();
+		this.cell("Force Delete").click();
+		this.cell("Yes").click();
+		this.link("Inventory").click();
+				
+	}
+	
+	public void recentOperationsQuickLinks(){
+		createRecentOperationsSchedule();
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+		this.link("RHQ Agent").click();
+		this.image("row_collapsed.png").click();
+		this.cell("Recent Operations").click();
+		this.div("Get Plugin Info").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		this.link("Inventory").click();
+		
+	}
+	public void opreationsWithRefreshButtonFunctionality(){
+		createRecentOperationsSchedule();
+		this.link("Reports").click();
+		this.cell("Recent Operations").click();
+		this.cell("Refresh").click();
+		this.div("Get Info On All Plugins").click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		this.cell("Inventory").click();
+		
+		
+	}
+    
 	
 }
