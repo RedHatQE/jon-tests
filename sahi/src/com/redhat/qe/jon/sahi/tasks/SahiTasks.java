@@ -648,13 +648,16 @@ public class SahiTasks extends ExtendedSahi {
 	}
 	
 	public void messagePortletRefresh() {
-		this.image("refresh_Over.png").click();
+		this.image("refresh.png").click();
 	}
 	
-	public void messagePortletSettings () {
-		//todo 
+	public void messagePortletMinimizeMaximize () {
+		this.image("cascade_Disabled.png").click();
+		this.image("minimize_Disabled.png").click();
 		
 	}
-
+    
+	
+	
 	
 }

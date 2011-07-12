@@ -78,8 +78,15 @@ public class DashboardTest  extends SahiTestScript  {
 	
 	@Test (groups="DashboardTest")
 	public void portletSettings() {   
-             		
+           //todo  		
 	}
+	
+	
+	@Test (groups="DashboardTest")
+	public void portletMinimizeMaximize() {   
+           sahiTasks.messagePortletMinimizeMaximize();
+	}
+	
 	
 	
 	
