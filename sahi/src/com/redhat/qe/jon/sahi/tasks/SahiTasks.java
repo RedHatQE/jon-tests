@@ -656,6 +656,19 @@ public class SahiTasks extends ExtendedSahi {
 		this.image("minimize_Disabled.png").click();
 		
 	}
+	
+	public boolean verifyInventorySummaryPortlet () {
+		
+		return this.cell("Platform Total :").isVisible() &&
+		       this.cell("Server Total :").isVisible()   &&
+		       this.cell("Service Total :").isVisible()  &&
+		       this.cell("Compatible Group Total :").isVisible() &&
+		       this.cell("Mixed Group Total :").isVisible()  &&
+		       this.cell("Group Definition Total :").isVisible() &&
+		       this.cell("Average Metrics per Minute :").isVisible()
+		       ; 
+		
+	}
     
 	
 	
