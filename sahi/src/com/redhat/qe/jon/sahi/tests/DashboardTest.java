@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.sahi.tests;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
@@ -29,5 +30,57 @@ public class DashboardTest  extends SahiTestScript  {
 	}
 	
 	
+	@Test (groups="DashboardTest")
+	public void messagePortletExists() {
+		
+		Assert.assertTrue(sahiTasks.messagePortletExists()); 
+             		
+	}
+	
+	@Test (groups="DashboardTest")
+	public void inventorySummaryPortletExists() {
+		 
+		Assert.assertTrue(sahiTasks.inventorySummaryPortletExists()); 
+             		
+	}
 
+	@Test (groups="DashboardTest")
+	public void mashupPortletExists() {
+		Assert.assertTrue(sahiTasks.mashupPortletExists()); 
+             		
+	}
+	
+	@Test (groups="DashboardTest")
+	public void recentAlertsPortletExists() {
+		Assert.assertTrue(sahiTasks.recentAlertsPortletExists());  
+             		
+	}
+	
+	
+	@Test (groups="DashboardTest")
+	public void alertedOrUnavailableResourcesPortlet() {
+		Assert.assertTrue(sahiTasks.alertedOrUnavailableResourcesPortletExists());  
+             		
+	}
+	
+	@Test (groups="DashboardTest")
+	public void recentOperationsPortlet() {
+		Assert.assertTrue(sahiTasks.recentOperationsPortletExists());   
+             		
+	}
+	
+	
+	@Test (groups="DashboardTest")
+	public void portletRefresh() {   
+          sahiTasks.messagePortletRefresh();   		
+	}
+	
+	
+	@Test (groups="DashboardTest")
+	public void portletSettings() {   
+             		
+	}
+	
+	
+	
 }

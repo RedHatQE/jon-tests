@@ -596,4 +596,65 @@ public class SahiTasks extends ExtendedSahi {
 	}
     
 	
+	//************************************************************
+	// Drift Management
+	//*************************************************************
+	
+	public void configure()  {
+		
+	}
+	
+	
+	
+	
+	//************************************************************
+	// Dashboard 
+	//*************************************************************
+	
+	public boolean messagePortletExists()  {
+		
+		return this.cell("Message").isVisible();
+		
+	}
+	
+	public boolean inventorySummaryPortletExists()  {
+		
+		return this.cell("Inventory Summary").isVisible();
+		
+	}
+	
+	public boolean mashupPortletExists()  {
+		
+		return this.cell("Mashup").isVisible();
+		
+	}
+	
+	public boolean recentAlertsPortletExists()  {
+		
+		return this.cell("Recent Alerts").isVisible();
+		
+	}
+	
+	public boolean alertedOrUnavailableResourcesPortletExists()  {
+		
+		return this.cell("Alerted or Unavailable Resources").isVisible();
+		
+	}
+	
+	public boolean recentOperationsPortletExists()  {
+		
+		return this.cell("Recent Operations").isVisible();
+		
+	}
+	
+	public void messagePortletRefresh() {
+		this.image("refresh_Over.png").click();
+	}
+	
+	public void messagePortletSettings () {
+		//todo 
+		
+	}
+
+	
 }
