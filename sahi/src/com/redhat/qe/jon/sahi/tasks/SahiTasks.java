@@ -670,6 +670,10 @@ public class SahiTasks extends ExtendedSahi {
 		
 	}
     
+	public boolean verifyDefaultTabName () {
+		return this.cell("Default").isVisible();
+		
+	}
 	
 	
 	

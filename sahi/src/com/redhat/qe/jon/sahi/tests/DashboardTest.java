@@ -92,5 +92,10 @@ public class DashboardTest  extends SahiTestScript  {
            sahiTasks.verifyInventorySummaryPortlet();
 	}
 	
+	@Test (groups="DashboardTest")
+	public void verifyTabName() {   
+           sahiTasks.verifyDefaultTabName();
+	}
+	
 	
 }
