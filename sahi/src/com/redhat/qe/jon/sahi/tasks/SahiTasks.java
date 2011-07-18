@@ -94,6 +94,30 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Yes").click();
 	}
 
+	public void uninventoryResourcethroughGroup(String groupName, String groupDesc){
+		createCompatibleGroup(groupName, groupDesc);
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("Compatible Groups").click();
+		this.link(groupName).click();
+		this.image("Inventory_grey_16.png").click();
+		this.div("RHQ Agent").click();
+		this.cell("Uninventory").click();
+		this.cell("Yes").click();
+		this.link("Inventory").click();
+			
+	}
+	public void inventoryResource(){
+		this.link("Inventory").click();
+		this.cell("Discovery Queue").click();
+		this.cell("Refresh").click();
+		this.image("opener_closed.png").click();
+		this.image("unchecked.png").click();
+		this.cell("Import").click();
+		this.link("Inventory").click();
+		
+	}
+
 	// ***************************************************************************
 	// Bundle
 	// ***************************************************************************
