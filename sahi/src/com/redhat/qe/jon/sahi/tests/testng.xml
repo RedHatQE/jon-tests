@@ -9,6 +9,8 @@
 				<include name="setup"/>
 				<include name="teardown"/>
 				<include name="inventoryTest"/>
+				<include name="inventoryResourceThruGroup"/>
+				
 			</run>
 		</groups>
 	</test>
