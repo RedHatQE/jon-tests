@@ -39,6 +39,28 @@ public class ResourceTest extends SahiTestScript{
 	public void deleteDynaGrroups(String groupName, String groupDesc){
 		sahiTasks.deleteDynaGroup(groupDesc);
 	}
+
+	@Test (groups="resourceSearchTest", dataProvider="roleUserAndGroupCreationData")
+	public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, String desc, String compTestGroup, String searchQueryName){
+		sahiTasks.resourceSearch(searchRoleName, password, firstName, secondName, emailId, searchRoleName, desc, compTestGroup,searchQueryName);
+	}
+	
+	@Test (groups="resourceSearchTest")
+	public void navigateToAllGroups(){
+		sahiTasks.navigateToAllGroups();
+	}
+	@DataProvider (name="roleUserAndGroupCreationData")
+	public Object[][] userCreationWithRoleData() {
+		return TestNGUtils.convertListOfListsTo2dArray(userRoleAndGroupData());
+	}
+	public List<List<Object>> userRoleAndGroupData() {
+		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
+		data.add(Arrays.asList(new Object[]{"search testuser", "password","jboss","operations","test@redhat.com","search Test Role1", 			"Description", "testCompGroup", "name"}));
+		return data;
+	}
+	
+	
+
 	@DataProvider(name="dynagroup")
 	public Object[][] dynaGroupData() {
 		return TestNGUtils.convertListOfListsTo2dArray(getDynaGroup());

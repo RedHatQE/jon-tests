@@ -73,6 +73,7 @@
 				<include name="setup"/>
 				<include name="teardown"/>
 				<include name="resourceTest"/>
+				<include name="resourceSearchTest"/>
 			</run>
 		</groups>
 	</test>
