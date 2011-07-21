@@ -394,6 +394,45 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Delete").click();
 		this.cell("Yes").click();
 	}
+
+	public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, 						String desc, String compGroupName, String searchQueryName){
+		createCompatibleGroup(compGroupName, desc);
+		createUser(searchTestuser,password,firstName,secondName,emailId);
+		createRoleWithoutMangeInvetntory(searchRoleName, desc, compGroupName, searchTestuser);
+		loginNewUser(searchTestuser, password);
+		navigateToAllGroups();
+		enterValueToSerachTextBox(compGroupName, searchQueryName);
+						
+	}
+	public void createRoleWithoutMangeInvetntory(String roleName, String desc, String compGroupName, String searchTestuser){
+		this.link("Administration").click();
+		this.cell("Roles").click();
+		this.cell("New").click();
+		this.textbox("name").setValue(roleName);
+		this.textbox("description").setValue(desc);
+		this.cell("Resource Groups").click();
+		this.div("compGroupName").click();
+		this.image("right.png").click();
+		this.cell("users").click();
+		this.div(searchTestuser).click();
+		this.image("right.png").click();
+		this.cell("Save").click();			
+	}
+	public void loginNewUser(String newUser, String password){
+		this.textbox("user").setValue(newUser);
+		this.password("password").setValue(password);
+		this.cell("Login").click();
+		
+	}
+	public void navigateToAllGroups(){
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("All Groups").click();
+	}
+	public void enterValueToSerachTextBox(String compGroupName, String searchName){
+		this.textbox("SearchPatternField").setValue(searchName+"="+compGroupName);
+		this.cell("name").click();
+		}
 	
 	// ***************************************************************************
 	// Dashboard
