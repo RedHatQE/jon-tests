@@ -63,7 +63,7 @@ public class InventoryTest extends SahiTestScript{
 		
 	}
 	
-	Test (groups="inventoryConfiguration")
+	@Test (groups="inventoryConfiguration")
 	public void inventoryConfiguration(){
 		sahiTasks.inventoryConfiguration();
 	
@@ -83,7 +83,7 @@ public class InventoryTest extends SahiTestScript{
 		return data;
 	}
 
-		@DataProvider(name="compatibleGroup")
+	@DataProvider(name="compatibleGroup")
 	public Object[][] compatibleGroupData() {
 		return TestNGUtils.convertListOfListsTo2dArray(getCompatibleGroup());
 	}
