@@ -34,11 +34,17 @@ public class InventoryTest extends SahiTestScript{
 		sahiTasks.createCompatibleGroup(compatibleGroup, groupDesc);
 		
 	}
+	
+	/* 
+	 * commenting out this test per RHQ UI Automation Phase 3 Testcase Review Meeting
+	 * "this test fails for than it passes"
+	 * 
 	@Test (groups="inventoryTest", dataProvider="compatibleGroup", dependsOnMethods={"compatibleGroups"})	
 	public void deleteCompatibilityGroups(String compGroupName, String groupDesc){
 		sahiTasks.deleteCompGroup(compGroupName);
 		
 	}
+	*/
 	
 	
 	@Test (groups="inventoryTest", dataProvider="mixedGroup")
@@ -63,16 +69,20 @@ public class InventoryTest extends SahiTestScript{
 		
 	}
 	
+/*
 	Test (groups="inventoryConfiguration")
 	public void inventoryConfiguration(){
 		sahiTasks.inventoryConfiguration();
 	
 	}
+	
 	@Test (groups="messageCenter", dependsOnGroups ={"inventoryConfiguration"})
 	public void messageCenter(){
 		sahiTasks.messageCenter();
 	}
 		
+*/
+	
 	@DataProvider(name="groupData")
 	public Object[][] groupData() {
 		return TestNGUtils.convertListOfListsTo2dArray(getGroupData());
