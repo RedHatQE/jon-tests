@@ -62,6 +62,16 @@ public class InventoryTest extends SahiTestScript{
 		sahiTasks.inventoryResource();
 		
 	}
+	
+	Test (groups="inventoryConfiguration")
+	public void inventoryConfiguration(){
+		sahiTasks.inventoryConfiguration();
+	
+	}
+	@Test (groups="messageCenter", dependsOnGroups ={"inventoryConfiguration"})
+	public void messageCenter(){
+		sahiTasks.messageCenter();
+	}
 		
 	@DataProvider(name="groupData")
 	public Object[][] groupData() {

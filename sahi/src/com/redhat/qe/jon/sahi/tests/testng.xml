@@ -9,6 +9,8 @@
 				<include name="setup"/>
 				<include name="teardown"/>
 				<include name="inventoryTest"/>
+				<include name="inventoryConfiguration"/>
+				<!--include name ="messageCenter"/-->
 								
 			</run>
 		</groups>

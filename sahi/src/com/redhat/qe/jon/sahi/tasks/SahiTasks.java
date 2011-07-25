@@ -118,6 +118,23 @@ public class SahiTasks extends ExtendedSahi {
 		
 	}
 
+
+	public void inventoryConfiguration(){
+		this.link("Inventory").click();
+		this.cell("Servers").click();
+		this.link("RHQ Agent").click();
+		this.cell("Configuration").click();
+		this.image("checked.png[4]").click();
+		this.image("checked.png[4]").click();
+		this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").setValue("1000");
+		this.cell("Save").click();
+	}
+	
+	public void messageCenter(){
+		this.cell("Message Center").click();
+		this.image("close.png").click();		
+	}
+
 	// ***************************************************************************
 	// Bundle
 	// ***************************************************************************
