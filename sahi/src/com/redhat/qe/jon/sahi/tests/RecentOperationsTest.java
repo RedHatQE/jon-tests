@@ -22,12 +22,11 @@ public class RecentOperationsTest extends SahiTestScript{
 	public void recentOperationsWithRefreshButtonFunctionality(){		
 		sahiTasks.opreationsWithRefreshButtonFunctionality();
 	}
-	/* todo:  test fails intermittently
 	@Test (groups="recentOperations")
 	public void recentOperationsQuickLinks(){		
 		sahiTasks.recentOperationsQuickLinks();
 		
 	}
-	*/
+	
 }
 	

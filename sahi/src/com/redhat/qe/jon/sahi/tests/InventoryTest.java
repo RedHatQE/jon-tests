@@ -34,14 +34,12 @@ public class InventoryTest extends SahiTestScript{
 		sahiTasks.createCompatibleGroup(compatibleGroup, groupDesc);
 		
 	}
-	
-	/* todo:  test fails intermittently 
 	@Test (groups="inventoryTest", dataProvider="compatibleGroup", dependsOnMethods={"compatibleGroups"})	
 	public void deleteCompatibilityGroups(String compGroupName, String groupDesc){
 		sahiTasks.deleteCompGroup(compGroupName);
 		
 	}
-	*/
+	
 	
 	@Test (groups="inventoryTest", dataProvider="mixedGroup")
 	public void createMixedGroups(String mixedGroup, String groupDesc){
