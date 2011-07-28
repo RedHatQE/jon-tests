@@ -754,6 +754,36 @@ public class SahiTasks extends ExtendedSahi {
 		return this.cell("Default").isVisible();
 		
 	}
+
+
+	//************************************
+	//* Favourite
+	//*************************************
+	
+	public void createFavourite(){
+		this.link("Inventory").click();
+		this.cell("Servers").click();
+		this.link("RHQ Agent").click();
+		this.image("Favorite_24.png").click();
+		
+	}
+		
+	public void removeFavourite(){
+		this.link("Inventory").click();
+		this.cell("Servers").click();
+		this.link("RHQ Agent").click();
+		this.image("Favorite_24_Selected.png").click();
+		
+	}
+	
+	public boolean checkFavouriteBadgeForAgent(){
+		return this.image("Favorite_24_Selected.png").isVisible();
+	}
+	
+	public boolean checkBadgeAfterRmovingFavourite(){
+		return this.image("Favorite_24.png").isVisible();
+		
+	}
 	
 	
 	
