@@ -45,6 +45,13 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Finish").click();
 	}
 
+	public boolean verifyGroup(String groupPanelName, String groupName) {
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell(groupPanelName).click();
+		return this.div(groupName).exists();
+	}
+
 	public void deleteGroup(String groupPanelName, String groupName) {
 		this.link("Inventory").click();
 		this.waitFor(5000);

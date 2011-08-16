@@ -8,6 +8,8 @@ import org.testng.annotations.DataProvider;
 
 import com.redhat.qe.auto.testng.TestNGUtils;
 
+import com.redhat.qe.auto.testng.Assert;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,6 @@ public class InventoryTest extends SahiTestScript{
 		sahiTasks.waitFor(5000);
 	}
 
-/*
 	@Test (groups="inventoryTest", dataProvider="groupData")
 	public void createGroups(String groupName, String groupDesc) {
 		sahiTasks.createGroup("All Groups", groupName, groupDesc);
@@ -28,14 +29,19 @@ public class InventoryTest extends SahiTestScript{
 	public void deleteGroups(String groupName, String groupDesc) {
 		sahiTasks.deleteGroup("All Groups", groupName);
 	}
-*/
 	
 	@Test (groups="inventoryTest", dataProvider="compatibleGroup")
-	public void compatibleGroups(String compatibleGroup, String groupDesc, ArrayList<String> resourceList){
+	public void createCompatibleGroups(String compatibleGroup, String groupDesc, ArrayList<String> resourceList){
 		sahiTasks.createGroup("Compatible Groups", compatibleGroup, groupDesc, resourceList);
 		
 	}
-	@Test (groups="inventoryTest", dataProvider="compatibleGroup", dependsOnMethods={"compatibleGroups"})	
+
+	@Test (groups="inventoryTest", dataProvider="compatibleGroup", dependsOnMethods={"createCompatibleGroups"})	
+	public void verifyCompatibleGroups(String compGroupName, String groupDesc, ArrayList<String> resourceList) {
+		Assert.assertTrue(sahiTasks.verifyGroup("Compatible Groups", compGroupName), "Making sure compatible group is created.");
+	}
+
+	@Test (groups="inventoryTest", dataProvider="compatibleGroup", dependsOnMethods={"verifyCompatibleGroups"})	
 	public void deleteCompatibilityGroups(String compGroupName, String groupDesc, ArrayList<String> resourceList){
 		sahiTasks.deleteGroup("Compatible Groups", compGroupName);
 		
