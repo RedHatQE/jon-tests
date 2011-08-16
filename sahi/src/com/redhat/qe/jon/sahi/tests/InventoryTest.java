@@ -51,6 +51,7 @@ public class InventoryTest extends SahiTestScript{
 	public void deleteMixedGroups(String mixedGroup, String groupDesc, ArrayList<String> resourceList){
 		sahiTasks.deleteGroup("Mixed Groups", mixedGroup);
 	}
+/*
 
 	@Test (groups="inventoryResourceThruGroup", dataProvider="compatibleGroup",dependsOnMethods={"compatibleGroups"})	
 	public void uninventoryResource(String compGroupName, String groupDesc){
@@ -62,6 +63,7 @@ public class InventoryTest extends SahiTestScript{
 		sahiTasks.inventoryResource();
 		
 	}
+*/
 	@Test (groups="inventoryConfiguration")
 	public void inventoryConfiguration(){
 		//sahiTasks.inventoryConfiguration();
