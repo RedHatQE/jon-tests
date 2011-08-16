@@ -11,49 +11,60 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 public class AdministrationTest extends SahiTestScript {
 	
-	
-	@Test (groups="user", dataProvider="userdata")
-	public void createUsers(String userName, String password, String firstname, String secondname, String email){
-		sahiTasks.createUser(userName, password, firstname, secondname, email);
+	@Test (groups="user", dataProvider="roleData")
+	public void createRoles(String roleName, String roleDesc){
+		sahiTasks.createRole(roleName, roleDesc);
 	}
-	@Test (groups="user",dataProvider="userdata", dependsOnMethods={"createUsers"})
-	public void deleteUsers(String userName, String password, String firstname, String secondname, String email){
+
+	@Test (groups="user", dataProvider="userData", dependsOnMethods={"createRoles"})
+	public void createUsers(String userName, String password, String firstName, String lastName, String email){
+		sahiTasks.createUser(userName, password, firstName, lastName, email);
+	}
+
+	@Test (groups="user",dataProvider="userData", dependsOnMethods={"createUsers"})
+	public void deleteUsers(String userName, String password, String firstName, String lastName, String email){
 		sahiTasks.deleteUser(userName);
 	}
+
+	@Test (groups="user",dataProvider="roleData", dependsOnMethods={"deleteUsers"})
+	public void deleteRole(String roleName, String roleDesc){
+		sahiTasks.deleteRole(roleName);
+	}
+
+/*
 	@Test (groups="role", dataProvider="roledata")
 	public void roleCreationWithValidations(String roleName, String roleDesc){
 		sahiTasks.createRoleWithValidations(roleName, roleDesc);
 	}
-	@Test (groups="role",dataProvider="roledata", dependsOnMethods={"roleCreationWithValidations"})
-	public void deleteRoles(String roleName, String roleDesc){
-		sahiTasks.deleteRole(roleName);
-	}
+
 	@Test (groups="userAndRole", dataProvider="userCreationWithRoleVerifications")
-	public void userCreationWithRoleVerifications(String userName, String password, String firstname, String secondname, String email, String roleName, String roleDesc){
-		sahiTasks.userCreationWithRoleVerification(userName, password, firstname, secondname, email, roleName, roleDesc);
-		
+	public void userCreationWithRoleVerifications(String userName, String password, String firstName, String lastName, String email, String roleName, String roleDesc){
+		sahiTasks.userCreationWithRoleVerification(userName, password, firstName, lastName, email, roleName, roleDesc);
 	}
+*/
 	
-	@DataProvider(name="roledata")
-	public Object[][] roledata() {
+	@DataProvider(name="roleData")
+	public Object[][] roleData() {
 		return TestNGUtils.convertListOfListsTo2dArray(getRoleData());
 	}
-	
-	@DataProvider(name="userdata")
-	public Object[][] userdata() {
-		return TestNGUtils.convertListOfListsTo2dArray(getUserData());
-	}
-	public List<List<Object>> getUserData() {
-		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
-		data.add(Arrays.asList(new Object[]{"testuser", "password","jboss","operations","test@redhat.com"}));
-		return data;
-	}
+
 	public List<List<Object>> getRoleData() {
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
 		data.add(Arrays.asList(new Object[]{"Test Role", "Description"}));
 		return data;
 	}
 	
+	@DataProvider(name="userData")
+	public Object[][] userData() {
+		return TestNGUtils.convertListOfListsTo2dArray(getUserData());
+	}
+
+	public List<List<Object>> getUserData() {
+		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
+		data.add(Arrays.asList(new Object[]{"testuser", "password","jboss","operations","test@redhat.com"}));
+		return data;
+	}
+
 	@DataProvider(name="userCreationWithRoleVerifications")
 	public Object[][] userCreationWithRoleVerificationsData() {
 		return TestNGUtils.convertListOfListsTo2dArray(userCreationRoleVerificationData());
@@ -63,6 +74,4 @@ public class AdministrationTest extends SahiTestScript {
 		data.add(Arrays.asList(new Object[]{"testuser", "password","jboss","operations","test@redhat.com","Test Role", "Description"}));
 		return data;
 	}
-	
-
 }

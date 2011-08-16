@@ -18,38 +18,38 @@ public class InventoryTest extends SahiTestScript{
 		sahiTasks.waitFor(5000);
 	}
 
+/*
 	@Test (groups="inventoryTest", dataProvider="groupData")
 	public void createGroups(String groupName, String groupDesc) {
-		sahiTasks.createGroup(groupName, groupDesc);
+		sahiTasks.createGroup("All Groups", groupName, groupDesc);
 	}
 
 	@Test (groups="inventoryTest", dataProvider="groupData", dependsOnMethods={"createGroups"})
 	public void deleteGroups(String groupName, String groupDesc) {
-		sahiTasks.deleteGroup(groupName);
+		sahiTasks.deleteGroup("All Groups", groupName);
 	}
+*/
 	
-
 	@Test (groups="inventoryTest", dataProvider="compatibleGroup")
-	public void compatibleGroups(String compatibleGroup, String groupDesc){
-		sahiTasks.createCompatibleGroup(compatibleGroup, groupDesc);
+	public void compatibleGroups(String compatibleGroup, String groupDesc, ArrayList<String> resourceList){
+		sahiTasks.createGroup("Compatible Groups", compatibleGroup, groupDesc, resourceList);
 		
 	}
 	@Test (groups="inventoryTest", dataProvider="compatibleGroup", dependsOnMethods={"compatibleGroups"})	
-	public void deleteCompatibilityGroups(String compGroupName, String groupDesc){
-		sahiTasks.deleteCompGroup(compGroupName);
+	public void deleteCompatibilityGroups(String compGroupName, String groupDesc, ArrayList<String> resourceList){
+		sahiTasks.deleteGroup("Compatible Groups", compGroupName);
 		
 	}
-	
-	
+
 	@Test (groups="inventoryTest", dataProvider="mixedGroup")
-	public void createMixedGroups(String mixedGroup, String groupDesc){
-		sahiTasks.createMixedGroup(mixedGroup, groupDesc);
+	public void createMixedGroups(String mixedGroup, String groupDesc, ArrayList<String> resourceList){
+		sahiTasks.createGroup("Mixed Groups", mixedGroup, groupDesc, resourceList);
 		
 	}
 	
 	@Test (groups="inventoryTest", dataProvider="mixedGroup", dependsOnMethods= {"createMixedGroups"})
-	public void deleteMixedGroups(String mixedGroup, String groupDesc){
-		sahiTasks.deleteMixedGroup(mixedGroup);
+	public void deleteMixedGroups(String mixedGroup, String groupDesc, ArrayList<String> resourceList){
+		sahiTasks.deleteGroup("Mixed Groups", mixedGroup);
 	}
 
 	@Test (groups="inventoryResourceThruGroup", dataProvider="compatibleGroup",dependsOnMethods={"compatibleGroups"})	
@@ -62,15 +62,14 @@ public class InventoryTest extends SahiTestScript{
 		sahiTasks.inventoryResource();
 		
 	}
-	
 	@Test (groups="inventoryConfiguration")
 	public void inventoryConfiguration(){
-		sahiTasks.inventoryConfiguration();
+		//sahiTasks.inventoryConfiguration();
 	
 	}
 	@Test (groups="messageCenter", dependsOnGroups ={"inventoryConfiguration"})
 	public void messageCenter(){
-		sahiTasks.messageCenter();
+		//sahiTasks.messageCenter();
 	}
 		
 	@DataProvider(name="groupData")
@@ -90,10 +89,10 @@ public class InventoryTest extends SahiTestScript{
 	
 	public List<List<Object>> getCompatibleGroup() {
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
-		data.add(Arrays.asList(new Object[]{"compatible group", "Compatible Group description"}));
-		return data;
-	}
-	
+		ArrayList<String> resourceData = new ArrayList<String>();
+		resourceData.add("RHQ Agent");
+		data.add(Arrays.asList(new Object[]{"compatibleGroup", "Compatible Group description", resourceData}));
+		return data's added	
 	@DataProvider(name="mixedGroup")
 	public Object[][] mixedGroupData() {
 		return TestNGUtils.convertListOfListsTo2dArray(getMixedGroup());
@@ -101,7 +100,10 @@ public class InventoryTest extends SahiTestScript{
 	
 	public List<List<Object>> getMixedGroup() {
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
-		data.add(Arrays.asList(new Object[]{"mixed group", "mixed Group description"}));
+		ArrayList<String> resourceData = new ArrayList<String>();
+		resourceData.add("RHQ Agent");
+		resourceData.add("cron");
+		data.add(Arrays.asList(new Object[]{"mixedGroup", "mixed Group description", resourceData}));
 		return data;
 	}
 }
