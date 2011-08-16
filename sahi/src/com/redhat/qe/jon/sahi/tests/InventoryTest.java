@@ -92,7 +92,9 @@ public class InventoryTest extends SahiTestScript{
 		ArrayList<String> resourceData = new ArrayList<String>();
 		resourceData.add("RHQ Agent");
 		data.add(Arrays.asList(new Object[]{"compatibleGroup", "Compatible Group description", resourceData}));
-		return data's added	
+		return data;
+	}
+	
 	@DataProvider(name="mixedGroup")
 	public Object[][] mixedGroupData() {
 		return TestNGUtils.convertListOfListsTo2dArray(getMixedGroup());
