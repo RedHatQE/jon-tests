@@ -106,7 +106,7 @@ public class InventoryTest extends SahiTestScript{
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
 		ArrayList<String> resourceData = new ArrayList<String>();
 		resourceData.add("RHQ Agent");
-		resourceData.add("cron");
+		resourceData.add("Cron");
 		data.add(Arrays.asList(new Object[]{"mixedGroup", "mixed Group description", resourceData}));
 		return data;
 	}
