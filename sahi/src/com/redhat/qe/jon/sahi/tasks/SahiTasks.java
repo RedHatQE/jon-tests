@@ -9,6 +9,24 @@ public class SahiTasks extends ExtendedSahi {
 	public SahiTasks(String browserPath, String browserName, String browserOpt, String sahiBaseDir, String sahiUserdataDir) {
 		super(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
 	}
+	
+	// ***************************************************************************
+	// Login/Logout
+	// ***************************************************************************
+	public void login(String userName, String password) {
+		this.textbox("user").setValue(userName);
+		this.password("password").setValue(password);
+		this.cell("Login").click();
+	}
+
+	public void logout() {
+		this.link("Logout").click();
+	}
+
+	public void relogin(String userName, String password) {
+		logout();
+		login(userName, password);
+	}
 
 	// ***************************************************************************
 	// Inventory
@@ -429,8 +447,6 @@ public class SahiTasks extends ExtendedSahi {
 		this.textbox("firstName").setValue(firstName);
 		this.textbox("lastName").setValue(lastName);
 		this.textbox("emailAddress").setValue(email);
-		this.div("Super User Role").click();
-		this.image("right.png").click();
 		this.cell("Save").click();
 	}
 
@@ -448,6 +464,12 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("New").click();
 		this.textbox("name").setValue(roleName);
 		this.textbox("description").setValue("Description");
+
+		// TODO: Can't automate permission because we have no good 
+		// way to associate the permission name and the checkbox 
+		// that's next to it.
+		// One workaround is to hard code the permission list.
+
 		this.cell("Save").click();
 	}
 
@@ -459,40 +481,27 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Yes").click();
 	}
 
-	public void createRoleWithValidations(String roleName, String roleDesc){
+	public void addRolesToUser(String userName, ArrayList<String> roleNames) {
 		this.link("Administration").click();
-		this.cell("Roles").click();
-		this.cell("New").click();
-		this.textbox("name").setValue(roleName);
-		this.textbox("description").setValue("Description");
-		this.image("permission_disabled_11.png").click();
-		this.image("unchecked.png").click();
-		org.testng.Assert.assertTrue(this.image("permission_enabled_11.png").exists());
-		this.cell("Resource Groups").click();
 		this.cell("Users").click();
-		this.cell("LDAP Groups").click();
-		org.testng.Assert.assertTrue(this.cell("NOTE: The LDAP security integration is not configured. To configure LDAP, go to System Settings.").exists());
+		this.link(userName).click();
+		for (String role : roleNames) {
+			this.div(role).click();
+			this.image("right.png").click();
+		}
 		this.cell("Save").click();
 	}
 
+	public boolean verifyUserRole(String userName, String password, ArrayList<String> roleNames) {
+		relogin(userName, password);
 
-	public void userCreationWithRoleVerification(String userName, String password, String firstName, String lastName, String email, String roleName, String roleDesc){
-		createUser(userName, password,firstName,lastName, email);
-		createRoleWithValidations(roleName,roleDesc);
-		this.link("Administration").click();
-		this.cell("Roles").click();
-		this.cell("Users").click();
-		org.testng.Assert.assertTrue(this.div(userName).exists());
-		//			this.div(userName).click();
-		//			this.image("right.png").click();
-		this.div("testuser").doubleClick();
-		this.cell("Save").click();
-		deleteRole(roleName);
-		deleteUser(userName);
+		// TODO: Verification of role still needs to be done, however this 
+		// hinges on whether we can create a role w/ specific permission 
+		// by specifying only the permission name.
 
-
+		relogin("rhqadmin", "rhqadmin"); // reset
+		return true;
 	}
-
 
 	//******************************************************************
 	//Help
@@ -601,11 +610,25 @@ public class SahiTasks extends ExtendedSahi {
 
 	public void recentOperationsQuickLinks(){
 		createRecentOperationsSchedule();
+		System.out.println("1");
 		this.link("Reports").click();
+		System.out.println("2");
+		// v did not respond, thus not loading "RHQ Agent"
+		// * need verification *
 		this.cell("Recent Operations").click();
+		System.out.println("3");
 		this.link("RHQ Agent").click();
+		System.out.println("4");
 		this.image("row_collapsed.png").click();
+		System.out.println("5");
+		try {
+			System.out.println("snoring...........");
+			Thread.currentThread().sleep(10000);
+		}
+		catch (Exception e) {
+		}
 		this.cell("Recent Operations").click();
+		System.out.println("6");
 		this.div("Get Plugin Info").click();
 		this.cell("Delete").click();
 		this.cell("Yes").click();

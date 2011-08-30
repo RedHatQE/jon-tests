@@ -37,15 +37,13 @@ public abstract class SahiTestScript extends TestScript {
 	public void login() {
 		log.finer("Logging into RHQ system");
 		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);
-		sahiTasks.textbox("user").setValue("rhqadmin");
-		sahiTasks.password("password").setValue("rhqadmin");
-		sahiTasks.cell("Login").click();
+		sahiTasks.login("rhqadmin", "rhqadmin");
 	}
 
 	@AfterSuite(groups={"teardown"})
 	public void logout() {
 		log.finer("Logging out of RHQ system");
-		sahiTasks.link("Logout").click();
+		sahiTasks.logout();
 	}
 
 	@AfterSuite(groups={"teardown"})
