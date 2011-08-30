@@ -610,25 +610,11 @@ public class SahiTasks extends ExtendedSahi {
 
 	public void recentOperationsQuickLinks(){
 		createRecentOperationsSchedule();
-		System.out.println("1");
 		this.link("Reports").click();
-		System.out.println("2");
-		// v did not respond, thus not loading "RHQ Agent"
-		// * need verification *
 		this.cell("Recent Operations").click();
-		System.out.println("3");
 		this.link("RHQ Agent").click();
-		System.out.println("4");
 		this.image("row_collapsed.png").click();
-		System.out.println("5");
-		try {
-			System.out.println("snoring...........");
-			Thread.currentThread().sleep(10000);
-		}
-		catch (Exception e) {
-		}
 		this.cell("Recent Operations").click();
-		System.out.println("6");
 		this.div("Get Plugin Info").click();
 		this.cell("Delete").click();
 		this.cell("Yes").click();
