@@ -143,4 +143,13 @@
 		</groups>
 	</test>
 	
+	<test name="AlertDefinitionCreationTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
+			<methods>
+				<include name="createAlert"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>	
 </suite>
