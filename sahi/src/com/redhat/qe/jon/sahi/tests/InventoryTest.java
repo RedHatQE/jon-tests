@@ -57,6 +57,21 @@ public class InventoryTest extends SahiTestScript{
 	public void deleteMixedGroups(String mixedGroup, String groupDesc, ArrayList<String> resourceList){
 		sahiTasks.deleteGroup("Mixed Groups", mixedGroup);
 	}
+
+	@Test (groups="inventoryTest", dataProvider="dynaGroup")
+	public void createDynaGroups(String dynaGroup, String groupDesc, ArrayList<String> preloadExpressions, String otherExpressions) {
+		sahiTasks.createDynaGroup(dynaGroup, groupDesc, preloadExpressions, otherExpressions);
+	}
+	
+	@Test (groups="inventoryTest", dataProvider="dynaGroup", dependsOnMethods={"createDynaGroups"}) 
+	public void verifyDynaGroups(String dynaGroup, String groupDesc, ArrayList<String> preloadExpressions, String otherExpressions) {
+		sahiTasks.verifyGroup("Dynagroup Definitions", dynaGroup);
+	}
+	
+	@Test (groups="inventoryTest", dataProvider="dynaGroup", dependsOnMethods= {"verifyDynaGroups"}, alwaysRun=true)
+	public void deleteDynaGroups(String dynaGroup, String groupDesc, ArrayList<String> preloadExpressions, String otherExpression) {
+		sahiTasks.deleteGroup("Dynagroup Definitions", dynaGroup);
+	}
 /*
 
 	@Test (groups="inventoryResourceThruGroup", dataProvider="compatibleGroup",dependsOnMethods={"compatibleGroups"})	
@@ -114,6 +129,19 @@ public class InventoryTest extends SahiTestScript{
 		resourceData.add("RHQ Agent");
 		resourceData.add("Cron");
 		data.add(Arrays.asList(new Object[]{"mixedGroup", "mixed Group description", resourceData}));
+		return data;
+	}
+
+	@DataProvider(name="dynaGroup")
+	public Object[][] dynaGroupData() {
+		return TestNGUtils.convertListOfListsTo2dArray(getDynaGroup());
+	}
+	
+	public List<List<Object>> getDynaGroup() {
+		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
+		ArrayList<String> preloadExpression = new ArrayList<String>();
+		preloadExpression.add("JBossAS 4 - Unique versions");
+		data.add(Arrays.asList(new Object[]{"dynaGroup", "dyna Group description", preloadExpression, "resource.availability = DOWN"}));
 		return data;
 	}
 }

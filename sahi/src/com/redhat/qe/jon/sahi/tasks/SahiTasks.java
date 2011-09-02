@@ -63,6 +63,28 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Finish").click();
 	}
 
+	public void createDynaGroup(String groupName, String groupDesc, ArrayList<String> preloadExpressions, String otherExpressions) {
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		this.cell("Dynagroup Definitions").click();
+		this.cell("New").click();
+		this.textbox("name").setValue(groupName);
+		this.textarea("description").setValue(groupDesc);
+		this.textarea("expression").setValue(otherExpressions);
+		// TODO: Commented out below because we can't locate the elements via. sahi atm. 
+		/*
+		for (String exp : preloadExpressions) {
+			//this.image("isc_HU").click();
+			this.image("Saved Expression").click();
+			this.cell(exp).click();
+		}
+		this.cell("isc_I7").click(); // recursive
+		this.image("isc_I9").click(); // refresh timer set to 1m
+		*/
+		this.cell("Save").click();
+		this.cell("Back to List").click();
+	}
+
 	public boolean verifyGroup(String groupPanelName, String groupName) {
 		this.link("Inventory").click();
 		this.waitFor(5000);
