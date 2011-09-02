@@ -152,4 +152,18 @@
 			</class>
 		</classes>
 	</test>	
+	
+	<test name="PluginsTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.PluginsTest"/>
+		</classes>
+		<groups>
+			<run>
+				<include name="setup"/>
+				<include name="teardown"/>
+				<include name="PluginsTest"/>
+			</run>
+		</groups>
+	</test>
+	
 </suite>

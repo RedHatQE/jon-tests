@@ -743,4 +743,81 @@ public class SahiTasks extends ExtendedSahi {
 		return this.image("Favorite_24.png").isVisible();
 		
 	}
+	
+	//********************************************************
+	// Plugin Verification
+	//********************************************************
+	
+	public boolean AntBundlePlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return this.link("Ant Bundle Plugin").exists();
+		
+	}
+	
+	public boolean ApacheHTTPPlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return link("Apache HTTP Server").exists();
+	}
+	
+	public boolean AbstractAugeasPlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return link("Abstract Augeas Plugin").exists();
+	}
+	
+public boolean AbstractDatabasePlugin() {
+		
+	this.link("Administration").click();
+	this.cell("Plugins").click();
+	return this.link("Abstract Database").exists();
+	}
+	
+	public boolean IISPlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return this.link("IIS").exists();
+	}
+	
+	public boolean GenericJMXPlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return this.link("Generic JMX").exists();
+	}
+	
+	public boolean OperatingSystemPlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return this.link("Operating Systems Platform").exists();
+	}
+	
+	public boolean PostGreSQLPlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return this.link("PostgreSQL Database").exists();
+	}
+	
+	public boolean RHQAgentPlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return this.link("RHQ Agent").exists();
+	}
+	
+	public boolean ScriptPlugin() {
+		
+		this.link("Administration").click();
+		this.cell("Plugins").click();
+		return this.link("Script").exists();
+	}
+	
+	
 }
