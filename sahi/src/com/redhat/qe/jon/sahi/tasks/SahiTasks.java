@@ -819,5 +819,148 @@ public void AbstractDatabasePlugin() {
 		this.link("Script");
 	}
 	
+	public void AntBundleProcessorPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Ant Bundle Processor");
+	}
+	
+	public void PerspectiveCorePlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Perspective Core");
+	}
+	
+	public void DiskContentPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Disk Content");
+	}
+	
+	public void FileTemplateBundleProcessorPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("File Template Bundle Processor");
+	}
+	
+	public void JBossCSPContentPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("JBoss CSP Content");
+	}
+	
+	public void URLContentPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("URL Content");
+	}	
+	
+	public void YumContentPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Yum Content");
+	}
+	
+	public void AlertCLIPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:CLI");
+	}
+	
+	public void AlertEmailPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:Email");
+	}
+	
+	public void AlertIRCPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:IRC");
+	}
+	
+	public void AlertMicroBlogPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:Microblog");
+	}
+	
+	public void AlertMobicentsPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:Mobicents");
+	}
+	
+	public void AlertOperationsPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:Operations");
+	}
+	
+	public void AlertRolesPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:Roles");
+	}
+	
+	public void AlertSNMPPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:SNMP");
+	}
+	
+	public void AlertSubjectPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Alert:Subject");
+	}
+	
+	public void DriftJPAPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("Drift:JPA (RHQ Default)");
+	}
+	
+	public void PackageTypeCLIPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.row("Server Plugins");
+		this.link("PackageType:CLI");
+	}
 	
 }
