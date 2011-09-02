@@ -62,7 +62,7 @@ import org.testng.annotations.Test;
 		@Test (groups="PluginsTest")
 		public void PostgreSQL() {
 			
-			sahiTasks.PostGreSQLPlugin();
+			sahiTasks.PostGreSQLPlugin();  
 		}
 		
 		@Test (groups="PluginsTest")

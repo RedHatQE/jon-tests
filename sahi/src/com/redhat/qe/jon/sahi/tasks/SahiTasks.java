@@ -756,7 +756,7 @@ public class SahiTasks extends ExtendedSahi {
 		
 	}
 	
-	public void ApacheHTTPPlugin() {
+	public void ApacheHTTPPlugin() {  
 		
 		this.link("Administration").click();
 		this.row("Plugins").click();
