@@ -748,75 +748,75 @@ public class SahiTasks extends ExtendedSahi {
 	// Plugin Verification
 	//********************************************************
 	
-	public boolean AntBundlePlugin() {
+	public void AntBundlePlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return this.link("Ant Bundle Plugin").exists();
+		this.row("Plugins").click();
+		this.link("Ant Bundle Plugin");
 		
 	}
 	
-	public boolean ApacheHTTPPlugin() {
+	public void ApacheHTTPPlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return link("Apache HTTP Server").exists();
+		this.row("Plugins").click();
+		this.link("Apache HTTP Server");
 	}
 	
-	public boolean AbstractAugeasPlugin() {
+	public void AbstractAugeasPlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return link("Abstract Augeas Plugin").exists();
+		this.row("Plugins").click();
+		this.link("Abstract Augeas Plugin");
 	}
 	
-public boolean AbstractDatabasePlugin() {
-		
-	this.link("Administration").click();
-	this.cell("Plugins").click();
-	return this.link("Abstract Database").exists();
-	}
-	
-	public boolean IISPlugin() {
+public void AbstractDatabasePlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return this.link("IIS").exists();
+		this.row("Plugins").click();
+		this.link("Abstract Database").exists();
 	}
 	
-	public boolean GenericJMXPlugin() {
+	public void IISPlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return this.link("Generic JMX").exists();
+		this.row("Plugins").click();
+		this.link("IIS").exists();
 	}
 	
-	public boolean OperatingSystemPlugin() {
+	public void GenericJMXPlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return this.link("Operating Systems Platform").exists();
+		this.row("Plugins").click();
+		this.link("Generic JMX").exists();
 	}
 	
-	public boolean PostGreSQLPlugin() {
+	public void OperatingSystemPlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return this.link("PostgreSQL Database").exists();
+		this.row("Plugins").click();
+		this.link("Operating Systems Platform").exists();
 	}
 	
-	public boolean RHQAgentPlugin() {
+	public void PostGreSQLPlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return this.link("RHQ Agent").exists();
+		this.row("Plugins").click();
+		this.link("PostgreSQL Database");
 	}
 	
-	public boolean ScriptPlugin() {
+	public void RHQAgentPlugin() {
 		
 		this.link("Administration").click();
-		this.cell("Plugins").click();
-		return this.link("Script").exists();
+		this.row("Plugins").click();
+		this.link("RHQ Agent");
+	}
+	
+	public void ScriptPlugin() {
+		
+		this.link("Administration").click();
+		this.row("Plugins").click();
+		this.link("Script");
 	}
 	
 	

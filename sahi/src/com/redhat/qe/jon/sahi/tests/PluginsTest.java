@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 		@Test (groups="PluginsTest")
 		public void AntBundle() {
 			
-			Assert.assertTrue(sahiTasks.AntBundlePlugin());	
+			sahiTasks.AntBundlePlugin();	
 		}
 		
 		
@@ -25,56 +25,56 @@ import org.testng.annotations.Test;
 		@Test (groups="PluginsTest")
 		public void Augeas() {
 			
-			Assert.assertTrue(sahiTasks.AbstractAugeasPlugin());       		
+			sahiTasks.AbstractAugeasPlugin();       		
 		}
 		
 		@Test (groups="PluginsTest")
 		public void ApacheHTTP() {
 			
-			Assert.assertTrue(sahiTasks.ApacheHTTPPlugin());   		
+			sahiTasks.ApacheHTTPPlugin();   		
 		}
 		
 		@Test (groups="PluginsTest")
 		public void Database() {
 			
-			Assert.assertTrue(sahiTasks.AbstractDatabasePlugin());
+			sahiTasks.AbstractDatabasePlugin();
 		}
 		
 		@Test (groups="PluginsTest")
 		public void IIS() {
 			
-			Assert.assertTrue(sahiTasks.IISPlugin());  		
+			sahiTasks.IISPlugin();  		
 		}
 		
 		@Test (groups="PluginsTest")
 		public void JMX() {
 			
-			Assert.assertTrue(sahiTasks.GenericJMXPlugin());
+			sahiTasks.GenericJMXPlugin();
 		}
 		
 		@Test (groups="PluginsTest")
 		public void OS() {
 			
-			Assert.assertTrue(sahiTasks.OperatingSystemPlugin());   		
+			sahiTasks.OperatingSystemPlugin();   		
 		}
 		
 		
 		@Test (groups="PluginsTest")
 		public void PostgreSQL() {
 			
-			Assert.assertTrue(sahiTasks.PostGreSQLPlugin());
+			sahiTasks.PostGreSQLPlugin();
 		}
 		
 		@Test (groups="PluginsTest")
 		public void RHQAgent() {
 			
-			Assert.assertTrue(sahiTasks.RHQAgentPlugin());
+			sahiTasks.RHQAgentPlugin();
 		}
 		
 		@Test (groups="PluginsTest")
 		public void Script() {
 			
-			Assert.assertTrue(sahiTasks.ScriptPlugin());
+			sahiTasks.ScriptPlugin();
 		}
 		
 	   
