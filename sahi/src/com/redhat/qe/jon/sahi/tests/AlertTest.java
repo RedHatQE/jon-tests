@@ -64,7 +64,12 @@ public class AlertTest extends SahiTestScript{
 		String[] optionArray = Common.getCommaToArray(options);
 		for(String option : optionArray){
 			String[] optionTmp = option.split("-->");
-			ComboBox.selectComboBoxDivRow(sahiTasks, optionTmp[0].trim(), optionTmp[1].trim());
+			if(sahiTasks.div(optionTmp[0].trim()+"[1]").exists()){
+				_logger.info("\""+optionTmp[0].trim()+"[1]\" is available to select");
+				ComboBox.selectComboBoxDivRow(sahiTasks, optionTmp[0].trim()+"[1]", optionTmp[1].trim());
+			}else{
+				ComboBox.selectComboBoxDivRow(sahiTasks, optionTmp[0].trim(), optionTmp[1].trim());
+			}
 		}		
 	}
 	
