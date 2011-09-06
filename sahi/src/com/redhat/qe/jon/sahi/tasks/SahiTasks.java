@@ -2,11 +2,6 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.auto.testng.Assert;
-import com.redhat.qe.jon.sahi.base.ComboBox;
-import com.redhat.qe.jon.sahi.base.Common;
-import com.redhat.qe.jon.sahi.tests.AlertTest;
-import com.sun.org.apache.bcel.internal.generic.DMUL;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
