@@ -2,10 +2,21 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.base.ComboBox;
+import com.redhat.qe.jon.sahi.base.Common;
+import com.redhat.qe.jon.sahi.tests.AlertTest;
+import com.sun.org.apache.bcel.internal.generic.DMUL;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.testng.annotations.Optional;
 
 public class SahiTasks extends ExtendedSahi {
+	private static Logger _logger = Logger.getLogger(ExtendedSahi.class.getName());
 	public SahiTasks(String browserPath, String browserName, String browserOpt, String sahiBaseDir, String sahiUserdataDir) {
 		super(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
 	}
@@ -984,5 +995,131 @@ public void AbstractDatabasePlugin() {
 		this.row("Server Plugins");
 		this.link("PackageType:CLI");
 	}
+	
+	//*********************************************************************************
+	//* Alert Definition Creation
+	//*********************************************************************************
+	
+	public void gotoAlertDefinationPage(String resourceName){
+		this.link("Inventory").click();
+		String[] resourceType = resourceName.split("=");
+		if(resourceType.length>1){
+			this.cell(resourceType[0].trim()).click();
+			this.textbox("SearchPatternField").setValue(resourceType[1].trim());
+			this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+		}else{
+			this.cell("Servers").click();
+		}		
+		this.link(resourceType[1].trim()).click();
+		this.cell("Alerts").click();
+		this.xy(this.cell("Definitions"), 3, 3).click();
+	}
+	
+	public void selectConditionComboBoxes(String options){
+		/*	String comboBoxIdentifier = "selectItemText";
+		int indexStartFrom = 3;
+		String[] optionArray = Common.getCommaToArray(options);
+		int totalComboBox = this.div(comboBoxIdentifier).countSimilar();
+		_logger.finer("ComboBoxIdentifier Count: "+totalComboBox);
+		for(int i=0; i<totalComboBox; i++){
+			_logger.finer("ComboBoxIdentifier Name: "+comboBoxIdentifier+"["+i+"] --> "+sahiTasks.div(comboBoxIdentifier+"["+i+"]").getText());
+		}
+		if(optionArray.length > 2){
+			Wait.waitForElementDivExists(this,  comboBoxIdentifier+"["+(optionArray.length+indexStartFrom)+"]", 1000*10);
+		}
+		for(int i=0;i<optionArray.length;i++){
+			ComboBox.selectComboBoxDivRow(this,  comboBoxIdentifier+"["+(i+indexStartFrom)+"]", optionArray[i].trim());
+		}*/
+		if(options != null){
+			if(options.trim().length()>0){
+				String[] optionArray = this.getCommaToArray(options);
+				for(String option : optionArray){
+					String[] optionTmp = option.split("-->");
+					if(this.div(optionTmp[0].trim()+"[1]").exists()){
+						_logger.info("\""+optionTmp[0].trim()+"[1]\" is available to select");
+						this.selectComboBoxDivRow(this, optionTmp[0].trim()+"[1]", optionTmp[1].trim());
+					}else{
+						this.selectComboBoxDivRow(this, optionTmp[0].trim(), optionTmp[1].trim());
+					}
+				}		
+			}
+		}
+	}
+	
+	private void updateSystemUserNotification(String users){
+		String[] usersArray = this.getCommaToArray(users);
+		for(String user: usersArray){
+			this.byText(user.trim(), "nobr").doubleClick();
+		}
+	}
+	
+	private int getNumberAlert(String alertName){
+		return this.link(alertName).countSimilar();
+	}
+	
+	private void updateTextBoxValues(String textBoxKeyValue){
+		if(textBoxKeyValue != null){
+			if(textBoxKeyValue.trim().length()>0){
+				HashMap<String, String> keyValueMap = this.getKeyValueMap(textBoxKeyValue);
+				Set<String> keys = keyValueMap.keySet();
+				for(String key: keys){
+					this.textbox(key).setValue(keyValueMap.get(key)); 
+				}
+			}
+		}
+	}
+	
+	public void createAlert(@Optional String resourceName, String alertName, @Optional String alertDescription, String conditionsDropDown, @Optional String conditionTextBox, String notificationType, String notificationData, @Optional String dampeningDropDown, @Optional String dampeningTextBoxData){
+	
+		//Select Resource to define alert
+		if(resourceName != null){
+			gotoAlertDefinationPage(resourceName);
+		}
+		
+		//Take current status
+		int similarAlert = getNumberAlert(alertName);
+		_logger.info("pre-status of Alert definition ["+alertName+"]: "+similarAlert +" definition(s)");
+		
+		//Define new alert name and Description(if any)
+		this.cell("New").click();
+		this.textbox(0).setValue(alertName);
+		if(alertDescription != null){
+			this.textarea(0).setValue(alertDescription);
+		}
+		
+		//Add conditions
+		this.cell("Conditions").click();
+		this.cell("Add").click();
+		
+		selectConditionComboBoxes(conditionsDropDown);
+		updateTextBoxValues(conditionTextBox);
+		
+		
+		this.cell("OK").click();
+		
+		//Add notifications
+		this.cell("Notifications").click();
+		this.cell("Add[1]").click();
+		//Select Notification type
+		if(notificationType.equalsIgnoreCase("System Users")){
+			updateSystemUserNotification(notificationData);
+		}else{
+			_logger.log(Level.WARNING, "Undefined notification type: "+notificationType);
+		}
+		this.cell("OK").click();
+		
+		//Dampening
+		this.cell("Dampening").click();
+		selectConditionComboBoxes(dampeningDropDown);
+		updateTextBoxValues(dampeningTextBoxData);
+		
+		//Final step
+		this.xy(this.cell("Save"), 3, 3).click();
+		this.bold("Back to List").click();
+		
+		//Check Creation Status
+		Assert.assertEquals(getNumberAlert(alertName)-similarAlert, 1, "Alert Definition: \""+alertName+"\"");
+		_logger.finer( "\""+alertName+"\" alert definition successfully created!");
+	}	
 	
 }
