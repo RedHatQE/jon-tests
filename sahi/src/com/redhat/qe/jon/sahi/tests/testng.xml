@@ -166,4 +166,14 @@
 		</groups>
 	</test>
 	
+	<test name="AlertHistoryValidationTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
+			<methods>
+				<include name="validateAlertHistoryPage"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>	
+	
 </suite>

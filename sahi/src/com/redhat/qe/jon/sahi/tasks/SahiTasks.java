@@ -995,7 +995,7 @@ public void AbstractDatabasePlugin() {
 	//* Alert Definition Creation
 	//*********************************************************************************
 	
-	public void gotoAlertDefinationPage(String resourceName){
+	public void gotoAlertDefinationPage(String resourceName, boolean definitionsPage){
 		this.link("Inventory").click();
 		String[] resourceType = resourceName.split("=");
 		if(resourceType.length>1){
@@ -1007,7 +1007,11 @@ public void AbstractDatabasePlugin() {
 		}		
 		this.link(resourceType[1].trim()).click();
 		this.cell("Alerts").click();
-		this.xy(this.cell("Definitions"), 3, 3).click();
+		if(definitionsPage){
+			this.xy(this.cell("Definitions"), 3, 3).click();
+		}else{
+			this.xy(this.cell("History"), 3, 3).click();
+		}
 	}
 	
 	public void selectConditionComboBoxes(String options){
@@ -1064,11 +1068,27 @@ public void AbstractDatabasePlugin() {
 		}
 	}
 	
-	public void createAlert(@Optional String resourceName, String alertName, @Optional String alertDescription, String conditionsDropDown, @Optional String conditionTextBox, String notificationType, String notificationData, @Optional String dampeningDropDown, @Optional String dampeningTextBoxData){
+	private void selectYesNoradioButtons(String buttonKeyValue){
+		if(buttonKeyValue != null){
+			if(buttonKeyValue.trim().length()>0){
+				HashMap<String, String> keyValueMap = this.getKeyValueMap(buttonKeyValue);
+				Set<String> keys = keyValueMap.keySet();
+				for(String key: keys){
+					if(keyValueMap.get(key).equalsIgnoreCase("yes")){
+						this.radio(key).check(); 
+					}else{
+						this.radio(key+"[1]").check(); 
+					}
+				}
+			}
+		}
+	}
+	
+	public void createAlert(@Optional String resourceName, String alertName, @Optional String alertDescription, String conditionsDropDown, @Optional String conditionTextBox, String notificationType, String notificationData, @Optional String dampeningDropDown, @Optional String dampeningTextBoxData, @Optional String recoveryAlertDropDown, @Optional String disableWhenFired){
 	
 		//Select Resource to define alert
 		if(resourceName != null){
-			gotoAlertDefinationPage(resourceName);
+			gotoAlertDefinationPage(resourceName, true);
 		}
 		
 		//Take current status
@@ -1103,6 +1123,12 @@ public void AbstractDatabasePlugin() {
 		}
 		this.cell("OK").click();
 		
+		//Recovery
+		this.cell("Recovery").click();
+		selectConditionComboBoxes(recoveryAlertDropDown);
+		selectYesNoradioButtons(disableWhenFired);
+				
+		
 		//Dampening
 		this.cell("Dampening").click();
 		selectConditionComboBoxes(dampeningDropDown);
@@ -1116,5 +1142,21 @@ public void AbstractDatabasePlugin() {
 		Assert.assertEquals(getNumberAlert(alertName)-similarAlert, 1, "Alert Definition: \""+alertName+"\"");
 		_logger.finer( "\""+alertName+"\" alert definition successfully created!");
 	}	
+
+	//*********************************************************************************
+	//* Alert History Validation 
+	//*********************************************************************************
+	
+	public void validateAlertHistory(@Optional String resourceName, String alertName){
+	
+		//Select Resource to define alert
+		if(resourceName != null){
+			gotoAlertDefinationPage(resourceName, false);
+		}
+		
+		//Get Number count from Alert History history
+		int numberOfAlerts = this.link(alertName).countSimilar();
+		Assert.assertTrue(numberOfAlerts >= 1, "Alert Name: \""+alertName+"\", Number of Alert(s) on history: "+numberOfAlerts+", Expected: 1");
+	}
 	
 }
