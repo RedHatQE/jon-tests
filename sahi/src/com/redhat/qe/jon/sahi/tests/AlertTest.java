@@ -17,7 +17,7 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 public class AlertTest extends SahiTestScript{
 	private static Logger _logger = Logger.getLogger(AlertTest.class.getName());
 	private static long alertDefinitionCreationTime ;
-	private static final int alertpollingTime = 1000*60*10;
+	private static final int alertpollingTime = 1000*60*12;
 	
 	public static String RESOURCE_NAME 				= "resourceName";
 	public static String ALERT_NAME 				= "alertName";
@@ -45,11 +45,7 @@ public class AlertTest extends SahiTestScript{
 			_logger.info("Thread sleep has been activated!");
 			while((new Date().getTime() - alertDefinitionCreationTime) <= alertpollingTime){
 				_logger.info(((alertpollingTime - (new Date().getTime() - alertDefinitionCreationTime))/(1000))+" second(s) left to unlock..");
-				if(((alertpollingTime - (new Date().getTime() - alertDefinitionCreationTime))/(1000)) > 60){
-					Thread.sleep(1000*60);
-				}else{
-					Thread.sleep((alertpollingTime - (new Date().getTime() - alertDefinitionCreationTime)));
-				}				
+				Thread.sleep(1000*60);							
 			}			
 		}
 		HashMap<String, String> alertDetails = (HashMap<String, String>)alertDetail;
