@@ -26,7 +26,7 @@ public abstract class SahiTestScript extends TestScript {
 
 		sahiTasks = new SahiTasks(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
 	}
-
+        
 	@BeforeSuite(groups={"setup"})
 	public void openBrowser() {
 		log.finer("Opening browser");
@@ -36,7 +36,7 @@ public abstract class SahiTestScript extends TestScript {
 	@BeforeSuite(groups={"setup"})
 	public void login() {
 		log.finer("Logging into RHQ system");
-		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);
+		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);                
 		sahiTasks.login("rhqadmin", "rhqadmin");
 	}
 
