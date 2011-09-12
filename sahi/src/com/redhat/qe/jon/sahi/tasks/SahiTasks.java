@@ -14,7 +14,7 @@ import org.testng.annotations.Optional;
 
 public class SahiTasks extends ExtendedSahi {
 
-    private static Logger _logger = Logger.getLogger(ExtendedSahi.class.getName());
+    private static Logger _logger = Logger.getLogger(SahiTasks.class.getName());
 
     public SahiTasks(String browserPath, String browserName, String browserOpt, String sahiBaseDir, String sahiUserdataDir) {
         super(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
