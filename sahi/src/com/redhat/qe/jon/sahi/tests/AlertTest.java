@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 import org.testng.annotations.*;
 
+import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.auto.testng.TestNGUtils;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
@@ -32,14 +33,16 @@ public class AlertTest extends SahiTestScript{
 	public static String DAMPENING_TEXTBOX 			= "dampeningTextBox";
 	
 	@Test (groups="alertTest", dataProvider="alertCreationData")
-	public void createAlert(Object alertDetail){
-		HashMap<String, String> alertDetails = (HashMap<String, String>)alertDetail;
-		sahiTasks.createAlert(alertDetails.get(RESOURCE_NAME), alertDetails.get(ALERT_NAME), alertDetails.get(ALERT_DESCRIPTION), alertDetails.get(CONDITION_DROPDOWNS), alertDetails.get(CONDITION_TEXTBOX), alertDetails.get(NOTIFICATION_TYPE), alertDetails.get(NOTIFICATION_DATA), alertDetails.get(DAMPENING_DROPDOWN), alertDetails.get(DAMPENING_TEXTBOX), alertDetails.get(RECOVERY_ALERT_DROPDOWN), alertDetails.get(RECOVERY_ALERT_DISABLE));
+	public void createAlert(HashMap<String, String> alertDetails){
+		int alertDefinitionCount = sahiTasks.createAlert(alertDetails.get(RESOURCE_NAME), alertDetails.get(ALERT_NAME), alertDetails.get(ALERT_DESCRIPTION), alertDetails.get(CONDITION_DROPDOWNS), alertDetails.get(CONDITION_TEXTBOX), alertDetails.get(NOTIFICATION_TYPE), alertDetails.get(NOTIFICATION_DATA), alertDetails.get(DAMPENING_DROPDOWN), alertDetails.get(DAMPENING_TEXTBOX), alertDetails.get(RECOVERY_ALERT_DROPDOWN), alertDetails.get(RECOVERY_ALERT_DISABLE));
+		 //Check Creation Status
+        Assert.assertEquals(alertDefinitionCount, 1, "Alert Definition: \"" + alertDetails.get(RESOURCE_NAME) + "\"");
+        _logger.finer("\"" + alertDetails.get(RESOURCE_NAME) + "\" alert definition successfully created!");
 		alertDefinitionCreationTime  = new Date().getTime();
 	}
 	
 	@Test (groups="alertTest", dataProvider="alertCreationData")
-	public void validateAlertHistoryPage(Object alertDetail) throws InterruptedException{
+	public void validateAlertHistoryPage(HashMap<String, String> alertDetails) throws InterruptedException{
 		if((new Date().getTime() - alertDefinitionCreationTime) <= alertpollingTime ){ //10 minutes
 			_logger.info("Last Alret definition creation time should be greater than "+(alertpollingTime/(1000*60))+" minute(s), from current time!");
 			_logger.info("Thread sleep has been activated!");
@@ -48,8 +51,8 @@ public class AlertTest extends SahiTestScript{
 				Thread.sleep(1000*60);							
 			}			
 		}
-		HashMap<String, String> alertDetails = (HashMap<String, String>)alertDetail;
-		sahiTasks.validateAlertHistory(alertDetails.get(RESOURCE_NAME), alertDetails.get(ALERT_NAME));
+		int alertHistorycount = sahiTasks.validateAlertHistory(alertDetails.get(RESOURCE_NAME), alertDetails.get(ALERT_NAME));
+		Assert.assertTrue(alertHistorycount >= 1, "Alert Name: \"" + alertDetails.get(RESOURCE_NAME) + "\", Number of Alert(s) on history: " + alertHistorycount + ", Expected: 1");
 	}
 	
 	

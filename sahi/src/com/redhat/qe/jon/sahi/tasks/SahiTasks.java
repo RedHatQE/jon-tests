@@ -1078,7 +1078,7 @@ public class SahiTasks extends ExtendedSahi {
         }
     }
 
-    public void createAlert(@Optional String resourceName, String alertName, @Optional String alertDescription, String conditionsDropDown, @Optional String conditionTextBox, String notificationType, String notificationData, @Optional String dampeningDropDown, @Optional String dampeningTextBoxData, @Optional String recoveryAlertDropDown, @Optional String disableWhenFired) {
+    public int createAlert(@Optional String resourceName, String alertName, @Optional String alertDescription, String conditionsDropDown, @Optional String conditionTextBox, String notificationType, String notificationData, @Optional String dampeningDropDown, @Optional String dampeningTextBoxData, @Optional String recoveryAlertDropDown, @Optional String disableWhenFired) {
 
         //Select Resource to define alert
         if (resourceName != null) {
@@ -1132,15 +1132,13 @@ public class SahiTasks extends ExtendedSahi {
         this.xy(this.cell("Save"), 3, 3).click();
         this.bold("Back to List").click();
 
-        //Check Creation Status
-        Assert.assertEquals(getNumberAlert(alertName) - similarAlert, 1, "Alert Definition: \"" + alertName + "\"");
-        _logger.finer("\"" + alertName + "\" alert definition successfully created!");
+        return getNumberAlert(alertName) - similarAlert;
     }
 
     //*********************************************************************************
     //* Alert History Validation 
     //*********************************************************************************
-    public void validateAlertHistory(@Optional String resourceName, String alertName) {
+    public int validateAlertHistory(@Optional String resourceName, String alertName) {
 
         //Select Resource to define alert
         if (resourceName != null) {
@@ -1148,7 +1146,6 @@ public class SahiTasks extends ExtendedSahi {
         }
 
         //Get Number count from Alert History history
-        int numberOfAlerts = this.link(alertName).countSimilar();
-        Assert.assertTrue(numberOfAlerts >= 1, "Alert Name: \"" + alertName + "\", Number of Alert(s) on history: " + numberOfAlerts + ", Expected: 1");
+        return this.link(alertName).countSimilar();
     }
 }
