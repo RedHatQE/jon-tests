@@ -16,10 +16,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     
     protected static final Logger log = Logger.getLogger(AS7PluginSahiTestScript.class.getName());
     
-    protected AS7PluginSahiTasks as7SahiTasks;
-    
-    protected String agentName;
-    protected String as7StandaloneName;
+    protected AS7PluginSahiTasks as7SahiTasks;  
     
     public AS7PluginSahiTestScript() {
 	super();	        
@@ -28,9 +25,18 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     @BeforeSuite(groups="setup", dependsOnMethods={"login", "openBrowser"})
     public void setup() {
         try {
-            System.getProperties().load(new FileInputStream(new File("config/eap6plugin.properties")));
-        } catch(IOException e) {
-            log.severe("Could not load properties file for EAP6plugin testing: "+e.getMessage());
+            System.getProperties().load(new FileInputStream(new File(System.getProperty("eap6plugin.configfile"))));
+        } catch(Exception e) {
+            try {
+                System.getProperties().load(new FileInputStream(new File("config/eap6plugin.properties")));                
+            } catch(Exception ex) {
+                try {
+                    System.getProperties().load(new FileInputStream(new File("automatjon/jon/sahi/config/eap6plugin.properties"))); 
+                } catch(Exception exc) {
+                    log.severe("Could not load properties file for EAP6plugin testing: "+exc.getMessage() + " please provide the full path in system property \"eap6plugin.configfile\".");
+                }                
+            }
+            
         }
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));

@@ -22,7 +22,8 @@ public class AS7PluginSahiTasks {
     
     public enum Navigate {
       AUTODISCOVERY_QUEUE,  
-      AGENT_INVENTORY
+      AGENT_INVENTORY,
+      AGENT_MONITORING
     };
 
     protected static final Logger log = Logger.getLogger(AS7PluginSahiTasks.class.getName());
@@ -96,9 +97,16 @@ public class AS7PluginSahiTasks {
     }
 
     public void inventorizeResourceByName(String agentName, String resourceName) {
+        log.fine("Trying to inventorize resource \"" + resourceName + "\" of agent \"" + agentName + "\"");
         this.navigate(Navigate.AUTODISCOVERY_QUEUE, agentName);        
-        tasks.image("unchecked.png").near(tasks.cell(resourceName)).check();
-        tasks.cell("Import").click();
+        ElementStub elm =  tasks.image("unchecked.png").near(tasks.cell(resourceName));
+        if(elm.exists()) {
+            elm.check();
+            tasks.cell("Import").click();
+        } else {
+            log.finer("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
+        }
+        
     }
    
     public void assertResourceExistsInInventory(String agentName, String resourceName) {
@@ -110,17 +118,20 @@ public class AS7PluginSahiTasks {
         switch(destination) {
             case AUTODISCOVERY_QUEUE:
                 tasks.link("Inventory").click();
-                log.finer("1");
                 tasks.cell("Discovery Queue").click();
-                log.finer("2");
                 tasks.cell(agentName).doubleClick();
-                log.finer("3");
                 break;
             case AGENT_INVENTORY:
                 tasks.link("Inventory").click();
                 tasks.cell("Platforms").click();
                 tasks.link(agentName).click();
                 tasks.image("Inventory_grey_16.png").click();
+                break;
+            case AGENT_MONITORING:
+                tasks.link("Inventory").click();
+                tasks.cell("Platforms").click();
+                tasks.link(agentName).click();
+                tasks.image("Monitor_grey_16.png").click();
                 break;
             default:
                 break;

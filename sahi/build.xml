@@ -67,7 +67,7 @@
 
 	<target name="run" description="run RHQ sahi java test" depends="compile">
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
-                        <xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="testng.xml"/> 
+                        <xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="testng.xml"/>
 			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/standalone/standalone-testng.xml"/>                        
 		</testng>
 	</target>

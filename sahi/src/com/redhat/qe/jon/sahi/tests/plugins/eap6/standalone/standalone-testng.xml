@@ -22,5 +22,5 @@
                 <include name="inventoryTest"/>
             </run>
         </groups>
-    </test> 
+    </test>     
 </suite>
