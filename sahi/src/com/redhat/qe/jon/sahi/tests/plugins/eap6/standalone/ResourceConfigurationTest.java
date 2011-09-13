@@ -2,7 +2,6 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
-import com.sun.jmx.snmp.tasks.TaskServer;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
