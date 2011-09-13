@@ -1,8 +1,13 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.Eap6PluginSahiTasks.Navigate;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks.Navigate;
 import com.redhat.qe.auto.testng.Assert;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.Eap6PluginSahiTestScript;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -12,11 +17,16 @@ import org.testng.annotations.Test;
  * @since 7 September 2011
  * 
  */
-public class AutodetectConfigurationTest extends Eap6PluginSahiTestScript {        
+public class AutodetectConfigurationTest extends AS7PluginSahiTestScript {                                
     
-    @Test(groups={"eap6-standalone-test"})
-    public void autodetectConfiguration() throws InterruptedException {          
-        eapSahiTasks.navigate(Navigate.AUTODISCOVERY_QUEUE, System.getProperty("agent.name"));                
+    @BeforeClass(groups="autodetectConfiguration")
+    protected void setupEapPlugin() {        
+        as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
+    }
+    
+    @Test(groups={"autodetectConfiguration"})
+    public void autodetectConfiguration() {                 
+        as7SahiTasks.navigate(Navigate.AUTODISCOVERY_QUEUE, System.getProperty("agent.name"));                
         String resourceTypeHTML = (sahiTasks.cell(System.getProperty("as7.standalone.name")).parentNode("TABLE")).parentNode("TR").fetch("innerHTML");
         
         boolean found = false;

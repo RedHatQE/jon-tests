@@ -1,16 +1,26 @@
-<suite name="RHQ_4.0_UI_EAPPlugin_Test_Standalone">
-	<test name="AutodetectConfigurationTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.AutodetectConfigurationTest"/>
-		</classes>
-		<groups>
-			<run>
-				
-                                <include name="setup"/>
-				<include name="teardown"/>                                  
-				<include name="eap6-standalone-test"/>
-                                
-			</run>
-		</groups>
-	</test>	
+<suite name="RHQ_4.0_UI_AS7Plugin_Test_Standalone">
+    <test name="AutodetectConfigurationTest">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.AutodetectConfigurationTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                   
+                <include name="autodetectConfiguration"/>                                
+            </run>
+        </groups>
+    </test>	 
+    <test name="ResourceConfigurationTest">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceConfigurationTest"/>                
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>                                  
+                <include name="inventoryTest"/>
+            </run>
+        </groups>
+    </test> 
 </suite>

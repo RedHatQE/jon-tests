@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
+import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import java.awt.AWTException;
 import java.awt.event.KeyEvent;
@@ -8,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.sf.sahi.client.ElementStub;
 
 /**
  *
@@ -16,29 +18,34 @@ import java.util.logging.Logger;
  * How to add new testcases: Use this class instead of SahiTasks. Instantiating this class will also load eap6plugin.properties file
  * 
  */
-public class Eap6PluginSahiTasks {
+public class AS7PluginSahiTasks {   
     
     public enum Navigate {
-      AUTODISCOVERY_QUEUE  
+      AUTODISCOVERY_QUEUE,  
+      AGENT_INVENTORY
     };
 
-    protected static final Logger log = Logger.getLogger(Eap6PluginSahiTasks.class.getName());
-    private SahiTasks tasks;
+    protected static final Logger log = Logger.getLogger(AS7PluginSahiTasks.class.getName());
+    protected final SahiTasks tasks;
 
-    public Eap6PluginSahiTasks(SahiTasks tasks) {
+    public AS7PluginSahiTasks(SahiTasks tasks) {
         this.tasks = tasks;
     }
 
-    public void uninventorizeResourceByName(String agentName, String resourceName) {
-        tasks.link("Inventory").click();
-        tasks.cell("Platforms").click();
-        tasks.link(agentName).click();
+    public void uninventorizeResourceByNameIfExists(String agentName, String resourceName) {
+        log.fine("Uninventorizing resource \"" + resourceName + "\" from agent \"" + agentName + "\"");
+        this.navigate(Navigate.AGENT_INVENTORY, agentName);
         tasks.image("Inventory_grey_16.png").click();//near(tasks.cell("Alerts")).click();
         try {
             Thread.sleep(2500);
         } catch (InterruptedException ex) {
         }     
-        tasks.div(0).in(tasks.cell(resourceName)).click();
+        ElementStub elm = tasks.div(0).in(tasks.cell(resourceName));
+        if(!elm.exists()) {
+            log.finer("Resource \"" + resourceName + "\" was not found in the inventory for agent \"" + agentName + "\". Skipping.");
+            return;
+        }
+        elm.click();
         try {
             Thread.sleep(2500);
         } catch (InterruptedException ex) {
@@ -47,9 +54,9 @@ public class Eap6PluginSahiTasks {
         tasks.cell("Yes").click();
     }
 
-    public void uninventorizeAllDomainEAP() {
-        // TODO
-    }
+    public void uninventorizeAllDomainAS() {
+        
+    }    
 
     /**
      * Performs 'manual autodiscovery' operation on the agent of the specified name. The agent has to be already inventorized!
@@ -94,15 +101,29 @@ public class Eap6PluginSahiTasks {
         tasks.cell("Import").click();
     }
    
+    public void assertResourceExistsInInventory(String agentName, String resourceName) {
+        this.navigate(Navigate.AGENT_INVENTORY, agentName);
+        Assert.assertTrue(tasks.cell(resourceName).exists());
+    }
+    
     public void navigate(Navigate destination, String agentName) {
         switch(destination) {
             case AUTODISCOVERY_QUEUE:
                 tasks.link("Inventory").click();
+                log.finer("1");
                 tasks.cell("Discovery Queue").click();
+                log.finer("2");
                 tasks.cell(agentName).doubleClick();
+                log.finer("3");
+                break;
+            case AGENT_INVENTORY:
+                tasks.link("Inventory").click();
+                tasks.cell("Platforms").click();
+                tasks.link(agentName).click();
+                tasks.image("Inventory_grey_16.png").click();
                 break;
             default:
                 break;
         }
-    }
+    }        
 }
