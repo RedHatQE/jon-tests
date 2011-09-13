@@ -68,8 +68,20 @@ public class AS7PluginSahiTasks {
         tasks.link(agentName).click();
         tasks.cell("Operations").click();
         tasks.cell("New").click();
+        tasks.div("selectItemText").setValue("m");
+        tasks.waitFor(5000);
+        tasks.div("selectItemText").setValue("m");
+        /**
+         * this.cell("Operations").click();
+        this.cell("New").click();
+        this.div("selectItemText").setValue("g");
+        this.waitFor(5000);
+        this.div("selectItemText").setValue("g");
+        this.cell("Schedule").click();
+
+         */
         
-        ElementStub elm = null;
+    /*    ElementStub elm = null;
         for(int i=0; i<6; i++) {
             elm = tasks.div("isc_SelectItem_"+i+"$xc");
             if(elm.exists())
@@ -92,17 +104,6 @@ public class AS7PluginSahiTasks {
         java.awt.Robot robot;
         try {
             robot = new java.awt.Robot();
-           /* Filter f = new Filter() {
-
-                @Override
-                public boolean isLoggable(LogRecord record) {
-                    System.out.println(record.getSourceClassName());
-                    if(record.getSourceClassName().equals("XToolkit"))
-                        return false;
-                    return true;
-                }
-            };
-            log.setFilter(f);*/
             robot.keyPress(KeyEvent.VK_DOWN);
             robot.keyRelease(KeyEvent.VK_DOWN);
             try {
@@ -120,7 +121,8 @@ public class AS7PluginSahiTasks {
             tasks.cell("Schedule").click();
         } catch (AWTException ex) {
             log.severe(ex.getMessage());
-        }
+        }*/
+        tasks.cell("Schedule").click();
     }
 
     public void inventorizeResourceByName(String agentName, String resourceName) {
