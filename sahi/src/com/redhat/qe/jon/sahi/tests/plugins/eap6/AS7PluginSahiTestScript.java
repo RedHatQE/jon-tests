@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -23,7 +24,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     }
 
     @BeforeSuite(groups="setup", dependsOnMethods={"login", "openBrowser"})
-    public void setup() {
+    public void setup1() {
         try {
             System.getProperties().load(new FileInputStream(new File(System.getProperty("eap6plugin.configfile"))));
         } catch(Exception e) {
@@ -40,6 +41,6 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         }
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-    }
+    }    
     
 }

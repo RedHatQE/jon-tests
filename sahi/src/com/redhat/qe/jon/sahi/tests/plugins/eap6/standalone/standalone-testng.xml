@@ -22,5 +22,17 @@
                 <include name="inventoryTest"/>
             </run>
         </groups>
-    </test>     
+    </test> 
+    <test name="Resource Creation 001">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceCreation001Test"/>                
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>                                  
+                <include name="resourceCreation001"/>
+            </run>
+        </groups>
+    </test>
 </suite>

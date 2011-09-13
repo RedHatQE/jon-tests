@@ -36,7 +36,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
     @Test(groups={"inventoryTest"})
     public void predefinedMetricsTest() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
-        as7SahiTasks.navigate(AS7PluginSahiTasks.Navigate.AGENT_MONITORING, System.getProperty("agent.name"));
+        as7SahiTasks.navigate(AS7PluginSahiTasks.Navigate.AGENT_MONITORING, System.getProperty("agent.name"), null);
         sahiTasks.cell("Schedules").click();
         String[] predefinedMetrics = {
             "Architecture", 
