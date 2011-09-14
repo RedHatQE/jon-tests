@@ -42,7 +42,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
         String[] predefinedMetrics = {
             "Maximum request time",
             "Number of management requests",
-            "Number of management request per Minute",
+            "Number of management requests per Minute",
             "Time used for management requests",
             "Time used for management requests per Minute"
         };
