@@ -22,8 +22,8 @@ public class AS7PluginSahiTasks {
       AUTODISCOVERY_QUEUE,  
       AGENT_INVENTORY,
       AGENT_MONITORING,
-      AS_INVENTORY
-    };
+      AS_INVENTORY,
+       RESOURCE_MONITORING};
 
     protected static final Logger log = Logger.getLogger(AS7PluginSahiTasks.class.getName());
     protected final SahiTasks tasks;
@@ -182,6 +182,14 @@ public class AS7PluginSahiTasks {
                 tasks.cell(resourceName).click();
                 tasks.image("Inventory_grey_16.png").click();       
                 break;
+            case RESOURCE_MONITORING:
+                tasks.link("Inventory").click();
+                tasks.cell("Platforms").click();
+                tasks.link(agentName).click();               
+                tasks.image("Inventory_grey_16.png").click();
+                tasks.cell("Child Resources").click();
+                tasks.cell(resourceName).click();
+                tasks.image("Monitor_grey_16.png").click();    
             default:
                 break;
         }

@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks.Navigate;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -36,25 +37,14 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
     @Test(groups={"inventoryTest"})
     public void predefinedMetricsTest() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
-        as7SahiTasks.navigate(AS7PluginSahiTasks.Navigate.AGENT_MONITORING, System.getProperty("agent.name"), null);
+        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         sahiTasks.cell("Schedules").click();
         String[] predefinedMetrics = {
-            "Architecture", 
-            "Distribution Name",
-            "Distribution Version",
-            "Free Memory",
-            "Free Swap Space",
-            "Hostname",
-            "Idle",
-            "OS Name",
-            "OS Version",
-            "System Load",
-            "Total Memory",
-            "Total Swap Space",
-            "Used Memory",
-            "Used Swap Space",
-            "User Load",
-            "Wait Load"
+            "Maximum request time",
+            "Number of management requests",
+            "Number of management request per Minute",
+            "Time used for management requests",
+            "Time used for management requests per Minute"
         };
         for(String s:predefinedMetrics) {
             log.finest("Check that predefined metrics exist: " + s);
