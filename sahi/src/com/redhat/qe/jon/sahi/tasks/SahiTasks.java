@@ -1151,4 +1151,50 @@ public class SahiTasks extends ExtendedSahi {
         //Get Number count from Alert History history
         return this.link(alertName).countSimilar();
     }
+ 
+    //***********************************************************************
+    // Individual Config
+    //***************************************************************************
+    
+    public void navigationToConfiguration(){
+    	 this.link("Inventory").click();
+         this.waitFor(5000);
+         this.cell("Servers").click();
+         this.link("RHQ Agent").click();
+         this.cell("Configuration").click();
+         
+    }
+    
+    public void navigationToConfigurationSubtabs(){
+    	navigationToConfiguration();
+        this.xy(cell("History"), 3,3).click();
+        this.xy(cell("Current"),3,3).click();
+    }
+    
+    public void editAndSaveConfiguration(){
+    	this.link("Inventory").click();
+        this.waitFor(5000);
+        this.cell("Servers").click();
+        this.link("RHQ Agent").click();
+        this.cell("Configuration").click();
+        String defaultDelay = this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").getValue();
+        this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").setValue(defaultDelay + "1");
+        this.cell("Save").click();
+                	
+        }
+    public void settingToOriginalValues(String defaultValue){
+    	this.link("Inventory").click();
+        this.waitFor(5000);
+        this.cell("Servers").click();
+        this.link("RHQ Agent").click();
+        this.cell("Configuration").click();
+        this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").setValue(defaultValue);
+        this.cell("Save").click();
+    	
+    }
+
+
+
+
+
 }
