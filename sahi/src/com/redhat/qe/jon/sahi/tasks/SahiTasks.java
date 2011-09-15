@@ -24,15 +24,9 @@ public class SahiTasks extends ExtendedSahi {
     // Login/Logout
     // ***************************************************************************
     public void login(String userName, String password) {
-        // sometimes this method is called before JON login screen appears, this snippet will ensure that JON will have enough time to load        
-        BrowserCondition condition = new BrowserCondition(this) {
-
-            @Override
-            public boolean test() throws ExecutionException {
-                return browser.textbox("user").exists();
-            }
-        };
-        this.waitFor(condition, 15000);
+        try {
+            Thread.sleep(20000);
+        } catch(InterruptedException e) {}
         if (!this.textbox("user").exists()) {
             return;
         }

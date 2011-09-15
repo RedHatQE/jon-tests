@@ -15,27 +15,77 @@ import org.testng.annotations.Test;
  */
 public class ResourceCreation001Test extends AS7PluginSahiTestScript {
 
-    // this address will be set in the connection settings, should be any random address that isn't running any AS instance :-)
+    // this address will be set in the connection settings, should be any random address that isn't running any AS instance :)
     private static final String IP_ADDR = "239.12.33.74";
 
     @BeforeClass(groups = "resourceCreation001")
     protected void setupAS7Plugin() {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
     }
-    
+
     @Test(groups = "resourceCreation001")
     public void checkPersistenceOfChanges() {
-        
+        //as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));       
+        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+        sahiTasks.cell("Connection Settings").doubleClick();
+        try {
+            Thread.sleep(15000);
+        } catch (InterruptedException ex) {
+        }
+        sahiTasks.cell("Connection Settings").doubleClick();
+
+        ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
+        ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
+
+        String old_configuration = configuration_element.getText();
+        String old_startScript = startScript_element.getText();
+
+        // set new values
+        log.info("old configuration = " + old_configuration + ", will try to set to \"adfadjfadsf.xml\"");
+        log.info("old start script = " + old_startScript + ", will try to set to \"abccbcblsd.sh\"");
+        try {
+            configuration_element.setValue("adfadjfadsf.xml");
+            startScript_element.setValue("abccbcblsd.sh");
+            sahiTasks.cell("Save").click();
+        } finally {
+            as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+            sahiTasks.cell("Connection Settings").doubleClick();
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException ex) {
+            }
+            sahiTasks.cell("Connection Settings").doubleClick();
+
+            // check that the changes are persistent
+            configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
+            startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
+            String celm = configuration_element.getValue();
+            String selm = startScript_element.getValue();
+
+            // return the values back
+            ElementStub configuration_element2 = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
+            ElementStub startScript_element2 = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
+            configuration_element2.setValue(old_configuration);
+            startScript_element2.setValue(old_startScript);
+            sahiTasks.cell("Save").click();
+
+            Assert.assertEquals(celm, "adfadjfadsf.xml", "Testing if changes to connection settings are persistent");
+            Assert.assertEquals(selm, "abccbcblsd.sh", "Testing if changes to connection settings are persistent");
+        }
     }
 
     @Test(groups = "resourceCreation001")
     public void inputValidButIncorrectConnectionSettings() {
+        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        sahiTasks.cell("Connection Settings").click();
-        
+        sahiTasks.cell("Connection Settings").doubleClick();
+
         try {
-            Thread.sleep(5000);
-        } catch(InterruptedException ex) {}
+            Thread.sleep(15000);
+        } catch (InterruptedException ex) {
+        }
+
+        sahiTasks.cell("Connection Settings").doubleClick();
 
         ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
         ElementStub port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
@@ -71,6 +121,17 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
             // return the old values back
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
             sahiTasks.cell("Connection Settings").click();
+
+            try {
+                Thread.sleep(15000);
+            } catch (InterruptedException ex) {
+            }
+
+            sahiTasks.cell("Connection Settings").doubleClick();
+
+            hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
+            port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
+
             hostname_element.setValue(old_hostname);
             port_element.setValue(old_port);
             sahiTasks.cell("Save").click();

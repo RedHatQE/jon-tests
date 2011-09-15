@@ -99,9 +99,6 @@ public class AS7PluginSahiTasks {
     
     public boolean checkIfResourceIsOnline(String agentName, String resourceName) {
         this.navigate(Navigate.AS_SUMMARY, agentName, resourceName);
-      /*  tasks.cell("Child Resources").click();
-        ElementStub elm = tasks.cell(resourceName);
-        log.finer(elm.fetch("innerHTML"));*/
         if(tasks.image("Server_down_24.png").exists()) {
             log.finer("Resource "+resourceName+" is offline!");
             return false;
