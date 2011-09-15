@@ -33,6 +33,9 @@ public class SahiTasks extends ExtendedSahi {
             }
         };
         this.waitFor(condition, 15000);
+        if(!this.textbox("user").exists()) {
+            return;
+        }
         this.textbox("user").setValue(userName);
         this.password("password").setValue(password);
         this.cell("Login").click();

@@ -3,11 +3,8 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.logging.Logger;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Test;
 
 /**
  *

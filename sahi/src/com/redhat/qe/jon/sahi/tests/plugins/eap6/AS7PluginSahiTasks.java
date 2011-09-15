@@ -3,8 +3,6 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQueueException;
-import java.awt.AWTException;
-import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 import net.sf.sahi.client.ElementStub;
 

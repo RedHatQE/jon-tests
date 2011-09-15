@@ -22,6 +22,11 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
     protected void setupAS7Plugin() {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
     }
+    
+    @Test(groups = "resourceCreation001")
+    public void checkPersistenceOfChanges() {
+        
+    }
 
     @Test(groups = "resourceCreation001")
     public void inputValidButIncorrectConnectionSettings() {
