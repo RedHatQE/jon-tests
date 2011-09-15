@@ -23,7 +23,7 @@ public class AS7PluginSahiTasks {
       AGENT_INVENTORY,
       AGENT_MONITORING,
       AS_INVENTORY,
-       RESOURCE_MONITORING};
+       RESOURCE_MONITORING, AS_SUMMARY};
 
     protected static final Logger log = Logger.getLogger(AS7PluginSahiTasks.class.getName());
     protected final SahiTasks tasks;
@@ -71,57 +71,6 @@ public class AS7PluginSahiTasks {
         tasks.div("selectItemText").setValue("m");
         tasks.waitFor(5000);
         tasks.div("selectItemText").setValue("m");
-        /**
-         * this.cell("Operations").click();
-        this.cell("New").click();
-        this.div("selectItemText").setValue("g");
-        this.waitFor(5000);
-        this.div("selectItemText").setValue("g");
-        this.cell("Schedule").click();
-
-         */
-        
-    /*    ElementStub elm = null;
-        for(int i=0; i<6; i++) {
-            elm = tasks.div("isc_SelectItem_"+i+"$xc");
-            if(elm.exists())
-                break;            
-        }
-        if(elm == null) {
-            log.severe("Could not locate SelectItem box of operations. Thanks goes to GWT for unparseable, dynamically changed and untestable HTML code");
-            Assert.fail("Could not locate SelectItem box of operations. Thanks goes to GWT for unparseable, dynamically changed and untestable HTML code");
-        }          
-        elm.click();
-        try {
-            Thread.sleep(2500);
-        } catch (InterruptedException ex) {
-        }
-        elm.click();
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException ex) {
-        }
-        java.awt.Robot robot;
-        try {
-            robot = new java.awt.Robot();
-            robot.keyPress(KeyEvent.VK_DOWN);
-            robot.keyRelease(KeyEvent.VK_DOWN);
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ex) {
-            }
-            robot.keyPress(KeyEvent.VK_DOWN);
-            robot.keyRelease(KeyEvent.VK_DOWN);
-            robot = null;
-            System.gc();
-            try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ex) {
-            }         
-            tasks.cell("Schedule").click();
-        } catch (AWTException ex) {
-            log.severe(ex.getMessage());
-        }*/
         tasks.cell("Schedule").click();
     }
 
@@ -147,6 +96,23 @@ public class AS7PluginSahiTasks {
     public void assertResourceExistsInInventory(String agentName, String resourceName) {
         this.navigate(Navigate.AGENT_INVENTORY, agentName, null);
         Assert.assertTrue(tasks.cell(resourceName).exists());
+    }
+    
+    public boolean checkIfResourceIsOnline(String agentName, String resourceName) {
+        this.navigate(Navigate.AS_SUMMARY, agentName, resourceName);
+      /*  tasks.cell("Child Resources").click();
+        ElementStub elm = tasks.cell(resourceName);
+        log.finest(elm.fetch("innerHTML"));*/
+        if(tasks.image("Server_down_24.png").exists()) {
+            log.finest("Resource "+resourceName+" is offline!");
+            return false;
+        }
+        if(tasks.image("Server_up_24.png").exists()) {
+            log.finest("Resource "+resourceName+" is online!");
+            return true;
+        }
+        Assert.fail("Could not verify whether a resource is online or offline -- neither Server_down_16.png nor Server_up_16.png was found");
+        return false;
     }
     
     public void navigate(Navigate destination, String agentName, String resourceName) {
@@ -180,6 +146,9 @@ public class AS7PluginSahiTasks {
                 tasks.image("Inventory_grey_16.png").click();
                 tasks.cell("Child Resources").click();
                 tasks.link(resourceName).click();
+                try {
+                    Thread.sleep(5000);
+                } catch(InterruptedException e) {}
                 tasks.image("Inventory_grey_16.png").click();       
                 break;
             case RESOURCE_MONITORING:
@@ -193,6 +162,17 @@ public class AS7PluginSahiTasks {
                     Thread.sleep(5000);
                 } catch(InterruptedException e) {}
                 tasks.image("Monitor_grey_16.png").click();    
+                break;
+            case AS_SUMMARY:
+                tasks.link("Inventory").click();
+                tasks.cell("Platforms").click();
+                tasks.link(agentName).click();               
+                tasks.image("Inventory_grey_16.png").click();
+                tasks.cell("Child Resources").click();
+                tasks.link(resourceName).click();
+                try {
+                    Thread.sleep(5000);
+                } catch(InterruptedException e) {}
                 break;
             default:
                 break;

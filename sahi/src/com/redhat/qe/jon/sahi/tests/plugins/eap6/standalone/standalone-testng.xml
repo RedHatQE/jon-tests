@@ -1,4 +1,4 @@
-<suite name="RHQ_4.0_UI_AS7Plugin_Test_Standalone">
+<suite name="RHQ_4.0_UI_AS7Plugin_Test_Standalone"> 
     <test name="AutodetectConfigurationTest">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.AutodetectConfigurationTest"/>
@@ -22,7 +22,7 @@
                 <include name="inventoryTest"/>
             </run>
         </groups>
-    </test> 
+    </test>  
     <test name="Resource Creation 001">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceCreation001Test"/>                
