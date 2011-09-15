@@ -50,6 +50,7 @@ public class AS7PluginSahiTasks {
         }
         tasks.cell("Uninventory").click();
         tasks.cell("Yes").click();
+        log.fine("Successfully uninventorized resource \"" + resourceName + "\" from agent \"" + agentName + "\"");
     }
 
     public void uninventorizeAllDomainAS() {
@@ -100,13 +101,13 @@ public class AS7PluginSahiTasks {
         this.navigate(Navigate.AS_SUMMARY, agentName, resourceName);
       /*  tasks.cell("Child Resources").click();
         ElementStub elm = tasks.cell(resourceName);
-        log.finest(elm.fetch("innerHTML"));*/
+        log.finer(elm.fetch("innerHTML"));*/
         if(tasks.image("Server_down_24.png").exists()) {
-            log.finest("Resource "+resourceName+" is offline!");
+            log.finer("Resource "+resourceName+" is offline!");
             return false;
         }
         if(tasks.image("Server_up_24.png").exists()) {
-            log.finest("Resource "+resourceName+" is online!");
+            log.finer("Resource "+resourceName+" is online!");
             return true;
         }
         Assert.fail("Could not verify whether a resource is online or offline -- neither Server_down_16.png nor Server_up_16.png was found");

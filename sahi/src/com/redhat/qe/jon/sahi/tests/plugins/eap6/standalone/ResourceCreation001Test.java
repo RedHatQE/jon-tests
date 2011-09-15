@@ -32,9 +32,13 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
     public void inputValidButIncorrectConnectionSettings() {
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         sahiTasks.cell("Connection Settings").click();
+        
+        try {
+            Thread.sleep(5000);
+        } catch(InterruptedException ex) {}
 
-        ElementStub hostname_element = sahiTasks.textbox(0).in(sahiTasks.row("Hostname"));
-        ElementStub port_element = sahiTasks.textbox(0).in(sahiTasks.row("Port"));
+        ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
+        ElementStub port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
 
         String old_hostname = hostname_element.getText();
         String old_port = port_element.getText();

@@ -47,7 +47,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
             "Time used for management requests per Minute"
         };
         for(String s:predefinedMetrics) {
-            log.finest("Check that predefined metrics exist: " + s);
+            log.finer("Check that predefined metrics exist: " + s);
             Assert.assertTrue(sahiTasks.cell(s).exists(), "Check that predefined metric exists: "+s);        
         }
     }
