@@ -23,16 +23,22 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
     }
 
-    @Test(groups = "resourceCreation001")
+    @Test(groups = "resourceCreation001", timeOut=180000)
     public void checkPersistenceOfChanges() {
-        //as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));       
+        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));       
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        sahiTasks.cell("Connection Settings").doubleClick();
-        try {
-            Thread.sleep(15000);
-        } catch (InterruptedException ex) {
-        }
-        sahiTasks.cell("Connection Settings").doubleClick();
+        do {
+            sahiTasks.cell("Connection Settings").click();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+            }
+            sahiTasks.cell("Connection Settings").doubleClick();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+            }
+        } while (!(sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists());        
 
         ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
         ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
@@ -78,14 +84,16 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
     public void inputValidButIncorrectConnectionSettings() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        sahiTasks.cell("Connection Settings").doubleClick();
 
-        try {
-            Thread.sleep(15000);
-        } catch (InterruptedException ex) {
-        }
-
-        sahiTasks.cell("Connection Settings").doubleClick();
+        do {
+            sahiTasks.cell("Connection Settings").click();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+            }            
+            
+        } while (!(sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()); 
+        //**//
 
         ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
         ElementStub port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
