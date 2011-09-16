@@ -43,12 +43,12 @@ public class AS7PluginSahiTasks {
             log.finer("Resource \"" + resourceName + "\" was not found in the inventory for agent \"" + agentName + "\". Skipping.");
             return;
         }
-        elm.click();
+        elm.mouseDown();
         try {
             Thread.sleep(2500);
         } catch (InterruptedException ex) {
         }
-        tasks.cell("Uninventory").click();
+        tasks.cell("Uninventory").click();        
         tasks.cell("Yes").click();
         log.fine("Successfully uninventorized resource \"" + resourceName + "\" from agent \"" + agentName + "\"");
     }

@@ -28,12 +28,7 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));       
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         do {
-            sahiTasks.cell("Connection Settings").click();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            }
-            sahiTasks.cell("Connection Settings").doubleClick();
+            sahiTasks.cell("Connection Settings").mouseDown();
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
@@ -86,7 +81,7 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
 
         do {
-            sahiTasks.cell("Connection Settings").click();
+            sahiTasks.cell("Connection Settings").mouseDown();
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
