@@ -41,13 +41,14 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
         
         
         do {
+            sahiTasks.cell("Schedules").mouseDown();
             sahiTasks.cell("Schedules").click();
+            sahiTasks.cell("Schedules").doubleClick();
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
-            }            
-            
-        } while (!(sahiTasks.cell("Maximum request time")).exists()); 
+            }                        
+        } while (!((sahiTasks.cell("Maximum request time")).exists())); 
 
         String[] predefinedMetrics = {
             "Maximum request time",

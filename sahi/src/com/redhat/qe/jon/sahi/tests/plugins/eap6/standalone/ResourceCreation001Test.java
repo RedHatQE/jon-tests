@@ -23,17 +23,20 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
     }
 
-    @Test(groups = "resourceCreation001", timeOut=180000)
+    @Test(groups = "resourceCreation001", timeOut = 180000, alwaysRun=true)
     public void checkPersistenceOfChanges() {
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));       
+        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+
         do {
             sahiTasks.cell("Connection Settings").mouseDown();
+            sahiTasks.cell("Connection Settings").click();
+            sahiTasks.cell("Connection Settings").doubleClick();
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
             }
-        } while (!(sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists());        
+        } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));
 
         ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
         ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
@@ -50,12 +53,17 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
             sahiTasks.cell("Save").click();
         } finally {
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-            sahiTasks.cell("Connection Settings").doubleClick();
-            try {
-                Thread.sleep(15000);
-            } catch (InterruptedException ex) {
-            }
-            sahiTasks.cell("Connection Settings").doubleClick();
+
+            do {
+                sahiTasks.cell("Connection Settings").mouseDown();
+                sahiTasks.cell("Connection Settings").click();
+                sahiTasks.cell("Connection Settings").doubleClick();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                }
+            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));
+
 
             // check that the changes are persistent
             configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
@@ -75,20 +83,20 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
         }
     }
 
-    @Test(groups = "resourceCreation001")
+    @Test(groups = "resourceCreation001", timeOut = 180000, alwaysRun=true)
     public void inputValidButIncorrectConnectionSettings() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
 
         do {
             sahiTasks.cell("Connection Settings").mouseDown();
+            sahiTasks.cell("Connection Settings").click();
+            sahiTasks.cell("Connection Settings").doubleClick();
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
-            }            
-            
-        } while (!(sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()); 
-        //**//
+            }
+        } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));
 
         ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
         ElementStub port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
@@ -113,7 +121,7 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
                 } catch (InterruptedException ex) {
                     log.severe(ex.getMessage());
                 }
-                log.finest("Checking that resource went offline: try #" + Integer.toString(i + 1) + " of 6");
+                log.finer("Checking that resource went offline: try #" + Integer.toString(i + 1) + " of 6");
                 if (!as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"))) {
                     log.fine("Success - Resource went offline! Now I will change connection settings back to normal.");
                     ok = true;
@@ -123,14 +131,17 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
         } finally {
             // return the old values back
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-            sahiTasks.cell("Connection Settings").click();
 
-            try {
-                Thread.sleep(15000);
-            } catch (InterruptedException ex) {
-            }
+            do {
+                sahiTasks.cell("Connection Settings").mouseDown();
+                sahiTasks.cell("Connection Settings").click();
+                sahiTasks.cell("Connection Settings").doubleClick();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                }
+            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));
 
-            sahiTasks.cell("Connection Settings").doubleClick();
 
             hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
             port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
