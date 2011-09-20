@@ -1187,7 +1187,25 @@ public class SahiTasks extends ExtendedSahi {
     	
     }
 
-
+	    
+    //******************************************************************************
+    //Configuration History
+    //*******************************************************************************
+    
+    public void navigationToConfigurationHistoryTab(){
+    	this.link("Reports").click();
+        this.waitFor(5000);
+        this.cell("Configuration History").click();
+    	
+    }
+    public void deleteConfigurationFromList(){
+    	this.link("Reports").click();
+        this.waitFor(5000);
+        this.cell("Configuration History").click();
+        this.div("Individual").click();
+        this.cell("Delete").click();
+        this.cell("Yes").click();
+    }
 
 
 

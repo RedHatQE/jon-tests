@@ -186,4 +186,16 @@
 		</classes>
 	</test>
 	
+	<test name="Configuration History">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.ConfiurationHistoryTest">
+			<methods>
+				<include name="configuration history"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
+
+
+	
 </suite>
