@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
 public class AutodetectConfigurationTest extends AS7PluginSahiTestScript {                                
     
     @BeforeClass(groups="autodetectConfiguration")
-    protected void setupEapPlugin() {        
+    protected void setupAS7Plugin() {        
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
     }
     

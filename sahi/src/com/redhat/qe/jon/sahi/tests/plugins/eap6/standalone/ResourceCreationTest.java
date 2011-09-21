@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
  * @author jmartisk@redhat.com
  * @see TCMS testcase 96430
  */
-public class ResourceCreation001Test extends AS7PluginSahiTestScript {
+public class ResourceCreationTest extends AS7PluginSahiTestScript {
 
     // this address will be set in the connection settings, should be any random address that isn't running any AS instance :)
     private static final String IP_ADDR = "239.12.33.74";
@@ -83,7 +83,7 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
         }
     }
 
-    @Test(groups = "resourceCreation001", timeOut = 180000, alwaysRun=true)
+    @Test(groups = "resourceCreation001", alwaysRun=true)
     public void inputValidButIncorrectConnectionSettings() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
@@ -115,13 +115,13 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
         try {
             // the resource should go down after some time -- check for it
 
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 12; i++) {
                 try {
                     Thread.sleep(30000);
                 } catch (InterruptedException ex) {
                     log.severe(ex.getMessage());
                 }
-                log.finer("Checking that resource went offline: try #" + Integer.toString(i + 1) + " of 6");
+                log.finer("Checking that resource went offline: try #" + Integer.toString(i + 1) + " of 12");
                 if (!as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"))) {
                     log.fine("Success - Resource went offline! Now I will change connection settings back to normal.");
                     ok = true;
@@ -152,7 +152,7 @@ public class ResourceCreation001Test extends AS7PluginSahiTestScript {
             log.fine("Connection settings restored back to correct state");
 
             if (!ok) {
-                Assert.fail("AS7's connection settings were changed to incorrect, but the AS didn't appear offline even after more than 3 minutes");
+                Assert.fail("AS7's connection settings were changed to incorrect, but the AS didn't appear offline even after more than 6 minutes");
             }
         }
 

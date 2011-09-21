@@ -1,4 +1,4 @@
-<suite name="RHQ_4.0_UI_AS7Plugin_Test_Standalone"> 
+<suite name="RHQ_4.0_UI_AS7Plugin_Test"> 
      <test name="Standalone_AutodetectConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.AutodetectConfigurationTest"/>
@@ -25,7 +25,7 @@
     </test>  
     <test name="Standalone_ResourceCreation">
         <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceCreation001Test"/>                
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceCreationTest"/>                
         </classes>
         <groups>
             <run>
@@ -46,5 +46,29 @@
                 <include name="autodetectConfiguration"/>                                
             </run>
         </groups>
+    </test> 
+    <test name="Domain_ResourceConfiguration">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.ResourceConfigurationTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                   
+                <include name="resourceConfiguration"/>                                
+            </run>
+        </groups>
     </test>
+    <test name="Domain_ResourceCreation">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.ResourceCreationTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                   
+                <include name="resourceCreation"/>                                
+            </run>
+        </groups>  
+    </test> 
 </suite>

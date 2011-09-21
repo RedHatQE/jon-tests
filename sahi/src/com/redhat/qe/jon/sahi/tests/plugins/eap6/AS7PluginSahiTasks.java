@@ -21,7 +21,8 @@ public class AS7PluginSahiTasks {
       AGENT_INVENTORY,
       AGENT_MONITORING,
       AS_INVENTORY,
-       RESOURCE_MONITORING, AS_SUMMARY};
+      RESOURCE_MONITORING, 
+      AS_SUMMARY};
 
     protected static final Logger log = Logger.getLogger(AS7PluginSahiTasks.class.getName());
     protected final SahiTasks tasks;
