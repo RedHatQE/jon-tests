@@ -27,16 +27,20 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 		_logger.log(Level.INFO, "[Clear pop-up] Entering...");
 		//For buttons
 		for(String buttonName : buttonsToClick){
-			while(sahiTasks.cell(buttonName).exists()){
+			if(sahiTasks.cell(buttonName).exists()){
 				sahiTasks.cell(buttonName).click();
 				_logger.log(Level.INFO, "[Clear pop-up] Clicked on the button --> "+buttonName);
+			}else{
+				_logger.log(Level.INFO, "[Clear pop-up] There is no button --> "+buttonName);
 			}
 		}
 		//For links
 		for(String linkName : linksToClick){
-			while(sahiTasks.link(linkName).exists()){
+			if(sahiTasks.link(linkName).exists()){
 				sahiTasks.link(linkName).click();
 				_logger.log(Level.INFO, "[Clear pop-up] Clicked on the link --> "+linkName);
+			}else{
+				_logger.log(Level.INFO, "[Clear pop-up] There is no link --> "+linkName);
 			}
 		}
 		_logger.log(Level.INFO, "[Clear pop-up] Exiting...");
