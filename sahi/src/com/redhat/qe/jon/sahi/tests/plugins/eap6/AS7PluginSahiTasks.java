@@ -141,11 +141,8 @@ public class AS7PluginSahiTasks {
                 tasks.cell("Platforms").click();
                 tasks.link(agentName).click();               
                 tasks.image("Inventory_grey_16.png").click();
-                tasks.cell("Child Resources").click();
-                tasks.link(resourceName).click();
-                try {
-                    Thread.sleep(5000);
-                } catch(InterruptedException e) {}
+                tasks.xy(tasks.cell("Child Resources"), 3, 3).click();
+                tasks.link(resourceName).click();                
                 tasks.image("Inventory_grey_16.png").click();       
                 break;
             case RESOURCE_MONITORING:
@@ -153,7 +150,7 @@ public class AS7PluginSahiTasks {
                 tasks.cell("Platforms").click();
                 tasks.link(agentName).click();               
                 tasks.image("Inventory_grey_16.png").click();
-                tasks.cell("Child Resources").click();            
+                tasks.xy(tasks.cell("Child Resources"), 3, 3).click();
                 tasks.link(resourceName).click();
                 try {
                     Thread.sleep(5000);
@@ -165,7 +162,7 @@ public class AS7PluginSahiTasks {
                 tasks.cell("Platforms").click();
                 tasks.link(agentName).click();               
                 tasks.image("Inventory_grey_16.png").click();
-                tasks.cell("Child Resources").click();
+                tasks.xy(tasks.cell("Child Resources"), 3, 3).click();
                 tasks.link(resourceName).click();
                 try {
                     Thread.sleep(5000);

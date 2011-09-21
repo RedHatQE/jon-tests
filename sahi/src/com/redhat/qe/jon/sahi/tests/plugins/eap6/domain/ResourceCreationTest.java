@@ -23,7 +23,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
     }
 
-    @Test(groups = "resourceCreation", timeOut = 180000, alwaysRun=true)
+    @Test(groups = "resourceCreation", alwaysRun=true)
     public void checkPersistenceOfChanges() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));

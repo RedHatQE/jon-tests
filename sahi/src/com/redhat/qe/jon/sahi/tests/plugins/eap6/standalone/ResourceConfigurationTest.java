@@ -34,23 +34,12 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
     /**
      * @see TCMS testcase 96429
      */
-    @Test(groups={"inventoryTest"}, timeOut=180000)
+    @Test(groups={"inventoryTest"})
     public void predefinedMetricsTest() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        
-        
+        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));               
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
-        /*do {
-            sahiTasks.cell("Schedules").mouseDown();
-            sahiTasks.cell("Schedules").click();
-            sahiTasks.cell("Schedules").doubleClick();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            }                        
-        } while (!((sahiTasks.cell("Maximum request time")).exists())); 
-*/
+
         String[] predefinedMetrics = {
             "Maximum request time",
             "Number of management requests",

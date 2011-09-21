@@ -23,7 +23,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
     }
 
-    @Test(groups = "resourceCreation001", timeOut = 180000, alwaysRun=true)
+    @Test(groups = "resourceCreation001", alwaysRun=true)
     public void checkPersistenceOfChanges() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
@@ -129,18 +129,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         } finally {
             // return the old values back
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-
             sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-        /*    do {
-                sahiTasks.cell("Connection Settings").mouseDown();
-                sahiTasks.cell("Connection Settings").click();
-                sahiTasks.cell("Connection Settings").doubleClick();
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                }
-            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));*/
-
 
             hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
             port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));

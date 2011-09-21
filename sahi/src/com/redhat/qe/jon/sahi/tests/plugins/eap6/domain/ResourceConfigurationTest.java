@@ -24,7 +24,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.assertResourceExistsInInventory(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name")); 
     }
     
-    @Test(groups={"resourceConfiguration"}, timeOut=180000)
+    @Test(groups={"resourceConfiguration"})
     public void predefinedMetricsOfHostControllerTest() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
@@ -53,7 +53,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
         }
     }
     
-    @Test(groups={"resourceConfiguration"}, timeOut=180000)
+    @Test(groups={"resourceConfiguration"})
     public void predefinedMetricsOfManagedInstancesTest() {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-one.name"));        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-one.name"));
