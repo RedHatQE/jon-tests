@@ -25,7 +25,7 @@ public class SahiTasks extends ExtendedSahi {
     // ***************************************************************************
     public void login(String userName, String password) {
         try {
-            Thread.sleep(20000);
+            Thread.sleep(30000);
         } catch(InterruptedException e) {}
         if (!this.textbox("user").exists()) {
             return;

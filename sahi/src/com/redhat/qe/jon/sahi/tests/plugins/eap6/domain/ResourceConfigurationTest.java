@@ -29,8 +29,8 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
         
-        
-        do {
+        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
+        /*do {
             sahiTasks.cell("Schedules").mouseDown();
             sahiTasks.cell("Schedules").click();
             sahiTasks.cell("Schedules").doubleClick();
@@ -38,7 +38,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
             }                        
-        } while (!((sahiTasks.cell("Maximum request time")).exists())); 
+        } while (!((sahiTasks.cell("Maximum request time")).exists())); */
 
         String[] predefinedMetrics = {
             "Maximum request time",
@@ -59,6 +59,8 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-one.name"));
         
         
+        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
+        /*
         do {
             sahiTasks.cell("Schedules").mouseDown();
             sahiTasks.cell("Schedules").click();
@@ -67,7 +69,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
             }                        
-        } while (!((sahiTasks.cell("Server state")).exists())); 
+        } while (!((sahiTasks.cell("Server state")).exists())); */
 
         String[] predefinedMetrics = {
             "Server state"

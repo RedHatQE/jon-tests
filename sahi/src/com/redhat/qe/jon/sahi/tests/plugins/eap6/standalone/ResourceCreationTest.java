@@ -28,15 +28,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
 
-        do {
-            sahiTasks.cell("Connection Settings").mouseDown();
-            sahiTasks.cell("Connection Settings").click();
-            sahiTasks.cell("Connection Settings").doubleClick();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            }
-        } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));
+        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
+
 
         ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
         ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
@@ -54,6 +47,9 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         } finally {
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
 
+            
+            sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
+            /*
             do {
                 sahiTasks.cell("Connection Settings").mouseDown();
                 sahiTasks.cell("Connection Settings").click();
@@ -62,7 +58,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
                     Thread.sleep(5000);
                 } catch (InterruptedException ex) {
                 }
-            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));
+            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));*/
 
 
             // check that the changes are persistent
@@ -88,7 +84,9 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
 
-        do {
+        
+        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
+        /*do {
             sahiTasks.cell("Connection Settings").mouseDown();
             sahiTasks.cell("Connection Settings").click();
             sahiTasks.cell("Connection Settings").doubleClick();
@@ -96,7 +94,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
                 Thread.sleep(5000);
             } catch (InterruptedException ex) {
             }
-        } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));
+        } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));*/
 
         ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
         ElementStub port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
@@ -132,7 +130,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             // return the old values back
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
 
-            do {
+            sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
+        /*    do {
                 sahiTasks.cell("Connection Settings").mouseDown();
                 sahiTasks.cell("Connection Settings").click();
                 sahiTasks.cell("Connection Settings").doubleClick();
@@ -140,7 +139,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
                     Thread.sleep(5000);
                 } catch (InterruptedException ex) {
                 }
-            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));
+            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));*/
 
 
             hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));

@@ -40,7 +40,8 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         
         
-        do {
+        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
+        /*do {
             sahiTasks.cell("Schedules").mouseDown();
             sahiTasks.cell("Schedules").click();
             sahiTasks.cell("Schedules").doubleClick();
@@ -49,7 +50,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
             } catch (InterruptedException ex) {
             }                        
         } while (!((sahiTasks.cell("Maximum request time")).exists())); 
-
+*/
         String[] predefinedMetrics = {
             "Maximum request time",
             "Number of management requests",
