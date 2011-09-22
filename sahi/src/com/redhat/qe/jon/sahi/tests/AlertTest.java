@@ -55,6 +55,16 @@ public class AlertTest extends SahiTestScript{
 		Assert.assertTrue(alertHistorycount >= 1, "Alert Name: \"" + alertDetails.get(ALERT_NAME) + "\", Number of Alert(s) on history: " + alertHistorycount + ", Expected: 1");
 	}
 	
+	@Test (groups="alertTest", dataProvider="alertCreationData")
+	public void deleteAlertDefinition(HashMap<String, String> alertDetails) throws InterruptedException{
+		Assert.assertTrue(sahiTasks. deleteAlertDefinition(alertDetails.get(RESOURCE_NAME), alertDetails.get(ALERT_NAME)), "Alert Name: \"" + alertDetails.get(ALERT_NAME));
+	}
+	
+	@Test (groups="alertTest", dataProvider="alertCreationData")
+	public void deleteAlertHistory(HashMap<String, String> alertDetails) throws InterruptedException{
+		Assert.assertTrue(sahiTasks. deleteAlertHistory(alertDetails.get(RESOURCE_NAME), alertDetails.get(ALERT_NAME)), "Alert Name: \"" + alertDetails.get(ALERT_NAME));
+	}
+	
 	
 	@DataProvider(name="alertCreationData")
 	public Object[][] getAlertCreationData(){

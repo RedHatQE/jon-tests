@@ -201,7 +201,26 @@
 			</class>
 		</classes>
 	</test>
-
+		
+  	<test name="AlertHistoryDeletionTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
+			<methods>
+				<include name="deleteAlertHistory"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>	
+  	
+	<test name="AlertDefinitionDeletionTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
+			<methods>
+				<include name="deleteAlertDefinition"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
 
 	
 </suite>

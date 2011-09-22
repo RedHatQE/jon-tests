@@ -1145,7 +1145,57 @@ public class SahiTasks extends ExtendedSahi {
         //Get Number count from Alert History history
         return this.link(alertName).countSimilar();
     }
+    
+    //*********************************************************************************
+    //* Alert Definition Deletion 
+    //*********************************************************************************
+    public boolean deleteAlertDefinition(@Optional String resourceName, String alertName) {
+        if (resourceName != null) {
+            gotoAlertDefinationPage(resourceName, true);
+        }        
+        int numberOfDefinitions = this.link(alertName).countSimilar();
+        _logger.log(Level.INFO, "[Before Deletion] \""+alertName+"\" definition count: "+numberOfDefinitions);
+        if(this.div(alertName+"[1]").exists()){	
+        	this.div(alertName+"[1]").click(); //Selecting the definition
+        }else{
+        	this.div(alertName).click(); //Selecting the definition
+        }        
+        this.cell("Delete[4]").click();
+        this.cell("Yes").click();        
+        int numberOfDefinitionsUpdated = this.link(alertName).countSimilar();
+        _logger.log(Level.INFO, "[After Deletion] \""+alertName+"\" definition count: "+numberOfDefinitionsUpdated);
+        if((numberOfDefinitions - numberOfDefinitionsUpdated) == 1){
+        	return true;
+        }else{
+        	return false;
+        }
+    }
  
+    //*********************************************************************************
+    //* Alert History Deletion
+    //*********************************************************************************
+    public boolean deleteAlertHistory(@Optional String resourceName, String alertName) {
+        if (resourceName != null) {
+            gotoAlertDefinationPage(resourceName, false);
+        }        
+        int numberOfHistory = this.link(alertName).countSimilar();
+        _logger.log(Level.INFO, "[Before Deletion] \""+alertName+"\" history count: "+numberOfHistory);
+        if(this.div(alertName+"[1]").exists()){
+        	this.div(alertName+"[1]").click(); //Selecting the history
+        }else{
+        	this.div(alertName).click(); //Selecting the history
+        }    
+        this.cell("Delete[3]").click();
+        this.cell("Yes").click();
+        int numberOfHistoryUpdated = this.link(alertName).countSimilar();
+        _logger.log(Level.INFO, "[After Deletion] \""+alertName+"\" history count: "+numberOfHistoryUpdated);
+        if((numberOfHistory - numberOfHistoryUpdated) == 1){
+        	return true;
+        }else{
+        	return false;
+        }
+    }
+    
     //***********************************************************************
     // Individual Config
     //***************************************************************************
