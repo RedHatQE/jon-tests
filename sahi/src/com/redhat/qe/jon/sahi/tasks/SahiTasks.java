@@ -68,10 +68,11 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Next").click();
         for (String resource : resourceList) {
             this.textbox("search").setValue(resource);
-            this.div(resource).click();
-
             this.waitFor(5000);
-            this.image("right.png").click();
+            this.xy(this.byText(resource.trim(), "nobr"), 3,3).doubleClick();
+            //this.div(resource).doubleClick();
+            //this.waitFor(1000);
+            //this.image("right.png").click();
             // TODO: Verification of item actually being added, if not wrap ^
             // in a loop until it's added.
             // i.e. System.out.println(this.div(resource).parentNode("sectionStack").style("position"));
@@ -619,7 +620,8 @@ public class SahiTasks extends ExtendedSahi {
 
     public void deleteRecentOperationsSchedule() {
         this.link("Reports").click();
-        this.cell("Recent Operations").click();
+       // this.cell("Recent Operations").click(); 
+        this.xy(this.cell("Recent Operations"),3,3).click();
         this.div("RHQ Agent").click();
         this.cell("Delete").click();
         this.cell("Yes").click();
@@ -644,8 +646,9 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Recent Operations").click();
         this.link("RHQ Agent").click();
         this.image("row_collapsed.png").click();
+        this.link("Reports").click();
         this.cell("Recent Operations").click();
-        this.div("Get Plugin Info").click();
+        this.div("Get Info On All Plugins").click();
         this.cell("Delete").click();
         this.cell("Yes").click();
         this.link("Inventory").click();
