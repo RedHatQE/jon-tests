@@ -29,15 +29,6 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
 
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-   /*     do {
-            sahiTasks.cell("Connection Settings").mouseDown();
-            sahiTasks.cell("Connection Settings").click();
-            sahiTasks.cell("Connection Settings").doubleClick();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            }
-        } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Domain Configuration").parentNode("TR"))).exists()));*/
 
         ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Domain Configuration").parentNode("TR"));
         ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
@@ -56,22 +47,15 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
 
             sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-            /*do {
-                sahiTasks.cell("Connection Settings").mouseDown();
-                sahiTasks.cell("Connection Settings").click();
-                sahiTasks.cell("Connection Settings").doubleClick();
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                }
-            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Domain Configuration").parentNode("TR"))).exists()));*/
-
 
             // check that the changes are persistent
             configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Domain Configuration").parentNode("TR"));
             startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
             String celm = configuration_element.getValue();
             String selm = startScript_element.getValue();
+            
+            log.fine("text in \"Configuration\" after refreshing the page:" + celm);
+            log.fine("text in \"Start script\" after refreshing the page:" + selm);
 
             // return the values back
             ElementStub configuration_element2 = sahiTasks.textbox("textItem").in(sahiTasks.div("Domain Configuration").parentNode("TR"));
@@ -91,16 +75,6 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
 
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-        
-        /*do {
-            sahiTasks.cell("Connection Settings").mouseDown();
-            sahiTasks.cell("Connection Settings").click();
-            sahiTasks.cell("Connection Settings").doubleClick();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            }
-        } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Domain Configuration").parentNode("TR"))).exists())); */
 
         ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
         ElementStub port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
@@ -137,16 +111,6 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
 
             sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-           /* do {
-                sahiTasks.cell("Connection Settings").mouseDown();
-                sahiTasks.cell("Connection Settings").click();
-                sahiTasks.cell("Connection Settings").doubleClick();
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException ex) {
-                }
-            } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Domain Configuration").parentNode("TR"))).exists()));*/
-
 
             hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
             port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
