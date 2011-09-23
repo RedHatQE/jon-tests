@@ -620,8 +620,7 @@ public class SahiTasks extends ExtendedSahi {
 
     public void deleteRecentOperationsSchedule() {
         this.link("Reports").click();
-       // this.cell("Recent Operations").click(); 
-        this.xy(this.cell("Recent Operations"),3,3).click();
+        this.cell("Recent Operations").click(); 
         this.div("RHQ Agent").click();
         this.cell("Delete").click();
         this.cell("Yes").click();
