@@ -221,6 +221,17 @@
 			</class>
 		</classes>
 	</test>
+	
+	<test name="Schedule Resources">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
+			<methods>
+				<include name="scheduleResources"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
+	
 
 	
 </suite>
