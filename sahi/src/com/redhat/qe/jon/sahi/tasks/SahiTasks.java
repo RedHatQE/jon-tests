@@ -1343,6 +1343,52 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Yes").click();
     }
 
+ 
+    //************************************************************************************************
+    // Metric Collection Schedules For Reousrces
+    //*********************************************************************************************
+    
+    public void scheduleEnableForResource(){
+        this.link("Inventory").click();
+        this.cell("Servers").click();
+        this.link("RHQ Agent").click();
+        this.cell("Monitoring").click();
+        this.xy(cell("Schedules"), 3,3).click();
+        this.div("JVM Total Memory[1]").click();
+        this.cell("Enable").click();
+        
+    }
+    public void disableScheduleResource(){
+        this.link("Inventory").click();
+        this.cell("Servers").click();
+        this.link("RHQ Agent").click();
+        this.cell("Monitoring").click();
+        this.xy(cell("Schedules"), 3,3).click();
+        this.div("JVM Total Memory[1]").click();
+        this.cell("Disable").click();
+        
+    }
+    public void refreshScheduledResource(){
+        this.link("Inventory").click();
+        this.cell("Servers").click();
+        this.link("RHQ Agent").click();
+        this.cell("Monitoring").click();
+        this.xy(cell("Schedules"), 3,3).click();
+        this.div("JVM Total Memory[1]").click();
+        this.cell("Refresh").click();
+        
+    }
+    public void setCollectionIntervalForScheduledResource(int value){
+        this.link("Inventory").click();
+        this.cell("Servers").click();
+        this.link("RHQ Agent").click();
+        this.cell("Monitoring").click();
+        this.xy(cell("Schedules"), 3,3).click();
+        this.div("JVM Total Memory[1]").click();
+        this.textbox("interval").setValue(Integer.toString(value));
+        this.cell("Set").click();
+    }
+
 
 
 }
