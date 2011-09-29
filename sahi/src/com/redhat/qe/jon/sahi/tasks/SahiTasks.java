@@ -988,8 +988,8 @@ public class SahiTasks extends ExtendedSahi {
     //*********************************************************************************
     //* Alert Definition Creation
     //*********************************************************************************
-    public void gotoAlertDefinationPage(String resourceName, boolean definitionsPage) {
-        this.link("Inventory").click();
+    public void selectResource(String resourceName){
+    	this.link("Inventory").click();
         String[] resourceType = resourceName.split("=");
         if (resourceType.length > 1) {
             this.cell(resourceType[0].trim()).click();
@@ -999,6 +999,9 @@ public class SahiTasks extends ExtendedSahi {
             this.cell("Servers").click();
         }
         this.link(resourceType[1].trim()).click();
+    }
+    public void gotoAlertDefinationPage(String resourceName, boolean definitionsPage) {
+    	selectResource(resourceName);
         this.cell("Alerts").click();
         if (definitionsPage) {
             this.xy(this.cell("Definitions"), 3, 3).click();
@@ -1007,7 +1010,7 @@ public class SahiTasks extends ExtendedSahi {
         }
     }
 
-    public void selectConditionComboBoxes(String options) {
+    public void selectComboBoxes(String options) {
         /*	String comboBoxIdentifier = "selectItemText";
         int indexStartFrom = 3;
         String[] optionArray = Common.getCommaToArray(options);
@@ -1056,10 +1059,19 @@ public class SahiTasks extends ExtendedSahi {
                 Set<String> keys = keyValueMap.keySet();
                 for (String key : keys) {
                     this.textbox(key).setValue(keyValueMap.get(key));
+                    _logger.log(Level.INFO, "Updated textbox:["+key+"="+keyValueMap.get(key)+"]");
                 }
             }
         }
     }
+    
+    private void updateRadioButtons(String radioButtons){
+    	String[] radioButtonsArray = this.getCommaToArray(radioButtons);
+    	for(int i=0; radioButtonsArray.length > i; i++){
+        	this.radio(radioButtonsArray[i].trim()).check();
+        	_logger.log(Level.INFO, "Radio Button \""+radioButtonsArray[i].trim()+"\" selected");
+        }
+    }    
 
     private void selectYesNoradioButtons(String buttonKeyValue) {
         if (buttonKeyValue != null) {
@@ -1099,7 +1111,7 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Conditions").click();
         this.cell("Add").click();
 
-        selectConditionComboBoxes(conditionsDropDown);
+        selectComboBoxes(conditionsDropDown);
         updateTextBoxValues(conditionTextBox);
 
 
@@ -1118,13 +1130,13 @@ public class SahiTasks extends ExtendedSahi {
 
         //Recovery
         this.cell("Recovery").click();
-        selectConditionComboBoxes(recoveryAlertDropDown);
+        selectComboBoxes(recoveryAlertDropDown);
         selectYesNoradioButtons(disableWhenFired);
 
 
         //Dampening
         this.cell("Dampening").click();
-        selectConditionComboBoxes(dampeningDropDown);
+        selectComboBoxes(dampeningDropDown);
         updateTextBoxValues(dampeningTextBoxData);
 
         //Final step
@@ -1197,6 +1209,78 @@ public class SahiTasks extends ExtendedSahi {
         	return false;
         }
     }
+    
+    //*********************************************************************************
+    //* Drift Management 
+    //*********************************************************************************
+    public void gotoDriftDefinationPage(String resourceName, boolean definitionsPage) {
+    	selectResource(resourceName);
+        this.cell("Drift").click();
+        if (definitionsPage) {
+            this.xy(this.cell("Definitions"), 3, 3).click();
+        } else {
+            this.xy(this.cell("History"), 3, 3).click();
+        }
+    }
+    
+    public boolean addDrift(String resourceName, String templateName, String driftName, String textBoxKeyValue, String radioButtons, String fileIncludes, String fileExcludes ) throws InterruptedException {
+
+        //Select Resource
+        if (resourceName != null) {
+        	gotoDriftDefinationPage(resourceName, true);
+        }
+        
+        this.cell("Add").click();
+        
+        //Select Template
+        if(templateName != null){
+        	selectComboBoxes(templateName);
+        }
+        
+        this.cell("Next").click();
+        
+        //Update Drift Name
+        this.textbox("name").setValue(driftName.trim());
+        
+        //Update text Boxes
+        updateTextBoxValues(textBoxKeyValue);
+        
+        //Select Radio Buttons
+        updateRadioButtons(radioButtons);
+        
+        //File name Includes
+        if(fileIncludes != null){
+        	String[] files = this.getCommaToArray(fileIncludes);
+        	for(String fileName : files){
+        		this.image("add.png[1]").focus();
+                this.execute("_sahi._keyPress(_sahi._image('add.png[1]'), 32);"); //32 - Space bar
+                this.textbox("path[1]").setValue(fileName.trim());
+                _logger.log(Level.INFO, "File Name added [Includes]: "+fileName);
+                this.cell("OK").click();   
+        	}        	     	
+        }        
+        
+        //File Excludes
+        if(fileExcludes != null){
+        	String[] files = this.getCommaToArray(fileExcludes);
+        	for(String fileName : files){
+        		this.image("add.png[2]").focus();
+                this.execute("_sahi._keyPress(_sahi._image('add.png[2]'), 32);"); //32 - Space bar
+                this.textbox("path[1]").setValue(fileName.trim());
+                _logger.log(Level.INFO, "File Name added [Excludes]: "+fileName);
+                this.cell("OK").click();
+        	}    	
+        } 
+        this.cell("Finish").click();
+        
+        if(this.link(driftName.trim()).exists()){
+        	_logger.log(Level.INFO, "Drift Name ["+driftName.trim()+"] added successfully.");
+        	return true;
+        }        
+        return false;
+    }
+
+    
     
     //***********************************************************************
     // Individual Config
