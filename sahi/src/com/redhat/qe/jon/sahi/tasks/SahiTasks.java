@@ -25,7 +25,7 @@ public class SahiTasks extends ExtendedSahi {
     // ***************************************************************************
     public boolean login(String userName, String password) {
     	
-    	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*120)){
+    	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*180)){ //Will wait up to 3 minutes
     		return false;
     	}
     	/*
