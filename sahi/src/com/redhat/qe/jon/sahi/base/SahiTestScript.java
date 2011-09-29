@@ -4,6 +4,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.auto.testng.TestScript;
 
 import java.util.logging.Logger;
@@ -38,6 +39,10 @@ public abstract class SahiTestScript extends TestScript {
 		log.finer("Logging into RHQ system");
 		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);                
 		sahiTasks.login("rhqadmin", "rhqadmin");
+		String loginErrorMessgae = "The username or password provided does not match our records.";
+		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
+		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
+		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());		
 	}
 
 	@AfterSuite(groups={"teardown"})
