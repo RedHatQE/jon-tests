@@ -23,16 +23,22 @@ public class SahiTasks extends ExtendedSahi {
     // ***************************************************************************
     // Login/Logout
     // ***************************************************************************
-    public void login(String userName, String password) {
+    public boolean login(String userName, String password) {
+    	
+    	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*120)){
+    		return false;
+    	}
+    	/*
         try {
             Thread.sleep(30000);
         } catch(InterruptedException e) {}
         if (!this.textbox("user").exists()) {
             return;
-        }
+        }*/
         this.textbox("user").setValue(userName);
         this.password("password").setValue(password);
         this.cell("Login").click();
+        return true;
     }
 
     public void logout() {
@@ -1011,20 +1017,6 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void selectComboBoxes(String options) {
-        /*	String comboBoxIdentifier = "selectItemText";
-        int indexStartFrom = 3;
-        String[] optionArray = Common.getCommaToArray(options);
-        int totalComboBox = this.div(comboBoxIdentifier).countSimilar();
-        _logger.finer("ComboBoxIdentifier Count: "+totalComboBox);
-        for(int i=0; i<totalComboBox; i++){
-        _logger.finer("ComboBoxIdentifier Name: "+comboBoxIdentifier+"["+i+"] --> "+sahiTasks.div(comboBoxIdentifier+"["+i+"]").getText());
-        }
-        if(optionArray.length > 2){
-        Wait.waitForElementDivExists(this,  comboBoxIdentifier+"["+(optionArray.length+indexStartFrom)+"]", 1000*10);
-        }
-        for(int i=0;i<optionArray.length;i++){
-        ComboBox.selectComboBoxDivRow(this,  comboBoxIdentifier+"["+(i+indexStartFrom)+"]", optionArray[i].trim());
-        }*/
         if (options != null) {
             if (options.trim().length() > 0) {
                 String[] optionArray = this.getCommaToArray(options);

@@ -38,7 +38,7 @@ public abstract class SahiTestScript extends TestScript {
 	public void login() {
 		log.finer("Logging into RHQ system");
 		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);                
-		sahiTasks.login("rhqadmin", "rhqadmin");
+		Assert.assertTrue(sahiTasks.login("rhqadmin", "rhqadmin"), "Login status");
 		String loginErrorMessgae = "The username or password provided does not match our records.";
 		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
 		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
