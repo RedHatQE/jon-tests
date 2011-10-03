@@ -4,11 +4,13 @@ import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.auto.testng.Assert;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.sahi.client.BrowserCondition;
+import net.sf.sahi.client.ElementStub;
 import net.sf.sahi.client.ExecutionException;
 import org.testng.annotations.Optional;
 
@@ -749,19 +751,13 @@ public class SahiTasks extends ExtendedSahi {
     //* Favourite
     //*************************************
     public void createFavourite() {
-        this.link("Inventory").click();
-        this.cell("Servers").click();
-        this.link("RHQ Agent").click();
+    	selectResource("Servers=RHQ Agent");
         this.image("Favorite_24.png").click();
-
     }
 
     public void removeFavourite() {
-        this.link("Inventory").click();
-        this.cell("Servers").click();
-        this.link("RHQ Agent").click();
+    	selectResource("Servers=RHQ Agent");
         this.image("Favorite_24_Selected.png").click();
-
     }
 
     public boolean checkFavouriteBadgeForAgent() {
@@ -1272,6 +1268,32 @@ public class SahiTasks extends ExtendedSahi {
         return false;
     }
 
+    //***************************************************************************************
+    //* Get tables
+    //***************************************************************************************
+    public LinkedList<HashMap<String, String>> getDriftManagementHistory(){
+    	gotoDriftDefinationPage("Platforms=mercury.lab.eng.pnq.redhat.com", false);
+    	int noListTables = this.table("listTable").countSimilar();
+    	LinkedList<HashMap<String, String>> rows = new LinkedList<HashMap<String,String>>();
+    	HashMap<String, String> row = new HashMap<String, String>();
+    	for(int i=0; ;i++){
+    		try{
+    			row.put("CreationTime", cell(table("listTable["+(noListTables-1)+"]"),i, 0).getText());
+    			row.put("Definition", cell(table("listTable["+(noListTables-1)+"]"),i, 1).getText());
+    			row.put("Snapshot", cell(table("listTable["+(noListTables-1)+"]"),i, 2).getText());
+    			row.put("Category", cell(table("listTable["+(noListTables-1)+"]"),i, 3).getValue());
+    			row.put("Path", cell(table("listTable["+(noListTables-1)+"]"),i, 4).getText());
+    			
+    		}catch (Exception ex){
+    			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage());
+    			break;
+    		}
+    		_logger.log(Level.INFO, "ROW: "+i+" :"+row);
+    		rows.addLast((HashMap<String, String>) row.clone());
+    		row.clear();
+    	}    	
+		return rows;    	
+    }
     
     
     //***********************************************************************
