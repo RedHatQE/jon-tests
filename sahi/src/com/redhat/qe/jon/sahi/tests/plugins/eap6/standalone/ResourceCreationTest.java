@@ -78,15 +78,6 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
 
         
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-        /*do {
-            sahiTasks.cell("Connection Settings").mouseDown();
-            sahiTasks.cell("Connection Settings").click();
-            sahiTasks.cell("Connection Settings").doubleClick();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            }
-        } while (!((sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"))).exists()));*/
 
         ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
         ElementStub port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));

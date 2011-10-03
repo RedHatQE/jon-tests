@@ -60,16 +60,6 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
         
         
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
-        /*
-        do {
-            sahiTasks.cell("Schedules").mouseDown();
-            sahiTasks.cell("Schedules").click();
-            sahiTasks.cell("Schedules").doubleClick();
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-            }                        
-        } while (!((sahiTasks.cell("Server state")).exists())); */
 
         String[] predefinedMetrics = {
             "Server state"
