@@ -83,4 +83,16 @@
             </run>
         </groups>  
     </test>  
+    <test name="Domain_Monitoring">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.MonitoringTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                    
+                <include name="monitoringTest"/>                                
+            </run>
+        </groups>  
+    </test>
 </suite>
