@@ -21,13 +21,12 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     @BeforeClass(groups = "resourceCreation")
     protected void setupAS7Plugin() {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
+        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
     }
 
     @Test(groups = "resourceCreation", alwaysRun=true)
-    public void checkPersistenceOfChanges() {
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
+    public void checkPersistenceOfChanges() {        
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
-
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
         ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Domain Configuration").parentNode("TR"));
@@ -70,10 +69,9 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     }
 
     @Test(groups = "resourceCreation", alwaysRun=true)
-    public void inputValidButIncorrectConnectionSettings() {
+    public void inputValidButIncorrectConnectionSettings() {        
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
-        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
-
+        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));        
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
         ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));

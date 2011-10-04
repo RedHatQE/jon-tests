@@ -21,15 +21,13 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     @BeforeClass(groups = "resourceCreation001")
     protected void setupAS7Plugin() {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
+        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
     }
 
     @Test(groups = "resourceCreation001", alwaysRun=true)
-    public void checkPersistenceOfChanges() {
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+    public void checkPersistenceOfChanges() {        
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-
-        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-
+        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();        
 
         ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
         ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
@@ -72,11 +70,9 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     }
 
     @Test(groups = "resourceCreation001", alwaysRun=true)
-    public void inputValidButIncorrectConnectionSettings() {
+    public void inputValidButIncorrectConnectionSettings() {        
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-
-        
+        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));              
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
         ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
