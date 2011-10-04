@@ -20,7 +20,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     }
     
     @Test(groups={"monitoringTest"})
-    public void disableMetricsTest_DomainController() {        
+    public void disableMetricsTest() {        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));               
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();        
         // step1: disable one of the metrics 
@@ -43,14 +43,14 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         // step3: enable the metrics back
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();          
         sahiTasks.xy(sahiTasks.cell("Maximum request time"), 3, 3).click();
-        sahiTasks.cell("Enable").click();   
+        sahiTasks.cell("Enable").click();  
         try {
             Thread.sleep(5000);
         } catch(InterruptedException ex) {}
     }
     
     @Test(groups={"monitoringTest"}, dependsOnMethods={"disableMetricsTest"})
-    public void enableMetricsTest_DomainController()  {        
+    public void enableMetricsTest()  {        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));                       
         // check that the metric is present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
@@ -61,7 +61,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     }
     
     @Test(groups={"monitoringTest"})
-    public void specifyMonitoringIntervalTest_DomainController() {        
+    public void specifyMonitoringIntervalTest() {        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));               
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();                
         sahiTasks.xy(sahiTasks.cell("Maximum request time"), 3, 3).click();  
