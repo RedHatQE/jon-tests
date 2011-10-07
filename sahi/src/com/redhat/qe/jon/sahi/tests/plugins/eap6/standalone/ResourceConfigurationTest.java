@@ -16,9 +16,11 @@ import org.testng.annotations.Test;
  */
 public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
     
+    
     @BeforeClass(groups="inventoryTest")
     protected void setupAS7Plugin() {        
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
+        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
     }
     
     /**
@@ -26,17 +28,15 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
      * @see TCMS test case 96428
      */
     @Test(groups={"inventoryTest"})
-    public void inventoryTest() {
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
+    public void inventoryTest() {        
         as7SahiTasks.assertResourceExistsInInventory(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
     }
     
     /**
      * @see TCMS testcase 96429
      */
-    @Test(groups={"inventoryTest"})
+    @Test(groups={"inventoryTest"}, dependsOnMethods={"inventoryTest"})
     public void predefinedMetricsTest() {
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));               
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
 

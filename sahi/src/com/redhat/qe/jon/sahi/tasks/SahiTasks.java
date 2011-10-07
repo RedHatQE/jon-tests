@@ -8,10 +8,6 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.sf.sahi.client.BrowserCondition;
-import net.sf.sahi.client.ElementStub;
-import net.sf.sahi.client.ExecutionException;
 import org.testng.annotations.Optional;
 
 public class SahiTasks extends ExtendedSahi {
@@ -26,17 +22,9 @@ public class SahiTasks extends ExtendedSahi {
     // Login/Logout
     // ***************************************************************************
     public boolean login(String userName, String password) {
-    	
-    	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*180)){ //Will wait up to 3 minutes
-    		return false;
-    	}
-    	/*
-        try {
-            Thread.sleep(30000);
-        } catch(InterruptedException e) {}
-        if (!this.textbox("user").exists()) {
-            return;
-        }*/
+    	this.waitForElementExists(this, this.textbox("user"), "user", 1000*180);
+        if(!this.textbox("user").exists())
+            return false;
         this.textbox("user").setValue(userName);
         this.password("password").setValue(password);
         this.cell("Login").click();
