@@ -518,9 +518,12 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Save").click();
     }
 
-    public void deleteRole(String roleName) {
+    public void deleteRole(String roleName) throws SahiTasksException  {
         this.link("Administration").click();
         this.cell("Roles").click();
+        if(!this.waitForElementDivExists(this, roleName, 1000*30)){ //wait time up to 30 seconds
+        	throw new SahiTasksException("Element is not available [element name(div): "+roleName+"]");
+        }
         this.div(roleName).click();
         this.cell("Delete").click();
         this.cell("Yes").click();
@@ -1269,7 +1272,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     //***************************************************************************************
-    //* Get tables
+    //* Get Drift History tables
     //***************************************************************************************
     public LinkedList<HashMap<String, String>> getDriftManagementHistory(){
     	gotoDriftDefinationPage("Platforms=mercury.lab.eng.pnq.redhat.com", false);
@@ -1281,14 +1284,21 @@ public class SahiTasks extends ExtendedSahi {
     			row.put("CreationTime", cell(table("listTable["+(noListTables-1)+"]"),i, 0).getText());
     			row.put("Definition", cell(table("listTable["+(noListTables-1)+"]"),i, 1).getText());
     			row.put("Snapshot", cell(table("listTable["+(noListTables-1)+"]"),i, 2).getText());
-    			row.put("Category", cell(table("listTable["+(noListTables-1)+"]"),i, 3).getValue());
+    			//row.put("Category", cell(table("listTable["+(noListTables-1)+"]"),i, 3).getValue());    			
+    			ElementStub categoryElement = cell(table("listTable["+(noListTables-1)+"]"),i, 3);
+    			if(this.containsHTML(categoryElement, "Drift_add_16.png")){
+    				row.put("Category", "added");
+    			}else if(this.containsHTML(categoryElement, "Drift_change_16.png")){
+    				row.put("Category", "changed");
+    			}else if(this.containsHTML(categoryElement, "Drift_remove_16.png")){
+    				row.put("Category", "removed");
+    			}
     			row.put("Path", cell(table("listTable["+(noListTables-1)+"]"),i, 4).getText());
     			
     		}catch (Exception ex){
-    			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage());
+    			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage(), ex);
     			break;
     		}
-    		_logger.log(Level.INFO, "ROW: "+i+" :"+row);
     		rows.addLast((HashMap<String, String>) row.clone());
     		row.clear();
     	}    	
