@@ -66,6 +66,7 @@ public class AlertTest extends SahiTestScript{
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@DataProvider(name="alertCreationData")
 	public Object[][] getAlertCreationData(){
 		ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
