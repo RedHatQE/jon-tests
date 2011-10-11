@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.sf.sahi.client.ElementStub;
+
 import org.testng.annotations.Optional;
 
 public class SahiTasks extends ExtendedSahi {
@@ -22,9 +25,9 @@ public class SahiTasks extends ExtendedSahi {
     // Login/Logout
     // ***************************************************************************
     public boolean login(String userName, String password) {
-    	this.waitForElementExists(this, this.textbox("user"), "user", 1000*180);
-        if(!this.textbox("user").exists())
-            return false;
+    	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*180)){
+    		return false;
+    	}
         this.textbox("user").setValue(userName);
         this.password("password").setValue(password);
         this.cell("Login").click();
