@@ -232,6 +232,19 @@
 		</classes>
 	</test>
 	
+	
+	<test name="Group Config">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.GroupConfigTest">
+			<methods>
+				<include name="group config "></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
+
+
+
 
 	
 </suite>
