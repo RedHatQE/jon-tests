@@ -9,6 +9,7 @@ import com.redhat.qe.auto.testng.Assert;
 
 import com.redhat.qe.auto.testng.TestNGUtils;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.tasks.SahiTasksException;
 
 public class AdministrationTest extends SahiTestScript {
 	
@@ -38,7 +39,7 @@ public class AdministrationTest extends SahiTestScript {
 	}
 
 	@Test (groups="user", dataProvider="roleData", dependsOnMethods={"deleteUsers", "verifyUserRole"}, alwaysRun=true)
-	public void deleteRole(String roleName, String roleDesc){
+	public void deleteRole(String roleName, String roleDesc) throws SahiTasksException{
 		sahiTasks.deleteRole(roleName);
 	}
 
