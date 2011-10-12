@@ -2,6 +2,8 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.auto.testng.Assert;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -511,9 +513,17 @@ public class SahiTasks extends ExtendedSahi {
 
     public void deleteRole(String roleName) throws SahiTasksException  {
         this.link("Administration").click();
+        try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        /*if(!this.waitForElementExists(this, this.cell("Roles"), "Roles", 1000*30)){ //wait time up to 30 seconds
+        	throw new SahiTasksException("Element is not available [element name: Roles]");
+        }*/
         this.cell("Roles").click();
-        if(!this.waitForElementDivExists(this, roleName, 1000*30)){ //wait time up to 30 seconds
-        	throw new SahiTasksException("Element is not available [element name(div): "+roleName+"]");
+        if(this.span("Administration").exists()){
+        	this.cell("Roles").click();
         }
         this.div(roleName).click();
         this.cell("Delete").click();
@@ -1205,6 +1215,18 @@ public class SahiTasks extends ExtendedSahi {
         }
     }
     
+    public void clickDriftDetectNow(String driftName) throws InterruptedException{
+    	for(int i=2; i>=0; i--){
+    		if(this.div(driftName+"["+i+"]").exists()){
+    			this.div(driftName+"["+i+"]").click();
+    			_logger.log(Level.INFO, "Clciked on "+driftName+"["+i+"]");
+    			break;
+    		}
+    	}
+    	Thread.sleep(1000*5);
+    	this.row("Detect Now").click();
+    	Thread.sleep(1000*10); //Give 10 seconds for agent/server actions
+    }
     public boolean addDrift(String resourceName, String templateName, String driftName, String textBoxKeyValue, String radioButtons, String fileIncludes, String fileExcludes ) throws InterruptedException {
 
         //Select Resource
@@ -1257,6 +1279,8 @@ public class SahiTasks extends ExtendedSahi {
         
         if(this.link(driftName.trim()).exists()){
         	_logger.log(Level.INFO, "Drift Name ["+driftName.trim()+"] added successfully.");
+            //Do Manual 'Detect Now'
+            clickDriftDetectNow(driftName);
         	return true;
         }        
         return false;
@@ -1265,9 +1289,12 @@ public class SahiTasks extends ExtendedSahi {
     //***************************************************************************************
     //* Get Drift History tables
     //***************************************************************************************
-    public LinkedList<HashMap<String, String>> getDriftManagementHistory(){
-    	gotoDriftDefinationPage("Platforms=mercury.lab.eng.pnq.redhat.com", false);
-    	int noListTables = this.table("listTable").countSimilar();
+    @SuppressWarnings("unchecked")
+	public LinkedList<HashMap<String, String>> getDriftManagementHistory(String resource, int tableCountOffset){
+    	if(resource != null){
+    		gotoDriftDefinationPage(resource, false);
+    	}    	
+    	int noListTables = this.table("listTable").countSimilar()-tableCountOffset;
     	LinkedList<HashMap<String, String>> rows = new LinkedList<HashMap<String,String>>();
     	HashMap<String, String> row = new HashMap<String, String>();
     	for(int i=0; ;i++){
@@ -1293,8 +1320,101 @@ public class SahiTasks extends ExtendedSahi {
     		rows.addLast((HashMap<String, String>) row.clone());
     		row.clear();
     	}    	
+    	_logger.log(Level.INFO, "Drift History: "+rows);
 		return rows;    	
     }
+    
+    //*********************************************************************************
+    //* Drift Management add Files
+    //*********************************************************************************
+       
+    public boolean addDriftFile(String resourceName, String driftName, String baseDir, String fileIncludes, String fileExcludes ) throws InterruptedException, IOException {
+    	if(!baseDir.endsWith("/")){
+    		baseDir += "/";
+    	}
+    	//Add files on back-end
+		DriftManagementSSH driftSSH = new DriftManagementSSH();
+		driftSSH.getConnection("10.65.201.40", "hudson", "hudson");
+		
+		// Include files action
+		HashMap<String, String>filesInclude = new HashMap<String,String>();
+		filesInclude = getKeyValueMap(fileIncludes);
+		Set<String> includeFileKeys = filesInclude.keySet();
+		for (String key : includeFileKeys) {
+			_logger.info("File: "+key);
+			if(!driftSSH.createFileDir(baseDir+key.substring(0,key.lastIndexOf("/")))){
+				return false;
+			}
+			if(!driftSSH.addLineOnFile(baseDir+key, filesInclude.get(key), false)){
+				return false;
+			}
+		}
+
+		// Exclude files action
+		HashMap<String, String>filesExclude = new HashMap<String,String>();
+		filesExclude = getKeyValueMap(fileExcludes);
+		Set<String> excludeFileKeys = filesExclude.keySet();
+		for (String key : excludeFileKeys) {
+			if(!driftSSH.createFileDir(baseDir+key.substring(0,key.lastIndexOf("/")))){
+				return false;
+			}
+			if(!driftSSH.addLineOnFile(baseDir+key, filesExclude.get(key), false)){
+				return false;
+			}
+		}
+
+		driftSSH.closeConnection();
+		
+		
+		//Select Resource
+        if (resourceName != null) {
+        	gotoDriftDefinationPage(resourceName, true);
+        }
+        
+        //Do Manual 'Detect Now'
+        clickDriftDetectNow(driftName);
+       
+        // Redirect to history Page
+        this.xy(this.cell("History"), 3, 3).click();
+        LinkedList<HashMap<String, String>> driftHistory = getDriftManagementHistory(null, 1);
+    
+        //includeFile test
+        for(String key : includeFileKeys){
+        	boolean status = false;
+        	for(HashMap<String, String> singleRow : driftHistory){
+        		if(singleRow.get("Path").equals(key)){
+        			if(singleRow.get("Category").equalsIgnoreCase("added")){
+        				_logger.log(Level.INFO, "Drift Change available on History[include File: "+key+"]: "+singleRow.get("Path"));  
+        				status = true;
+        				break;
+        			}
+        		}
+        	}
+        	if(!status){
+    			return false;
+    		}
+        }
+        
+      //excludeFile test
+        for(String key : excludeFileKeys){
+        	boolean status = false;
+        	for(HashMap<String, String> singleRow : driftHistory){
+        		if(singleRow.get("Path").equals(key)){
+        			if(singleRow.get("Category").equalsIgnoreCase("added")){
+        				_logger.log(Level.WARNING, "Drift Change available on History[exclude File: "+key+"]: "+singleRow.get("Path"));  
+        				status = true;
+        				break;
+        			}
+        		}
+        	}
+        	if(status){
+    			return false;
+    		}
+        }
+        
+        return true;
+    }
+
     
     
     //***********************************************************************
