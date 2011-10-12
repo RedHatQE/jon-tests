@@ -1524,6 +1524,26 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Set").click();
     }
 
+    //************************************************************************************************
+    // Group Configuration
+    //***************************************************************************************************
+    
+    public void navigationToGroupConfigurtion(String panelName, String compatibleGroup, String groupDesc, ArrayList<String> resourceList){
+    	createGroup(panelName, compatibleGroup, groupDesc,  resourceList);
+    	this.link(compatibleGroup).click();
+        this.cell("Configuration").click();
+        
+    }
+    public void navigationToGroupConfigurationSubtabs(){
+    	this.xy(cell("History"), 3,3).click();
+    	this.xy(cell("Current"),3,3).click();
+    }
+    public void editAndSaveGroupConfiguration(){
+    	String defaultDelay = this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").getValue();
+        this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").setValue(defaultDelay + "1");
+        this.cell("Save").click();
+    	
+    }
 
 
 }
