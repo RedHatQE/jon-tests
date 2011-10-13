@@ -21,9 +21,8 @@ public class DriftManagementSSH {
 	private static final String commandDeleteDir = "rm -rf "; 
 	private static final long COMMAND_TIMEOUT = 1000*60*10; //Timeout for commands
 	
+	/*
 	public static void main(String[] args) throws IOException{
-		
-		/*
 		Connection conn = new Connection("10.65.201.40");		
 		conn.connect();
 		conn.authenticateWithPassword("root", "Lab123");		
@@ -37,13 +36,9 @@ public class DriftManagementSSH {
 		System.out.println("TOP: " + sshcr.getStdout());
 		sshcr.runCommandAndWait("hostname", true);
 		System.out.println("host Name: " + sshcr.getStdout());
-		*/
-		DriftManagementSSH drift = new DriftManagementSSH();
-		drift.getConnection("10.65.201.40", "hudson", "hudson");
-		drift.createDirs("/root/", "sampleBase/Sample1/Sample2/Sample3,sampleBase/Sample2/Sample3/Sample4");
-		drift.closeConnection();
+		
 	}
-	
+	*/
 	public void getConnection(String hostName, String userName, String passWord) throws IOException{
 		getConnection(hostName, userName, passWord, 22);
 	}
@@ -52,7 +47,7 @@ public class DriftManagementSSH {
 		if(connection == null){
 			connection = new Connection(hostName, port);		
 			connection.connect();
-			connection.authenticateWithPassword("root", "Lab123");
+			connection.authenticateWithPassword(userName, passWord);
 			sshCommandRunner = new SSHCommandRunner(connection, null);
 		}
 	}

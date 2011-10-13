@@ -242,7 +242,20 @@
 			</class>
 		</classes>
 	</test>
-
+	
+	<test name="Drift management-Create-[add/change/remove]-Delete">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.DriftManagementTest">
+			<methods>
+				 <include name="createDrift"></include>
+				 <include name="driftActionFileAdd"></include>
+				 <include name="driftActionFileChange"></include>
+				 <include name="driftActionFileRemove"></include>
+				<include name="trashDrift"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
 
 
 

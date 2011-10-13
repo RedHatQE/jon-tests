@@ -2,7 +2,6 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.auto.testng.Assert;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1203,7 +1202,7 @@ public class SahiTasks extends ExtendedSahi {
     }
     
     //*********************************************************************************
-    //* Drift Management 
+    //* Drift Management Add Drift on GUI
     //*********************************************************************************
     public void gotoDriftDefinationPage(String resourceName, boolean definitionsPage) {
     	selectResource(resourceName);
@@ -1215,17 +1214,27 @@ public class SahiTasks extends ExtendedSahi {
         }
     }
     
-    public void clickDriftDetectNow(String driftName) throws InterruptedException{
-    	for(int i=2; i>=0; i--){
+    public boolean clickDriftDetectNowOrDelete(String driftName, long waitTime, boolean deleteDrift) throws InterruptedException{
+    	String driftRealName = "";
+    	for(int i=5; i>=0; i--){
     		if(this.div(driftName+"["+i+"]").exists()){
     			this.div(driftName+"["+i+"]").click();
-    			_logger.log(Level.INFO, "Clciked on "+driftName+"["+i+"]");
+    			_logger.log(Level.INFO, "Clciked on, Drift Name:  "+driftName+"["+i+"]");
+    			driftName = driftRealName+"["+i+"]";
     			break;
     		}
     	}
-    	Thread.sleep(1000*5);
-    	this.row("Detect Now").click();
-    	Thread.sleep(1000*10); //Give 10 seconds for agent/server actions
+    	if(deleteDrift){
+    		this.row("Delete[2]").click();
+    		this.cell("Yes").click();
+    		return this.div(driftRealName).exists();
+    	}else{
+    		this.row("Detect Now").click();
+        	_logger.log(Level.FINER, "Waiting "+(waitTime/1000)+" Second(s) for agent/server actions...");
+        	Thread.sleep(waitTime); //Give X second(s) for agent/server actions
+        	return true;
+    	}
+    	
     }
     public boolean addDrift(String resourceName, String templateName, String driftName, String textBoxKeyValue, String radioButtons, String fileIncludes, String fileExcludes ) throws InterruptedException {
 
@@ -1280,7 +1289,7 @@ public class SahiTasks extends ExtendedSahi {
         if(this.link(driftName.trim()).exists()){
         	_logger.log(Level.INFO, "Drift Name ["+driftName.trim()+"] added successfully.");
             //Do Manual 'Detect Now'
-            clickDriftDetectNow(driftName);
+            clickDriftDetectNowOrDelete(driftName, 1000*90, false);
         	return true;
         }        
         return false;
@@ -1290,10 +1299,11 @@ public class SahiTasks extends ExtendedSahi {
     //* Get Drift History tables
     //***************************************************************************************
     @SuppressWarnings("unchecked")
-	public LinkedList<HashMap<String, String>> getDriftManagementHistory(String resource, int tableCountOffset){
+	public LinkedList<HashMap<String, String>> getDriftManagementHistory(String resource, int tableCountOffset) throws InterruptedException{
     	if(resource != null){
     		gotoDriftDefinationPage(resource, false);
     	}    	
+    	Thread.sleep(1000);
     	int noListTables = this.table("listTable").countSimilar()-tableCountOffset;
     	LinkedList<HashMap<String, String>> rows = new LinkedList<HashMap<String,String>>();
     	HashMap<String, String> row = new HashMap<String, String>();
@@ -1314,7 +1324,7 @@ public class SahiTasks extends ExtendedSahi {
     			row.put("Path", cell(table("listTable["+(noListTables-1)+"]"),i, 4).getText());
     			
     		}catch (Exception ex){
-    			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage(), ex);
+    			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage());
     			break;
     		}
     		rows.addLast((HashMap<String, String>) row.clone());
@@ -1325,65 +1335,41 @@ public class SahiTasks extends ExtendedSahi {
     }
     
     //*********************************************************************************
-    //* Drift Management add Files
+    //* Drift Management add/change/remove Files
     //*********************************************************************************
        
-    public boolean addDriftFile(String resourceName, String driftName, String baseDir, String fileIncludes, String fileExcludes ) throws InterruptedException, IOException {
-    	if(!baseDir.endsWith("/")){
-    		baseDir += "/";
+    private boolean fileAdditionDeletionChangeOnDrift(String baseDir, HashMap<String, String>files, Set<String> fileKeys, String fileAction, DriftManagementSSH driftSSH){
+    	for (String key : fileKeys) {
+    		_logger.info("File: "+key);
+    		if(fileAction.equalsIgnoreCase("add")){
+    			if(!driftSSH.createFileDir(baseDir+key.substring(0,key.lastIndexOf("/")))){
+    				return false;
+    			}
+    			if(!driftSSH.addLineOnFile(baseDir+key, files.get(key), false)){
+    				return false;
+    			}
+    		}else if(fileAction.equalsIgnoreCase("change")){
+    			if(!driftSSH.createFileDir(baseDir+key.substring(0,key.lastIndexOf("/")))){
+    				return false;
+    			}
+    			if(!driftSSH.addLineOnFile(baseDir+key, files.get(key), true)){
+    				return false;
+    			}
+    		}else if(fileAction.equalsIgnoreCase("remove")){
+    			if(!driftSSH.deleteFilesDirs(baseDir+key)){
+    				return false;
+    			}
+    		}
     	}
-    	//Add files on back-end
-		DriftManagementSSH driftSSH = new DriftManagementSSH();
-		driftSSH.getConnection("10.65.201.40", "hudson", "hudson");
-		
-		// Include files action
-		HashMap<String, String>filesInclude = new HashMap<String,String>();
-		filesInclude = getKeyValueMap(fileIncludes);
-		Set<String> includeFileKeys = filesInclude.keySet();
-		for (String key : includeFileKeys) {
-			_logger.info("File: "+key);
-			if(!driftSSH.createFileDir(baseDir+key.substring(0,key.lastIndexOf("/")))){
-				return false;
-			}
-			if(!driftSSH.addLineOnFile(baseDir+key, filesInclude.get(key), false)){
-				return false;
-			}
-		}
-
-		// Exclude files action
-		HashMap<String, String>filesExclude = new HashMap<String,String>();
-		filesExclude = getKeyValueMap(fileExcludes);
-		Set<String> excludeFileKeys = filesExclude.keySet();
-		for (String key : excludeFileKeys) {
-			if(!driftSSH.createFileDir(baseDir+key.substring(0,key.lastIndexOf("/")))){
-				return false;
-			}
-			if(!driftSSH.addLineOnFile(baseDir+key, filesExclude.get(key), false)){
-				return false;
-			}
-		}
-
-		driftSSH.closeConnection();
-		
-		
-		//Select Resource
-        if (resourceName != null) {
-        	gotoDriftDefinationPage(resourceName, true);
-        }
-        
-        //Do Manual 'Detect Now'
-        clickDriftDetectNow(driftName);
-       
-        // Redirect to history Page
-        this.xy(this.cell("History"), 3, 3).click();
-        LinkedList<HashMap<String, String>> driftHistory = getDriftManagementHistory(null, 1);
+		return true;
+    }
     
-        //includeFile test
-        for(String key : includeFileKeys){
+    private boolean checkAvailabilityOnDriftHistory(Set<String> fileKeys, LinkedList<HashMap<String, String>> driftHistory, String category){
+        for(String key : fileKeys){
         	boolean status = false;
         	for(HashMap<String, String> singleRow : driftHistory){
         		if(singleRow.get("Path").equals(key)){
-        			if(singleRow.get("Category").equalsIgnoreCase("added")){
+        			if(singleRow.get("Category").equalsIgnoreCase(category)){
         				_logger.log(Level.INFO, "Drift Change available on History[include File: "+key+"]: "+singleRow.get("Path"));  
         				status = true;
         				break;
@@ -1393,28 +1379,83 @@ public class SahiTasks extends ExtendedSahi {
         	if(!status){
     			return false;
     		}
+        }  	
+        return true;
+    }
+    public boolean addChangeRemoveDriftFile(String resourceName, String driftName, String baseDir, String fileIncludes, String fileExcludes, String fileAction ) throws InterruptedException, IOException {
+    	if(!baseDir.endsWith("/")){
+    		baseDir += "/";
+    	}
+    	//Add files on back-end
+		DriftManagementSSH driftSSH = new DriftManagementSSH();
+		driftSSH.getConnection(System.getenv().get("AGENT_NAME"), System.getenv().get("AGENT_HOST_USER"), System.getenv().get("AGENT_HOST_PASSWORD"));
+		
+		// Include files action
+		HashMap<String, String>filesInclude = new HashMap<String,String>();
+		filesInclude = getKeyValueMap(fileIncludes);
+		Set<String> includeFileKeys = filesInclude.keySet();
+		
+		if(!fileAdditionDeletionChangeOnDrift(baseDir, filesInclude, includeFileKeys, fileAction, driftSSH)){
+			return false;
+		}
+		
+		// Exclude files action
+		HashMap<String, String>filesExclude = new HashMap<String,String>();
+		filesExclude = getKeyValueMap(fileExcludes);
+		Set<String> excludeFileKeys = filesExclude.keySet();
+		
+		if(!fileAdditionDeletionChangeOnDrift(baseDir, filesExclude, excludeFileKeys, fileAction, driftSSH)){
+			return false;
+		}
+		
+				
+		driftSSH.closeConnection();
+		
+		
+		//Select Resource
+        if (resourceName != null) {
+        	gotoDriftDefinationPage(resourceName, true);
         }
         
-      //excludeFile test
-        for(String key : excludeFileKeys){
-        	boolean status = false;
-        	for(HashMap<String, String> singleRow : driftHistory){
-        		if(singleRow.get("Path").equals(key)){
-        			if(singleRow.get("Category").equalsIgnoreCase("added")){
-        				_logger.log(Level.WARNING, "Drift Change available on History[exclude File: "+key+"]: "+singleRow.get("Path"));  
-        				status = true;
-        				break;
-        			}
-        		}
-        	}
-        	if(status){
-    			return false;
-    		}
+        //Do Manual 'Detect Now'
+        clickDriftDetectNowOrDelete(driftName, 1000*90, false);
+       
+        // Redirect to history Page
+        this.xy(this.cell("History"), 3, 3).click();
+        LinkedList<HashMap<String, String>> driftHistory = getDriftManagementHistory(null, 1);
+        
+        String category = fileAction+"ed";
+        
+        //IncludeFile Test
+        if(!checkAvailabilityOnDriftHistory(includeFileKeys, driftHistory, category)){
+        	return false;
+        }
+              
+        //ExcludeFile Test
+        if(checkAvailabilityOnDriftHistory(excludeFileKeys, driftHistory, category)){
+        	return false;
         }
         
+       
         return true;
     }
 
+    //***************************************************************************************************
+    //* Delete Drift
+    //***************************************************************************************************
+    public boolean deleteDrift(String resourceName, String driftName, String baseDir) throws InterruptedException, IOException{
+    	//Select Resource
+        if (resourceName != null) {
+        	gotoDriftDefinationPage(resourceName, true);
+        }
+    	//Add files on back-end
+		DriftManagementSSH driftSSH = new DriftManagementSSH();
+		driftSSH.getConnection(System.getenv().get("AGENT_NAME"), System.getenv().get("AGENT_HOST_USER"), System.getenv().get("AGENT_HOST_PASSWORD"));
+		if(!driftSSH.deleteFilesDirs(baseDir)){
+			return false;
+		}
+		return clickDriftDetectNowOrDelete(driftName, 0, true);
+    }
     
     
     //***********************************************************************
