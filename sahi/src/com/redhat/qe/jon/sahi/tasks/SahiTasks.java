@@ -1216,7 +1216,7 @@ public class SahiTasks extends ExtendedSahi {
     
     public boolean clickDriftDetectNowOrDelete(String driftName, long waitTime, boolean deleteDrift) throws InterruptedException{
     	String driftRealName = "";
-    	for(int i=5; i>=0; i--){
+    	for(int i=2; i>=0; i--){
     		if(this.div(driftName+"["+i+"]").exists()){
     			this.div(driftName+"["+i+"]").click();
     			_logger.log(Level.INFO, "Clciked on, Drift Name:  "+driftName+"["+i+"]");
@@ -1236,8 +1236,15 @@ public class SahiTasks extends ExtendedSahi {
     	}
     	
     }
-    public boolean addDrift(String resourceName, String templateName, String driftName, String textBoxKeyValue, String radioButtons, String fileIncludes, String fileExcludes ) throws InterruptedException {
-
+    public boolean addDrift(String baseDir, String resourceName, String templateName, String driftName, String textBoxKeyValue, String radioButtons, String fileIncludes, String fileExcludes ) throws InterruptedException, IOException {
+    	//Remove old file History If any
+    	DriftManagementSSH driftSSH = new DriftManagementSSH();
+		driftSSH.getConnection(System.getenv().get("AGENT_NAME"), System.getenv().get("AGENT_HOST_USER"), System.getenv().get("AGENT_HOST_PASSWORD"));
+		if(!driftSSH.deleteFilesDirs(baseDir)){
+			return false;
+		}
+		driftSSH.closeConnection();
+		
         //Select Resource
         if (resourceName != null) {
         	gotoDriftDefinationPage(resourceName, true);
@@ -1448,12 +1455,13 @@ public class SahiTasks extends ExtendedSahi {
         if (resourceName != null) {
         	gotoDriftDefinationPage(resourceName, true);
         }
-    	//Add files on back-end
+    	//Delete files on back-end
 		DriftManagementSSH driftSSH = new DriftManagementSSH();
 		driftSSH.getConnection(System.getenv().get("AGENT_NAME"), System.getenv().get("AGENT_HOST_USER"), System.getenv().get("AGENT_HOST_PASSWORD"));
 		if(!driftSSH.deleteFilesDirs(baseDir)){
 			return false;
 		}
+		driftSSH.closeConnection();
 		return clickDriftDetectNowOrDelete(driftName, 0, true);
     }
     
