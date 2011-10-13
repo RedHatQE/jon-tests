@@ -242,17 +242,33 @@
 			</class>
 		</classes>
 	</test>
+<<<<<<< HEAD
 
 	<test name="Scheduling Groups">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForGroupsTest">
 			<methods>
 				<include name="schedule groups"></include>
+=======
+	
+	<test name="Drift management-Create-[add/change/remove]-Delete">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.DriftManagementTest">
+			<methods>
+				 <include name="createDrift"></include>
+				 <include name="driftActionFileAdd"></include>
+				 <include name="driftActionFileChange"></include>
+				 <include name="driftActionFileRemove"></include>
+				<include name="trashDrift"></include>
+>>>>>>> ed0cb2c397684a25e879b9b859a1a3701aa8933e
 			</methods>
 			</class>
 		</classes>
 	</test>
+<<<<<<< HEAD
 
+=======
+>>>>>>> ed0cb2c397684a25e879b9b859a1a3701aa8933e
 
 
 
