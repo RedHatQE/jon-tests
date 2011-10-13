@@ -243,6 +243,16 @@
 		</classes>
 	</test>
 
+	<test name="Scheduling Groups">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForGroupsTest">
+			<methods>
+				<include name="schedule groups"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
+
 
 
 

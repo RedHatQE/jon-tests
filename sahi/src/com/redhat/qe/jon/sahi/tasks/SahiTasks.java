@@ -1545,5 +1545,39 @@ public class SahiTasks extends ExtendedSahi {
     	
     }
 
+    //************************************************************************************************
+    // Metric Collection Schedules For Groups
+    //*********************************************************************************************
+    
+    public void scheduleEnableForGroup(String panelName, String compatibleGroup, String groupDesc, ArrayList<String> resourceList){
+    	createGroup(panelName, compatibleGroup, groupDesc,  resourceList);
+    	this.link(compatibleGroup).click();
+    	this.cell("Monitoring").click();
+        this.xy(cell("Schedules"), 3,3).click();
+        this.div("JVM Total Memory[1]").click();
+        this.cell("Enable").click();      
+        
+    }
+    public void disableScheduleGroup(){
+    	this.div("JVM Total Memory[1]").click();
+        this.cell("Disable").click();
+        
+    }
+    public void refreshScheduledGroup(){
+    	this.div("JVM Total Memory[1]").click();
+        this.cell("Refresh").click();
+        
+    }
+    public void setCollectionIntervalForScheduledGroup(int value){
+        this.div("JVM Total Memory[1]").click();
+        this.textbox("interval").setValue(Integer.toString(value));
+        this.cell("Set").click();
+    }
+    
+    public void deleteCompatibilityGroup(String panelName, String groupName){
+   	 deleteGroup(panelName, groupName);
+   	
+   }
+
 
 }
