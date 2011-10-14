@@ -123,18 +123,6 @@
 			</run>
 		</groups>
 	</test>
-    <test name="DriftTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.DriftTest"/>
-		</classes>
-		<groups>
-			<run>
-				<include name="setup"/>
-				<include name="teardown"/>
-				<include name="DriftTest"/>
-			</run>
-		</groups>
-	</test>
 
 	<test name="FavouriteTest">
 		<classes>
