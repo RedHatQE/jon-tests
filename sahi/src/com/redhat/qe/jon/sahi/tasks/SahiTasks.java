@@ -1214,9 +1214,10 @@ public class SahiTasks extends ExtendedSahi {
         }
     }
     
-    public boolean clickDriftDetectNowOrDelete(String driftName, long waitTime, boolean deleteDrift) throws InterruptedException{
+    public boolean clickDriftDetectNowOrDelete(String driftName, int divMaxIndex, long waitTime, boolean deleteDrift) throws InterruptedException{
+    	
     	String driftRealName = "";
-    	for(int i=2; i>=0; i--){
+    	for(int i=divMaxIndex; i>=0; i--){
     		if(this.div(driftName+"["+i+"]").exists()){
     			this.div(driftName+"["+i+"]").click();
     			_logger.log(Level.INFO, "Clciked on, Drift Name:  "+driftName+"["+i+"]");
@@ -1224,12 +1225,15 @@ public class SahiTasks extends ExtendedSahi {
     			break;
     		}
     	}
+    	//this.div(driftName, this.link(driftName)).click();
+    	
     	if(deleteDrift){
-    		this.row("Delete[2]").click();
+    		this.cell("Delete").near(this.cell("Delete All")).click();
+    		//this.row("Delete[2]").click();
     		this.cell("Yes").click();
-    		return this.div(driftRealName).exists();
+    		return this.link(driftName).exists();
     	}else{
-    		this.row("Detect Now").click();
+    		this.cell("Detect Now").near(this.cell("Delete All")).click();
         	_logger.log(Level.FINER, "Waiting "+(waitTime/1000)+" Second(s) for agent/server actions...");
         	Thread.sleep(waitTime); //Give X second(s) for agent/server actions
         	return true;
@@ -1296,7 +1300,7 @@ public class SahiTasks extends ExtendedSahi {
         if(this.link(driftName.trim()).exists()){
         	_logger.log(Level.INFO, "Drift Name ["+driftName.trim()+"] added successfully.");
             //Do Manual 'Detect Now'
-            clickDriftDetectNowOrDelete(driftName, 1000*90, false);
+            clickDriftDetectNowOrDelete(driftName, 2, 1000*65, false);
         	return true;
         }        
         return false;
@@ -1348,21 +1352,21 @@ public class SahiTasks extends ExtendedSahi {
     private boolean fileAdditionDeletionChangeOnDrift(String baseDir, HashMap<String, String>files, Set<String> fileKeys, String fileAction, DriftManagementSSH driftSSH){
     	for (String key : fileKeys) {
     		_logger.info("File: "+key);
-    		if(fileAction.equalsIgnoreCase("add")){
+    		if(fileAction.equalsIgnoreCase("added")){
     			if(!driftSSH.createFileDir(baseDir+key.substring(0,key.lastIndexOf("/")))){
     				return false;
     			}
     			if(!driftSSH.addLineOnFile(baseDir+key, files.get(key), false)){
     				return false;
     			}
-    		}else if(fileAction.equalsIgnoreCase("change")){
+    		}else if(fileAction.equalsIgnoreCase("changed")){
     			if(!driftSSH.createFileDir(baseDir+key.substring(0,key.lastIndexOf("/")))){
     				return false;
     			}
     			if(!driftSSH.addLineOnFile(baseDir+key, files.get(key), true)){
     				return false;
     			}
-    		}else if(fileAction.equalsIgnoreCase("remove")){
+    		}else if(fileAction.equalsIgnoreCase("removed")){
     			if(!driftSSH.deleteFilesDirs(baseDir+key)){
     				return false;
     			}
@@ -1422,24 +1426,25 @@ public class SahiTasks extends ExtendedSahi {
 		//Select Resource
         if (resourceName != null) {
         	gotoDriftDefinationPage(resourceName, true);
+        }else{
+        	this.xy(this.cell("Definitions"), 3, 3).click();
         }
         
         //Do Manual 'Detect Now'
-        clickDriftDetectNowOrDelete(driftName, 1000*90, false);
+        clickDriftDetectNowOrDelete(driftName, 3, 1000*65, false);
        
         // Redirect to history Page
         this.xy(this.cell("History"), 3, 3).click();
         LinkedList<HashMap<String, String>> driftHistory = getDriftManagementHistory(null, 1);
         
-        String category = fileAction+"ed";
-        
+       
         //IncludeFile Test
-        if(!checkAvailabilityOnDriftHistory(includeFileKeys, driftHistory, category)){
+        if(!checkAvailabilityOnDriftHistory(includeFileKeys, driftHistory, fileAction)){
         	return false;
         }
               
         //ExcludeFile Test
-        if(checkAvailabilityOnDriftHistory(excludeFileKeys, driftHistory, category)){
+        if(checkAvailabilityOnDriftHistory(excludeFileKeys, driftHistory, fileAction)){
         	return false;
         }
         
@@ -1454,6 +1459,8 @@ public class SahiTasks extends ExtendedSahi {
     	//Select Resource
         if (resourceName != null) {
         	gotoDriftDefinationPage(resourceName, true);
+        }else{
+        	this.xy(this.cell("Definitions"), 3, 3).click();
         }
     	//Delete files on back-end
 		DriftManagementSSH driftSSH = new DriftManagementSSH();
@@ -1462,7 +1469,7 @@ public class SahiTasks extends ExtendedSahi {
 			return false;
 		}
 		driftSSH.closeConnection();
-		return clickDriftDetectNowOrDelete(driftName, 0, true);
+		return clickDriftDetectNowOrDelete(driftName, 7, 0, true);
     }
     
     
