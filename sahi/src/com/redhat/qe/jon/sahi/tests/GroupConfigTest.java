@@ -27,6 +27,10 @@ public class GroupConfigTest extends SahiTestScript {
 	public void editAndSaveGroupConfiguration(){
 		sahiTasks.editAndSaveGroupConfiguration();
 	}
+	@AfterClass
+	public void deleteComaptibleGroup(){
+		sahiTasks.deleteCompatibilityGroup("Compatible Groups","compatibleGroup");
+	}
 	
 	@DataProvider(name="compatibleGroup")
 	public Object[][] compatibleGroupData() {
