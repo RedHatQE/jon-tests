@@ -250,13 +250,25 @@
 				 <include name="driftActionFileChange"></include>
 				 <include name="driftActionFileRemove"></include>
 				<include name="trashDrift"></include>
-
 			</methods>
 			</class>
 		</classes>
 	</test>
 
-
+	<test name="Administration JSP page validation">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AdministrationPages">
+			<methods>
+				 <include name="pageServers"></include>
+				 <include name="pageAgents"></include>
+				 <include name="pageAffinityGroups"></include>
+				 <include name="pagePartitionEvents"></include>
+				 <include name="pageContentSources"></include>
+				 <include name="pageRepositories"></include> 
+			</methods>
+			</class>
+		</classes>
+	</test>
 
 
 	

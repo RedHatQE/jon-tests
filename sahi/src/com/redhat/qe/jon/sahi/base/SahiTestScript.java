@@ -42,7 +42,9 @@ public abstract class SahiTestScript extends TestScript {
 		String loginErrorMessgae = "The username or password provided does not match our records.";
 		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
 		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
-		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());		
+		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
+		//Check Agent Status
+		Assert.assertFalse(sahiTasks.isAgentRunning(System.getenv().get("AGENT_NAME")), "Agent["+System.getenv().get("AGENT_NAME")+"] running status");
 	}
 
 	@AfterSuite(groups={"teardown"})

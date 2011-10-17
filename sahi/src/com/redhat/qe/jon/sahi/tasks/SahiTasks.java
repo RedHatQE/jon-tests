@@ -1200,6 +1200,44 @@ public class SahiTasks extends ExtendedSahi {
         	return false;
         }
     }
+   
+    //**************************************************************************************************
+    //* Get GWT table information 
+    //**************************************************************************************************
+    public LinkedList<HashMap<String, String>> getRHQgwtTableDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue) {
+    	int noListTables = this.table(tableName).countSimilar()-tableCountOffset;
+    	LinkedList<HashMap<String, String>> rows = new LinkedList<HashMap<String,String>>();
+    	HashMap<String, String> row = new HashMap<String, String>();
+    	String[] columns = getCommaToArray(columnsCSV);
+    	HashMap<String, String> replacement = getKeyValueMap(replacementKeyValue);
+    	String innerHTMLstring;
+    	String textString;
+    	for(int i=0; ;i++){
+    		try{
+    			for(int c=0; c<columns.length; c++){
+    				ElementStub categoryElement = cell(table(tableName+"["+(noListTables-1)+"]"),i, c);
+    				innerHTMLstring = categoryElement.fetch("innerHTML");
+    				textString = categoryElement.getText();
+    				if(innerHTMLstring.contains("src=") && (textString.length() == 0)){
+    					innerHTMLstring = innerHTMLstring.substring(innerHTMLstring.indexOf("src=\"")+5, innerHTMLstring.indexOf('"', innerHTMLstring.indexOf("src=\"")+5));
+    					row.put(columns[c], innerHTMLstring.substring(innerHTMLstring.lastIndexOf('/')+1));
+    				}else{
+    					row.put(columns[c], textString);
+    				}
+      				if(replacement.get(row.get(columns[c])) != null){
+    					row.put(columns[c], replacement.get(row.get(columns[c])));
+    				}
+    			}    			
+    		}catch (Exception ex){
+    			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage());
+    			break;
+    		}
+    		rows.addLast((HashMap<String, String>) row.clone());
+    		row.clear();
+    	}    	
+    	_logger.log(Level.INFO, "Table Details: "+rows);
+		return rows;    	
+    }
     
     //*********************************************************************************
     //* Drift Management Add Drift on GUI
@@ -1309,40 +1347,12 @@ public class SahiTasks extends ExtendedSahi {
     //***************************************************************************************
     //* Get Drift History tables
     //***************************************************************************************
-    @SuppressWarnings("unchecked")
 	public LinkedList<HashMap<String, String>> getDriftManagementHistory(String resource, int tableCountOffset) throws InterruptedException{
     	if(resource != null){
     		gotoDriftDefinationPage(resource, false);
     	}    	
     	Thread.sleep(1000);
-    	int noListTables = this.table("listTable").countSimilar()-tableCountOffset;
-    	LinkedList<HashMap<String, String>> rows = new LinkedList<HashMap<String,String>>();
-    	HashMap<String, String> row = new HashMap<String, String>();
-    	for(int i=0; ;i++){
-    		try{
-    			row.put("CreationTime", cell(table("listTable["+(noListTables-1)+"]"),i, 0).getText());
-    			row.put("Definition", cell(table("listTable["+(noListTables-1)+"]"),i, 1).getText());
-    			row.put("Snapshot", cell(table("listTable["+(noListTables-1)+"]"),i, 2).getText());
-    			//row.put("Category", cell(table("listTable["+(noListTables-1)+"]"),i, 3).getValue());    			
-    			ElementStub categoryElement = cell(table("listTable["+(noListTables-1)+"]"),i, 3);
-    			if(this.containsHTML(categoryElement, "Drift_add_16.png")){
-    				row.put("Category", "added");
-    			}else if(this.containsHTML(categoryElement, "Drift_change_16.png")){
-    				row.put("Category", "changed");
-    			}else if(this.containsHTML(categoryElement, "Drift_remove_16.png")){
-    				row.put("Category", "removed");
-    			}
-    			row.put("Path", cell(table("listTable["+(noListTables-1)+"]"),i, 4).getText());
-    			
-    		}catch (Exception ex){
-    			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage());
-    			break;
-    		}
-    		rows.addLast((HashMap<String, String>) row.clone());
-    		row.clear();
-    	}    	
-    	_logger.log(Level.INFO, "Drift History: "+rows);
-		return rows;    	
+    	return getRHQgwtTableDetails("listTable", tableCountOffset, "CreationTime,Definition,Snapshot,Category,Path", "Drift_add_16.png=added,Drift_change_16.png=changed,Drift_remove_16.png=removed");
     }
     
     //*********************************************************************************
@@ -1634,6 +1644,87 @@ public class SahiTasks extends ExtendedSahi {
    	 deleteGroup(panelName, groupName);
    	
    }
-
-
+    
+    //***********************************************************************************************
+    //* Administration Page(s) validation [JSP pages]
+    //***********************************************************************************************
+    
+    public void navigateToAdministrationPage(String pageLocation, String tableName){
+    	this.link("Administration").click();
+    	this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*20);
+        this.cell(pageLocation).click();
+        this.waitForElementExists(this, this.table(tableName), tableName, 1000*20); //JSP pages are not a AJAX pages, hence waiting for an element (table name) on JSP page
+        _logger.log(Level.FINE, "Page redirected to: Administration-->"+pageLocation);
+    }
+    public boolean validatePage(String page, String tableName, String tableColumns, int columnIndexFrom, int minRowCount){
+    	navigateToAdministrationPage(page, tableName);
+    	LinkedList<String> header = getTableHeader(null);
+    	LinkedList<LinkedList<String>> tableContent = getJSPtable(tableName, header.size(), columnIndexFrom);
+    	
+    	StringBuffer tableDetails = new StringBuffer("***********Friendly Tabele Details***************\n");
+    	tableDetails.append("Table Name: ").append(tableName).append("\n");
+    	tableDetails.append("Header Count: ").append(header.size()).append("\n");
+    	tableDetails.append("Row Count: ").append(tableContent.size()).append("\n");
+    	tableDetails.append("Header(s): ").append(header).append("\n");
+    	for(int i=0;i<tableContent.size();i++){
+        		tableDetails.append("Row [").append((i+1)).append(" of ").append(tableContent.size()).append("]: ").append(tableContent.get(i)).append("\n");
+    	}
+    	tableDetails.append("*********************************************************");    	
+    	_logger.log(Level.INFO, tableDetails.toString());
+    	String[] columns = getCommaToArray(tableColumns);
+    	for(String column: columns){
+    		header.remove(column.trim());
+    	}    	
+    	return ((minRowCount <= tableContent.size()) && (header.size() == 0));
+    }
+    public LinkedList<String> getTableHeader(String tableName){
+    	LinkedList<String> header = new LinkedList<String>();
+    	String headerText = "headerText";
+    	int headerCount = this.span(headerText).countSimilar();
+    	_logger.log(Level.FINE, "Count: "+headerCount);
+    	for(int i=0; i<headerCount;i++){
+    		header.addLast(this.span(headerText+"["+i+"]").getText());
+    	}
+    	return header;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public LinkedList<LinkedList<String>> getJSPtable(String tableName, int headerSize, int columnIndexFrom){
+    	LinkedList<LinkedList<String>> table = new LinkedList<LinkedList<String>>();
+    	LinkedList<String> row = new LinkedList<String>();
+    	for(int i=1; ;i++){
+    		try{
+    			if(columnIndexFrom == 0){
+    				headerSize -=1;
+    			}
+    			for(int h=columnIndexFrom; h<=headerSize; h++){
+    				row.addLast(cell(table(tableName), i, h).getText());
+    			}
+    			table.addLast((LinkedList<String>) row.clone());
+    		}catch (Exception ex){
+    			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage());
+    			break;
+    		}
+    	}      
+    	return table;
+    }
+    
+    //*************************************************************************************
+    //* Get Agent status
+    //*************************************************************************************
+    public boolean isAgentRunning(String agentName) {
+    	this.link("Inventory").click();
+        this.cell("Platforms").click();
+        this.textbox("SearchPatternField").setValue(agentName.trim());
+        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+        LinkedList<HashMap<String, String>> agents = getRHQgwtTableDetails("listTable", 2, "Resource Type,Name,Ancestry,Description,Type,Version,Availability", "availability_red_16.png=Down,availability_green_16.png=Up");
+        if(agents.size() != 1){
+        	if(agents.get(0).get("Availability").equalsIgnoreCase("Up")){
+        		return true;
+        	}
+        }else{
+        	_logger.log(Level.INFO, "Agent Status: "+agents);
+        }        
+		return false;    	
+    }
 }
