@@ -1701,6 +1701,7 @@ public class SahiTasks extends ExtendedSahi {
     				row.addLast(cell(table(tableName), i, h).getText());
     			}
     			table.addLast((LinkedList<String>) row.clone());
+    			row.clear();
     		}catch (Exception ex){
     			_logger.log(Level.FINER, "Known Exception: "+ex.getMessage());
     			break;
