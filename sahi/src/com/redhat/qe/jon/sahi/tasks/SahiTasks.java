@@ -1292,7 +1292,7 @@ public class SahiTasks extends ExtendedSahi {
         	gotoDriftDefinationPage(resourceName, true);
         }
         
-        this.cell("Add").click();
+        this.cell("New").click();
         
         //Select Template
         if(templateName != null){
