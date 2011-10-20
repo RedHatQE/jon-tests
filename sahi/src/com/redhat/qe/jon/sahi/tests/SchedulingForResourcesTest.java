@@ -36,6 +36,12 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 		sahiTasks.setCollectionIntervalForScheduledResource(10);
 		
 	}
+
+	@AfterClass
+	public void changingToDefaScheduleforResource(){
+		sahiTasks.scheduleEnableForResource();
+		
+	}
 	
 	
 	
