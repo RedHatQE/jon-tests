@@ -27,7 +27,7 @@ public class SahiTasks extends ExtendedSahi {
     // ***************************************************************************
     public boolean login(String userName, String password) {
     	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*180)){
-    		return false;
+    		this.topLevelMenuDashboardExist();
     	}
         this.textbox("user").setValue(userName);
         this.password("password").setValue(password);

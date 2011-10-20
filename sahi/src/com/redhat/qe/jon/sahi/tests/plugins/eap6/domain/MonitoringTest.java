@@ -19,7 +19,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));        
     }
     
-    @Test(groups={"monitoringTest"})
+ /*   @Test(groups={"monitoringTest"})
     public void disableMetricsTest() {        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));               
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();        
@@ -47,9 +47,9 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         try {
             Thread.sleep(5000);
         } catch(InterruptedException ex) {}
-    }
+    }*/
     
-    @Test(groups={"monitoringTest"}, dependsOnMethods={"disableMetricsTest"})
+    @Test(groups={"monitoringTest"})
     public void enableMetricsTest()  {        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));                       
         // check that the metric is present in "Tables" tab                
@@ -60,7 +60,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         org.testng.Assert.assertTrue(sahiTasks.cell("Maximum request time").exists());                              
     }
     
-    @Test(groups={"monitoringTest"})
+/*    @Test(groups={"monitoringTest"})
     public void specifyMonitoringIntervalTest() {        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));               
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();                
@@ -71,5 +71,5 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         sahiTasks.cell("Set").click();
 
         org.testng.Assert.assertTrue(sahiTasks.cell(4).in(sahiTasks.cell("Maximum request time").parentNode("TR")).getText().indexOf("4") != -1);        
-    }
+    }*/
 }

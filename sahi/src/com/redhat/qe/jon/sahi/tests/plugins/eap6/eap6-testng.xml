@@ -95,4 +95,40 @@
             </run>
         </groups>  
     </test>
+    <test name="Domain_Management">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.DomainManagementTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                    
+                <include name="domainManagement"/>                                
+            </run>
+        </groups>
+    </test>
+    <test name="Domain_ManagedServersManagement">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.ServersManagementTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                    
+                <include name="serversManagement"/>                                
+            </run>
+        </groups>
+    </test>
+    <test name="Domain_ServerGroupsManagement">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.ServerGroupsManagementTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                    
+                <include name="serverGroupsManagement"/>                                
+            </run>
+        </groups>
+    </test>
 </suite>
