@@ -1,7 +1,7 @@
 package com.redhat.qe.jon.sahi.tests;
 
 import org.testng.annotations.Test;
-
+import org.testng.annotations.AfterClass;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 public class SchedulingForResourcesTest extends SahiTestScript {
