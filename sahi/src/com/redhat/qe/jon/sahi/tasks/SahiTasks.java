@@ -1728,4 +1728,33 @@ public class SahiTasks extends ExtendedSahi {
         }        
 		return false;    	
     }
+	
+
+
+ 
+    //************************************************************************************************
+    // Search Tests
+    //***************************************************************************************************
+    // TEXT serach for Groups
+    public boolean searchComaptibilityGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
+    	this.link("Inventory").click();
+        this.waitFor(5000);
+        this.cell(groupPanelName).click();
+        this.textbox("SearchPatternField").setValue("compatible");
+        
+        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+        if (this.cell("No items to show.").exists()){
+        	_logger.log(Level.WARNING, "No  "+ groupPanelName +"  is available" );
+        }
+        createGroup(groupPanelName, groupName, groupDesc, resourceList);
+        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");       
+        return this.div("compatibleGroup").exists();
+    }
+
+    public boolean searchAllGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
+    	return searchComaptibilityGroupWithText(groupPanelName, groupName, groupDesc, resourceList);
+    }
+
+
+
 }

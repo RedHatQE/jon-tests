@@ -270,6 +270,19 @@
 		</classes>
 	</test>
 
+	<test name="Search groups...">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.SearchTest">
+			<methods>
+				<include name="search"></include>
+			</methods>
+			</class>
+		</classes>
+		
+	</test>
+
+</suite>
+
 
 	
 </suite>
