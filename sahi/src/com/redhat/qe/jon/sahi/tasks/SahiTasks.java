@@ -775,6 +775,25 @@ public class SahiTasks extends ExtendedSahi {
     //********************************************************
     // Plugin Verification
     //********************************************************
+    public void locatePluginPage(boolean selectAgentPluginPage){
+    	this.link("Administration").click();
+    	this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*5);
+    	if(selectAgentPluginPage){
+    		this.cell("Agent Plugins").click();
+    		this.waitForElementExists(this, this.cell("Name"), "Name", 1000*3);
+    	}else{
+    		this.cell("Server Plugins").click();
+    		this.waitForElementExists(this, this.cell("Name"), "Name", 1000*3);
+    	}
+    }
+    
+    public boolean getAgentServerPluginsStaus(String pluginsName, boolean redirectPage, boolean isAgentPlugins){
+    	if(redirectPage){
+    		locatePluginPage(isAgentPlugins);
+    	}    	
+        return this.link(pluginsName).exists();
+    }
+    
     public void AntBundlePlugin() {
 
         this.link("Administration").click();

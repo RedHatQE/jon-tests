@@ -5,6 +5,17 @@
     	<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" />
   	</listeners>
 
+  	<test name="Plugins Validation">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.PluginsTest">
+			<methods>
+				 <include name="validateAgentPlugins"></include>
+				 <include name="validateServerPlugins"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
+	
 	<test name="InventoryTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.InventoryTest"/>
@@ -146,7 +157,7 @@
 			</class>
 		</classes>
 	</test>	
-	
+	<!--
 	<test name="PluginsTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.PluginsTest"/>
@@ -159,6 +170,7 @@
 			</run>
 		</groups>
 	</test>
+	-->
 	
 	<test name="AlertHistoryValidationTest">
 		<classes>
