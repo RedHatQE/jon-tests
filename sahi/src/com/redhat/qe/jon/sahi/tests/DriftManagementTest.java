@@ -56,17 +56,17 @@ public class DriftManagementTest extends SahiTestScript {
 	
 	@Test (groups="driftTest", dataProvider="driftCreationData", dependsOnMethods={"createDrift"})
 	public void driftActionFileAdd(HashMap<String, String> driftDetail) throws InterruptedException, IOException{
-		Assert.assertTrue(sahiTasks.addChangeRemoveDriftFile(null, driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_BASE_DIR), driftDetail.get(DRIFT_ACTION_FILE_INCLUDE_ADD), driftDetail.get(DRIFT_ACTION_FILE_EXCLUDE_ADD), "added"), "File added validation check");
+		Assert.assertTrue(sahiTasks.addChangeRemoveDriftFile(driftDetail.get(RESOURCE_NAME), driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_BASE_DIR), driftDetail.get(DRIFT_ACTION_FILE_INCLUDE_ADD), driftDetail.get(DRIFT_ACTION_FILE_EXCLUDE_ADD), "added"), "File added validation check");
 	}
 	
 	@Test (groups="driftTest", dataProvider="driftCreationData", dependsOnMethods={"createDrift", "driftActionFileAdd"})
 	public void driftActionFileChange(HashMap<String, String> driftDetail) throws InterruptedException, IOException{
-		Assert.assertTrue(sahiTasks.addChangeRemoveDriftFile(null, driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_BASE_DIR), driftDetail.get(DRIFT_ACTION_FILE_INCLUDE_CHANGE), driftDetail.get(DRIFT_ACTION_FILE_EXCLUDE_CHANGE), "changed"), "File changed validation check");
+		Assert.assertTrue(sahiTasks.addChangeRemoveDriftFile(driftDetail.get(RESOURCE_NAME), driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_BASE_DIR), driftDetail.get(DRIFT_ACTION_FILE_INCLUDE_CHANGE), driftDetail.get(DRIFT_ACTION_FILE_EXCLUDE_CHANGE), "changed"), "File changed validation check");
 	}
 	
 	@Test (groups="driftTest", dataProvider="driftCreationData", dependsOnMethods={"createDrift", "driftActionFileAdd", "driftActionFileChange"})
 	public void driftActionFileRemove(HashMap<String, String> driftDetail) throws InterruptedException, IOException{
-		Assert.assertTrue(sahiTasks.addChangeRemoveDriftFile(null, driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_BASE_DIR), driftDetail.get(DRIFT_ACTION_FILE_INCLUDE_CHANGE), driftDetail.get(DRIFT_ACTION_FILE_EXCLUDE_CHANGE), "removed"), "File removed validation check");
+		Assert.assertTrue(sahiTasks.addChangeRemoveDriftFile(driftDetail.get(RESOURCE_NAME), driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_BASE_DIR), driftDetail.get(DRIFT_ACTION_FILE_INCLUDE_CHANGE), driftDetail.get(DRIFT_ACTION_FILE_EXCLUDE_CHANGE), "removed"), "File removed validation check");
 	}
 	
 	@Test (groups="driftTest", dataProvider="driftCreationData", dependsOnMethods={"createDrift", "driftActionFileAdd", "driftActionFileChange", "driftActionFileRemove"})

@@ -1058,13 +1058,15 @@ public class SahiTasks extends ExtendedSahi {
     //*********************************************************************************
     //* Drift Management Add Drift on GUI
     //*********************************************************************************
-    public void gotoDriftDefinationPage(String resourceName, boolean definitionsPage) {
-    	selectResource(resourceName);
-        this.cell("Drift").click();
+    public void gotoDriftDefinationPage(String resourceName, boolean definitionsPage) {    	
         if (definitionsPage) {
-            this.xy(this.cell("Definitions"), 3, 3).click();
+        	selectResource(resourceName);
+            this.cell("Drift").click();
+            //this.xy(this.cell("Definitions"), 3, 3).click();
         } else {
-            this.xy(this.cell("History"), 3, 3).click();
+        	this.link("Reports").click();
+        	this.cell("Recent Drift").click();
+            //this.xy(this.cell("History"), 3, 3).click();
         }
     }
     
@@ -1132,7 +1134,7 @@ public class SahiTasks extends ExtendedSahi {
         	for(String fileName : files){
         		this.image("add.png[1]").focus();
                 this.execute("_sahi._keyPress(_sahi._image('add.png[1]'), 32);"); //32 - Space bar
-                this.textbox("path[1]").setValue(fileName.trim());
+                this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Includes]: "+fileName);
                 this.cell("OK").click();   
         	}        	     	
@@ -1144,7 +1146,7 @@ public class SahiTasks extends ExtendedSahi {
         	for(String fileName : files){
         		this.image("add.png[2]").focus();
                 this.execute("_sahi._keyPress(_sahi._image('add.png[2]'), 32);"); //32 - Space bar
-                this.textbox("path[1]").setValue(fileName.trim());
+                this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Excludes]: "+fileName);
                 this.cell("OK").click();
         	}    	
@@ -1168,7 +1170,7 @@ public class SahiTasks extends ExtendedSahi {
     		gotoDriftDefinationPage(resource, false);
     	}    	
     	Thread.sleep(1000);
-    	return getRHQgwtTableDetails("listTable", tableCountOffset, "CreationTime,Definition,Snapshot,Category,Path", "Drift_add_16.png=added,Drift_change_16.png=changed,Drift_remove_16.png=removed");
+    	return getRHQgwtTableDetails("listTable", tableCountOffset, "CreationTime,Definition,Snapshot,Category,Path,Resource,Ancestry", "Drift_add_16.png=added,Drift_change_16.png=changed,Drift_remove_16.png=removed");
     }
     
     //*********************************************************************************
@@ -1260,8 +1262,9 @@ public class SahiTasks extends ExtendedSahi {
         clickDriftDetectNowOrDelete(driftName, 3, 1000*65, false);
        
         // Redirect to history Page
-        this.xy(this.cell("History"), 3, 3).click();
-        LinkedList<HashMap<String, String>> driftHistory = getDriftManagementHistory(null, 1);
+        //this.xy(this.cell("History"), 3, 3).click();
+        
+        LinkedList<HashMap<String, String>> driftHistory = getDriftManagementHistory(resourceName, 2);
         
        
         //IncludeFile Test
@@ -1272,8 +1275,7 @@ public class SahiTasks extends ExtendedSahi {
         //ExcludeFile Test
         if(checkAvailabilityOnDriftHistory(excludeFileKeys, driftHistory, fileAction)){
         	return false;
-        }
-        
+        }     
        
         return true;
     }
