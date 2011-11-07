@@ -273,6 +273,7 @@
 			<class name="com.redhat.qe.jon.sahi.tests.SearchTest">
 			<methods>
 				<include name="search"></include>
+				<include name="delete"></include>
 			</methods>
 			</class>
 		</classes>
