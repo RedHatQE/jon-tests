@@ -1025,8 +1025,22 @@ public class SahiTasks extends ExtendedSahi {
     //**************************************************************************************************
     //* Get GWT table information 
     //**************************************************************************************************
+    public LinkedList<HashMap<String, String>> getRHQgwtTableFullDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue) {
+    	return getRHQgwtTableDetails(tableName, tableCountOffset, columnsCSV, replacementKeyValue, false, 0, false, null);    	
+    }
+    public LinkedList<HashMap<String, String>> getRHQgwtTableConditionalDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue, String condition) {
+    	return getRHQgwtTableDetails(tableName, tableCountOffset, columnsCSV, replacementKeyValue, false, 0, true, condition);    	
+    }
+    public HashMap<String, String> getRHQgwtTableRowDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue, int rowNo) {
+    	LinkedList<HashMap<String, String>> rowDetails = getRHQgwtTableDetails(tableName, tableCountOffset, columnsCSV, replacementKeyValue, true, rowNo, false, null);
+    	if(rowDetails.size() == 1){
+    		return rowDetails.get(0);  
+    	}else{
+    		return new HashMap<String, String>();
+    	}  	
+    }
     @SuppressWarnings("unchecked")
-	public LinkedList<HashMap<String, String>> getRHQgwtTableDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue) {
+	public LinkedList<HashMap<String, String>> getRHQgwtTableDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue, boolean singleRow, int rowNo, boolean conditional, String condition) {
     	int noListTables = this.table(tableName).countSimilar()-tableCountOffset;
     	LinkedList<HashMap<String, String>> rows = new LinkedList<HashMap<String,String>>();
     	HashMap<String, String> row = new HashMap<String, String>();
@@ -1034,7 +1048,17 @@ public class SahiTasks extends ExtendedSahi {
     	HashMap<String, String> replacement = getKeyValueMap(replacementKeyValue);
     	String innerHTMLstring;
     	String textString;
+    	String columnName = null;
+    	String columnValue = null;
+    	if(conditional){
+    		String[] columnValueTmp = condition.split("=");
+    		columnName = columnValueTmp[0].trim();
+    		columnValue = columnValueTmp[1].trim();
+    	}
     	for(int i=0; ;i++){
+    		if(singleRow){
+        		i=rowNo;
+        	}
     		try{
     			for(int c=0; c<columns.length; c++){
     				ElementStub categoryElement = cell(table(tableName+"["+(noListTables-1)+"]"),i, c);
@@ -1055,9 +1079,17 @@ public class SahiTasks extends ExtendedSahi {
     			break;
     		}
     		rows.addLast((HashMap<String, String>) row.clone());
+    		if(singleRow){
+    			return rows;
+    		}
+    		if(conditional){
+    			if(row.get(columnName).equalsIgnoreCase(columnValue)){
+    				return rows;
+    			}
+    		}
     		row.clear();
     	}    	
-    	_logger.log(Level.FINER, "Table Details: "+rows);
+    	_logger.log(Level.INFO, "Table Details: "+rows);
 		return rows;    	
     }
     
@@ -1176,7 +1208,7 @@ public class SahiTasks extends ExtendedSahi {
     		gotoDriftDefinationPage(resource, false);
     	}    	
     	Thread.sleep(1000);
-    	return getRHQgwtTableDetails("listTable", tableCountOffset, "CreationTime,Definition,Snapshot,Category,Path,Resource,Ancestry", "Drift_add_16.png=added,Drift_change_16.png=changed,Drift_remove_16.png=removed");
+    	return getRHQgwtTableFullDetails("listTable", tableCountOffset, "CreationTime,Definition,Snapshot,Category,Path,Resource,Ancestry", "Drift_add_16.png=added,Drift_change_16.png=changed,Drift_remove_16.png=removed");
     }
     
     //*********************************************************************************
@@ -1542,7 +1574,7 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Platforms").click();
         this.textbox("SearchPatternField").setValue(agentName.trim());
         this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
-        LinkedList<HashMap<String, String>> agents = getRHQgwtTableDetails("listTable", 2, "Resource Type,Name,Ancestry,Description,Type,Version,Availability", "availability_red_16.png=Down,availability_green_16.png=Up");
+        LinkedList<HashMap<String, String>> agents = getRHQgwtTableFullDetails("listTable", 2, "Resource Type,Name,Ancestry,Description,Type,Version,Availability", "availability_red_16.png=Down,availability_green_16.png=Up");
         if(agents.size() != 1){
         	if(agents.get(0).get("Availability").equalsIgnoreCase("Up")){
         		return true;
@@ -1645,7 +1677,7 @@ public class SahiTasks extends ExtendedSahi {
     		return false;
     	}
     	if(resourceName != null){
-    		LinkedList<HashMap<String, String>> discoveryQueue = getRHQgwtTableDetails("listTable", 2, "Resource Name, Resource Key, Resource Type, Description, Inventory Status, Discovery Time", null);
+    		LinkedList<HashMap<String, String>> discoveryQueue = getRHQgwtTableFullDetails("listTable", 2, "Resource Name, Resource Key, Resource Type, Description, Inventory Status, Discovery Time", null);
         	_logger.log(Level.INFO, "Table Details: Number of Row(s): "+discoveryQueue.size());
         	for(int i=0; i<discoveryQueue.size(); i++){
         		if(resourceName.equalsIgnoreCase(discoveryQueue.get(i).get("Resource Name"))){
