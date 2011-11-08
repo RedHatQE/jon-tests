@@ -23,9 +23,37 @@ public class SearchTest extends SahiTestScript {
 		Assert.assertEquals(true,sahiTasks.searchAllGroupWithText("All Groups",  compatibleGroup, groupDesc, resourceList),"All Groups Going good ...");
 		
 	}
-	@AfterMethod
+	@Test (groups="search", dataProvider ="mixedGroup")
+	public void searchMixedGroupWithText(String mixedGroup, String groupDesc, ArrayList<String> resourceList){
+		Assert.assertEquals(true,sahiTasks.searchAllGroupWithText("Mixed Groups",  mixedGroup, groupDesc, resourceList),"Mixed Groups Going good ...");
+		
+	}
+	
+	@Test (groups="delete", dependsOnMethods ="searchCompGroupWithText")
 	public void deleteComaptibleGroup(){
 		sahiTasks.deleteCompatibilityGroup("Compatible Groups","compatibleGroup");
+	}
+	@Test (groups="delete", dependsOnMethods ="searchMixedGroupWithText")
+	public void deleteMixedGroup(){
+		sahiTasks.deleteCompatibilityGroup("Mixed Groups","mixedGroup");
+	}
+	@Test (groups="delete", dependsOnMethods ="searchAllGroupWithText")
+	public void deleteAllGroups(){
+		sahiTasks.deleteCompatibilityGroup("All Groups","mixedGroup");
+	}
+
+	@DataProvider(name="mixedGroup")
+	public Object[][] mixedGroupData() {
+		return TestNGUtils.convertListOfListsTo2dArray(getMixedGroup());
+	}
+	
+	public List<List<Object>> getMixedGroup() {
+		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
+		ArrayList<String> resourceData = new ArrayList<String>();
+		resourceData.add("RHQ Agent");
+		resourceData.add("Cron");
+		data.add(Arrays.asList(new Object[]{"mixedGroup", "mixed Group description", resourceData}));
+		return data;
 	}
 	
 	

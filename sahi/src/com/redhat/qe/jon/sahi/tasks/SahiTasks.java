@@ -1687,7 +1687,9 @@ public class SahiTasks extends ExtendedSahi {
     public boolean searchAllGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
     	return searchComaptibilityGroupWithText(groupPanelName, groupName, groupDesc, resourceList);
     }
-
+    public boolean searchMixedGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
+    	return searchComaptibilityGroupWithText(groupPanelName, groupName, groupDesc, resourceList);
+    }
 
 
 }
