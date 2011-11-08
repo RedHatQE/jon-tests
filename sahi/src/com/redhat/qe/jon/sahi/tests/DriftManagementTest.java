@@ -83,7 +83,7 @@ public class DriftManagementTest extends SahiTestScript {
 				
 		String agentName = System.getenv().get("AGENT_NAME");
 		map.put(RESOURCE_NAME, "Platforms="+agentName);
-		map.put(DRIFT_TEMPLATE, "File System --> File System");
+		map.put(DRIFT_TEMPLATE, "Template-File System --> Template-File System");
 		map.put(DRIFT_NAME, "File SystemDrift - monitor changes in file");
 		map.put(DRIFT_BASE_DIR, "/tmp/automationDriftManagementDir/");
 		map.put(DRIFT_TEXT_BOXES, "interval=60,valueName="+map.get(DRIFT_BASE_DIR));

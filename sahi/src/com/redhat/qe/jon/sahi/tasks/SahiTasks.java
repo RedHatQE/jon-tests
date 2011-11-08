@@ -865,7 +865,12 @@ public class SahiTasks extends ExtendedSahi {
                 HashMap<String, String> keyValueMap = this.getKeyValueMap(textBoxKeyValue);
                 Set<String> keys = keyValueMap.keySet();
                 for (String key : keys) {
-                    this.textbox(key).setValue(keyValueMap.get(key));
+                	try{
+                		this.textbox(Integer.parseInt(key)).setValue(keyValueMap.get(key));
+                	}catch(Exception ex){
+                		this.textbox(key).setValue(keyValueMap.get(key));
+                	}
+                    
                     _logger.log(Level.INFO, "Updated textbox:["+key+"="+keyValueMap.get(key)+"]");
                 }
             }
@@ -1020,7 +1025,8 @@ public class SahiTasks extends ExtendedSahi {
     //**************************************************************************************************
     //* Get GWT table information 
     //**************************************************************************************************
-    public LinkedList<HashMap<String, String>> getRHQgwtTableDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue) {
+    @SuppressWarnings("unchecked")
+	public LinkedList<HashMap<String, String>> getRHQgwtTableDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue) {
     	int noListTables = this.table(tableName).countSimilar()-tableCountOffset;
     	LinkedList<HashMap<String, String>> rows = new LinkedList<HashMap<String,String>>();
     	HashMap<String, String> row = new HashMap<String, String>();
@@ -1051,7 +1057,7 @@ public class SahiTasks extends ExtendedSahi {
     		rows.addLast((HashMap<String, String>) row.clone());
     		row.clear();
     	}    	
-    	_logger.log(Level.INFO, "Table Details: "+rows);
+    	_logger.log(Level.FINER, "Table Details: "+rows);
 		return rows;    	
     }
     
@@ -1547,7 +1553,116 @@ public class SahiTasks extends ExtendedSahi {
 		return false;    	
     }
 	
+    //*************************************************************************************
+    //* GUI installation - RHQ/JON
+    //*************************************************************************************
+    public boolean guiInstallationRHQ(String dataBaseType, String databaseDetails, String databasePassword, String databaseMaintanceType, String registeredServerSelection, String serverDetails, String embeddedAgentEnabled){
+    	//Check the installation status, return true if already installed
+    	if(this.heading1("The Server Is Installed!").exists()){
+    		if(this.link("Click here to get started!").exists()){
+    			_logger.log(Level.INFO, "Installation process completed already!, Nothing to do!!");
+    			return true;
+    		}
+    	}
+    	
+    	if(!this.waitForElementExists(this, this.link("Click here to continue the installation"), "Link: Click here to continue the installation", 1000*30)){
+    		return false;
+    	}
+    	this.link("Click here to continue the installation").click();
 
+    	//Select Database Type    	
+    	this.select("propForm:databasetype").choose(dataBaseType);
+
+    	//Update text fields on database [DB Connection URL, DB JDBC Driver class, DB XA dataStore Class, DB User Name]
+    	updateTextBoxValues(databaseDetails);
+
+    	//Update database password
+    	this.password("propForm:databasepassword").setValue(databasePassword);
+    	
+    	//Test Connection
+    	this.submit("Test Connection").click();
+    	
+    	//validate Database connection works correctly
+    	if(!this.waitForElementExists(this, this.image("OK"), "Image: OK, database validatition check", 1000*30)){
+    		if(this.waitForElementExists(this, this.image("Error"), "Image: Error, database validatition check", 1000*30)){
+    			return false;
+    		}
+    		return false;
+    	}
+    	
+    	if(databaseMaintanceType != null){
+    		if(this.span("A database schema already exists. What do you want to do?").exists()){
+    			this.select(1).choose(databaseMaintanceType);
+    		}else{
+    			_logger.log(Level.WARNING, "There no Database exists! Not able to select '"+databaseMaintanceType+"'. Continuing fresh DB installation...");
+    		}
+    	}
+
+    	//Registered server Selection
+    	if(registeredServerSelection != null){
+    		this.select(2).choose(registeredServerSelection);
+    	}
+
+    	//Update Server details
+    	updateTextBoxValues(serverDetails);
+
+    	//Embedded Agent Enabled
+    	if(embeddedAgentEnabled.equalsIgnoreCase("true")){
+    		this.radio("true").click();
+    	}else{
+    		this.radio("false").click();
+    	}
+    	
+    	//Update database password
+    	this.password("propForm:databasepassword").setValue(databasePassword);
+    	
+    	
+    	this.submit("Install Server!").click();
+    	//Starting up, please wait...
+
+    	if(!this.waitForElementExists(this, this.span("Starting up, please wait..."), "Span: Starting up, please wait...", 1000*30)){
+    		return false;
+    	}
+
+    	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", 1000*60*2)){
+    		return false;
+    	}
+
+    	this.link("Done! Click here to get started!").click();
+    	
+    	return true;    	
+
+    }
+    
+    //*************************************************************************************
+    //* Import Resources
+    //*************************************************************************************
+    public boolean importResources(String resourceName){
+    	this.link("Inventory").click();
+    	this.cell("Discovery Queue").click();
+    	if(this.waitForElementRowExists(this, "No items to show", 1000*5)){
+    		_logger.log(Level.WARNING, "No items to import!");
+    		return false;
+    	}
+    	if(resourceName != null){
+    		LinkedList<HashMap<String, String>> discoveryQueue = getRHQgwtTableDetails("listTable", 2, "Resource Name, Resource Key, Resource Type, Description, Inventory Status, Discovery Time", null);
+        	_logger.log(Level.INFO, "Table Details: Number of Row(s): "+discoveryQueue.size());
+        	for(int i=0; i<discoveryQueue.size(); i++){
+        		if(resourceName.equalsIgnoreCase(discoveryQueue.get(i).get("Resource Name"))){
+        			_logger.log(Level.INFO, "Row: ["+(i+1)+"]: "+discoveryQueue.get(i));
+        			this.image("unchecked.png["+i+"]").click();
+        		}     		
+        	}
+    	}else{
+    		this.cell("Select All").click();
+    	}
+    	this.cell("Yes").click();
+    	this.cell("Import").click();
+    	if(!this.waitForElementExists(this, this.cell("You have successfully imported the selected Resources."), "Cell: You have successfully imported the selected Resources.", 1000*10)){
+    		return false;
+    	}
+		return true;   	
+    }
 
  
     //************************************************************************************************
