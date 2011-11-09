@@ -1519,7 +1519,7 @@ public class SahiTasks extends ExtendedSahi {
     	if(metricDetail.get("Metric").equalsIgnoreCase(metricName)){
     		_logger.log(Level.INFO, "Metric: New Status: "+metricDetail);
     		if(updateCollectionInterval){
-        		if(metricDetails.get(rowNo).get("Collection Interval").equalsIgnoreCase(collectionIntervalValue)){
+        		if(metricDetails.get(rowNo).get("Collection Interval").equalsIgnoreCase(collectionIntervalStr)){
             		return true;
             	}
         	}else{
