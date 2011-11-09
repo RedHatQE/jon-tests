@@ -1141,6 +1141,9 @@ public class SahiTasks extends ExtendedSahi {
 		if(!driftSSH.deleteFilesDirs(baseDir)){
 			return false;
 		}
+		if(!driftSSH.createFileDir(baseDir)){
+			return false;
+		}
 		driftSSH.closeConnection();
 		
         //Select Resource
