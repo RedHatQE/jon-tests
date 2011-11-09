@@ -1402,50 +1402,132 @@ public class SahiTasks extends ExtendedSahi {
 
  
     //************************************************************************************************
-    // Metric Collection Schedules For Reousrces
-    //*********************************************************************************************
+    //* Metric Collection Schedules For Resources [enable/disable/update]
+    //************************************************************************************************
+    public void selectRowOnTable(String divName, int divMaxIndex) {    	
+    	for(int i=divMaxIndex; i>=0; i--){
+    		if(this.div(divName+"["+i+"]").exists()){
+    			this.div(divName+"["+i+"]").click();
+    			_logger.log(Level.INFO, "Clicked, DIV Name:  "+divName+"["+i+"]");
+    			break;
+    		}
+    	}
+    }
+    public void selectSchedules(String resourceName){
+    	selectResource(resourceName);
+    	this.cell("Monitoring").click();
+        this.xy(cell("Schedules"), 3,3).click();    	
+    }
+    public boolean enableDisableUpdateMetric(String resourceName, String metricName, boolean updateCollectionInterval, String collectionIntervalValue, boolean enable){
+    	if(resourceName != null){
+    		selectSchedules(resourceName);
+    	}    
+    	String[] collectionInterval = null;
+    	String collectionIntervalStr = null;
+    	int rowNo=-1;
+    	String tableName = "listTable";
+    	String tableColumns = "Metric,Description,Type,Enabled?,Collection Interval";
+    	String replaceColumnValues = "permission_enabled_11.png=Enabled,permission_disabled_11.png=Disabled";
+    	int numberTableAvailable = this.table(tableName).countSimilar();
+    	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
+    	int tableOffset = numberTableAvailable - 3;
+    	LinkedList<HashMap<String, String>> metricDetails = getRHQgwtTableConditionalDetails(tableName, tableOffset, tableColumns, replaceColumnValues, "Metric="+metricName);
+    	_logger.log(Level.INFO,"Number of Row: "+metricDetails.size());
+    	for(int i=0; i<metricDetails.size(); i++){
+    		if(metricDetails.get(i).get("Metric").equalsIgnoreCase(metricName)){
+    			_logger.log(Level.INFO, "Metric: Old Status: Row ("+(i+1)+"): "+metricDetails.get(i));
+    			rowNo = i;
+    			break;
+    		}
+    	}
+    	if(rowNo == -1){
+    		_logger.log(Level.WARNING, "Metric: "+metricName+" not found on the metric table!");
+    		return false;
+    	}
+    	if(updateCollectionInterval){
+    		collectionInterval = collectionIntervalValue.split(" ");
+    		int hours = 0;
+			int minutes = 0;
+			int seconds = 0;
+			int rawValue = Integer.parseInt(collectionInterval[0].trim());
+    		if(collectionInterval[1].equalsIgnoreCase("seconds")){
+    			hours = rawValue / (60*60);
+    			minutes = rawValue / 60;
+    			seconds = rawValue % 60;   			
+    		}else if(collectionInterval[1].equalsIgnoreCase("minutes")){
+    			hours = rawValue / 60;
+    			minutes = rawValue % 60;
+    		}else{
+    			hours = rawValue;
+    		}
+    		if(hours > 0){
+    			collectionIntervalStr = hours +" hours";
+    		}
+    		if(minutes > 0){
+    			if(collectionIntervalStr != null){
+    				collectionIntervalStr += ", "+minutes+" minutes";
+    			}else{
+    				collectionIntervalStr = minutes+" minutes";
+    			}
+    		}
+    		if(seconds > 0){
+    			if(collectionIntervalStr != null){
+    				collectionIntervalStr += ", "+seconds+" seconds";
+    			}else{
+    				collectionIntervalStr = seconds+" seconds";
+    			}
+    		}
+    		_logger.log(Level.FINE, "Reference Collection Value: "+collectionIntervalStr);
+    		if(metricDetails.get(rowNo).get("Collection Interval").equalsIgnoreCase(collectionIntervalStr)){
+        		_logger.log(Level.WARNING, "Metric: "+metricName+" collection interval already defined as "+metricDetails.get(rowNo).get("Collection Interval")+". Nothing to do..");
+    			return true;
+        	}
+    	}else{
+    		if(metricDetails.get(rowNo).get("Enabled?").equalsIgnoreCase("Enabled") == enable){
+        		_logger.log(Level.WARNING, "Metric: "+metricName+" already in "+metricDetails.get(rowNo).get("Enabled?")+" state. Nothing to do..");
+    			return true;
+        	}
+    	}
+    	
+    	selectRowOnTable(metricName,2);
+    	if(updateCollectionInterval){
+    		this.textbox("interval").setValue(collectionInterval[0].trim());
+    		if(!collectionInterval[1].trim().equalsIgnoreCase("minutes")){
+    			selectComboBoxes("minutes --> "+collectionInterval[1].trim());
+    		}
+            this.xy(cell("Set[1]"),3,3).click();
+            if(resourceName == null){
+            	if(!collectionInterval[1].trim().equalsIgnoreCase("minutes")){
+            		selectComboBoxes(collectionInterval[1].trim()+" --> minutes");
+            	}            	
+            }
+             numberTableAvailable = this.table(tableName).countSimilar();
+        	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
+            tableOffset = numberTableAvailable - 3;
+    	}else{
+    		if(enable){
+        		this.cell("Enable").click();
+        	}else{
+        		this.cell("Disable").click();
+        	}
+    	}
+    	
+    	HashMap<String, String> metricDetail = getRHQgwtTableRowDetails(tableName, tableOffset, tableColumns, replaceColumnValues, rowNo);
+    	if(metricDetail.get("Metric").equalsIgnoreCase(metricName)){
+    		_logger.log(Level.INFO, "Metric: New Status: "+metricDetail);
+    		if(updateCollectionInterval){
+        		if(metricDetails.get(rowNo).get("Collection Interval").equalsIgnoreCase(collectionIntervalValue)){
+            		return true;
+            	}
+        	}else{
+    			if(metricDetail.get("Enabled?").equalsIgnoreCase("Enabled") == enable){
+    				return true;
+    			}
+        	}
+    	}
+		return false;
+    }
     
-    public void scheduleEnableForResource(){
-        this.link("Inventory").click();
-        this.cell("Servers").click();
-        this.link("RHQ Agent").click();
-        this.cell("Monitoring").click();
-        this.xy(cell("Schedules"), 3,3).click();
-        this.div("JVM Total Memory[1]").click();
-        this.cell("Enable").click();
-        
-    }
-    public void disableScheduleResource(){
-        this.link("Inventory").click();
-        this.cell("Servers").click();
-        this.link("RHQ Agent").click();
-        this.cell("Monitoring").click();
-        this.xy(cell("Schedules"), 3,3).click();
-        this.div("JVM Total Memory[1]").click();
-        this.cell("Disable").click();
-        
-    }
-    public void refreshScheduledResource(){
-        this.link("Inventory").click();
-        this.cell("Servers").click();
-        this.link("RHQ Agent").click();
-        this.cell("Monitoring").click();
-        this.xy(cell("Schedules"), 3,3).click();
-        this.div("JVM Total Memory[1]").click();
-        this.cell("Refresh").click();
-        
-    }
-    public void setCollectionIntervalForScheduledResource(int value){
-        this.link("Inventory").click();
-        this.cell("Servers").click();
-        this.link("RHQ Agent").click();
-        this.cell("Monitoring").click();
-        this.xy(cell("Schedules"), 3,3).click();
-        this.div("JVM Total Memory[1]").click();
-        this.textbox("interval").setValue(Integer.toString(value));
-        this.cell("Set").click();
-    }
-
     //************************************************************************************************
     // Group Configuration
     //***************************************************************************************************

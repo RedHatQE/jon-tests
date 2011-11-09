@@ -208,11 +208,13 @@
 		</classes>
 	</test>
 	
-	<test name="Schedule Resources">
+	<test name="Metric Collection Schedules validation">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
 			<methods>
-				<include name="scheduleResources"></include>
+				 <include name="enableMetric"></include>
+				 <include name="disableMetric"></include>
+				 <include name="updateMetric"></include> 
 			</methods>
 			</class>
 		</classes>
