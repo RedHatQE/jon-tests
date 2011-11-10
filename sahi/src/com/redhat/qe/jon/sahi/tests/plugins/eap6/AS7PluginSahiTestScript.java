@@ -23,6 +23,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     private static String MGMT_HOST_STANDALONE;
     private static int MGMT_PORT_DOMAIN;
     private static String MGMT_HOST_DOMAIN;
+
     protected static ModelControllerClient managementStandalone;
     protected static ModelControllerClient managementDomain;
 
@@ -69,7 +70,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
 
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         // should we include this or not? it uninventorizes all EAP-instance resources from the agent before the testing starts..
-     /*   as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+    /*    as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
         as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-one.name"));
         as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-two.name"));

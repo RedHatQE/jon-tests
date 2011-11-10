@@ -30,7 +30,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         try {
             Thread.sleep(5000);
         } catch(Exception e) {}
-        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();        
+        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
         ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
         ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
