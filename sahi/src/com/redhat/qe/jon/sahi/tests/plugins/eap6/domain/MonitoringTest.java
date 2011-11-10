@@ -19,11 +19,13 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));        
     }
     
- /*   @Test(groups={"monitoringTest"})
-    public void disableMetricsTest() {        
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));               
-        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();        
-        // step1: disable one of the metrics 
+    @Test(groups={"monitoringTest"})
+    public void disableMetricsTest() throws Exception {
+        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
+        Thread.sleep(5000);
+        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
+        // step1: disable one of the metrics
+        Thread.sleep(5000);
         sahiTasks.xy(sahiTasks.cell("Maximum request time"), 3, 3).click();
         try {
             Thread.sleep(2000);
@@ -35,19 +37,16 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         
         // step2: check that the metric is not present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
-        try {
-            Thread.sleep(5000);
-        } catch(InterruptedException ex) {}
+        Thread.sleep(5000);
         org.testng.Assert.assertFalse(sahiTasks.cell("Maximum request time").exists());
                            
         // step3: enable the metrics back
-        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();          
+        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
+        Thread.sleep(5000);
         sahiTasks.xy(sahiTasks.cell("Maximum request time"), 3, 3).click();
         sahiTasks.cell("Enable").click();  
-        try {
-            Thread.sleep(5000);
-        } catch(InterruptedException ex) {}
-    }*/
+        Thread.sleep(5000);
+    }
     
     @Test(groups={"monitoringTest"})
     public void enableMetricsTest()  {        
@@ -60,10 +59,12 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         org.testng.Assert.assertTrue(sahiTasks.cell("Maximum request time").exists());                              
     }
     
-/*    @Test(groups={"monitoringTest"})
-    public void specifyMonitoringIntervalTest() {        
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));               
-        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();                
+    @Test(groups={"monitoringTest"})
+    public void specifyMonitoringIntervalTest() throws  Exception {
+        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
+        Thread.sleep(5000);
+        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
+        Thread.sleep(5000);
         sahiTasks.xy(sahiTasks.cell("Maximum request time"), 3, 3).click();  
         
         ElementStub textbox = sahiTasks.textbox("textItem").in(sahiTasks.label("Collection Interval").parentNode("TR"));
@@ -71,5 +72,5 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         sahiTasks.cell("Set").click();
 
         org.testng.Assert.assertTrue(sahiTasks.cell(4).in(sahiTasks.cell("Maximum request time").parentNode("TR")).getText().indexOf("4") != -1);        
-    }*/
+    }
 }
