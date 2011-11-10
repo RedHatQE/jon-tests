@@ -10,8 +10,8 @@
                 <include name="autodetectConfiguration"/>                                
             </run>
         </groups>
-    </test>	 
-    <test name="Standalone_ResourceConfiguration">
+    </test>
+     <test name="Standalone_ResourceConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceConfigurationTest"/>                
         </classes>
@@ -22,7 +22,7 @@
                 <include name="inventoryTest"/>
             </run>
         </groups>
-    </test>  
+    </test>
     <test name="Standalone_ResourceCreation">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceCreationTest"/>                
@@ -35,7 +35,7 @@
             </run>
         </groups>
     </test>  
-    <test name="Standalone_Monitoring">
+      <test name="Standalone_Monitoring">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.MonitoringTest"/>
         </classes>

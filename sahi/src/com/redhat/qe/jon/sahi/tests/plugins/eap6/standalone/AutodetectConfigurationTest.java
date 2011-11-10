@@ -23,6 +23,7 @@ public class AutodetectConfigurationTest extends AS7PluginSahiTestScript {
     
     @Test(groups={"autodetectConfiguration"})
     public void autodetectConfiguration() {
+        as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
         as7SahiTasks.navigate(Navigate.AUTODISCOVERY_QUEUE, System.getProperty("agent.name"), null);                
         String resourceTypeHTML = (sahiTasks.cell(System.getProperty("as7.standalone.name")).parentNode("TABLE")).parentNode("TR").fetch("innerHTML");

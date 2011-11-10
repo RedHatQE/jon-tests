@@ -5,6 +5,13 @@
 	<property name="sahi.dir" value="${env.SAHI_BASE}" location="."/>
 	<property environment="env" />
 	<property name="test.build.dir" location="bin" />
+
+    <property name="as-controller-client" location="lib/jboss-as-controller-client-7.0.2.Final.jar" />
+    <property name="as-dmr" location="lib/jboss-dmr-1.0.0.Final.jar" />
+    <property name="as-protocol" location="lib/jboss-as-protocol-7.0.2.Final.jar" />
+    <property name="jboss-threads" location="lib/jboss-threads-2.0.0.GA.jar" />
+    <property name="jboss-logging" location="lib/jboss-logging-3.0.0.GA.jar" />
+
 	<property name="test.src.dir" location="src" />
 	<property name="test.output.dir" location="test-output" />
 	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
@@ -25,6 +32,11 @@
 
 	<path id="tests.cp">
 		<pathelement location="${test.build.dir}" />
+        <pathelement location="${as-controller-client}" />
+        <pathelement location="${as-dmr}" />
+        <pathelement location="${as-protocol}" />
+        <pathelement location="${jboss-logging}" />
+        <pathelement location="${jboss-threads}"/>
 		<pathelement location="${webui-framework.dir}/bin" />
 		<path refid="utils.cp" />
 	</path>
@@ -68,14 +80,12 @@
 	<target name="run" description="run RHQ sahi java test" depends="compile">
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
                         <xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="testng.xml"/>
-			<!-- <xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/eap6-testng.xml"/>-->                        
 		</testng>
 	</target>
 	
 	<target name="run-eap6" description="run RHQ sahi java test" depends="compile">
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
-                       <!-- <xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="testng.xml"/> -->
-			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/eap6-testng.xml"/>                       
+			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/eap6-testng.xml"/>
 		</testng>
 	</target>
 

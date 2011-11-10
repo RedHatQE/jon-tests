@@ -27,6 +27,9 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     @Test(groups = "resourceCreation001", alwaysRun=true)
     public void checkPersistenceOfChanges() {        
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+        try {
+            Thread.sleep(5000);
+        } catch(Exception e) {}
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();        
 
         ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
@@ -45,7 +48,9 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         } finally {
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
 
-            
+            try {
+            Thread.sleep(5000);
+        } catch(Exception e) {}
             sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
             // check that the changes are persistent
@@ -71,7 +76,6 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
 
     @Test(groups = "resourceCreation001", alwaysRun=true)
     public void inputValidButIncorrectConnectionSettings() {        
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));              
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
