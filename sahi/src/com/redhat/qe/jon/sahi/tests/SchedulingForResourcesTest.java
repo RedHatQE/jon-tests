@@ -73,13 +73,13 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 		data.add((HashMap<String, String>) map.clone());
 		map.clear();
 		
-		map.put(RESOURCE_NAME, "Servers=RHQ Agent");
+		//map.put(RESOURCE_NAME, "Servers=RHQ Agent");
 		map.put(METRIC_NAME, "JVM Free Memory");
 		map.put(COLLECTION_INTERVAL, "5 minutes");
 		data.add((HashMap<String, String>) map.clone());
 		map.clear();
 		
-		map.put(RESOURCE_NAME, "Servers=RHQ Agent");
+		//map.put(RESOURCE_NAME, "Servers=RHQ Agent");
 		map.put(METRIC_NAME, "JVM Active Threads");
 		map.put(COLLECTION_INTERVAL, "5 minutes");
 		data.add((HashMap<String, String>) map.clone());
