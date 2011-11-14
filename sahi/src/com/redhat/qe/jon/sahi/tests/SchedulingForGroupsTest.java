@@ -16,14 +16,14 @@ public class SchedulingForGroupsTest extends SahiTestScript{
 	
 	
 	@ Test (groups= "schedule groups", dataProvider= "compatibleGroup")
-	public void enableScheduleforGroup(String compatibleGroup, String groupDesc, ArrayList<String> resourceList){
-		sahiTasks.scheduleEnableForGroup("Compatible Groups",  compatibleGroup, groupDesc, resourceList);
+	public void disableScheduleforGroup(String compatibleGroup, String groupDesc, ArrayList<String> resourceList){
+		sahiTasks.scheduleDisableForGroup("Compatible Groups",  compatibleGroup, groupDesc, resourceList);
 		
 	}
 	
-	@ Test (groups= "schedule groups",dependsOnMethods="enableScheduleforGroup")
-	public void disableScheduleforGroups(){
-		sahiTasks.disableScheduleGroup();
+	@ Test (groups= "schedule groups",dependsOnMethods="disableScheduleforGroup")
+	public void enableScheduleforGroups(){
+		sahiTasks.enableScheduleGroup();
 		
 	}
 	
