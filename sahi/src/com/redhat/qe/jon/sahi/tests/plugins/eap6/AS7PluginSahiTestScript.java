@@ -31,7 +31,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         super();
     }
 
-    @BeforeSuite(groups = "setup", dependsOnMethods = {"login", "openBrowser"})
+    @BeforeSuite(groups = "setup", dependsOnMethods = {"openBrowser"})
     public void setup1() {
         try {
             System.getProperties().load(new FileInputStream(new File(System.getProperty("eap6plugin.configfile"))));
