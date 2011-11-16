@@ -27,7 +27,7 @@ public class SchedulingForGroupsTest extends SahiTestScript{
 		
 	}
 	
-	@ Test (groups= "schedule groups", dependsOnMethods="disableScheduleforGroups")
+	@ Test (groups= "schedule groups", dependsOnMethods="disableScheduleforGroup")
 	public void refreshScheduleforGroups(){
 		sahiTasks.refreshScheduledGroup();
 		
