@@ -4,7 +4,6 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.auto.testng.TestScript;
 
 import java.util.logging.Logger;
@@ -32,25 +31,8 @@ public abstract class SahiTestScript extends TestScript {
 	public void openBrowser() {
 		log.finer("Opening browser");
 		sahiTasks.open();
-	}
-
-	@BeforeSuite(groups={"setup"})
-	public void login() {
-		log.finer("Logging into RHQ system");
-		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);                
-		Assert.assertTrue(sahiTasks.login("rhqadmin", "rhqadmin"), "Login status");
-		String loginErrorMessgae = "The username or password provided does not match our records.";
-		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
-		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
-		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
-		//Check Agent Status
-		//Assert.assertFalse(sahiTasks.isAgentRunning(System.getenv().get("AGENT_NAME")), "Agent["+System.getenv().get("AGENT_NAME")+"] running status");
-	}
-
-	@AfterSuite(groups={"teardown"})
-	public void logout() {
-		log.finer("Logging out of RHQ system");
-		sahiTasks.logout();
+		log.finer("Loading RHQ system page: "+System.getProperty("jon.server.url"));
+		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);
 	}
 
 	@AfterSuite(groups={"teardown"})
