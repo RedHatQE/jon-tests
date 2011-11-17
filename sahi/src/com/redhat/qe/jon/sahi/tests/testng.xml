@@ -17,6 +17,16 @@
 		</classes>
   	</test>
   	
+  	<test name="AlertDefinitionCreationTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
+			<methods>
+				<include name="createAlert"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>	
+	
 	<test name="InventoryTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.InventoryTest"/>
@@ -149,16 +159,6 @@
 		</groups>
 	</test>
 	
-	<test name="AlertDefinitionCreationTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
-			<methods>
-				<include name="createAlert"></include>
-			</methods>
-			</class>
-		</classes>
-	</test>	
-	
 	<test name="PluginsTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.PluginsTest">
@@ -170,16 +170,6 @@
 		</classes>
 	</test>
 		
-	<test name="AlertHistoryValidationTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
-			<methods>
-				<include name="validateAlertHistoryPage"></include>
-			</methods>
-			</class>
-		</classes>
-	</test>
-
 	<test name="Individualconfig">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.IndividualConfigTest">
@@ -199,7 +189,56 @@
 			</class>
 		</classes>
 	</test>
-		
+			
+	<test name="Group Config">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.GroupConfigTest">
+			<methods>
+				<include name="group config "></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
+	
+	<test name="Drift management-Create-[add/change/remove]-Delete">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.DriftManagementTest">
+			<methods>
+				 <include name="createDrift"></include>
+				 <include name="driftActionFileAdd"></include>
+				 <include name="driftActionFileChange"></include>
+				 <include name="driftActionFileRemove"></include>
+				<include name="trashDrift"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
+
+	<test name="Administration JSP page validation">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AdministrationPages">
+			<methods>
+				 <include name="pageServers"></include>
+				 <include name="pageAgents"></include>
+				 <include name="pageAffinityGroups"></include>
+				 <include name="pagePartitionEvents"></include>
+				 <include name="pageContentSources"></include>
+				 <include name="pageRepositories"></include> 
+			</methods>
+			</class>
+		</classes>
+	</test>
+
+	<test name="AlertHistoryValidationTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
+			<methods>
+				<include name="validateAlertHistoryPage"></include>
+			</methods>
+			</class>
+		</classes>
+	</test>
+	
   	<test name="AlertHistoryDeletionTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
@@ -232,52 +271,12 @@
 		</classes>
 	</test>
 	
-	
-	<test name="Group Config">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.GroupConfigTest">
-			<methods>
-				<include name="group config "></include>
-			</methods>
-			</class>
-		</classes>
-	</test>
-
 	<test name="Scheduling Groups">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForGroupsTest">
 			<methods>
 				<include name="schedule groups"></include>
   			</methods>
-			</class>
-		</classes>
-	</test>
-	
-	<test name="Drift management-Create-[add/change/remove]-Delete">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.DriftManagementTest">
-			<methods>
-				 <include name="createDrift"></include>
-				 <include name="driftActionFileAdd"></include>
-				 <include name="driftActionFileChange"></include>
-				 <include name="driftActionFileRemove"></include>
-				<include name="trashDrift"></include>
-			</methods>
-			</class>
-		</classes>
-	</test>
-
-	<test name="Administration JSP page validation">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.AdministrationPages">
-			<methods>
-				 <include name="pageServers"></include>
-				 <include name="pageAgents"></include>
-				 <include name="pageAffinityGroups"></include>
-				 <include name="pagePartitionEvents"></include>
-				 <include name="pageContentSources"></include>
-				 <include name="pageRepositories"></include> 
-			</methods>
 			</class>
 		</classes>
 	</test>

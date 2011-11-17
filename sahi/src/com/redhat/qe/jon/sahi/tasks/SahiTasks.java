@@ -1128,7 +1128,7 @@ public class SahiTasks extends ExtendedSahi {
     		return this.link(driftName).exists();
     	}else{
     		this.cell("Detect Now").near(this.cell("Delete All")).click();
-        	_logger.log(Level.FINER, "Waiting "+(waitTime/1000)+" Second(s) for agent/server actions...");
+        	_logger.log(Level.INFO, "Waiting "+(waitTime/1000)+" Second(s) for agent/server drift actions...");
         	Thread.sleep(waitTime); //Give X second(s) for agent/server actions
         	return true;
     	}
