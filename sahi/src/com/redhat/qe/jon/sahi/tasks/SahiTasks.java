@@ -26,8 +26,11 @@ public class SahiTasks extends ExtendedSahi {
     // Login/Logout
     // ***************************************************************************
     public boolean login(String userName, String password) {
+    	if(this.waitForElementExists(this, this.link("Logout"), "Link: Logout", 1000*5)){
+    		this.link("Logout").click();
+    	}    	
     	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*180)){
-    		this.topLevelMenuDashboardExist();
+    		return false;
     	}
         this.textbox("user").setValue(userName);
         this.password("password").setValue(password);
@@ -153,6 +156,7 @@ public class SahiTasks extends ExtendedSahi {
         this.textbox("url").setValue(bundleURL);
         this.cell("Next").click();
         this.cell("Next").click();
+        this.waitFor(1000*3);
         this.cell("Finish").click();
     }
 
@@ -1421,7 +1425,16 @@ public class SahiTasks extends ExtendedSahi {
     	this.cell("Monitoring").click();
         this.xy(cell("Schedules"), 3,3).click();    	
     }
-    public LinkedList<HashMap<String, String>> getMetricTableDetails(String resourceName){
+    public int getMetricTableOffset(String resourceName){
+    	if(resourceName != null){
+    		selectSchedules(resourceName);
+    	}  
+    	String tableName = "listTable";
+    	int numberTableAvailable = this.table(tableName).countSimilar();
+    	_logger.log(Level.FINE, "OffSet - TABLE COUNT ("+tableName+"): "+numberTableAvailable);
+    	return numberTableAvailable;
+    }
+    public LinkedList<HashMap<String, String>> getMetricTableDetails(String resourceName, int tableOffset){
     	if(resourceName != null){
     		selectSchedules(resourceName);
     	}  
@@ -1430,12 +1443,12 @@ public class SahiTasks extends ExtendedSahi {
     	String replaceColumnValues = "permission_enabled_11.png=Enabled,permission_disabled_11.png=Disabled";
     	int numberTableAvailable = this.table(tableName).countSimilar();
     	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-    	int tableOffset = numberTableAvailable - 3;
-    	LinkedList<HashMap<String, String>> metricDetails = getRHQgwtTableFullDetails(tableName, tableOffset, tableColumns, replaceColumnValues);
+    	int tableOffsetNew = numberTableAvailable - tableOffset;
+    	LinkedList<HashMap<String, String>> metricDetails = getRHQgwtTableFullDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues);
     	_logger.log(Level.INFO,"Number of Row: "+metricDetails.size());
     	return metricDetails;
     }
-    public boolean enableDisableUpdateMetric(String resourceName, String metricName, LinkedList<HashMap<String, String>> metricDetails, boolean updateCollectionInterval, String collectionIntervalValue, boolean enable){
+    public boolean enableDisableUpdateMetric(String resourceName, String metricName, LinkedList<HashMap<String, String>> metricDetails, boolean updateCollectionInterval, String collectionIntervalValue, boolean enable, int tableOffset){
     	if(resourceName != null){
     		selectSchedules(resourceName);
     	}    
@@ -1445,15 +1458,15 @@ public class SahiTasks extends ExtendedSahi {
     	String tableName = "listTable";
     	String tableColumns = "Metric,Description,Type,Enabled?,Collection Interval";
     	String replaceColumnValues = "permission_enabled_11.png=Enabled,permission_disabled_11.png=Disabled";
-    	int tableOffset = 0;    	
+    	int tableOffsetNew = 0;    	
     	int numberTableAvailable = 0;
     	
     	if(metricDetails == null){
     		_logger.log(Level.INFO, "Metric table Details - NULL, reading metric table...");
     		numberTableAvailable= this.table(tableName).countSimilar();
         	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-        	tableOffset = numberTableAvailable - 3;
-        	metricDetails = getRHQgwtTableConditionalDetails(tableName, tableOffset, tableColumns, replaceColumnValues, "Metric="+metricName);
+        	tableOffsetNew = numberTableAvailable - tableOffset;
+        	metricDetails = getRHQgwtTableConditionalDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, "Metric="+metricName);
         	_logger.log(Level.INFO,"Number of Row: "+metricDetails.size());
     	}
     	
@@ -1471,8 +1484,8 @@ public class SahiTasks extends ExtendedSahi {
 
     	numberTableAvailable = this.table(tableName).countSimilar();
     	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-        tableOffset = numberTableAvailable - 3;
-   	   	HashMap<String, String> metricDetail = getRHQgwtTableRowDetails(tableName, tableOffset, tableColumns, replaceColumnValues, rowNo);
+        tableOffsetNew = numberTableAvailable - tableOffset;
+   	   	HashMap<String, String> metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
    	 _logger.log(Level.INFO, "Metric: Old Status: "+metricDetail);
    	
     	if(updateCollectionInterval){
@@ -1540,9 +1553,9 @@ public class SahiTasks extends ExtendedSahi {
     	
     	 numberTableAvailable = this.table(tableName).countSimilar();
      	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-         tableOffset = numberTableAvailable - 3;
+         tableOffsetNew = numberTableAvailable - tableOffset;
     	
-    	metricDetail = getRHQgwtTableRowDetails(tableName, tableOffset, tableColumns, replaceColumnValues, rowNo);
+    	metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
     	if(metricDetail.get("Metric").equalsIgnoreCase(metricName)){
     		_logger.log(Level.INFO, "Metric: New Status: "+metricDetail);
     		if(updateCollectionInterval){

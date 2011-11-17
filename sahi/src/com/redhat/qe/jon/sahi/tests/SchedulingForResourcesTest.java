@@ -22,6 +22,7 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 
 	private static LinkedList<HashMap<String, String>> metricDetails = null;
 	private static String lastResource = null;
+	private static int tableOffset = 0;
 	
 	private static LinkedList<HashMap<String, String>> readMetricTable(String resourceName){
 		if(resourceName == null){
@@ -30,7 +31,8 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 		}else{
 			if(lastResource == null){
 				_logger.log(Level.FINE, "Reading Metric table details...");
-				metricDetails = sahiTasks.getMetricTableDetails(resourceName);
+				tableOffset = sahiTasks.getMetricTableOffset(resourceName);
+				metricDetails = sahiTasks.getMetricTableDetails(null, tableOffset);
 				lastResource = resourceName;
 				return metricDetails;
 			}else if(lastResource.equals(resourceName)){
@@ -38,7 +40,8 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 				return metricDetails;
 			}else{
 				_logger.log(Level.FINE, "Reading Metric table details...");
-				metricDetails = sahiTasks.getMetricTableDetails(resourceName);
+				tableOffset = sahiTasks.getMetricTableOffset(resourceName);
+				metricDetails = sahiTasks.getMetricTableDetails(null, tableOffset);
 				lastResource = resourceName;
 				return metricDetails;
 			}
@@ -47,17 +50,17 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 	
 	@Test (groups="metricCollectionResourceTest", dataProvider="metricTestData",dependsOnMethods={"disableMetric"})
 	public void enableMetric(HashMap<String, String> metricDetail){
-		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), readMetricTable(metricDetail.get(RESOURCE_NAME)), false, metricDetail.get(COLLECTION_INTERVAL), true), "Enable Metric validation");
+		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), readMetricTable(metricDetail.get(RESOURCE_NAME)), false, metricDetail.get(COLLECTION_INTERVAL), true, tableOffset), "Enable Metric validation");
 	}
 	
 	@Test (groups="metricTest", dataProvider="metricTestData")
 	public void disableMetric(HashMap<String, String> metricDetail){
-		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), readMetricTable(metricDetail.get(RESOURCE_NAME)), false, metricDetail.get(COLLECTION_INTERVAL), false), "Disable Metric validation");
+		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), readMetricTable(metricDetail.get(RESOURCE_NAME)), false, metricDetail.get(COLLECTION_INTERVAL), false, tableOffset), "Disable Metric validation");
 	}
 	
 	@Test (groups="metricTest", dataProvider="metricTestData")
 	public void updateMetric(HashMap<String, String> metricDetail){
-		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), readMetricTable(metricDetail.get(RESOURCE_NAME)), true, metricDetail.get(COLLECTION_INTERVAL), true), "Update Metric collection intervals");
+		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), readMetricTable(metricDetail.get(RESOURCE_NAME)), true, metricDetail.get(COLLECTION_INTERVAL), true, tableOffset), "Update Metric collection intervals");
 	}
 	
 	
