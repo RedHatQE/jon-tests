@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.sahi.tasks;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -7,7 +9,16 @@ import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
+import org.testng.Reporter;
 import org.testng.internal.IResultListener;
+
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
@@ -46,9 +57,34 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 		_logger.log(Level.INFO, "[Clear pop-up] Exiting...");
 	}
 	
+	//To take Screen shot
+	public void takeScreenShot(){
+		try{
+			_logger.log(Level.INFO, "Taking screen shot...");
+			String fileDirPath = System.getProperty("automation.dir")+"/test-output/html/";
+			if(new File(fileDirPath).mkdirs()){
+				_logger.log(Level.INFO, "Directory Created... : "+fileDirPath);
+			}else{
+				_logger.log(Level.FINER, "Directory might be available: "+fileDirPath);
+			}
+			String fileName = "ScreenShot_"+new SimpleDateFormat("dd_MMM_yyyy_hh_mm_ssaa").format(new Date())+".png";
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			Rectangle screenRectangle = new Rectangle(screenSize);
+			Robot robot = new Robot();
+			BufferedImage image = robot.createScreenCapture(screenRectangle);
+			_logger.log(Level.INFO, "ScreenShot File name: "+fileDirPath+fileName);
+			ImageIO.write(image, "png", new File(fileDirPath+fileName));			
+			Reporter.log("<a href=\""+fileName+"\"><b>Screen Shot</b></a>");
+			_logger.log(Level.INFO, "Screen shot done!!");
+		}catch(Exception ex){
+			_logger.log(Level.WARNING, "Unable to take screen shot, ", ex);
+		}
+		
+	}
 	
 	@Override
 	public void onTestFailure(ITestResult result) {
+		takeScreenShot();
 		cleanPopUpOnScreen();
 	}
 
