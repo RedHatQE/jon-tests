@@ -20,38 +20,5 @@
 			</methods>
 			</class>
 		</classes>
-  	</test>
-  	
-  	<test name="GuiLoginTest">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
-			<parameter name="gui.username" value="rhqadmin"/>
-			<parameter name="gui.password" value="rhqadmin"/>			
-			<methods>
-				 <include name="loginTest"></include> 
-			</methods>
-			</class>
-		</classes>
-  	</test>
-  	
-  	<test name="GImportResourcesTest">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.ImportResources">
-			<methods>
-				 <include name="importResource"></include> 
-			</methods>
-			</class>
-		</classes>
-  	</test>
-  	
-  	<test name="GuiLogoutTest">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
-			<methods>
-				 <include name="logoutTest"></include> 
-			</methods>
-			</class>
-		</classes>
-  	</test>
-  		
+  	</test>  		
 </suite>
