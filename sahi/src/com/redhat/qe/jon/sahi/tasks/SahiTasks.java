@@ -73,6 +73,7 @@ public class SahiTasks extends ExtendedSahi {
             this.textbox("search").setValue(resource);
             this.waitFor(5000);
             this.xy(this.byText(resource.trim(), "nobr"), 3,3).doubleClick();
+            this.waitFor(1000*2);
             //this.div(resource).doubleClick();
             //this.waitFor(1000);
             //this.image("right.png").click();
@@ -253,7 +254,9 @@ public class SahiTasks extends ExtendedSahi {
     // ***************************************************************************
     public void createDeleteUser() {
         this.link("Administration").click();
+        this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*5);
         this.cell("Users").click();
+    	this.waitForElementExists(this, this.cell("User Name"), "CELL: User Name", 1000*3);
         this.cell("New").click();
         this.textbox("name").setValue("test1");
         this.password("password").setValue("password");
@@ -1173,11 +1176,12 @@ public class SahiTasks extends ExtendedSahi {
         //Select Radio Buttons
         updateRadioButtons(radioButtons);
         
+        int addImgCount = this.image("add.png").countSimilar();
         //File name Includes
         if(fileIncludes != null){
         	String[] files = this.getCommaToArray(fileIncludes);
         	for(String fileName : files){
-        		this.image("add.png[1]").focus();
+        		this.image("add.png["+(addImgCount-2)+"]").focus();
                 this.execute("_sahi._keyPress(_sahi._image('add.png[1]'), 32);"); //32 - Space bar
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Includes]: "+fileName);
@@ -1189,7 +1193,7 @@ public class SahiTasks extends ExtendedSahi {
         if(fileExcludes != null){
         	String[] files = this.getCommaToArray(fileExcludes);
         	for(String fileName : files){
-        		this.image("add.png[2]").focus();
+        		this.image("add.png["+(addImgCount-1)+"]").focus();
                 this.execute("_sahi._keyPress(_sahi._image('add.png[2]'), 32);"); //32 - Space bar
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Excludes]: "+fileName);
@@ -1434,6 +1438,13 @@ public class SahiTasks extends ExtendedSahi {
     	_logger.log(Level.FINE, "OffSet - TABLE COUNT ("+tableName+"): "+numberTableAvailable);
     	return numberTableAvailable;
     }
+    public int adjustMetricTableOffset(int orgOffset, int newOffest){
+    	if(orgOffset >= newOffest){
+    		return newOffest - orgOffset;
+    	}else{
+    		return 0;
+    	}
+    }
     public LinkedList<HashMap<String, String>> getMetricTableDetails(String resourceName, int tableOffset){
     	if(resourceName != null){
     		selectSchedules(resourceName);
@@ -1443,7 +1454,7 @@ public class SahiTasks extends ExtendedSahi {
     	String replaceColumnValues = "permission_enabled_11.png=Enabled,permission_disabled_11.png=Disabled";
     	int numberTableAvailable = this.table(tableName).countSimilar();
     	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-    	int tableOffsetNew = numberTableAvailable - tableOffset;
+    	int tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
     	LinkedList<HashMap<String, String>> metricDetails = getRHQgwtTableFullDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues);
     	_logger.log(Level.INFO,"Number of Row: "+metricDetails.size());
     	return metricDetails;
@@ -1465,7 +1476,7 @@ public class SahiTasks extends ExtendedSahi {
     		_logger.log(Level.INFO, "Metric table Details - NULL, reading metric table...");
     		numberTableAvailable= this.table(tableName).countSimilar();
         	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-        	tableOffsetNew = numberTableAvailable - tableOffset;
+        	tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
         	metricDetails = getRHQgwtTableConditionalDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, "Metric="+metricName);
         	_logger.log(Level.INFO,"Number of Row: "+metricDetails.size());
     	}
@@ -1484,7 +1495,7 @@ public class SahiTasks extends ExtendedSahi {
 
     	numberTableAvailable = this.table(tableName).countSimilar();
     	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-        tableOffsetNew = numberTableAvailable - tableOffset;
+        tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
    	   	HashMap<String, String> metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
    	 _logger.log(Level.INFO, "Metric: Old Status: "+metricDetail);
    	
@@ -1553,7 +1564,7 @@ public class SahiTasks extends ExtendedSahi {
     	
     	 numberTableAvailable = this.table(tableName).countSimilar();
      	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-         tableOffsetNew = numberTableAvailable - tableOffset;
+         tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
     	
     	metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
     	if(metricDetail.get("Metric").equalsIgnoreCase(metricName)){
