@@ -71,26 +71,72 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 		HashMap<String, String> map = new HashMap<String, String>();
 				
 		map.put(RESOURCE_NAME, "Servers=RHQ Agent");
-		map.put(METRIC_NAME, "JVM Total Memory");
-		map.put(COLLECTION_INTERVAL, "10 minutes");
+		map.put(METRIC_NAME, "Agent-Server Clock Difference");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
 		data.add((HashMap<String, String>) map.clone());
 		map.clear();
 		
-		//map.put(RESOURCE_NAME, "Servers=RHQ Agent");
+		map.put(METRIC_NAME, "Avg Execution Time Commands Received Successfully");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+
+		map.put(METRIC_NAME, "Avg Execution Time Commands Sent Successfully");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+
+		map.put(METRIC_NAME, "JVM Active Threads");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+		
 		map.put(METRIC_NAME, "JVM Free Memory");
 		map.put(COLLECTION_INTERVAL, "5 minutes");
 		data.add((HashMap<String, String>) map.clone());
 		map.clear();
 		
-		//map.put(RESOURCE_NAME, "Servers=RHQ Agent");
-		map.put(METRIC_NAME, "JVM Active Threads");
+		map.put(METRIC_NAME, "JVM Total Memory");
 		map.put(COLLECTION_INTERVAL, "5 minutes");
 		data.add((HashMap<String, String>) map.clone());
 		map.clear();
-				
+		
+		map.put(METRIC_NAME, "Number Of Active Commands Being Sent");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+		
+		map.put(METRIC_NAME, "Number of Agent Restarts");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+		
+		map.put(METRIC_NAME, "Number of Commands In Queue");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+		
+		map.put(METRIC_NAME, "Number of Commands Received but Failed per Minute");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+		
+		map.put(METRIC_NAME, "Number of Commands Received Successfully per Minute");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+		
+		map.put(METRIC_NAME, "Number of Commands Spooled To Disk");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+		
+		map.put(METRIC_NAME, "Number of Commands Successfully Sent per Minute");
+		map.put(COLLECTION_INTERVAL, "5 minutes");
+		data.add((HashMap<String, String>) map.clone());
+		map.clear();
+		
 		return TestNGUtils.convertListTo2dArray(data);
 		
 	}
-	
-
 }
