@@ -806,10 +806,13 @@ public class SahiTasks extends ExtendedSahi {
     //*********************************************************************************
     public void selectResource(String resourceName){
     	this.link("Inventory").click();
-    	String searchCategory = null;
+    	this.waitForElementExists(this, this.span("Inventory"), "Span: Inventory", 1000*5);
+    	//String searchCategory = null;
         String[] resourceType = resourceName.split("=");
         if (resourceType.length > 1) {
             this.cell(resourceType[0].trim()).click();
+            this.waitForElementExists(this, this.textbox("SearchPatternField"), "Search Box: SearchPatternField", 1000*5);
+            /*
             if(resourceType[0].equalsIgnoreCase("Platforms")){
             	searchCategory = "category=platform ";
             }else if(resourceType[0].equalsIgnoreCase("Servers")){
@@ -820,6 +823,8 @@ public class SahiTasks extends ExtendedSahi {
             	searchCategory = "category=server availability=down ";
             }
             this.textbox("SearchPatternField").setValue(searchCategory+resourceType[1].trim());
+            */
+            this.textbox("SearchPatternField").setValue(resourceType[1].trim());
             this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
         } else {
             _logger.log(Level.WARNING, "Invalid parameter passed --> "+resourceName);
