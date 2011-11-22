@@ -16,7 +16,19 @@
 			</class>
 		</classes>
   	</test>
-  	
+  	  	
+  	<test name="Metric Collection Schedules validation">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
+			<methods>
+				 <include name="enableMetric"></include>
+				 <include name="disableMetric"></include>
+				 <include name="updateMetric"></include> 
+			</methods>
+			</class>
+		</classes>
+	</test>
+	
   	<test name="AlertDefinitionCreationTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
@@ -259,17 +271,6 @@
 		</classes>
 	</test>
 	
-	<test name="Metric Collection Schedules validation">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
-			<methods>
-				 <include name="enableMetric"></include>
-				 <include name="disableMetric"></include>
-				 <include name="updateMetric"></include> 
-			</methods>
-			</class>
-		</classes>
-	</test>
 	
 	<test name="Scheduling Groups">
 		<classes>
