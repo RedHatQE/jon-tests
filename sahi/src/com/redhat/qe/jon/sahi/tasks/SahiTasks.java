@@ -1865,5 +1865,90 @@ public class SahiTasks extends ExtendedSahi {
     	return searchComaptibilityGroupWithText(groupPanelName, groupName, groupDesc, resourceList);
     }
 
+    //************************************************************************************************
+    // AlertDefinitionTemplate Tests
+    //***************************************************************************************************
+    public void createAlertDefinitionTemplate(String groupPanelName, String templateName){
+    	this.link("Administration").click();
+    	this.cell(groupPanelName).click();
+    	this.image("edit.png[3]").click();
+    	this.cell("New").click();
+    	this.textbox("textItem").setValue(templateName);
+    	this.textarea("textItem").setValue("Desc");
+    	this.cell("Save").click();
+    }
+    public boolean verifyDefinitionTemplateExists(String groupPanelName, String templateName) {
+    	/*this.cell("Administration").click();
+        this.waitFor(5000);*/
+    	this.bold("Back to List").click();
+       /* this.cell(groupPanelName).click();
+        this.image("edit.png[3]");*/
+        return this.div(templateName).exists();
+    }
+    
+    public void navigationThruConditionsTabAlertDefTemplate(String groupPanelName, String templateName){
+    	/*this.cell("Administration").click();
+        this.waitFor(5000);
+        this.cell(groupPanelName).click();
+        this.image("edit.png[3]");*/
+        this.link(templateName).click();
+        this.cell("Edit").click();
+        this.cell("Conditions").click();
+        this.cell("Add").click();
+        //this.div("selectItemText[2]").click();
+        this.cell("OK").click();
+        this.cell("Save").click();       
+        this.bold("Back to List").click();
+    	
+    }
+    public void navigationThruNotificationsTabAlertDefTemplate(String groupPanelName, String templateName){
+    	/*this.cell("Administration").click();
+        this.waitFor(5000);
+        this.cell(groupPanelName).click();
+        this.image("edit.png[3]");*/
+        this.link(templateName).click();
+        this.cell("Edit").click();
+        this.cell("Notifications").click();
+        this.cell("Add").click();
+        // this.div("selectItemText[2]").click();
+        // this.div(templateName).click();
+        //this.image("right.png").click();
+        this.div("right_all.png").click();
+        this.cell("OK").click();
+        this.cell("Save").click();
+        this.bold("Back to List").click();
+    	
+    }
+    public void navigationThruRecoveryTabAlertDefTemplate(String groupPanelName, String templateName){
+    	/*this.cell("Administration").click();
+    	this.link("Administration").click();
+        this.waitFor(5000);
+        this.cell(groupPanelName).click();
+        this.image("edit.png[3]");*/
+        this.link(templateName).click();
+        this.cell("Edit").click();
+        this.cell("Recovery").click();
+       // this.div("selectItemText[2]").click();
+        this.radio("yes[1]").click();
+        this.radio("no[1]").click();
+        this.cell("OK").click();
+        this.cell("Save").click();
+        this.bold("Back to List").click();
+    	
+    }
+    public void navigationThruDampeningTabAlertDefTemplate(String groupPanelName, String templateName){
+    	/*this.cell("Administration").click();
+        this.waitFor(5000);
+        this.cell(groupPanelName).click();
+        this.image("edit.png[3]");*/
+        this.link(templateName).click();
+        this.cell("Edit").click();
+        this.cell("Dampening").click();
+       // this.div("selectItemText[2]").click();
+        this.cell("Save").click();
+        this.bold("Back to List").click();
+    	
+    }
+
 
 }

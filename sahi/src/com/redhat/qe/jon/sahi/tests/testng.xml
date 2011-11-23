@@ -293,6 +293,16 @@
 		</classes>
 		
 	</test>
+	<test name="Alert Definition Template">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AlertDefinitionTemplateTest">
+			<methods>
+				<include name="alertDefinitionsTemplate"></include>
+			</methods>
+			</class>
+		</classes>
+		
+	</test>
 	
 	 <test name="GuiLogoutTest">
   	  	<classes>
