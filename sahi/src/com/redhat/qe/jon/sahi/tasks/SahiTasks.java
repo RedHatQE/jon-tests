@@ -1182,12 +1182,13 @@ public class SahiTasks extends ExtendedSahi {
         updateRadioButtons(radioButtons);
         
         int addImgCount = this.image("add.png").countSimilar();
+        _logger.log(Level.INFO, "Number of add.png images: "+addImgCount);
         //File name Includes
         if(fileIncludes != null){
         	String[] files = this.getCommaToArray(fileIncludes);
         	for(String fileName : files){
         		this.image("add.png["+(addImgCount-2)+"]").focus();
-                this.execute("_sahi._keyPress(_sahi._image('add.png[1]'), 32);"); //32 - Space bar
+                this.execute("_sahi._keyPress(_sahi._image('add.png["+(addImgCount-2)+"]'), 32);"); //32 - Space bar
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Includes]: "+fileName);
                 this.cell("OK").click();   
@@ -1199,7 +1200,7 @@ public class SahiTasks extends ExtendedSahi {
         	String[] files = this.getCommaToArray(fileExcludes);
         	for(String fileName : files){
         		this.image("add.png["+(addImgCount-1)+"]").focus();
-                this.execute("_sahi._keyPress(_sahi._image('add.png[2]'), 32);"); //32 - Space bar
+                this.execute("_sahi._keyPress(_sahi._image('add.png["+(addImgCount-1)+"]'), 32);"); //32 - Space bar
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Excludes]: "+fileName);
                 this.cell("OK").click();
