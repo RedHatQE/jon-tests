@@ -482,8 +482,10 @@ public class SahiTasks extends ExtendedSahi {
     // Administration 
     // ***************************************************************************
     public void createUser(String userName, String password, String firstName, String lastName, String email) {
-        this.link("Administration").click();
+    	this.link("Administration").click();
+        this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*5);
         this.cell("Users").click();
+    	this.waitForElementExists(this, this.cell("User Name"), "CELL: User Name", 1000*3);
         this.cell("New").click();
         this.textbox("name").setValue(userName);
         this.password("password").setValue(password);
@@ -495,8 +497,10 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void deleteUser(String userName) {
-        this.link("Administration").click();
+    	this.link("Administration").click();
+        this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*5);
         this.cell("Users").click();
+    	this.waitForElementExists(this, this.cell("User Name"), "CELL: User Name", 1000*3);
         this.div(userName).click();
         this.cell("Delete").click();
         this.cell("Yes").click();
