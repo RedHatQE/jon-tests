@@ -1449,11 +1449,12 @@ public class SahiTasks extends ExtendedSahi {
     	return numberTableAvailable;
     }
     public int adjustMetricTableOffset(int orgOffset, int newOffest){
-    	if(orgOffset >= newOffest){
+    	/*if(orgOffset >= newOffest){
     		return newOffest - orgOffset;
     	}else{
     		return 0;
-    	}
+    	}*/
+    	return 0;
     }
     public LinkedList<HashMap<String, String>> getMetricTableDetails(String resourceName, int tableOffset){
     	if(resourceName != null){
@@ -1505,10 +1506,10 @@ public class SahiTasks extends ExtendedSahi {
 
     	numberTableAvailable = this.table(tableName).countSimilar();
     	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-        tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
-   	   	HashMap<String, String> metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
-   	 _logger.log(Level.INFO, "Metric: Old Status: "+metricDetail);
-   	
+    	tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
+    	HashMap<String, String> metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
+    	_logger.log(Level.INFO, "Metric: [Old Status: "+metricDetail+"] Table Offset: "+tableOffsetNew);
+
     	if(updateCollectionInterval){
     		collectionInterval = collectionIntervalValue.split(" ");
     		int hours = 0;
