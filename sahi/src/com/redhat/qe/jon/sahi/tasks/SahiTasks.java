@@ -794,8 +794,9 @@ public class SahiTasks extends ExtendedSahi {
     	this.waitForElementExists(this, this.span(pageLocations[0].trim()), "SPAN: "+pageLocations[0].trim(), waitTime);
     	this.cell(pageLocations[1].trim()).click();
     	if(!this.waitForElementExists(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
-    		_logger.log(Level.FINE, "Filed to load : "+pageLocation+", Retrying...");
-    		this.xy(cell(pageLocations[1].trim()),3,3).click();
+    		_logger.log(Level.INFO, "Filed to load : "+pageLocation+", Retrying...");
+    		this.cell(pageLocations[1].trim()).focus();
+    		this.cell(pageLocations[1].trim()).click();
     		if(!this.waitForElementExists(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
         		_logger.log(Level.WARNING, "Filed to load : "+pageLocation);
         		return false;
