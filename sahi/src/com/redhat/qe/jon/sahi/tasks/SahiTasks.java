@@ -159,6 +159,7 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Next").click();
         this.waitFor(1000*3);
         this.cell("Finish").click();
+        this.waitFor(1000*3);
     }
 
     public void deleteBundle(String bundleName) {
@@ -253,10 +254,7 @@ public class SahiTasks extends ExtendedSahi {
     // Users and Groups
     // ***************************************************************************
     public void createDeleteUser() {
-        this.link("Administration").click();
-        this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*5);
-        this.cell("Users").click();
-    	this.waitForElementExists(this, this.cell("User Name"), "CELL: User Name", 1000*3);
+    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5);
         this.cell("New").click();
         this.textbox("name").setValue("test1");
         this.password("password").setValue("password");
@@ -482,11 +480,8 @@ public class SahiTasks extends ExtendedSahi {
     // Administration 
     // ***************************************************************************
     public void createUser(String userName, String password, String firstName, String lastName, String email) {
-    	this.link("Administration").click();
-        this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*5);
-        this.cell("Users").click();
-    	this.waitForElementExists(this, this.cell("User Name"), "CELL: User Name", 1000*3);
-        this.cell("New").click();
+    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5);
+    	this.cell("New").click();
         this.textbox("name").setValue(userName);
         this.password("password").setValue(password);
         this.password("passwordVerify").setValue(password);
@@ -497,11 +492,8 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void deleteUser(String userName) {
-    	this.link("Administration").click();
-        this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*5);
-        this.cell("Users").click();
-    	this.waitForElementExists(this, this.cell("User Name"), "CELL: User Name", 1000*3);
-        this.div(userName).click();
+    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5);
+    	this.div(userName).click();
         this.cell("Delete").click();
         this.cell("Yes").click();
     }
@@ -690,12 +682,6 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     //************************************************************
-    // Drift Management
-    //*************************************************************
-    public void configure() {
-    }
-
-    //************************************************************
     // Dashboard 
     //*************************************************************
     public boolean messagePortletExists() {
@@ -787,14 +773,10 @@ public class SahiTasks extends ExtendedSahi {
     // Plugins Verification
     //********************************************************
     public void locatePluginPage(boolean selectAgentPluginPage){
-    	this.link("Administration").click();
-    	this.waitForElementExists(this, this.span("Administration"), "Administration", 1000*5);
     	if(selectAgentPluginPage){
-    		this.cell("Agent Plugins").click();
-    		this.waitForElementExists(this, this.cell("Name"), "Name", 1000*3);
+    		selectPage("Administration-->Agent Plugins", this.cell("Name"), 1000*5);
     	}else{
-    		this.cell("Server Plugins").click();
-    		this.waitForElementExists(this, this.cell("Name"), "Name", 1000*3);
+    		selectPage("Administration-->Server Plugins", this.cell("Name"), 1000*5);
     	}
     }
     
@@ -806,16 +788,34 @@ public class SahiTasks extends ExtendedSahi {
     }
     
     //*********************************************************************************
+    //* Redirect pages, main menu display page should be on span
+    //*********************************************************************************   
+    public boolean selectPage(String pageLocation, ElementStub reference, int waitTime){
+    	String[] pageLocations = pageLocation.split("-->");    
+    	this.link(pageLocations[0].trim()).click();
+    	this.waitForElementExists(this, this.span(pageLocations[0].trim()), "SPAN: "+pageLocations[0].trim(), waitTime);
+    	this.cell(pageLocations[1].trim()).click();
+    	if(!this.waitForElementExists(this, reference, "Element: "+reference.getText(), waitTime)){
+    		_logger.log(Level.FINE, "Filed to load : "+pageLocation+", Retrying...");
+    		this.xy(cell(pageLocations[1].trim()),3,3).click();
+    		if(!this.waitForElementExists(this, reference, "Element: "+reference.getText(), waitTime)){
+        		_logger.log(Level.WARNING, "Filed to load : "+pageLocation);
+        		return false;
+        	}
+    	}
+    	_logger.log(Level.FINE, "Loaded Successfully: "+pageLocation);
+		return true;
+    	
+    }
+    
+    //*********************************************************************************
     //* Alert Definition Creation
     //*********************************************************************************
     public void selectResource(String resourceName){
-    	this.link("Inventory").click();
-    	this.waitForElementExists(this, this.span("Inventory"), "Span: Inventory", 1000*5);
     	//String searchCategory = null;
         String[] resourceType = resourceName.split("=");
         if (resourceType.length > 1) {
-            this.cell(resourceType[0].trim()).click();
-            this.waitForElementExists(this, this.textbox("SearchPatternField"), "Search Box: SearchPatternField", 1000*5);
+        	selectPage("Inventory-->"+resourceType[0], this.textbox("SearchPatternField"), 1000*5);
             /*
             if(resourceType[0].equalsIgnoreCase("Platforms")){
             	searchCategory = "category=platform ";
@@ -829,7 +829,7 @@ public class SahiTasks extends ExtendedSahi {
             this.textbox("SearchPatternField").setValue(searchCategory+resourceType[1].trim());
             */
             this.textbox("SearchPatternField").setValue(resourceType[1].trim());
-            this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+            this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key            
         } else {
             _logger.log(Level.WARNING, "Invalid parameter passed --> "+resourceName);
             //throw new SahiTasksException("Invalid parameter passed --> "+resourceName);
