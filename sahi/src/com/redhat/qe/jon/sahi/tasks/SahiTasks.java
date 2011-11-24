@@ -406,9 +406,8 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void deleteDynaGroup(String groupDesc) {
-        this.link("Inventory").click();
-        this.cell("Dynagroup Definitions").click();
-        this.div(groupDesc).click();
+    	selectPage("Inventory-->Dynagroup Definitions", this.cell("Name"), 1000*5);
+    	this.div(groupDesc).click();
         this.cell("Delete").click();
         this.cell("Yes").click();
     }
@@ -533,9 +532,8 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void addRolesToUser(String userName, ArrayList<String> roleNames) {
-        this.link("Administration").click();
-        this.cell("Users").click();
-        this.link(userName).click();
+    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5);
+    	this.link(userName).click();
         for (String role : roleNames) {
             this.div(role).click();
             this.image("right.png").click();
@@ -790,15 +788,15 @@ public class SahiTasks extends ExtendedSahi {
     //*********************************************************************************
     //* Redirect pages, main menu display page should be on span
     //*********************************************************************************   
-    public boolean selectPage(String pageLocation, ElementStub reference, int waitTime){
+    public boolean selectPage(String pageLocation, ElementStub elementReference, int waitTime){
     	String[] pageLocations = pageLocation.split("-->");    
     	this.link(pageLocations[0].trim()).click();
     	this.waitForElementExists(this, this.span(pageLocations[0].trim()), "SPAN: "+pageLocations[0].trim(), waitTime);
     	this.cell(pageLocations[1].trim()).click();
-    	if(!this.waitForElementExists(this, reference, "Element: "+reference.getText(), waitTime)){
+    	if(!this.waitForElementExists(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
     		_logger.log(Level.FINE, "Filed to load : "+pageLocation+", Retrying...");
     		this.xy(cell(pageLocations[1].trim()),3,3).click();
-    		if(!this.waitForElementExists(this, reference, "Element: "+reference.getText(), waitTime)){
+    		if(!this.waitForElementExists(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
         		_logger.log(Level.WARNING, "Filed to load : "+pageLocation);
         		return false;
         	}
