@@ -254,7 +254,7 @@ public class SahiTasks extends ExtendedSahi {
     // Users and Groups
     // ***************************************************************************
     public void createDeleteUser() {
-    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5);
+    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
         this.cell("New").click();
         this.textbox("name").setValue("test1");
         this.password("password").setValue("password");
@@ -406,7 +406,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void deleteDynaGroup(String groupDesc) {
-    	selectPage("Inventory-->Dynagroup Definitions", this.cell("Name"), 1000*5);
+    	selectPage("Inventory-->Dynagroup Definitions", this.cell("Name"), 1000*5, 2);
     	this.div(groupDesc).click();
         this.cell("Delete").click();
         this.cell("Yes").click();
@@ -479,7 +479,7 @@ public class SahiTasks extends ExtendedSahi {
     // Administration 
     // ***************************************************************************
     public void createUser(String userName, String password, String firstName, String lastName, String email) {
-    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5);
+    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
     	this.cell("New").click();
         this.textbox("name").setValue(userName);
         this.password("password").setValue(password);
@@ -491,7 +491,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void deleteUser(String userName) {
-    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5);
+    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
     	this.div(userName).click();
         this.cell("Delete").click();
         this.cell("Yes").click();
@@ -532,7 +532,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void addRolesToUser(String userName, ArrayList<String> roleNames) {
-    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5);
+    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
     	this.link(userName).click();
         for (String role : roleNames) {
             this.div(role).click();
@@ -772,9 +772,9 @@ public class SahiTasks extends ExtendedSahi {
     //********************************************************
     public void locatePluginPage(boolean selectAgentPluginPage){
     	if(selectAgentPluginPage){
-    		selectPage("Administration-->Agent Plugins", this.cell("Name"), 1000*5);
+    		selectPage("Administration-->Agent Plugins", this.cell("Name"), 1000*5, 2);
     	}else{
-    		selectPage("Administration-->Server Plugins", this.cell("Name"), 1000*5);
+    		selectPage("Administration-->Server Plugins", this.cell("Name"), 1000*5, 2);
     	}
     }
     
@@ -788,23 +788,20 @@ public class SahiTasks extends ExtendedSahi {
     //*********************************************************************************
     //* Redirect pages, main menu display page should be on span
     //*********************************************************************************   
-    public boolean selectPage(String pageLocation, ElementStub elementReference, int waitTime){
+    public boolean selectPage(String pageLocation, ElementStub elementReference, int waitTime, int retryCount){
     	String[] pageLocations = pageLocation.split("-->");    
-    	this.link(pageLocations[0].trim()).click();
-    	this.waitForElementExists(this, this.span(pageLocations[0].trim()), "SPAN: "+pageLocations[0].trim(), waitTime);
-    	this.cell(pageLocations[1].trim()).click();
-    	if(!this.waitForElementExists(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
-    		_logger.log(Level.INFO, "Filed to load : "+pageLocation+", Retrying...");
-    		this.cell(pageLocations[1].trim()).focus();
-    		this.cell(pageLocations[1].trim()).click();
-    		if(!this.waitForElementExists(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
-        		_logger.log(Level.WARNING, "Filed to load : "+pageLocation);
-        		return false;
+      	for(int i=1;i<=retryCount;i++){
+    		this.link(pageLocations[0].trim()).click();
+        	this.waitForElementExists(this, this.span(pageLocations[0].trim()), "SPAN: "+pageLocations[0].trim(), waitTime);
+        	this.cell(pageLocations[1].trim()).click();
+        	if(!this.waitForElementExists(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
+        		_logger.log(Level.INFO, "Filed to load : "+pageLocation+", Retry Count: ["+i+" of "+retryCount+"]");        		
+        	}else{
+        		_logger.log(Level.FINE, "Loaded Successfully: "+pageLocation);
+        		return true;
         	}
     	}
-    	_logger.log(Level.FINE, "Loaded Successfully: "+pageLocation);
-		return true;
-    	
+		return false;    	
     }
     
     //*********************************************************************************
@@ -814,7 +811,7 @@ public class SahiTasks extends ExtendedSahi {
     	//String searchCategory = null;
         String[] resourceType = resourceName.split("=");
         if (resourceType.length > 1) {
-        	selectPage("Inventory-->"+resourceType[0], this.textbox("SearchPatternField"), 1000*5);
+        	selectPage("Inventory-->"+resourceType[0], this.textbox("SearchPatternField"), 1000*5, 3);
             /*
             if(resourceType[0].equalsIgnoreCase("Platforms")){
             	searchCategory = "category=platform ";

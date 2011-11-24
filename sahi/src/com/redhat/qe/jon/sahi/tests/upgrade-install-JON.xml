@@ -1,0 +1,24 @@
+<suite name="Fresh Installation of JON">
+
+	<!-- Listener to clear pop-up's if any on test failure-->
+  	<listeners>
+    	<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" />
+  	</listeners>
+
+  	<test name="GuiInstallationTest">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.RHQGuiInstallationTest">
+			<parameter name="db.type" value="PostgreSQL"/>
+			<parameter name="db.details" value="propForm:databaseconnectionurl=jdbc:postgresql://127.0.0.1:5432/jonupgradedb, propForm:databasedriverclass=org.postgresql.Driver, propForm:databaseusername=rhqadmin"/> <!-- //Available Boxes// propForm:databaseconnectionurl, propForm:databasedriverclass, propForm:databasexadatasourceclass, propForm:databaseusername" -->
+			<parameter name="db.user.password" value="rhqadmin"/>
+			<parameter name="db.exists.selection" value="Keep (maintain existing data)"/> <!-- //Available Options// Keep (maintain existing data), Overwrite (lose existing data), Skip (leave database as-is) -->
+			<!-- <parameter name="registered.server.selection" value="New Server"/> --> <!-- //Available Options// New Server, <server name> -->
+			<!-- <parameter name="server.details" value="propForm:haservername=localhost, propForm:haendpointaddress=localhost1, propForm:haendpointport=123, propForm:haendpointsecureport=1234, 8=1.2.3.4,9=localhost123,10=jkandasa@redhat.com"/> --> <!-- //Available Boxes: propForm:haservername, propForm:haendpointaddress, propForm:haendpointport, propForm:haendpointsecureport, 8,9,10 [8-Server Bind Address, 9-Email SMTP host name, 10 - email from address] -->
+			<parameter name="embedded.agent.enabled" value="false"/>			
+			<methods>
+				 <include name="rhqGUIinstallation"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>  		
+</suite>
