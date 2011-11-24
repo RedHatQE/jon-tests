@@ -71,7 +71,7 @@ public class DriftManagementTest extends SahiTestScript {
 	
 	@Test (groups="driftTest", dataProvider="driftCreationData", dependsOnMethods={"createDrift", "driftActionFileAdd", "driftActionFileChange", "driftActionFileRemove"})
 	public void trashDrift(HashMap<String, String> driftDetail) throws InterruptedException, IOException{
-		Assert.assertTrue(sahiTasks.deleteDrift(driftDetail.get(RESOURCE_NAME), driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_BASE_DIR)), "Drift Removed validation check");
+		Assert.assertFalse(sahiTasks.deleteDrift(driftDetail.get(RESOURCE_NAME), driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_BASE_DIR)), "Drift Removed validation check");
 	}
 
 	
