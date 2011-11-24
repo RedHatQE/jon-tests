@@ -26,7 +26,7 @@ public class SahiTasks extends ExtendedSahi {
     // Login/Logout
     // ***************************************************************************
     public boolean login(String userName, String password) {
-    	if(this.waitForElementExists(this, this.link("Logout"), "Link: Logout", 1000*5)){
+    	if(this.waitForElementExists(this, this.link("Logout"), "Link: Logout", 1000*3)){
     		this.link("Logout").click();
     	}    	
     	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*180)){
@@ -152,7 +152,7 @@ public class SahiTasks extends ExtendedSahi {
     // ***************************************************************************
     public void createBundleURL(String bundleURL) {
         this.link("Bundles").click();
-        this.cell("New").click();
+        this.cell("New").near(this.cell("Delete")).click();
         this.radio("URL").click();
         this.textbox("url").setValue(bundleURL);
         this.cell("Next").click();
@@ -1122,22 +1122,18 @@ public class SahiTasks extends ExtendedSahi {
     
     public boolean clickDriftDetectNowOrDelete(String driftName, int divMaxIndex, long waitTime, boolean deleteDrift) throws InterruptedException{
     	
-    	String driftRealName = "";
     	for(int i=divMaxIndex; i>=0; i--){
     		if(this.div(driftName+"["+i+"]").exists()){
     			this.div(driftName+"["+i+"]").click();
     			_logger.log(Level.INFO, "Clciked on, Drift Name:  "+driftName+"["+i+"]");
-    			driftName = driftRealName+"["+i+"]";
     			break;
     		}
     	}
-    	//this.div(driftName, this.link(driftName)).click();
     	
     	if(deleteDrift){
     		this.cell("Delete").near(this.cell("Delete All")).click();
     		//this.row("Delete[2]").click();
     		this.cell("Yes").near(this.cell("No")).click();
-    		this.waitFor(1000*2);
     		return this.link(driftName).exists();
     	}else{
     		this.cell("Detect Now").near(this.cell("Delete All")).click();
