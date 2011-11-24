@@ -28,7 +28,7 @@ public class AutodetectConfigurationTest extends AS7PluginSahiTestScript {
         
         // check servers under the domain controller (or at least one of them)
         String resourceTypeHTML = (sahiTasks.cell(System.getProperty("as7.domain.host.server-one.name")).parentNode("TABLE")).parentNode("TR").fetch("innerHTML");
-        if(resourceTypeHTML.indexOf("JBossAS-Managed") == -1) {
+        if(resourceTypeHTML.indexOf("JBossAS7 Managed") == -1) {
             Assert.fail("Could not verify that server \"" + System.getProperty("as7.domain.host.server-one.name") + "\" in the domain was detected as of type JBossAS-Managed. HTML snippet: " + resourceTypeHTML);                        
         }        
     }    
