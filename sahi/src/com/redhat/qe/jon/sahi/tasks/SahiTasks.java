@@ -1136,7 +1136,8 @@ public class SahiTasks extends ExtendedSahi {
     	if(deleteDrift){
     		this.cell("Delete").near(this.cell("Delete All")).click();
     		//this.row("Delete[2]").click();
-    		this.cell("Yes").click();
+    		this.cell("Yes").near(this.cell("No")).click();
+    		this.waitFor(1000*2);
     		return this.link(driftName).exists();
     	}else{
     		this.cell("Detect Now").near(this.cell("Delete All")).click();
