@@ -29,7 +29,7 @@ public class AutodetectConfigurationTest extends AS7PluginSahiTestScript {
         String resourceTypeHTML = (sahiTasks.cell(System.getProperty("as7.standalone.name")).parentNode("TABLE")).parentNode("TR").fetch("innerHTML");
         
         boolean found = false;
-        if(resourceTypeHTML.indexOf("JBossAS7-Standalone") != -1) {
+        if(resourceTypeHTML.indexOf("JBossAS7 Standalone") != -1) {
             found = true;
         }
         if(resourceTypeHTML.indexOf("EAP6") != -1) {
