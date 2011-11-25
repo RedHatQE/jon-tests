@@ -1,4 +1,4 @@
-<suite name="Fresh Installation of JON">
+<suite name="Upgrade Installation of JON">
 
 	<!-- Listener to clear pop-up's if any on test failure-->
   	<listeners>
