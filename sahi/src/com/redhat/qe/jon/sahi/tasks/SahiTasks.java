@@ -17,10 +17,14 @@ import org.testng.annotations.Optional;
 public class SahiTasks extends ExtendedSahi {
 
     private static Logger _logger = Logger.getLogger(SahiTasks.class.getName());
-
+    private Navigator navigator;
     public SahiTasks(String browserPath, String browserName, String browserOpt, String sahiBaseDir, String sahiUserdataDir) {
         super(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
+        this.navigator = new Navigator(this);
     }
+    public Navigator getNavigator() {
+		return navigator;
+	}
 
     // ***************************************************************************
     // Login/Logout
@@ -333,6 +337,19 @@ public class SahiTasks extends ExtendedSahi {
     //******************************************************************
     //Resource 
     //******************************************************************
+    
+    /**
+     * this method creates new Operation and selects it from Operation combo
+     * you HAVE to be located on 'Operations' tab of resource when using this method
+     * @param operationName
+     */
+    public void newInventoryOperation(String operationName) {
+    	cell("New").click();
+		div("selectItemText").click();
+		waitFor(2000);
+		div(operationName).click();
+    }
+    
     public void checkResourceBrowserAvailabilityColumnsInGroupDef() {
 
         this.link("Inventory").click();
