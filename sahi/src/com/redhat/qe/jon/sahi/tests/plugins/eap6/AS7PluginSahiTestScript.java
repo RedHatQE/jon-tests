@@ -26,6 +26,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
 
     protected static ModelControllerClient managementStandalone;
     protected static ModelControllerClient managementDomain;
+    protected static ModelControllerClient managementCurrent;
 
     public AS7PluginSahiTestScript() {
         super();
@@ -58,6 +59,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
 
         try {
             managementStandalone = ModelControllerClient.Factory.create(InetAddress.getByName(MGMT_HOST_STANDALONE), MGMT_PORT_STANDALONE);
+            managementCurrent = managementStandalone;
         } catch (Exception e) {
             throw new RuntimeException("Cannot create model controller client for host: " + MGMT_HOST_STANDALONE + " and port " + MGMT_PORT_STANDALONE, e);
         }
@@ -77,6 +79,18 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-three.name"));
     */}
 
+    /**
+     * sets Domain as management client. Methods executeOperation* will contact domain EAP instance since this method is called
+     */
+    protected void setManagementControllerDomain() {
+    	managementCurrent = managementDomain;
+    }
+    /**
+     * sets STANDALONE as management client. Methods executeOperation* will contact standalone EAP instance since this method is called
+     */
+    protected void setManagementControllerStandalone() {
+    	managementCurrent = managementStandalone;
+    }
     /***********************************************************************/
     /******************** AUX FUNCTIONS FOR MANAGEMENT**********************/
     /***********************************************************************/
@@ -98,12 +112,12 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     }
 
     protected ModelNode executeOperation(final ModelNode op) throws IOException {
-        ModelNode ret = managementStandalone.execute(op);
+        ModelNode ret = managementCurrent.execute(op);
         return ret;
     }
 
     protected ModelNode executeOperationAndAssertSuccess(String msg, final ModelNode op) throws IOException {
-        ModelNode ret = managementStandalone.execute(op);
+        ModelNode ret = managementCurrent.execute(op);
         Assert.assertTrue("success".equals(ret.get("outcome").asString()),
                 msg + ret.get("failure-description").asString()
                 );
@@ -111,7 +125,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     }
 
     protected ModelNode executeOperationAndAssertFailure(String msg, final ModelNode op) throws IOException {
-        ModelNode ret = managementStandalone.execute(op);
+        ModelNode ret = managementCurrent.execute(op);
         Assert.assertTrue("failed".equals(ret.get("outcome").asString()), msg);
         return ret;
     }
