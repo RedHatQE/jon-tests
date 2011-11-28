@@ -101,7 +101,9 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         ModelNode list = op.get("address").setEmptyList();
         for (String segment : pathSegments) {
             String[] elements = segment.split("=");
-            list.add(elements[0], elements[1]);
+            if (elements.length==2) {
+            	list.add(elements[0], elements[1]);
+            }
         }
         op.get("operation").set(operation);
         for (String param : params) {
