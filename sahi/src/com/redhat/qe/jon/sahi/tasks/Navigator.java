@@ -37,7 +37,7 @@ public class Navigator {
 				tasks.image(itNav.get(it)).near(tasks.cell(it)).click();
 			}
 			else {
-				tasks.image(itNav.get(it)).click();
+				tasks.xy(tasks.image(itNav.get(it)),3,3).click();
 			}
 			if (subTab!=null) {
 				tasks.xy(tasks.cell(subTab), 3, 3).click();
