@@ -70,6 +70,7 @@ public class Navigator {
         tasks.link(agent).click();
         for (String element : resourcePath) {
         	log.fine("select resource : "+element);
+        	tasks.waitFor(3000);
 	        inventorySelectTab("Inventory","Child Resources");
 	        tasks.link(element).click();
         }
