@@ -117,6 +117,28 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         ModelNode ret = managementCurrent.execute(op);
         return ret;
     }
+    /**
+     * executes operation without a need to know result details, useful
+     * @param address
+     * @param operation
+     * @param params
+     * @return true if operation was successfull
+     */
+    protected boolean executeOperationVoid(String address, String operation, String... params) {
+    	try {
+    		ModelNode ret = executeOperation(createOperation(address, operation, params));
+    		if ("success".equals(ret.get("outcome").asString())) {
+    			return true;
+    		}
+    		else {
+    			log.warning("Operation failed: "+ret.toString());
+    			return false;
+    		}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+    }
 
     protected ModelNode executeOperationAndAssertSuccess(String msg, final ModelNode op) throws IOException {
         ModelNode ret = managementCurrent.execute(op);
