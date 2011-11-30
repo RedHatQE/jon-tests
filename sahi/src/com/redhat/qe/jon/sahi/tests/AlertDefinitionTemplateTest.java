@@ -17,7 +17,7 @@ public class AlertDefinitionTemplateTest extends SahiTestScript{
 	public void createAlertDefinitionTemplate(String groupPanelName, String templateName){
 		sahiTasks.createAlertDefinitionTemplate(groupPanelName, templateName);
 	}
-	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="createAlertDefinitionTemplate")
+	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="checkDefinitionTemplateExists")
 	public void navigationWithConditionsTab(String groupPanelName, String templateName){
 		sahiTasks.navigationThruConditionsTabAlertDefTemplate(groupPanelName, templateName);
 	}
@@ -27,11 +27,11 @@ public class AlertDefinitionTemplateTest extends SahiTestScript{
 		sahiTasks.navigationThruNotificationsTabAlertDefTemplate(groupPanelName, templateName);
 	}*/
 	
-	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="createAlertDefinitionTemplate")
+	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="navigationWithConditionsTab")
 	public void navigationWithRecoveryTab(String groupPanelName, String templateName){
 		sahiTasks.navigationThruRecoveryTabAlertDefTemplate(groupPanelName, templateName);
 	}
-	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="createAlertDefinitionTemplate")
+	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="navigationWithRecoveryTab")
 	public void navigationWithDampeningTab(String groupPanelName, String templateName){
 		sahiTasks.navigationThruDampeningTabAlertDefTemplate(groupPanelName, templateName);
 	}
