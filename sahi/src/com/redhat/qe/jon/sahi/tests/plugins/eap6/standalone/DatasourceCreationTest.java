@@ -36,8 +36,8 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		selectDatasource(datasource);
 		sahiTasks.cell("Delete").click();
 		sahiTasks.cell("Yes").click();
-		Assert.assertFalse(existsDatasourceAPI(), "[mgmt API] Datasource was deleted");
-		Assert.assertFalse(existsDatasourceUI(datasource), "Datasource was deleted");
+		Assert.assertFalse(existsDatasourceAPI(), "[mgmt API] Datasource exists");
+		Assert.assertFalse(existsDatasourceUI(datasource), "Datasource exists in UI");
 	}
 	
 	@Test(groups = "datasourceCreation")
@@ -49,7 +49,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Uninventory").click();
 		sahiTasks.cell("Yes").click();
 		Assert.assertTrue(existsDatasourceAPI(), "[mgmt API] Datasource exists");
-		Assert.assertFalse(existsDatasourceUI(datasource), "Datasource was uninventorized");
+		Assert.assertFalse(existsDatasourceUI(datasource), "Datasource exists in UI");
 		removeDatasource();
 	}
 	
@@ -60,7 +60,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 			as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
 		}
 		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.standalone.name"),"datasources");
-		sahiTasks.newInventoryOperation("Add Datasource");		
+		sahiTasks.newInventoryOperation(0);
 		sahiTasks.textbox("name").setValue(datasource);
 		sahiTasks.waitFor(5000);
 		sahiTasks.textbox("driver-name").setValue("h2");
@@ -93,8 +93,8 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		selectDatasource(datasourceXA);
 		sahiTasks.cell("Delete").click();
 		sahiTasks.cell("Yes").click();
-		Assert.assertFalse(existsDatasourceXAAPI(), "[mgmt API] XA datasource was deleted");
-		Assert.assertFalse(existsDatasourceUI(datasourceXA), "XA Datasource was deleted");
+		Assert.assertFalse(existsDatasourceXAAPI(), "[mgmt API] XA datasource exists");
+		Assert.assertFalse(existsDatasourceUI(datasourceXA), "XA Datasource exists in UI");
 	}
 
 	@Test(groups = "XAdatasourceCreation")
@@ -106,7 +106,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Uninventory").click();
 		sahiTasks.cell("Yes").click();
 		Assert.assertTrue(existsDatasourceXAAPI(), "[mgmt API] XA datasource exists");
-		Assert.assertFalse(existsDatasourceUI(datasourceXA), "XA Datasource was uninventorized");
+		Assert.assertFalse(existsDatasourceUI(datasourceXA), "XA Datasource exists in UI");
 		removeDatasourceXA();
 	}
 	
@@ -117,7 +117,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 			as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
 		}
 		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.standalone.name"),"datasources");
-		sahiTasks.newInventoryOperation("Add XA Datasource");		
+		sahiTasks.newInventoryOperation(1);		
 		sahiTasks.textbox("name").setValue(datasourceXA);
 		sahiTasks.waitFor(5000);
 		sahiTasks.textbox("driver-name").setValue("h2");

@@ -86,7 +86,7 @@ public class AS7PluginSahiTasks {
         tasks.cell("Platforms").click();
         tasks.link(agentName).click();
         tasks.cell("Operations").click();
-        tasks.newInventoryOperation("Manual Autodiscovery");
+        tasks.newInventoryOperation(1);
         tasks.cell("Schedule").click();
     }
 
