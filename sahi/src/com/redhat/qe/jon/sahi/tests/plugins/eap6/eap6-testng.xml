@@ -3,7 +3,6 @@
   	<listeners>
     	<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" />
   	</listeners>
-    
      <!-- keep this test as FIRST one -->
      <test name="GuiLoginTest">
   	  	<classes>
@@ -63,7 +62,20 @@
                 <include name="monitoringTest"/>                                
             </run>
         </groups>  
-    </test> 
+    </test>
+	<test name="Standalone_DatasourceCreation">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.DatasourceCreationTest"/>
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>
+                <include name="datasourceCreation"/>
+                <include name="XAdatasourceCreation"/>
+            </run>
+        </groups>
+    </test>
     <test name="Domain_AutodetectConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.AutodetectConfigurationTest"/>
@@ -148,6 +160,7 @@
             </run>
         </groups>
     </test>
+     -->
     <!--  keep this test as LAST one -->
     <test name="GuiLogoutTest">
   	  	<classes>
