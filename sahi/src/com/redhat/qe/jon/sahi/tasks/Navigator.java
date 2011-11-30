@@ -33,7 +33,12 @@ public class Navigator {
 	public void inventorySelectTab(String it, String subTab) {
 		if (itNav.containsKey(it)) {
 			log.fine("select resourceTab "+it.toString());
-			tasks.image(itNav.get(it)).near(tasks.cell(it.toString())).click();
+			if ("Summary".equals(it)) {
+				tasks.image(itNav.get(it)).near(tasks.cell(it)).click();
+			}
+			else {
+				tasks.image(itNav.get(it)).click();
+			}
 			if (subTab!=null) {
 				tasks.xy(tasks.cell(subTab), 3, 3).click();
 			}
