@@ -347,7 +347,7 @@ public class SahiTasks extends ExtendedSahi {
     	cell("New").click();
 		div("selectItemText").click();
 		waitFor(2000);
-		div(operationName).click();
+		xy(div(operationName),3,3).click();
     }
     
     public void checkResourceBrowserAvailabilityColumnsInGroupDef() {
