@@ -142,20 +142,32 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		Assert.assertTrue(existsDatasourceXAAPI(), "[mgmt API] XA Datasource exists");		
 		//  assert datasource was discovered by agent
 		as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-		sahiTasks.waitFor(8000);
 		Assert.assertTrue(existsDatasourceUI(datasourceXA), "Created XA datasource discovered by agent");
 	}
 	
 	private void selectDatasource(String datasource) {
 		log.info("manual discovery");
 		as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-		sahiTasks.waitFor(8000);
 		log.info("manual discovery done");
+		waitForDatasource(datasource);
 		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
 		sahiTasks.xy(sahiTasks.cell("Child Resources"), 3, 3).click();
 		sahiTasks.xy(sahiTasks.cell(datasource), 3, 3).click();
 	}
 	
+	private boolean waitForDatasource(String datasource) {
+		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
+		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
+		for (int i = 0;i <10;i++) {
+			log.info("Waiting for datasource to appear #"+String.valueOf(i));
+			if (sahiTasks.cell(datasource).exists()) {
+				return true;
+			}
+			sahiTasks.waitFor(5000);
+			sahiTasks.cell("Refresh").click();
+		}
+		return false;
+	}
 	private boolean existsDatasourceUI(String datasource) {
 		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
