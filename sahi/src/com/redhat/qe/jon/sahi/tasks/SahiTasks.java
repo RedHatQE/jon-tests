@@ -338,22 +338,6 @@ public class SahiTasks extends ExtendedSahi {
     //Resource 
     //******************************************************************
     
-    /**
-     * this method creates new Operation and selects it from Operation combo
-     * you HAVE to be located on 'Operations' tab of resource when using this method
-     * @param operationIndex index of operatoin in combo
-     */
-    public void newInventoryOperation(int operationIndex) {
-    	cell("New").click();
-		div("selectItemText").click();
-		waitFor(2000);
-		this.execute("_sahi._keyPress(_sahi._div('selectItemText'), 38);");
-		for (int i=0; i< operationIndex;i++) {
-			this.execute("_sahi._keyPress(_sahi._div('selectItemText'), 40);");
-		}
-		this.execute("_sahi._keyPress(_sahi._div('selectItemText'), 13);");
-		waitFor(3000);
-    }
     
     public void checkResourceBrowserAvailabilityColumnsInGroupDef() {
 
