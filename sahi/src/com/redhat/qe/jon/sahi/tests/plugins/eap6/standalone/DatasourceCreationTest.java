@@ -249,17 +249,22 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	 * @return
 	 */
 	private boolean existsDatasourceAPI(String[] ds_def) {
+		log.fine("Exists datasource using mgmt API?");
 		ModelNode op = createOperation("/subsystem=datasources", "read-children-names", new String[]{"child-type="+ds_def[1]});
 		try {
+			log.fine("execute operation");
 			op = executeOperation(op);
+			log.fine("Operation executed result: "+op.toString());
 			List<ModelNode> ds = op.get("result").asList();
 			for (ModelNode mn : ds) {
 				if (ds_def[0].equals(mn.asString())) {
 					return true;
 				}
 			}
+			
 			return false;
 		} catch (IOException e) {
+			log.throwing(DatasourceCreationTest.class.getCanonicalName(), "existsDatasourceAPI", e);
 			e.printStackTrace();
 			return false;
 		}
