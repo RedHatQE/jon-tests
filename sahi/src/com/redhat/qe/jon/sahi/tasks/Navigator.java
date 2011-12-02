@@ -23,28 +23,34 @@ public class Navigator {
 		itNav.put("Alerts", "Alerts_16.png");
 		itNav.put("Operations", "Operation_grey_16.png");
 	}
-	
+
 	/**
 	 * selects given inventory tab
 	 * you have to be in Inventory to use this method
 	 * @param it inventory Tab name
 	 * @param subTab sub tab to jump in within inventory tab
 	 */
-	public void inventorySelectTab(String it, String subTab) {
-		if (itNav.containsKey(it)) {
+	public void inventorySelectTab(String it, String subTab) {		
+		if (it !=null) {
+			if (!itNav.containsKey(it)) {
+				throw new RuntimeException("Selecting tab of type "+it.toString()+" is not implemented");
+			}
 			log.fine("select resourceTab "+it.toString());
 			if ("Summary".equals(it)) {
 				tasks.image(itNav.get(it)).near(tasks.cell(it)).click();
 			}
+			else if("Inventory".equals(it)) {
+				tasks.cell("Inventory[1]").click();
+			}
 			else {
-				tasks.xy(tasks.image(itNav.get(it)),3,3).click();
+				tasks.image(itNav.get(it)).click();
 			}
-			if (subTab!=null) {
-				tasks.xy(tasks.cell(subTab), 3, 3).click();
-			}
+			log.fine("selected resourceTab "+it.toString());
+			log.fine("REALLY! selected resourceTab "+it.toString());
 		}
-		else {
-			throw new RuntimeException("Selecting tab of type "+it.toString()+" is not implemented");
+		if (subTab!=null) {
+			tasks.xy(tasks.cell(subTab), 3, 3).click();
+			log.fine("switched to subtab "+subTab);
 		}
 	}
 	/**
@@ -74,6 +80,9 @@ public class Navigator {
 	        inventorySelectTab("Inventory","Child Resources");
 	        tasks.link(element).click();
         }
-        inventorySelectTab(it);
+        if (!"Inventory".equals(it)) {
+        	inventorySelectTab(it);
+        }
+        log.fine("navigation to resource done");
 	}
 }
