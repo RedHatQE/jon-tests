@@ -156,7 +156,7 @@ public class SahiTasks extends ExtendedSahi {
     // ***************************************************************************
     public void createBundleURL(String bundleURL) {
         this.link("Bundles").click();
-        this.cell("New").near(this.cell("Delete")).click();
+        this.cell("New").near(this.cell("Deploy")).click();
         this.radio("URL").click();
         this.textbox("url").setValue(bundleURL);
         this.cell("Next").click();
