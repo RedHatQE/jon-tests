@@ -156,7 +156,7 @@ public class SahiTasks extends ExtendedSahi {
     // ***************************************************************************
     public void createBundleURL(String bundleURL) {
         this.link("Bundles").click();
-        this.cell("New").near(this.cell("Delete")).click();
+        this.cell("New").near(this.cell("Deploy")).click();
         this.radio("URL").click();
         this.textbox("url").setValue(bundleURL);
         this.cell("Next").click();
@@ -1946,7 +1946,6 @@ public class SahiTasks extends ExtendedSahi {
        // this.div("selectItemText[2]").click();
         this.radio("yes[1]").click();
         this.radio("no[1]").click();
-        this.cell("OK").click();
         this.cell("Save").click();
         this.bold("Back to List").click();
     	
@@ -1964,6 +1963,13 @@ public class SahiTasks extends ExtendedSahi {
         this.bold("Back to List").click();
     	
     }
-
+    public boolean deleteAlertDefinitionTemplate(String templateName){
+    	if(!selectDivElement(templateName, 2)){
+    		return false;
+    	}
+    	this.cell("Delete").near(this.cell("Disable")).click();
+    	this.cell("Yes").near(this.cell("No")).click(); 
+    	return this.link(templateName.trim()).exists();
+    }
 
 }

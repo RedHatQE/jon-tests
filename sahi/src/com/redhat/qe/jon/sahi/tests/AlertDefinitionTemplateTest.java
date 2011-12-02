@@ -35,6 +35,10 @@ public class AlertDefinitionTemplateTest extends SahiTestScript{
 	public void navigationWithDampeningTab(String groupPanelName, String templateName){
 		sahiTasks.navigationThruDampeningTabAlertDefTemplate(groupPanelName, templateName);
 	}
+	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="navigationWithDampeningTab")
+	public void deleteAlertDefinitionTemplate(String groupPanelName, String templateName){
+		Assert.assertFalse(sahiTasks.deleteAlertDefinitionTemplate(templateName), "Template ["+templateName+"] deletion status");
+	}
 	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="createAlertDefinitionTemplate")
 	public void checkDefinitionTemplateExists(String groupPanelName, String templateName){
 		Assert.assertTrue(sahiTasks.verifyDefinitionTemplateExists(groupPanelName, templateName));

@@ -127,7 +127,8 @@ public class InventoryTest extends SahiTestScript{
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
 		ArrayList<String> resourceData = new ArrayList<String>();
 		resourceData.add("RHQ Agent");
-		resourceData.add("Cron");
+		//resourceData.add("Cron");
+		resourceData.add("RHQ Agent Launcher Script");
 		data.add(Arrays.asList(new Object[]{"mixedGroup", "mixed Group description", resourceData}));
 		return data;
 	}
