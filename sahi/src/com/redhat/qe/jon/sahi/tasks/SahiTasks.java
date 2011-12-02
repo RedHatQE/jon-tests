@@ -121,7 +121,7 @@ public class SahiTasks extends ExtendedSahi {
         this.link("Inventory").click();
         this.waitFor(5000);
         this.cell(groupPanelName).click();
-        this.div(groupName).click();
+        selectDivElement(groupName, 2);
         this.cell("Delete").click();
         this.cell("Yes").click();
     }
@@ -807,6 +807,17 @@ public class SahiTasks extends ExtendedSahi {
         		return true;
         	}
     	}
+		return false;    	
+    }
+    public boolean selectDivElement(String elementName, int divMaxIndex){    	
+    	for(int i=divMaxIndex; i>=0; i--){
+    		if(this.div(elementName+"["+i+"]").exists()){
+    			this.div(elementName+"["+i+"]").click();
+    			_logger.log(Level.INFO, "Clciked on the element:  "+elementName+"["+i+"]");
+    			return true;
+    		}
+    	}  
+    	_logger.log(Level.WARNING, "There is no div element["+elementName+"] found!, Input MaxIndex:"+divMaxIndex);
 		return false;    	
     }
     
@@ -1846,20 +1857,20 @@ public class SahiTasks extends ExtendedSahi {
     //************************************************************************************************
     // Search Tests
     //***************************************************************************************************
-    // TEXT serach for Groups
+    // TEXT search for Groups
     public boolean searchComaptibilityGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
-    	this.link("Inventory").click();
-        this.waitFor(5000);
-        this.cell(groupPanelName).click();
-        this.textbox("SearchPatternField").setValue("compatible");
-        
-        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
-        if (this.cell("No items to show.").exists()){
-        	_logger.log(Level.WARNING, "No  "+ groupPanelName +"  is available" );
+    	selectPage("Inventory-->"+groupPanelName, this.textbox("SearchPatternField"), 1000*5, 3);
+    	this.textbox("SearchPatternField").setValue(groupName);
+        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key    
+        if(!this.link(groupName.trim()).exists()){
+        	_logger.log(Level.INFO, "Group ["+groupName+"] unavailable, Creating new one...");
+        	createGroup(groupPanelName, groupName, groupDesc, resourceList);
+        }else{
+        	return true;
         }
-        createGroup(groupPanelName, groupName, groupDesc, resourceList);
-        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");       
-        return this.div("compatibleGroup").exists();
+        this.textbox("SearchPatternField").setValue(groupName);
+        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key   
+        return this.link(groupName.trim()).exists();
     }
 
     public boolean searchAllGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
