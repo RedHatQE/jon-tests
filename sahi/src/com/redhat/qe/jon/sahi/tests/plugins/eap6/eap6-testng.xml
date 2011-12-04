@@ -63,6 +63,7 @@
             </run>
         </groups>  
     </test>
+    <!-- temporary disable, causes all tests hang
 	<test name="Standalone_DatasourceCreation">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.DatasourceCreationTest"/>
@@ -76,6 +77,7 @@
             </run>
         </groups>
     </test>
+    -->
     <test name="Domain_AutodetectConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.AutodetectConfigurationTest"/>
