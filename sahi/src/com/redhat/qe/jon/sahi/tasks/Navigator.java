@@ -40,7 +40,7 @@ public class Navigator {
 				tasks.image(itNav.get(it)).near(tasks.cell(it)).click();
 			}
 			else if("Inventory".equals(it)) {
-				tasks.cell("Inventory[1]").click();
+				 tasks.cell(it).near(tasks.image(itNav.get(it))).click();
 			}
 			else {
 				tasks.image(itNav.get(it)).click();
@@ -79,6 +79,7 @@ public class Navigator {
         	tasks.waitFor(3000);
 	        inventorySelectTab("Inventory","Child Resources");
 	        tasks.link(element).click();
+	        log.fine("clicked resource : "+element);
         }
         if (!"Inventory".equals(it)) {
         	inventorySelectTab(it);
