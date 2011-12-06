@@ -32,9 +32,13 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         } catch(Exception e) {}
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
-        ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
-        ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
-
+        //ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
+        ElementStub configuration_element = sahiTasks.textbox("config");
+         
+        
+        //ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
+        ElementStub startScript_element = sahiTasks.textbox("startScript");
+        
         String old_configuration = configuration_element.getText();
         String old_startScript = startScript_element.getText();
 
