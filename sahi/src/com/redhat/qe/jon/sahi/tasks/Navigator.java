@@ -78,6 +78,7 @@ public class Navigator {
         	log.fine("select resource : "+element);
         	tasks.waitFor(3000);
 	        inventorySelectTab("Inventory","Child Resources");
+	        tasks.waitFor(3000);
 	        tasks.link(element).click();
 	        log.fine("clicked resource : "+element);
         }
