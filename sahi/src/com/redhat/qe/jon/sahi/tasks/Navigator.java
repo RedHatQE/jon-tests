@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.sahi.tasks;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -36,7 +38,7 @@ public class Navigator {
 			if (!itNav.containsKey(it)) {
 				throw new RuntimeException("Selecting tab of type "+it.toString()+" is not implemented");
 			}
-			log.fine("select resourceTab "+it.toString());
+			log.fine("select Tab "+it.toString());
 			if ("Summary".equals(it)) {
 				tasks.image(itNav.get(it)).near(tasks.cell(it)).click();
 			}
@@ -46,8 +48,7 @@ public class Navigator {
 			else {
 				tasks.image(itNav.get(it)).click();
 			}
-			log.fine("selected resourceTab "+it.toString());
-			log.fine("REALLY! selected resourceTab "+it.toString());
+			log.fine("selected Tab "+it.toString());
 		}
 		if (subTab!=null) {
 			tasks.waitFor(timeout);
@@ -80,14 +81,14 @@ public class Navigator {
         for (String element : resourcePath) {
         	log.fine("select resource : "+element);
         	tasks.waitFor(timeout);
-	        inventorySelectTab("Inventory","Child Resources");
-	        
+	        inventorySelectTab("Inventory","Child Resources");	        
 	        tasks.link(element).click();
 	        log.fine("clicked resource : "+element);
         }
         tasks.waitFor(timeout);
-        inventorySelectTab(it);
-
-        log.fine("navigation to resource done");
+        if (!"Inventory".equals(it)) {
+        	inventorySelectTab(it);
+        }
+        log.fine("Navigation to "+Arrays.toString(resourcePath)+ " done.");
 	}
 }
