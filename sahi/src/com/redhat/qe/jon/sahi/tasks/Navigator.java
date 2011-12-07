@@ -14,6 +14,7 @@ public class Navigator {
 	private static Logger log = Logger.getLogger(Navigator.class.getName());
 	private final SahiTasks tasks;
 	private final Map<String,String> itNav;
+	private int timeout = 5000;
 	public Navigator(SahiTasks tasks) {
 		this.tasks = tasks;
 		// initialize navigation mappings
@@ -49,9 +50,11 @@ public class Navigator {
 			log.fine("REALLY! selected resourceTab "+it.toString());
 		}
 		if (subTab!=null) {
+			tasks.waitFor(timeout);
 			tasks.xy(tasks.cell(subTab), 3, 3).click();
 			log.fine("switched to subtab "+subTab);
 		}
+		tasks.waitFor(timeout);
 	}
 	/**
 	 * selects given inventory tab
@@ -76,15 +79,15 @@ public class Navigator {
         tasks.link(agent).click();
         for (String element : resourcePath) {
         	log.fine("select resource : "+element);
-        	tasks.waitFor(3000);
+        	tasks.waitFor(timeout);
 	        inventorySelectTab("Inventory","Child Resources");
-	        tasks.waitFor(3000);
+	        
 	        tasks.link(element).click();
 	        log.fine("clicked resource : "+element);
         }
-        if (!"Inventory".equals(it)) {
-        	inventorySelectTab(it);
-        }
+        tasks.waitFor(timeout);
+        inventorySelectTab(it);
+
         log.fine("navigation to resource done");
 	}
 }
