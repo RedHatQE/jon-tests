@@ -32,9 +32,10 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         } catch(Exception e) {}
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
-        ElementStub configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
-        ElementStub startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
 
+        ElementStub configuration_element = sahiTasks.textbox("config");
+        ElementStub startScript_element = sahiTasks.textbox("startScript");
+        
         String old_configuration = configuration_element.getText();
         String old_startScript = startScript_element.getText();
 
@@ -63,8 +64,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             log.fine("text in \"Start script\" after refreshing the page:" + selm);
 
             // return the values back
-            ElementStub configuration_element2 = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
-            ElementStub startScript_element2 = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
+            ElementStub configuration_element2 = sahiTasks.textbox("config");
+            ElementStub startScript_element2 = sahiTasks.textbox("startScript");
             configuration_element2.setValue(old_configuration);
             startScript_element2.setValue(old_startScript);
             sahiTasks.cell("Save").click();
@@ -79,8 +80,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));              
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
-        ElementStub hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
-        ElementStub port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
+        ElementStub hostname_element = sahiTasks.textbox("hostname");
+        ElementStub port_element = sahiTasks.textbox("port");
 
         String old_hostname = hostname_element.getText();
         String old_port = port_element.getText();
@@ -114,8 +115,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
             sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
-            hostname_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Hostname").parentNode("TR"));
-            port_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Port").parentNode("TR"));
+            hostname_element = sahiTasks.textbox("hostname");
+            port_element = sahiTasks.textbox("port");
 
             hostname_element.setValue(old_hostname);
             port_element.setValue(old_port);

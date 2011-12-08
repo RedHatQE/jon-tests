@@ -3,6 +3,7 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import com.redhat.qe.auto.testng.Assert;
 import java.io.File;
@@ -79,6 +80,22 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-three.name"));
     */}
 
+    @AfterSuite(groups="teardown")
+    public void managementClientsCleanup() {
+    	try {
+			managementStandalone.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	try {
+			managementDomain.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
     /**
      * sets Domain as management client. Methods executeOperation* will contact domain EAP instance since this method is called
      */

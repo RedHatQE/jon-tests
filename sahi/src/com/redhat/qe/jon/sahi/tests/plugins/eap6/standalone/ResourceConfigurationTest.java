@@ -21,6 +21,8 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
     protected void setupAS7Plugin() {        
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
+        log.finer("Waiting 30s till server is properly inventorized");
+        sahiTasks.waitFor(30000);
         Assert.assertTrue(as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.standalone.name")), 
                 "Resource " + System.getProperty("as7.standalone.name") + "should be ONLINE, but I could not verify this!");
     }

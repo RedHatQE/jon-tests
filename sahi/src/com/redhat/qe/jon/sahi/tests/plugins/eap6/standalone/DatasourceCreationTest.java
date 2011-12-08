@@ -30,7 +30,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	 */
 	private static final String[] XA_def = {datasource_XA, "xa-data-source"};
 	
-	private static final int retryCount = 10;
+	private static final int retryCount = 50;
 	private static final int waitTime = 5000;
 	protected String agentName = System.getProperty("agent.name");
 	protected String serverName = System.getProperty("as7.standalone.name");
