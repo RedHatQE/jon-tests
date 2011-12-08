@@ -55,8 +55,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
             // check that the changes are persistent
-            configuration_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Running configuration").parentNode("TR"));
-            startScript_element = sahiTasks.textbox("textItem").in(sahiTasks.div("Start Script").parentNode("TR"));
+            configuration_element = sahiTasks.textbox("config");
+            startScript_element = sahiTasks.textbox("startScript");
             String celm = configuration_element.getValue();
             String selm = startScript_element.getValue();
             
