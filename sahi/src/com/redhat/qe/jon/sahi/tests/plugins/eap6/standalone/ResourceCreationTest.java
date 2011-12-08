@@ -98,12 +98,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             // the resource should go down after some time -- check for it
 
             for (int i = 0; i < 12; i++) {
-                try {
-                    Thread.sleep(30000);
-                } catch (InterruptedException ex) {
-                    log.severe(ex.getMessage());
-                }
-                log.finer("Checking that resource went offline: try #" + Integer.toString(i + 1) + " of 12");
+                sahiTasks.waitFor(30000);
+                log.fine("Checking that resource went offline: try #" + Integer.toString(i + 1) + " of 12");
                 if (!as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"))) {
                     log.fine("Success - Resource went offline! Now I will change connection settings back to normal.");
                     ok = true;
@@ -122,6 +118,16 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             port_element.setValue(old_port);
             sahiTasks.cell("Save").click();
             log.fine("Connection settings restored back to correct state");
+            // the resource should go down after some time -- check for it
+
+            for (int i = 0; i < 12; i++) {
+                sahiTasks.waitFor(30000);
+                log.fine("Checking that resource is back online: try #" + Integer.toString(i + 1) + " of 12");
+                if (as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"))) {
+                    log.fine("Success - Resource is back online!");
+                    break;
+                }
+            }
 
             if (!ok) {
                 Assert.fail("AS7's connection settings were changed to incorrect, but the AS didn't appear offline even after more than 6 minutes");
