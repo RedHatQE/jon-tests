@@ -27,7 +27,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();        
         // step1: disable one of the metrics         
         sahiTasks.waitFor(5000);
-        sahiTasks.xy(sahiTasks.cell("Maximum request time"), 3, 3).click();
+        sahiTasks.xy(sahiTasks.cell("Maximum request time"), 5, 5).click();
         sahiTasks.waitFor(5000);
         sahiTasks.cell("Disable").near(sahiTasks.cell("Enable")).click();      
         
@@ -53,16 +53,15 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));                       
         // check that the metric is present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
-        try {
-            Thread.sleep(5000);
-        } catch(InterruptedException ex) {}
+        sahiTasks.waitFor(5000);
         Assert.assertTrue(sahiTasks.cell("Maximum request time").exists());                              
     }
 
     @Test(groups={"monitoringTest"})
     public void specifyMonitoringIntervalTest() {        
         as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));               
-        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();                
+        sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click(); 
+        sahiTasks.waitFor(5000);
         sahiTasks.xy(sahiTasks.cell("Maximum request time"), 3, 3).click();  
         
         ElementStub textbox = sahiTasks.textbox("interval");

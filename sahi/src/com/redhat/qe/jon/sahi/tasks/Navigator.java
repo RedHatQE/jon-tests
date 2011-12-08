@@ -87,9 +87,7 @@ public class Navigator {
 	        log.fine("clicked resource : "+element);
         }
         tasks.waitFor(timeout);
-        if (!"Inventory".equals(it)) {
-        	inventorySelectTab(it);
-        }
+        inventorySelectTab(it);
         log.fine("Navigation to "+Arrays.toString(resourcePath)+ " done.");
 	}
 }
