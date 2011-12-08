@@ -56,7 +56,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         try {
             Thread.sleep(5000);
         } catch(InterruptedException ex) {}
-        org.testng.Assert.assertTrue(sahiTasks.cell("Maximum request time").exists());                              
+        Assert.assertTrue(sahiTasks.cell("Maximum request time").exists());                              
     }
 
     @Test(groups={"monitoringTest"})
@@ -65,11 +65,14 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();                
         sahiTasks.xy(sahiTasks.cell("Maximum request time"), 3, 3).click();  
         
-        ElementStub textbox = sahiTasks.textbox("textItem").in(sahiTasks.label("Collection Interval").parentNode("TR"));
+        ElementStub textbox = sahiTasks.textbox("interval");
         textbox.setValue("4");        
         sahiTasks.cell("Set").click();
-
-        org.testng.Assert.assertTrue(sahiTasks.cell(4).in(sahiTasks.cell("Maximum request time").parentNode("TR")).getText().indexOf("4") != -1);
+        sahiTasks.waitFor(5000);
+        Assert.assertTrue(sahiTasks.cell("Maximum request time").exists(), "Metric exists");
+        Assert.assertTrue(sahiTasks.cell("Maximum request time").parentNode().exists(), "Metric row exists");
+        Assert.assertTrue(sahiTasks.cell(4).in(sahiTasks.cell("Maximum request time").parentNode()).exists(), "Metric cell with time exists");
+        Assert.assertTrue(sahiTasks.cell(4).in(sahiTasks.cell("Maximum request time").parentNode("TR")).getText().indexOf("4") != -1);
         
     }
     
