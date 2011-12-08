@@ -25,6 +25,7 @@ public class Navigator {
 		itNav.put("Inventory", "Inventory_grey_16.png");
 		itNav.put("Alerts", "Alerts_16.png");
 		itNav.put("Operations", "Operation_grey_16.png");
+		itNav.put("Monitoring", "Monitor_grey_16.png");
 	}
 
 	/**
