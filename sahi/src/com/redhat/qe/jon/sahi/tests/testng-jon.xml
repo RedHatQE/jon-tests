@@ -17,6 +17,16 @@
 		</classes>
   	</test>
   	  	
+  	<test name="Version Information">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.BuildVersionInfoTest">
+			<methods>
+				 <include name="getBuildInfo"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>	
+  	
   	<test name="Metric Collection Schedules validation">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">

@@ -2,6 +2,8 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.auto.testng.Assert;
+import com.sun.corba.se.impl.util.Version;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -821,6 +823,20 @@ public class SahiTasks extends ExtendedSahi {
 		return false;    	
     }
     
+    //*********************************************************************************
+    //* About and build versions
+    //*********************************************************************************
+    public HashMap<String, String> getBuildVersion(){
+    	selectPage("Help-->About", this.span("DisplayLabel[0]"), 1000*5, 3);
+    	HashMap<String, String> version = new HashMap<String, String>();
+    	version.put("version", this.span("DisplayLabel[0]").getText());
+    	version.put("build.number", this.span("DisplayLabel[1]").getText());
+    	version.put("gwt.version", this.span("DisplayLabel[2]").getText());
+    	version.put("smartgwt.version", this.span("DisplayLabel[3]").getText());
+    	_logger.log(Level.INFO, "Version Information: "+version);
+    	this.row("Close").click();
+    	return version;
+    }
     //*********************************************************************************
     //* Alert Definition Creation
     //*********************************************************************************
