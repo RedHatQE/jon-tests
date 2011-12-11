@@ -32,26 +32,33 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	
 	protected static String[] buttonsToClick = {"Cancel", "No"}; //Add button names here
 	protected static String[] linksToClick = {};//Add link names here
+	protected static int elementCount = 4;
 	
 	
 	public void cleanPopUpOnScreen(){
 		_logger.log(Level.INFO, "[Clear pop-up] Entering...");
 		//For buttons
-		for(String buttonName : buttonsToClick){
-			if(sahiTasks.cell(buttonName).exists()){
-				sahiTasks.cell(buttonName).click();
-				_logger.log(Level.INFO, "[Clear pop-up] Clicked on the button --> "+buttonName);
-			}else{
-				_logger.log(Level.INFO, "[Clear pop-up] There is no button --> "+buttonName);
+		for(String buttonNameTmp : buttonsToClick){
+			for(int i=elementCount;i>=0; i--){
+				String buttonName = buttonNameTmp+"["+i+"]";
+				if(sahiTasks.cell(buttonName).exists()){
+					sahiTasks.cell(buttonName).click();
+					_logger.log(Level.INFO, "[Clear pop-up] Button [\""+buttonName+"\"] found and clicked");
+				}else{
+					_logger.log(Level.FINE, "[Clear pop-up] Button [\""+buttonName+"\"] not available..");
+				}
 			}
 		}
 		//For links
-		for(String linkName : linksToClick){
-			if(sahiTasks.link(linkName).exists()){
-				sahiTasks.link(linkName).click();
-				_logger.log(Level.INFO, "[Clear pop-up] Clicked on the link --> "+linkName);
-			}else{
-				_logger.log(Level.INFO, "[Clear pop-up] There is no link --> "+linkName);
+		for(String linkNameTmp : linksToClick){
+			for(int i=elementCount;i>=0; i--){
+				String linkName = linkNameTmp+"["+i+"]";
+				if(sahiTasks.cell(linkName).exists()){
+					sahiTasks.cell(linkName).click();
+					_logger.log(Level.INFO, "[Clear pop-up] Link [\""+linkName+"\"] found and clicked");
+				}else{
+					_logger.log(Level.FINE, "[Clear pop-up] Link [\""+linkName+"\"] not available..");
+				}
 			}
 		}
 		_logger.log(Level.INFO, "[Clear pop-up] Exiting...");
