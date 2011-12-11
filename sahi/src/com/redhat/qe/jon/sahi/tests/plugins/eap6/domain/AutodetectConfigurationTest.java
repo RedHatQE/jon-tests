@@ -23,10 +23,12 @@ public class AutodetectConfigurationTest extends AS7PluginSahiTestScript {
     
     @Test(groups={"autodetectConfiguration"})
     public void autodetectConfiguration() {
+    	as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-one.name"));
         as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
         as7SahiTasks.navigate(Navigate.AUTODISCOVERY_QUEUE, System.getProperty("agent.name"), null);
         
         // check servers under the domain controller (or at least one of them)
+        Assert.assertTrue(sahiTasks.cell(System.getProperty("as7.domain.host.server-one.name")).exists(), "Resource "+System.getProperty("as7.domain.host.server-one.name")+" is detected by agent");
         String resourceTypeHTML = (sahiTasks.cell(System.getProperty("as7.domain.host.server-one.name")).parentNode("TABLE")).parentNode("TR").fetch("innerHTML");
         if(resourceTypeHTML.indexOf("JBossAS7 Managed") == -1) {
             Assert.fail("Could not verify that server \"" + System.getProperty("as7.domain.host.server-one.name") + "\" in the domain was detected as of type JBossAS-Managed. HTML snippet: " + resourceTypeHTML);                        

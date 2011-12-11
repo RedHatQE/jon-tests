@@ -146,6 +146,7 @@ public class AS7PluginSahiTasks {
             case AUTODISCOVERY_QUEUE:
                 tasks.link("Inventory").click();
                 tasks.cell("Discovery Queue").click();
+                tasks.waitFor(3000);
                 ElementStub elm = tasks.cell(agentName);
                 if (elm.exists()) {
                     elm.doubleClick();
@@ -154,50 +155,19 @@ public class AS7PluginSahiTasks {
                 }
                 break;
             case AGENT_INVENTORY:
-                tasks.link("Inventory").click();
-                tasks.cell("Platforms").click();
-                tasks.link(agentName).click();
-                tasks.image("Inventory_grey_16.png").click();
+            	tasks.getNavigator().inventoryGoToResource(agentName, "Inventory", new String[]{});
                 break;
             case AGENT_MONITORING:
-                tasks.link("Inventory").click();
-                tasks.cell("Platforms").click();
-                tasks.link(agentName).click();
-                tasks.image("Monitor_grey_16.png").click();
+            	tasks.getNavigator().inventoryGoToResource(agentName, "Monitoring", new String[]{});
                 break;
             case AS_INVENTORY:
-                tasks.link("Inventory").click();
-                tasks.cell("Platforms").click();
-                tasks.link(agentName).click();
-                tasks.image("Inventory_grey_16.png").click();
-                tasks.xy(tasks.cell("Child Resources"), 3, 3).click();
-                tasks.link(resourceName).click();
-                tasks.image("Inventory_grey_16.png").click();
+            	tasks.getNavigator().inventoryGoToResource(agentName, "Inventory", new String[]{resourceName});
                 break;
             case RESOURCE_MONITORING:
-                tasks.link("Inventory").click();
-                tasks.cell("Platforms").click();
-                tasks.link(agentName).click();
-                tasks.image("Inventory_grey_16.png").click();
-                tasks.xy(tasks.cell("Child Resources"), 3, 3).click();
-                tasks.link(resourceName).click();
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                }
-                tasks.image("Monitor_grey_16.png").click();
+            	tasks.getNavigator().inventoryGoToResource(agentName, "Monitoring", new String[]{resourceName});
                 break;
             case AS_SUMMARY:
-                tasks.link("Inventory").click();
-                tasks.cell("Platforms").click();
-                tasks.link(agentName).click();
-                tasks.image("Inventory_grey_16.png").click();
-                tasks.xy(tasks.cell("Child Resources"), 3, 3).click();
-                tasks.link(resourceName).click();
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                }
+            	tasks.getNavigator().inventoryGoToResource(agentName, "Summary", new String[]{resourceName});
                 break;
             default:
                 break;

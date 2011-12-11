@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.sahi.tasks;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -14,6 +16,7 @@ public class Navigator {
 	private static Logger log = Logger.getLogger(Navigator.class.getName());
 	private final SahiTasks tasks;
 	private final Map<String,String> itNav;
+	private int timeout = 5000;
 	public Navigator(SahiTasks tasks) {
 		this.tasks = tasks;
 		// initialize navigation mappings
@@ -22,6 +25,7 @@ public class Navigator {
 		itNav.put("Inventory", "Inventory_grey_16.png");
 		itNav.put("Alerts", "Alerts_16.png");
 		itNav.put("Operations", "Operation_grey_16.png");
+		itNav.put("Monitoring", "Monitor_grey_16.png");
 	}
 
 	/**
@@ -35,7 +39,7 @@ public class Navigator {
 			if (!itNav.containsKey(it)) {
 				throw new RuntimeException("Selecting tab of type "+it.toString()+" is not implemented");
 			}
-			log.fine("select resourceTab "+it.toString());
+			log.fine("select Tab "+it.toString());
 			if ("Summary".equals(it)) {
 				tasks.image(itNav.get(it)).near(tasks.cell(it)).click();
 			}
@@ -45,13 +49,14 @@ public class Navigator {
 			else {
 				tasks.image(itNav.get(it)).click();
 			}
-			log.fine("selected resourceTab "+it.toString());
-			log.fine("REALLY! selected resourceTab "+it.toString());
+			log.fine("selected Tab "+it.toString());
 		}
 		if (subTab!=null) {
+			tasks.waitFor(timeout);
 			tasks.xy(tasks.cell(subTab), 3, 3).click();
 			log.fine("switched to subtab "+subTab);
 		}
+		tasks.waitFor(timeout);
 	}
 	/**
 	 * selects given inventory tab
@@ -76,15 +81,13 @@ public class Navigator {
         tasks.link(agent).click();
         for (String element : resourcePath) {
         	log.fine("select resource : "+element);
-        	tasks.waitFor(3000);
-	        inventorySelectTab("Inventory","Child Resources");
-	        tasks.waitFor(3000);
+        	tasks.waitFor(timeout);
+	        inventorySelectTab("Inventory","Child Resources");	        
 	        tasks.link(element).click();
 	        log.fine("clicked resource : "+element);
         }
-        if (!"Inventory".equals(it)) {
-        	inventorySelectTab(it);
-        }
-        log.fine("navigation to resource done");
+        tasks.waitFor(timeout);
+        inventorySelectTab(it);
+        log.fine("Navigation to "+Arrays.toString(resourcePath)+ " done.");
 	}
 }
