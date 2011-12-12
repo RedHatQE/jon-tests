@@ -23,7 +23,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     
     private ElementStub getMetricsCell() {
     	int tables = sahiTasks.table("listTable").countSimilar();
-    	log.info("listTable count = "+tables);
+    	log.fine("listTable count = "+tables);
     	return sahiTasks.cell("Maximum request time").in(sahiTasks.table("listTable["+(tables-1)+"]"));
     }  
     
@@ -63,10 +63,11 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         
         ElementStub textbox = sahiTasks.textbox("interval");
         textbox.setValue("4");
-        sahiTasks.waitFor(5000);
-        sahiTasks.cell("Set").click();
-        sahiTasks.cell("Set").doubleClick();
-        sahiTasks.waitFor(5000);
+        sahiTasks.waitFor(2000);
+        for (ElementStub e : sahiTasks.cell("Set").collectSimilar()) {
+        	sahiTasks.xy(e,3,3).click();
+        }
+        sahiTasks.waitFor(2000); 
         Assert.assertTrue(sahiTasks.cell(4).in(getMetricsCell().parentNode("TR")).getText().indexOf("4") != -1);        
     }
 }

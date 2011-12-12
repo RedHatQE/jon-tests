@@ -24,7 +24,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     
     private ElementStub getMetricsCell() {
     	int tables = sahiTasks.table("listTable").countSimilar();
-    	log.info("listTable count = "+tables);
+    	log.fine("listTable count = "+tables);
     	return sahiTasks.cell("Maximum request time").in(sahiTasks.table("listTable["+(tables-1)+"]"));
     }    
     
@@ -64,13 +64,11 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
         sahiTasks.xy(getMetricsCell(),3,3).click();
         ElementStub textbox = sahiTasks.textbox("interval");
         textbox.setValue("4");
-        sahiTasks.waitFor(5000);
-        log.info(sahiTasks.cell("Set").parentNode().fetch("innerHTML"));
-
-        sahiTasks.cell("Set").focus();
-        sahiTasks.cell("Set").click();
-        sahiTasks.xy(sahiTasks.cell("Set"),3,3).click();
-        sahiTasks.waitFor(5000); 
+        sahiTasks.waitFor(2000);
+        for (ElementStub e : sahiTasks.cell("Set").collectSimilar()) {
+        	sahiTasks.xy(e,3,3).click();
+        }
+        sahiTasks.waitFor(2000); 
         log.fine(sahiTasks.cell(4).in(getMetricsCell().parentNode("tr")).getText());
         Assert.assertTrue(sahiTasks.cell(4).in(getMetricsCell().parentNode("tr")).getText().indexOf("4") != -1, "Metric cell with changed time exists");
         
