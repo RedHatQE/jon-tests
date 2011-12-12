@@ -118,7 +118,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             port_element.setValue(old_port);
             sahiTasks.cell("Save").click();
             log.fine("Connection settings restored back to correct state");
-            // the resource should go down after some time -- check for it
+            // the resource should go up after some time -- check for it
 
             for (int i = 0; i < 12; i++) {
                 sahiTasks.waitFor(30000);
