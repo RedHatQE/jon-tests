@@ -23,9 +23,9 @@ public class BuildVersionInfoTest extends SahiTestScript {
 		Assert.assertTrue(buildInfo.get("gwt.version") != null, "GWT Version validation");
 		Assert.assertTrue(buildInfo.get("smartgwt.version") != null, "Smart GWT Version validation");
 		
-		Reporter.log("<BR><b>"+buildInfo.get("version")+"</b></BR>");
-		Reporter.log("<BR><b>"+buildInfo.get("build.number")+"</b></BR>");
-		Reporter.log("<BR><b>"+buildInfo.get("gwt.version")+"</b></BR>");
-		Reporter.log("<BR><b>"+buildInfo.get("smartgwt.version")+"</b></BR>");
+		Reporter.log("<BR><b>"+buildInfo.get("version")+"</b>");
+		Reporter.log("<BR><b>"+buildInfo.get("build.number")+"</b>");
+		Reporter.log("<BR><b>"+buildInfo.get("gwt.version")+"</b>");
+		Reporter.log("<BR><b>"+buildInfo.get("smartgwt.version")+"</b><BR>");
 	}
 }
