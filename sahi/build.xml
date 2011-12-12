@@ -21,6 +21,9 @@
 		<fileset dir="${env.SAHI_BASE}/lib">
 			<include name="*.jar" />
 		</fileset>
+		<fileset dir="../rest/lib">
+			<include name="*.jar" />
+		</fileset>
 	</path>
 
 	<path id="tests.cp">
@@ -78,6 +81,26 @@
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
 			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/eap6-testng.xml"/>
 		</testng>
+	</target>
+	
+	<target name="run-rest-groovy" description="run groovy REST API tests" depends="compile">
+	<!--	
+		<taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy">
+       	        	 <classpath>
+       	        	         <fileset dir="${env.GROOVY_HOME}" includes="embeddable/groovy-all-*.jar,lib/ivy*.jar"/>
+       	        	 </classpath>
+      		  </taskdef>
+	-->	 
+		<property name="rest.username" value="rhqadmin" />
+		<property name="rest.password" value="rhqadmin" />
+		<property name="jon.server.url" value="http://localhost:7080" />
+		<taskdef name="groovyng" classpathref="utils.cp" classname="org.codehaus.groovy.testng.TestNGrooveTask" />
+		<groovyng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
+			<scriptfileset dir="../rest" includes="*.groovy"/>
+			<sysproperty key="jon.server.url" value="${jon.server.url}" />
+			<sysproperty key="rest.username" value="${rest.username}" />
+			<sysproperty key="rest.password" value="${rest.password}" />
+		</groovyng>
 	</target>
 
 	<target name="clean">
