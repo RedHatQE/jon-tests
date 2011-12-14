@@ -1232,6 +1232,12 @@ public class SahiTasks extends ExtendedSahi {
         	for(String fileName : files){
         		this.image("add.png["+(addImgCount-2)+"]").focus();
                 this.execute("_sahi._keyPress(_sahi._image('add.png["+(addImgCount-2)+"]'), 32);"); //32 - Space bar
+                if(this.image("checked.png").near(this.bold("Path")).exists()){
+                	this.image("checked.png").near(this.bold("Path")).click();
+                	_logger.log(Level.INFO, "Path Check/uncheck available to select and selected...");
+                }else{
+                	_logger.log(Level.INFO, "Path Check/uncheck not available...");
+                }
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Includes]: "+fileName);
                 this.cell("OK").click();   
