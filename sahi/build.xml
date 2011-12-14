@@ -6,6 +6,7 @@
 	<property environment="env" />
 	<property name="test.build.dir" location="bin" />
 	<property name="test.src.dir" location="src" />
+	<property name="test.resources.dir" location="resources" />
 	<property name="test.output.dir" location="test-output" />
 	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
 	<condition property="webui-framework.dir" value="../../../webui-framework">
@@ -68,6 +69,10 @@
 		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" classpathref="tests.cp" debug="on">
 			<compilerarg value="-Xlint"/>
 		</javac>
+		<mkdir dir="${test.build.dir}/resources"/>
+		<copy todir="${test.build.dir}/resources">
+		    <fileset dir="${test.resources.dir}"/>
+		  </copy>
 		<echo message="Done." />
 	</target>
 
