@@ -141,6 +141,12 @@ public class AS7PluginSahiTasks {
         return false;
     }
 
+    /**
+     * @deprecated use {@link SahiTasks#getNavigator()} instead
+     * @param destination
+     * @param agentName
+     * @param resourceName
+     */
     public void navigate(Navigate destination, String agentName, String resourceName) {
         switch (destination) {
             case AUTODISCOVERY_QUEUE:
