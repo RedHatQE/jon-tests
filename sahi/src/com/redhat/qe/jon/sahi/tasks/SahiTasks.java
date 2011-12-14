@@ -2,7 +2,6 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.auto.testng.Assert;
-import com.sun.corba.se.impl.util.Version;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -876,6 +875,20 @@ public class SahiTasks extends ExtendedSahi {
         }
     }
 
+    /**
+     * 
+     * @param fileInputIdent indentify file input field (name,id)
+     * @param path to file to be uploaded - relative to /automatjon/jon/sahi/resources/
+     */
+    public void setFileToUpload(String fileInputIdent, String path) {
+    	String fullPath = SahiTasks.class.getResource("/resources/"+path).getPath();
+    	this.file(fileInputIdent).setFile(fullPath);
+    	this.execute("_sahi._call(_sahi._file(\""+fileInputIdent+"\").type = \"text\");");
+		this.textbox(fileInputIdent).setValue(fullPath);
+    }
+    
+    
+    
     public void selectComboBoxes(String options) {
         if (options != null) {
             if (options.trim().length() > 0) {
