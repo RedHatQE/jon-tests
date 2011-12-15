@@ -63,7 +63,7 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		Assert.assertTrue(existsResourceUI(war),"Deployment discovered by agent");
 		assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
 	}
-	@Test(groups = "deployment", dependsOnMethods="deployWAR")
+	@Test(groups = {"deployment","blockedByBug-767974"}, dependsOnMethods="deployWAR")
 	public void deployWARVersion2() {
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
 		sahiTasks.xy(sahiTasks.cell("Create Child"),3,3).click();
@@ -80,8 +80,7 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		sahiTasks.xy(sahiTasks.cell("Finish"),3,3).click();
 		assertDeploymentExists(war);
 		Assert.assertTrue(existsResourceUI(war),"Deployment discovered by agent");
-		// TODO uncommment assertion after Bug 767974 is fixed
-		//assertDeploymentContent(war,"Modified","Check whether modified version of WAR has been deployed");
+		assertDeploymentContent(war,"Modified","Check whether modified version of WAR has been deployed");
 	}
 
 	@Test(groups = "deployment", dependsOnMethods="deployWAR")
