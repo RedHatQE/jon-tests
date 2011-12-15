@@ -83,8 +83,9 @@
 	</target>
 	
 	<target name="run-eap6" description="run RHQ sahi java test" depends="compile">
+		<property name="testsuite" value="eap6-testng.xml" />
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
-			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/eap6-testng.xml"/>
+			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/${testsuite}"/>
 		</testng>
 	</target>
 	
