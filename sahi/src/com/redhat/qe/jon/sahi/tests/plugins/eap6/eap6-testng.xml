@@ -15,6 +15,7 @@
 			</class>
 		</classes>
 	 </test>
+ 
      <test name="Standalone_AutodetectConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.AutodetectConfigurationTest"/>
@@ -62,6 +63,19 @@
                 <include name="monitoringTest"/>                                
             </run>
         </groups>  
+    </test>
+
+	<test name="Standalone_Deployment">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.DeploymentTest"/>
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>
+                <include name="deployment"/>
+            </run>
+        </groups>
     </test>
 
 	<test name="Standalone_DatasourceCreation">
@@ -162,7 +176,7 @@
             </run>
         </groups>
     </test>
-     -->
+
     <!--  keep this test as LAST one -->
     <test name="GuiLogoutTest">
   	  	<classes>
