@@ -226,7 +226,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	 * @param ds_def
 	 */
 	private void assertDatasourceDoesNotExist(String[] ds_def) {
-		mgmtStandalone.assertResourcePresence("/subsystem=datasources", ds_def[1], ds_def[0], true);
+		mgmtStandalone.assertResourcePresence("/subsystem=datasources", ds_def[1], ds_def[0], false);
 	}	
 	/**
 	 * checks data source existence using mgmt API
