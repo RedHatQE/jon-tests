@@ -135,13 +135,9 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 			sshStandalone.runAndWait(command.toString());
 
 			// now we restart server
-
-			sahiTasks.getNavigator().inventoryGoToResource(
-					System.getProperty("agent.name"), "Operations",
-					System.getProperty("as7.standalone.name"));
-			sahiTasks.cell("New").click();
-			sahiTasks.selectComboBoxes("selectItemText-->Restart");
-			sahiTasks.cell("Schedule").click();
+			sshStandalone.run("kill -9 $(ps ax | grep standalone | grep java | awk '{print $1}')");
+			sshStandalone.run("cd "+System.getProperty("as7.standalone.home")+"/bin && ./standalone.sh");
+			
 
 			for (int i = 0; i < 12; i++) {
 				sahiTasks.waitFor(30000);

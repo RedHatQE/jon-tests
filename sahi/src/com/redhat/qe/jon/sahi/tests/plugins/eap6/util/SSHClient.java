@@ -35,7 +35,7 @@ public class SSHClient {
 	}
 
 	/**
-	 * runs given command on SSH server, if client is not connected it will connect automatically, 
+	 * runs given command and waits for return value on SSH server, if client is not connected it will connect automatically, 
 	 * don't forget to disconnect ;)
 	 * @param command
 	 */
@@ -44,6 +44,17 @@ public class SSHClient {
 			connect();
 		}
 		sshCommandRunner.runCommandAndWait(command);
+	}
+	/**
+	 * runs given command on SSH server, if client is not connected it will connect automatically, 
+	 * don't forget to disconnect ;)
+	 * @param command
+	 */
+	public void run(String command) {
+		if (!isConnected()) {
+			connect();
+		}
+		sshCommandRunner.runCommand(command);
 	}
 	/**
 	 * disconnects from SSH server
