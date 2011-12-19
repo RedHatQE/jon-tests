@@ -135,7 +135,7 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 			sshStandalone.runAndWait(command.toString());
 
 			// now we restart server
-			sshStandalone.run("kill -9 $(ps ax | grep standalone | grep java | awk '{print $1}')");
+			sshStandalone.runAndWait("kill -9 $(ps ax | grep standalone | grep java | awk '{print $1}')");
 			sshStandalone.run("cd "+System.getProperty("as7.standalone.home")+"/bin && ./standalone.sh");
 			
 
