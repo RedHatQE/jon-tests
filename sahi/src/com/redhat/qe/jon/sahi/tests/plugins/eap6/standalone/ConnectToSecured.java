@@ -138,7 +138,20 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 			sshStandalone.runAndWait("kill -9 $(ps ax | grep standalone | grep java | awk '{print $1}')");
 			sshStandalone.run("cd "+System.getProperty("as7.standalone.home")+"/bin && ./standalone.sh");
 			
-
+			// lets remove user and pass settings
+			sahiTasks.getNavigator().inventoryGoToResource(
+					System.getProperty("agent.name"), "Inventory",
+					System.getProperty("as7.standalone.name"));
+			sahiTasks.waitFor(5000);
+			sahiTasks.getNavigator().inventorySelectTab("Inventory",
+					"Connection Settings");
+			if (sahiTasks.image("unchecked.png").exists()) {
+				sahiTasks.xy(sahiTasks.image("unchecked.png"),3,3).click();
+			}
+			if (sahiTasks.image("unchecked.png").exists()) {
+				sahiTasks.xy(sahiTasks.image("unchecked.png"),3,3).click();
+			}
+			sahiTasks.cell("Save").click();
 			for (int i = 0; i < 12; i++) {
 				sahiTasks.waitFor(30000);
 				log.fine("Checking that resource is back online: try #"
