@@ -25,18 +25,17 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 public class DeploymentTest extends AS7PluginSahiTestScript {
 
 	private static final long waitTime = 5000;
-	private static final int retryCount = 10;
+
 	private static final String war = "hello.war";
 	@BeforeClass(groups = "deployment")
     protected void setupAS7Plugin() {
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        setManagementControllerStandalone();
     }
 
 	@Test(groups = "deployment")
 	public void deployWAR() {
-		if (existsDeploymentAPI(war)) {
+		if (mgmtStandalone.existsResource("", "deployment", war)) {
 			removeDeployment(war);
 			log.fine("Deployment removed using API, we have perform manual discovery for ds to disappear from RHQ UI");
 			log.info("manual discovery");
@@ -126,51 +125,11 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		return sahiTasks.cell(name).exists();
 	}
 	private void assertDeploymentExists(String name) {
-		for (int i = 0; i< retryCount; i++) {
-			if (existsDeploymentAPI(name)) {
-				Assert.assertTrue(true, "[mgmt API] Deployment exists");
-				return;
-			}
-			sahiTasks.waitFor(waitTime);
-		}
-		Assert.assertTrue(false, "[mgmt API] Deployment exists");
+		mgmtStandalone.assertResourcePresence("", "deployment", name, true);
 	}
 
 	private void assertDeploymentDoesNotExist(String name) {
-		for (int i = 0; i< retryCount; i++) {
-			if (!existsDeploymentAPI(name)) {
-				Assert.assertFalse(false, "[mgmt API] Deployment exists");
-				return;
-			}
-			sahiTasks.waitFor(waitTime);
-		}
-		Assert.assertFalse(true, "[mgmt API] Deployment exists");
-	}
-
-	/**
-	 * checks deployment existence using API
-	 * @param name
-	 * @return
-	 */
-	private boolean existsDeploymentAPI(String name) {
-		log.fine("Exists deployment using mgmt API?");
-		ModelNode op = createOperation("", "read-children-names", new String[]{"child-type=deployment"});
-		try {
-			log.fine("execute operation");
-			op = executeOperation(op);
-			log.fine("Operation executed result: "+op.toString());
-			List<ModelNode> ds = op.get("result").asList();
-			for (ModelNode mn : ds) {
-				if (name.equals(mn.asString())) {
-					return true;
-				}
-			}
-			return false;
-		} catch (IOException e) {
-			log.throwing(DeploymentTest.class.getCanonicalName(), "existsDeploymentAPI", e);
-			e.printStackTrace();
-			return false;
-		}
+		mgmtStandalone.assertResourcePresence("", "deployment", name, false);
 	}
 
 	/**
@@ -179,7 +138,7 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 	 */
 	private void removeDeployment(String name) {
 		log.info("remove datasource API");
-		if (executeOperationVoid("/deployment="+name, "remove", new String[]{})) {
+		if (mgmtStandalone.executeOperationVoid("/deployment="+name, "remove", new String[]{})) {
 			log.info("[mgmt API] Deployment was removed");
 		}
 	}

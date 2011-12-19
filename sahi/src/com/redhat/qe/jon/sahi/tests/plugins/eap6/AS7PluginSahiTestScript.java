@@ -1,19 +1,19 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
-import com.redhat.qe.jon.sahi.base.SahiTestScript;
-import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.dmr.ModelNode;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
-import com.redhat.qe.auto.testng.Assert;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.logging.Logger;
 
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
+
+import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.SSHClient;
+
 /**
- * @author jmartisk
+ * @author jmartisk, lzoubek
  */
 public class AS7PluginSahiTestScript extends SahiTestScript {
 
@@ -25,9 +25,25 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     private static int MGMT_PORT_DOMAIN;
     private static String MGMT_HOST_DOMAIN;
 
-    protected static ModelControllerClient managementStandalone;
-    protected static ModelControllerClient managementDomain;
-    protected static ModelControllerClient managementCurrent;
+    /**
+     * AS7 management API client for standalone instance
+     */
+    protected static ManagementClient mgmtStandalone;
+    /**
+     * AS7 management API client for domain instance
+     */
+    protected static ManagementClient mgmtDomain;
+
+    /**
+     * SSH Client to to some stuff on machine where runs standalone AS7
+     */
+    protected static SSHClient sshStandalone;
+    
+    /**
+     * SSH Client to to some stuff on machine where runs domain AS7
+     */
+    protected static SSHClient sshDomain;
+
 
     public AS7PluginSahiTestScript() {
         super();
@@ -58,18 +74,11 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         MGMT_PORT_DOMAIN = Integer.parseInt(System.getProperty("as7.domain.port", "9999"));
         MGMT_HOST_DOMAIN = System.getProperty("as7.domain.hostname", "localhost");
 
-        try {
-            managementStandalone = ModelControllerClient.Factory.create(InetAddress.getByName(MGMT_HOST_STANDALONE), MGMT_PORT_STANDALONE);
-            managementCurrent = managementStandalone;
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot create model controller client for host: " + MGMT_HOST_STANDALONE + " and port " + MGMT_PORT_STANDALONE, e);
-        }
-        try {
-            managementDomain = ModelControllerClient.Factory.create(InetAddress.getByName(MGMT_HOST_DOMAIN), MGMT_PORT_DOMAIN);
-        } catch (Exception e) {
-            throw new RuntimeException("Cannot create model controller client for host: " + MGMT_HOST_DOMAIN + " and port " + MGMT_PORT_DOMAIN, e);
-        }
+        mgmtStandalone = new ManagementClient(MGMT_HOST_STANDALONE, MGMT_PORT_STANDALONE);
+        mgmtDomain = new ManagementClient(MGMT_HOST_DOMAIN, MGMT_PORT_DOMAIN);
 
+        sshStandalone = new SSHClient();
+        sshDomain = new SSHClient();
 
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         // should we include this or not? it uninventorizes all EAP-instance resources from the agent before the testing starts..
@@ -81,96 +90,25 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     */}
 
     @AfterSuite(groups="teardown")
-    public void managementClientsCleanup() {
+    public void clientsCleanup() {
     	try {
-			managementStandalone.close();
+    		if (mgmtStandalone!=null)
+    			mgmtStandalone.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	try {
-			managementDomain.close();
+    		if (mgmtDomain!=null)
+    			mgmtDomain.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	if (sshDomain!=null)
+    		sshDomain.disconnect();
+    	if (sshStandalone!=null)
+    		sshStandalone.disconnect();
     	
     }
-    /**
-     * sets Domain as management client. Methods executeOperation* will contact domain EAP instance since this method is called
-     */
-    protected void setManagementControllerDomain() {
-    	managementCurrent = managementDomain;
-    }
-    /**
-     * sets STANDALONE as management client. Methods executeOperation* will contact standalone EAP instance since this method is called
-     */
-    protected void setManagementControllerStandalone() {
-    	managementCurrent = managementStandalone;
-    }
-    /***********************************************************************/
-    /******************** AUX FUNCTIONS FOR MANAGEMENT**********************/
-    /***********************************************************************/
-
-   protected ModelNode createOperation(String address, String operation, String... params) {
-        ModelNode op = new ModelNode();
-        String[] pathSegments = address.split("/");
-        ModelNode list = op.get("address").setEmptyList();
-        for (String segment : pathSegments) {
-            String[] elements = segment.split("=");
-            if (elements.length==2) {
-            	list.add(elements[0], elements[1]);
-            }
-        }
-        op.get("operation").set(operation);
-        for (String param : params) {
-            String[] elements = param.split("=");
-            op.get(elements[0]).set(elements[1]);
-        }
-        return op;
-    }
-
-    protected ModelNode executeOperation(final ModelNode op) throws IOException {
-        ModelNode ret = managementCurrent.execute(op);
-        return ret;
-    }
-    /**
-     * executes operation without a need to know result details, useful
-     * @param address
-     * @param operation
-     * @param params
-     * @return true if operation was successfull
-     */
-    protected boolean executeOperationVoid(String address, String operation, String... params) {
-    	try {
-    		ModelNode ret = executeOperation(createOperation(address, operation, params));
-    		if ("success".equals(ret.get("outcome").asString())) {
-    			return true;
-    		}
-    		else {
-    			log.warning("Operation failed: "+ret.toString());
-    			return false;
-    		}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-    }
-
-    protected ModelNode executeOperationAndAssertSuccess(String msg, final ModelNode op) throws IOException {
-        ModelNode ret = managementCurrent.execute(op);
-        Assert.assertTrue("success".equals(ret.get("outcome").asString()),
-                msg + ret.get("failure-description").asString()
-                );
-        return ret;
-    }
-
-    protected ModelNode executeOperationAndAssertFailure(String msg, final ModelNode op) throws IOException {
-        ModelNode ret = managementCurrent.execute(op);
-        Assert.assertTrue("failed".equals(ret.get("outcome").asString()), msg);
-        return ret;
-    }
-
-
-
 }
