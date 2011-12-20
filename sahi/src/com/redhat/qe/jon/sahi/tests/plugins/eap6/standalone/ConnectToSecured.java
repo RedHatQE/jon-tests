@@ -54,15 +54,10 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 		command.append(System.getProperty("as7.standalone.home")
 				+ "/standalone/configuration/standalone.xml");
 		sshStandalone.runAndWait(command.toString());
-
-		// now we restart server and wait for agent to discover it's DOWN
-
-		sahiTasks.getNavigator().inventoryGoToResource(
-				System.getProperty("agent.name"), "Operations",
-				System.getProperty("as7.standalone.name"));
-		sahiTasks.cell("New").click();
-		sahiTasks.selectComboBoxes("selectItemText-->Restart");
-		sahiTasks.cell("Schedule").click();
+		
+		// now we restart server
+		sshStandalone.run("kill -9 $(ps ax | grep standalone | grep java | awk '{print $1}')");
+		sshStandalone.run("cd "+System.getProperty("as7.standalone.home")+"/bin && ./standalone.sh");
 		try {
 			log.info("Since now, standalone mgmt and HTTP API requires authorization");
 			// let's wait some time 'till agent restarts EAP and EAP stands up
