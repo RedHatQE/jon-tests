@@ -50,8 +50,8 @@
 		<echo message="Done." />
 	</target>
 
-	<target name="run" description="run RHQ REST java Client test" depends="compile">
-		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
+	<target name="run" description="RHQ REST java Client test" depends="compile">
+		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter">
                         <xmlfileset dir="src/com/redhat/qe/jon/rest/tests" includes="testng.xml"/>
 		</testng>
 	</target>
