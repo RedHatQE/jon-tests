@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="rhq_rest_java_client" default="compile">
+	<property environment="env" />
+	<property name="test.build.dir" location="bin" />
+	<property name="test.src.dir" location="src" />
+	<property name="test.output.dir" location="test-output" />
+	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
+	<condition property="webui-framework.dir" value="../../../webui-framework">
+		<not>
+			<isset property="webui-framework.dir"/>
+		</not>
+	</condition>
+
+	<path id="utils.cp">
+		<fileset dir="${webui-framework.dir}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="./lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<path id="tests.cp">
+		<pathelement location="${test.build.dir}" />
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+		<pathelement location="${webui-framework.dir}/bin" />
+		<path refid="utils.cp" />
+	</path>
+
+    <taskdef name="testng" classpathref="utils.cp" classname="org.testng.TestNGAntTask" />
+
+    <target name="deps">
+		<echo message="Compiling dependencies in ${webui-framework.dir}" />
+
+		<ant antfile="${webui-framework.dir}/build.xml">
+			<property name="basedir" value="${webui-framework.dir}" />
+		</ant>
+	</target>
+
+	<target name="compile" depends="">
+		<echo message="Compiling testsuite in ${basedir}" />
+		<antcall target="deps" />
+		<mkdir dir="${test.build.dir}" />
+
+		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" classpathref="tests.cp" debug="on">
+			<compilerarg value="-Xlint"/>
+		</javac>
+		<echo message="Done." />
+	</target>
+
+	<target name="run" description="RHQ REST java Client test" depends="compile">
+		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter">
+                        <xmlfileset dir="src/com/redhat/qe/jon/rest/tests" includes="testng.xml"/>
+		</testng>
+	</target>
+	
+	<target name="clean">
+		<echo message="Cleaning ${test.build.dir}"/>
+		<delete failonerror="true" quiet="false" includeemptydirs="true">
+	    		<fileset dir="${test.build.dir}" includes="**/*"/>
+	      	</delete>
+		<delete dir="${test.output.dir}"/>
+	</target>
+</project>
