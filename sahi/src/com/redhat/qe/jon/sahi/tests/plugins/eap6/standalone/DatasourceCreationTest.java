@@ -39,7 +39,6 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
     protected void setupAS7Plugin() {
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        setManagementControllerStandalone();
     }
 
 	@Test(groups = "datasourceCreation")
@@ -220,28 +219,14 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	 * @param ds_def
 	 */
 	private void assertDatasourceExists(String[] ds_def) {
-		for (int i = 0; i< retryCount; i++) {
-			if (existsDatasourceAPI(ds_def)) {
-				Assert.assertTrue(true, "[mgmt API] Datasource exists");
-				return;
-			}
-			sahiTasks.waitFor(waitTime);
-		}
-		Assert.assertTrue(false, "[mgmt API] Datasource exists");
+		mgmtStandalone.assertResourcePresence("/subsystem=datasources", ds_def[1], ds_def[0], true);
 	}
 	/**
 	 * asserts whether datasource does not exist using mgmt API
 	 * @param ds_def
 	 */
 	private void assertDatasourceDoesNotExist(String[] ds_def) {
-		for (int i = 0; i< retryCount; i++) {
-			if (!existsDatasourceAPI(ds_def)) {
-				Assert.assertFalse(false, "[mgmt API] Datasource exists");
-				return;
-			}
-			sahiTasks.waitFor(waitTime);
-		}
-		Assert.assertFalse(true, "[mgmt API] Datasource exists");
+		mgmtStandalone.assertResourcePresence("/subsystem=datasources", ds_def[1], ds_def[0], false);
 	}	
 	/**
 	 * checks data source existence using mgmt API
@@ -249,25 +234,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	 * @return
 	 */
 	private boolean existsDatasourceAPI(String[] ds_def) {
-		log.fine("Exists datasource using mgmt API?");
-		ModelNode op = createOperation("/subsystem=datasources", "read-children-names", new String[]{"child-type="+ds_def[1]});
-		try {
-			log.fine("execute operation");
-			op = executeOperation(op);
-			log.fine("Operation executed result: "+op.toString());
-			List<ModelNode> ds = op.get("result").asList();
-			for (ModelNode mn : ds) {
-				if (ds_def[0].equals(mn.asString())) {
-					return true;
-				}
-			}
-			
-			return false;
-		} catch (IOException e) {
-			log.throwing(DatasourceCreationTest.class.getCanonicalName(), "existsDatasourceAPI", e);
-			e.printStackTrace();
-			return false;
-		}
+		return mgmtStandalone.existsResource("/subsystem=datasources", ds_def[1], ds_def[0]);
 	}
 	/**
 	 * removes datasource
@@ -275,7 +242,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	 */
 	private void removeDatasource(String[] ds_meta) {
 		log.info("remove datasource API");
-		if (executeOperationVoid("/subsystem=datasources/"+ds_meta[1]+"="+ds_meta[0], "remove", new String[]{})) {
+		if (mgmtStandalone.executeOperationVoid("/subsystem=datasources/"+ds_meta[1]+"="+ds_meta[0], "remove", new String[]{})) {
 			log.info("[mgmt API] Datasource was removed");
 		}
 	}

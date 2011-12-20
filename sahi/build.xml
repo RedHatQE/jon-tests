@@ -6,6 +6,7 @@
 	<property environment="env" />
 	<property name="test.build.dir" location="bin" />
 	<property name="test.src.dir" location="src" />
+	<property name="test.resources.dir" location="resources" />
 	<property name="test.output.dir" location="test-output" />
 	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
 	<condition property="webui-framework.dir" value="../../../webui-framework">
@@ -68,6 +69,10 @@
 		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" classpathref="tests.cp" debug="on">
 			<compilerarg value="-Xlint"/>
 		</javac>
+		<mkdir dir="${test.build.dir}/resources"/>
+		<copy todir="${test.build.dir}/resources">
+		    <fileset dir="${test.resources.dir}"/>
+		  </copy>
 		<echo message="Done." />
 	</target>
 
@@ -78,8 +83,11 @@
 	</target>
 	
 	<target name="run-eap6" description="run RHQ sahi java test" depends="compile">
+		<property name="testsuite" value="eap6-testng.xml" />
+		<property name="eap6plugin.configfile" value="config/eap6plugin.properties" />
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
-			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/eap6-testng.xml"/>
+			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/${testsuite}"/>
+			<sysproperty key="eap6plugin.configfile" value="${eap6plugin.configfile}" />
 		</testng>
 	</target>
 	
