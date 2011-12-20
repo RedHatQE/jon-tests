@@ -158,6 +158,8 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 					break;
 				}
 			}
+			log.info("server connection recovery done");
+			Assert.fail("Failed due to exception: "+e.getMessage(), e);
 		}
 	}
 
