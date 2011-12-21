@@ -90,12 +90,14 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 					"Connection Settings");
 			if (sahiTasks.image("checked.png").exists()) {
 				sahiTasks.image("checked.png").click();
-				sahiTasks.textbox("user").setValue(user);
 			}
+			sahiTasks.textbox("user").setValue(user);
+
 			if (sahiTasks.image("checked.png").exists()) {
 				sahiTasks.image("checked.png").click();
-				sahiTasks.password("password").setValue(pass);
 			}
+			sahiTasks.password("password").setValue(pass);
+
 			sahiTasks.cell("Save").click();
 			for (int i = 0; i < 12; i++) {
 				sahiTasks.waitFor(30000);
@@ -130,9 +132,9 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 			sshStandalone.runAndWait(command.toString());
 
 			// now we restart server
-			sshStandalone.run("kill -9 $(ps ax | grep standalone | grep java | awk '{print $1}')");
+			sshStandalone.run("kill -9 $(ps ax | grep '"+System.getProperty("as7.standalone.home")+"' | grep java | awk '{print $1}')");
 			sshStandalone.run("cd "+System.getProperty("as7.standalone.home")+"/bin && ./standalone.sh");
-			
+
 			// lets remove user and pass settings
 			sahiTasks.getNavigator().inventoryGoToResource(
 					System.getProperty("agent.name"), "Inventory",
