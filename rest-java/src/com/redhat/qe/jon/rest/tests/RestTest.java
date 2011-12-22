@@ -35,9 +35,16 @@ public class RestTest extends RestClient{
 		if(testType.equalsIgnoreCase("positive")){
 			Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200, "Login validation check Positive, Response Code: "+result.get(RESPONSE_STATUS_CODE)+", Response Message: "+result.get(RESPONSE_STATUS_MESSAGE));
 		}else{
-			Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 401, "Login validation check Positive, Response Code: "+result.get(RESPONSE_STATUS_CODE)+", Response Message: "+result.get(RESPONSE_STATUS_MESSAGE));
+			Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 401, "Login validation check Negative, Response Code: "+result.get(RESPONSE_STATUS_CODE)+", Response Message: "+result.get(RESPONSE_STATUS_MESSAGE));
 		}
 		
+	}
+	
+	@Test (groups="restClientJava")
+	public void unauthorizedLoginTest(String rhqUser, String rhqPassword, String testType){
+		webResource = this.getWebResource(SERVER_URI+URI_PREFIX);
+		HashMap<String, Object> result = this.getReponse(webResource, URIs.STATUS.getUri()+".json");
+		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 401, "Unauthorized Login validation check, Negative, Response Code: "+result.get(RESPONSE_STATUS_CODE)+", Response Message: "+result.get(RESPONSE_STATUS_MESSAGE));
 	}
 	
 	@Test (groups="restClientJava", dependsOnMethods="loginTest")
@@ -54,6 +61,5 @@ public class RestTest extends RestClient{
 		}
 		
 	}
-	
-	
+		
 }

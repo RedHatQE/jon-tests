@@ -79,6 +79,18 @@ public class RestClient {
 			return webResource;
 		}
 	}	
+	
+	public WebResource getWebResource(String url){
+		_logger.info("URI: "+url);
+		if(webResource == null){
+			client = Client.create();
+			webResource = client.resource(url);
+			return webResource;
+		}else{
+			webResource = client.resource(url);
+			return webResource;
+		}
+	}	
 
 	public HashMap<String, Object> getReponse(WebResource webResource, String url){
 		_logger.info("URI: "+url);
