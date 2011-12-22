@@ -22,7 +22,6 @@
 				<parameter name="rest.password" value="rhqadmin"/>
 				<parameter name="test.type" value="positive"/>			
 				<include name="loginTest"></include> 
-				<include name="visitURIplatforms"></include>
 			</methods>
 			</class>
 		</classes>
