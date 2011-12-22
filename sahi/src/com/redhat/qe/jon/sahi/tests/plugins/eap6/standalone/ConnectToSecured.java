@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 import org.jboss.sasl.util.UsernamePasswordHashUtil;
 import org.testng.annotations.BeforeClass;
@@ -9,24 +10,49 @@ import org.testng.annotations.Test;
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.SSHClient;
 
 public class ConnectToSecured extends AS7PluginSahiTestScript {
 
+	private SSHClient sshClient;
+	private ManagementClient mgmtClient;
+	
 	@BeforeClass(groups = "secure")
 	protected void setupAS7Plugin() {
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
 		as7SahiTasks.inventorizeResourceByName(
 				System.getProperty("agent.name"),
 				System.getProperty("as7.standalone.name"));
-		sshStandalone.connect();
+		
+		sshClient = sshStandalone;
+		mgmtClient = mgmtStandalone;
+		sshClient.connect();
+	}
+	@Test(groups="secure")
+	public void createRHQUser() {
+		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.standalone.name"));
+		sahiTasks.cell("New").click();
+		sahiTasks.selectComboBoxes("selectItemText-->Install RHQ user");
+		sahiTasks.waitFor(5000);
+		String user = "u"+new Date().getTime();
+		sahiTasks.textbox("user").setValue(user);
+		sahiTasks.waitFor(5000);
+		sahiTasks.cell("Schedule").click();
+		sahiTasks.waitFor(5000);
+		// assert operation success
+		sahiTasks.getNavigator().inventorySelectTab("Summary");
+		Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div("Install RHQ user[0]").parentNode("tr")).exists(),"Creation operation successfull");
+		String command = "grep '"+user+"' "+System.getProperty("as7.standalone.home") + "/standalone/configuration/mgmt-users.properties";
+		Assert.assertTrue(sshClient.runAndWait(command).getStdout().contains(user), "New user was found on EAP machine in mgmt-users.properties");
 	}
 
 	@Test(groups = "secure")
 	public void connectToSecured() {
 		// our mgmt client defines credentials that is able to pass to server
 		// we take them and make server to require them
-		String user = mgmtStandalone.getUsername();
-		String pass = mgmtStandalone.getPassword();
+		String user = mgmtClient.getUsername();
+		String pass = mgmtClient.getPassword();
 		String hash = null;
 		// let's generate hash for pass and store it into mgmt-users.properties
 		try {
@@ -37,32 +63,32 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 					"Unable to generate password hash to setup EAP", e);
 		}
 		StringBuilder command = new StringBuilder("echo " + user + "=" + hash
-				+ " > ");
+				+ " >> ");
 
-		command.append(System.getProperty("as7.standalone.home")
+		command.append(sshClient.getAsHome()
 				+ "/standalone/configuration/mgmt-users.properties");
-		sshStandalone.runAndWait(command.toString());
+		sshClient.runAndWait(command.toString());
 		// use SED to enable ManagementRealm on native interface
 		command = new StringBuilder(
 				"sed -i \'s/<native-interface[^>]*>/<native-interface security-realm=\"ManagementRealm\">/' ");
-		command.append(System.getProperty("as7.standalone.home")
+		command.append(sshClient.getAsHome()
 				+ "/standalone/configuration/standalone.xml");
-		sshStandalone.runAndWait(command.toString());
+		sshClient.runAndWait(command.toString());
 		// use SED to enable ManagementRealm on HTTP interface
 		command = new StringBuilder(
 				"sed -i \'s/<http-interface[^>]*>/<http-interface security-realm=\"ManagementRealm\">/' ");
-		command.append(System.getProperty("as7.standalone.home")
+		command.append(sshClient.getAsHome()
 				+ "/standalone/configuration/standalone.xml");
-		sshStandalone.runAndWait(command.toString());
+		sshClient.runAndWait(command.toString());
 		
 		// now we restart server
-		sshStandalone.run("kill -9 $(ps ax | grep standalone | grep java | awk '{print $1}')");
-		sshStandalone.run("cd "+System.getProperty("as7.standalone.home")+"/bin && ./standalone.sh");
+		sshClient.restart("standalone.sh");
+
 		try {
 			log.info("Since now, standalone mgmt and HTTP API requires authorization");
 			// let's wait some time 'till agent restarts EAP and EAP stands up
 			sahiTasks.waitFor(60 * 1000);
-			Assert.assertTrue(mgmtStandalone.isAuthRequired(),
+			Assert.assertTrue(mgmtClient.isAuthRequired(),
 					"EAP configuration was successfully changed to require username and password");
 			boolean ok = false;
 			for (int i = 0; i < 10; i++) {
@@ -123,18 +149,16 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 					"sed -i \'s/<native-interface[^>]*>/<native-interface>/' ");
 			command.append(System.getProperty("as7.standalone.home")
 					+ "/standalone/configuration/standalone.xml");
-			sshStandalone.runAndWait(command.toString());
+			sshClient.runAndWait(command.toString());
 			// use SED to enable ManagementRealm on HTTP interface
 			command = new StringBuilder(
 					"sed -i \'s/<http-interface[^>]*>/<http-interface>/' ");
 			command.append(System.getProperty("as7.standalone.home")
 					+ "/standalone/configuration/standalone.xml");
-			sshStandalone.runAndWait(command.toString());
-
+			sshClient.runAndWait(command.toString());
+			
 			// now we restart server
-			sshStandalone.run("kill -9 $(ps ax | grep '"+System.getProperty("as7.standalone.home")+"' | grep java | awk '{print $1}')");
-			sshStandalone.run("cd "+System.getProperty("as7.standalone.home")+"/bin && ./standalone.sh");
-
+			sshClient.restart("standalone.sh");
 			// lets remove user and pass settings
 			sahiTasks.getNavigator().inventoryGoToResource(
 					System.getProperty("agent.name"), "Inventory",
