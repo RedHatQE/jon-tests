@@ -1,6 +1,20 @@
 <suite name="RHQ REST JAVA Client Test">
 
-  	<test name="Login, Visit Platforms, etc">
+  	<test name="Login Test Negative">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<parameter name="rest.username" value="rhquser"/>
+				<parameter name="rest.password" value="rhquser"/>
+				<parameter name="test.type" value="negative"/>	
+				<include name="unauthorizedLoginTest"></include>		
+				<include name="loginTest"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="Login Test Positive">
   	  	<classes>
 			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
 			<methods>
@@ -8,20 +22,16 @@
 				<parameter name="rest.password" value="rhqadmin"/>
 				<parameter name="test.type" value="positive"/>			
 				<include name="loginTest"></include> 
-				<include name="visitURIplatforms"></include>
 			</methods>
 			</class>
 		</classes>
   	</test>
-  	  	
-  	<test name="Login Test Negative">
+  	
+  	<test name="Visit PlatformS">
   	  	<classes>
 			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
 			<methods>
-				<parameter name="rest.username" value="rhquser"/>
-				<parameter name="rest.password" value="rhquser"/>
-				<parameter name="test.type" value="negative"/>			
-				<include name="loginTest"></include> 
+				<include name="visitURIplatforms"></include>
 			</methods>
 			</class>
 		</classes>
