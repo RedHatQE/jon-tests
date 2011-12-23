@@ -77,8 +77,19 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         mgmtStandalone = new ManagementClient(MGMT_HOST_STANDALONE, MGMT_PORT_STANDALONE);
         mgmtDomain = new ManagementClient(MGMT_HOST_DOMAIN, MGMT_PORT_DOMAIN);
 
-        sshStandalone = new SSHClient();
-        sshDomain = new SSHClient();
+        String user = System.getProperty("as7.runs.as.user");
+        String host = System.getProperty("as7.standalone.hostname");
+        String key = System.getProperty("user.home")+"/"+System.getProperty("as7.key");
+        sshStandalone = new SSHClient(
+        		System.getProperty("as7.runs.as.user"),
+        		System.getProperty("as7.standalone.hostname"),
+        		System.getProperty("user.home")+"/"+System.getProperty("as7.key"),
+        		System.getProperty("as7.standalone.home"));
+        sshDomain = new SSHClient(
+        		System.getProperty("as7.runs.as.user"),
+        		System.getProperty("as7.domain.hostname"),
+        		System.getProperty("user.home")+"/"+System.getProperty("as7.key"),
+        		System.getProperty("as7.domain.home"));
 
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         // should we include this or not? it uninventorizes all EAP-instance resources from the agent before the testing starts..

@@ -2,6 +2,7 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.util;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,7 +26,7 @@ public class ManagementClient {
 
 
 	private CredentialsCallbackHandler authHandler = new CredentialsCallbackHandler(); 
-	private String username = "admin";
+	private String username = "admin"+new Date().getTime();
 	private String password = "123456";
 	
 	/**
