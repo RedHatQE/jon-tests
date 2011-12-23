@@ -3,6 +3,7 @@ package com.redhat.qe.jon.rest.tasks;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.json.simple.JSONArray;
@@ -38,6 +39,10 @@ public class RestClient {
 	protected static String RESPONSE_X_POWERED_BY= "response.x.powered.by";
 	protected static String RESPONSE_SERVER = "response.server";
 	
+	protected static String LINKS = "links";
+	protected static String RESOURCE_ID = "resourceId";
+	protected static String PARENT_ID = "parentId";
+	
 	protected static String SERVER_URI ;
 	protected static String URI_PREFIX = "/rest/1"; 
 	
@@ -48,7 +53,8 @@ public class RestClient {
 		ALERT("/alert"),
 		ALERT_DEFINATION("alert/definition"),
 		USER_FAVORITES_RESOURCE("user/favorites/resource"),
-		PLATFORMS("/resource/platforms");			
+		PLATFORMS("/resource/platforms"),
+		CHILDREN_RESOURCE("/resource/@@id@@/children");			
 		
 		String uri;
 		URIs(String uri)
@@ -120,14 +126,33 @@ public class RestClient {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public void printKeyValue(JSONObject map){	
-		StringBuffer keyValue = new StringBuffer(); 
+	public StringBuffer getKeyValue(JSONObject map, StringBuffer keyValue){
+		if(keyValue  == null){
+			keyValue = new StringBuffer(); 
+		}
 		Set keys = map.keySet();
 		Iterator itkey = keys.iterator();
 	    while (itkey.hasNext()) {
 	    	String key = ""+itkey.next();
-	    	keyValue.append(key).append("=").append(map.get(key)).append("\n");
+	    	try{
+	    		if(((JSONArray)map.get(key)).size() > 1){
+		    		for(Object obj : (JSONArray)map.get(key)){
+		    			getKeyValue((JSONObject)obj, keyValue);
+		    		}
+		    	}else{
+		    		keyValue.append(key).append("=").append(map.get(key)).append("\n");	
+		    	}
+	    	}catch(Exception ex){
+	    		if(ex.getMessage().contains("cannot be cast to org.json.simple.JSONArray")){
+	    			keyValue.append(key).append("=").append(map.get(key)).append("\n");
+	    		}else{
+	    			_logger.log(Level.SEVERE, "Exception --> "+ex.getMessage(), ex);
+	    		}
+	    	}	    	
 	    }
-	    _logger.info("JSON Map: \n------------------------------------\n"+keyValue+"------------------------------------");
+	    return keyValue;
+	}
+	public void printKeyValue(JSONObject map){
+		_logger.info("JSON Map: \n------------------------------------\n"+getKeyValue(map, null)+"------------------------------------");
 	}
 }
