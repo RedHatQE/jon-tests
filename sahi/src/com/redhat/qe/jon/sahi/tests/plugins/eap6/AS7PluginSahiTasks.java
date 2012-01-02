@@ -5,6 +5,7 @@ import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQueueException;
 import net.sf.sahi.client.ElementStub;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -136,6 +137,29 @@ public class AS7PluginSahiTasks {
         if (tasks.image("Server_up_24.png").exists()) {
             log.finer("Resource " + resourceName + " is online!");
             return true;
+        }
+        Assert.fail("Could not verify whether a resource is online or offline -- neither Server_down_16.png nor Server_up_16.png was found");
+        return false;
+    }
+    /**
+     * checks whether given resource and all its child resources is online
+     * @param agentName
+     * @param resourceName
+     * @param children
+     * @return
+     */
+    public boolean checkIfResourceWithChildrenIsOnline(String agentName, String... resourcePath) {
+        tasks.getNavigator().inventoryGoToResource(agentName, "Summary", resourcePath);
+        if (tasks.image("Server_down_24.png").exists()) {
+            log.finer("Resource " + Arrays.toString(resourcePath) + " is offline!");
+            return false;
+        }
+        if (tasks.image("Server_up_24.png").exists()) {
+            log.finer("Resource " + Arrays.toString(resourcePath) + " is online!");
+            tasks.getNavigator().inventorySelectTab("Inventory");
+            if (!tasks.image("availability_red_16.png").exists()) {
+            	return true;
+            }
         }
         Assert.fail("Could not verify whether a resource is online or offline -- neither Server_down_16.png nor Server_up_16.png was found");
         return false;

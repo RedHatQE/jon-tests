@@ -15,7 +15,18 @@
 			</class>
 		</classes>
 	 </test>
- 
+ 	<test name="Standalone_Operations">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.OperationTest"/>
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>
+                <include name="operation"/>
+            </run>
+        </groups>
+    </test>
      <test name="Standalone_AutodetectConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.AutodetectConfigurationTest"/>

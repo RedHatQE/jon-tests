@@ -9,6 +9,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.SSHClient;
 
@@ -43,6 +44,10 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
      * SSH Client to to some stuff on machine where runs domain AS7
      */
     protected static SSHClient sshDomain;
+    /**
+     * HTTP Client for standalone instance 
+     */
+    protected static HTTPClient httpStandalone;
 
 
     public AS7PluginSahiTestScript() {
@@ -90,7 +95,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         		System.getProperty("as7.domain.hostname"),
         		System.getProperty("user.home")+"/"+System.getProperty("as7.key"),
         		System.getProperty("as7.domain.home"));
-
+        httpStandalone = new HTTPClient(System.getProperty("as7.standalone.hostname"), Integer.parseInt(System.getProperty("as7.standalone.http.port")));
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         // should we include this or not? it uninventorizes all EAP-instance resources from the agent before the testing starts..
     /*    as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));

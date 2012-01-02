@@ -2,6 +2,9 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.redhat.qe.tools.SSHCommandResult;
 import com.redhat.qe.tools.SSHCommandRunner;
@@ -14,6 +17,8 @@ public class SSHClient {
 	private final String host;
 	private final String key;
 	private final String asHome;
+	
+	private static final SimpleDateFormat sdfServerLog = new SimpleDateFormat("HH:mm:ss");
 	public SSHClient(String user, String host, String key, String asHome) {
 		this.user = user;
 		this.host  = host;
@@ -83,16 +88,54 @@ public class SSHClient {
 			connection = null;
 		}
 	}
+	/**
+	 * gets AS7/EAP home dir
+	 * @return
+	 */
 	public String getAsHome() {
 		return asHome;
 	}
 	/**
 	 * restarts server by killing it and starting using given script
-	 * @param script name of starting script located in {@link SSHClient#getAsHome()} / bin
+	 * @param script name of startup script located in {@link SSHClient#getAsHome()} / bin
 	 */
 	public void restart(String script) {
-		run("kill -9 $(ps ax | grep standalone | grep java | awk '{print $1}')");
+		stop();
+		start(script);		
+	}
+	/**
+	 * starts server
+	 * @param script name of startup script located in {@link SSHClient#getAsHome()} / bin
+	 */
+	public void start(String script) {
 		run("sleep 3 && cd "+asHome+"/bin && nohup ./"+script+" &");
+	}
+	/**
+	 * stops server by killing it
+	 */
+	public void stop() {
+		run("kill -9 $(ps ax | grep "+asHome+" | grep java | awk '{print $1}')");
+	}
+	/**
+	 * check whether EAP server is running
+	 * @param script name of startup script located in {@link SSHClient#getAsHome()} / bin
+	 * @return
+	 */
+	public boolean isRunning() {
+		return runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);
+	}
+	/**
+	 * gets server startup time by parsing 1st line of it's log file
+	 * @param logFile relative path located in {@link SSHClient#getAsHome()} to server's boot.log logFile
+	 * @return
+	 */
+	public Date getStartupTime(String logFile) {
+		String dateStr = runAndWait("head -n1 "+asHome+"/"+logFile+" | awk -F, '{print $1}' ").getStdout().trim();
+		try {
+			return sdfServerLog.parse(dateStr);
+		} catch (ParseException e) {
+			throw new RuntimeException("Unable to determine server startup time", e);
+		}
 	}
 	
 	
