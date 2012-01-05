@@ -1845,7 +1845,11 @@ public class SahiTasks extends ExtendedSahi {
     	//Starting up, please wait...
 
     	if(!this.waitForElementExists(this, this.span("Starting up, please wait..."), "Span: Starting up, please wait...", 1000*30)){
-    		return false;
+    		//return false;
+    		//Adding manual wait due to issue with sahi proxy server 
+    		//Bug: https://bugzilla.redhat.com/show_bug.cgi?id=765670
+    		_logger.log(Level.WARNING, "[Starting up, please wait...] not found, hence will wait here 120 seconds");
+    		this.waitFor(1000*120);
     	}
 
     	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", 1000*60*2)){
