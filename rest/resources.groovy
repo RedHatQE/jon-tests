@@ -49,12 +49,17 @@ class ResourceTest extends RestClientTest {
 	}
 	@Test 
 	void nonexistingResource() {
-	    	resp = client.get(path : 'resource/0.xml')
-		Assert.assertTrue resp.status == 404, 'Response status is 404'
-		Assert.assertTrue resp.contentType == 'application/xml', 'reponse contentType is XML'
-	    	resp = client.get(path : 'resource/0.json')
-		Assert.assertTrue resp.status == 404, 'Response status is 404'
-		Assert.assertTrue resp.contentType == 'application/json', 'reponse contentType is JSON'
+		client.handler.'404' = { resp ->
+			Assert.assertTrue resp.status == 404, 'Response status is 404'
+			Assert.assertTrue resp.contentType == 'application/xml', 'reponse contentType is XML'
+		}
+		client.get(path : 'resource/0.xml')
+		client.handler.'404' = {resp -> 
+			Assert.assertTrue resp.status == 404, 'Response status is 404'
+			Assert.assertTrue resp.contentType == 'application/json', 'reponse contentType is JSON'
+		}
+	    	client.get(path : 'resource/0.json')
+		client.handler.remove('404')
 	}
 	@Test
 	void visitAllResources() {
