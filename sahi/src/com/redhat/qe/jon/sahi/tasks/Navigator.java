@@ -66,7 +66,11 @@ public class Navigator {
 	public void inventorySelectTab(String it) {
 		inventorySelectTab(it, null);
 	}
-	
+	public void inventoryDiscoveryQueue() {
+        tasks.link("Inventory").click();
+        tasks.cell("Discovery Queue").click();
+        tasks.waitFor(timeout);
+	}
 	/**
 	 * navigates to resource in inventory defined by its path
 	 * @param agent = platform containing desired resource

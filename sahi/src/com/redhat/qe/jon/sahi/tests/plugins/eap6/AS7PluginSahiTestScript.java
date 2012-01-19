@@ -49,6 +49,10 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
      * HTTP Client for standalone instance 
      */
     protected static HTTPClient httpStandalone;
+    protected static HTTPClient httpDomainManager;
+    protected static HTTPClient httpDomainOne;
+    protected static HTTPClient httpDomainTwo;
+    protected static HTTPClient httpDomainThree;
 
 
     public AS7PluginSahiTestScript() {
@@ -97,6 +101,11 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         		System.getProperty("user.home")+"/"+System.getProperty("as7.key"),
         		System.getProperty("as7.domain.home"));
         httpStandalone = new HTTPClient(System.getProperty("as7.standalone.hostname"), Integer.parseInt(System.getProperty("as7.standalone.http.port")));
+        httpDomainManager = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.http.port")));
+        httpDomainOne = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-one.http.port")));
+        httpDomainTwo = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-two.http.port")));
+        httpDomainThree = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-three.http.port")));
+        
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         // should we include this or not? it uninventorizes all EAP-instance resources from the agent before the testing starts..
     /*    as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
