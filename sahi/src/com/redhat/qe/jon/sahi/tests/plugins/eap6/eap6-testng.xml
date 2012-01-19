@@ -163,6 +163,18 @@
             </run>
         </groups>  
     </test>
+    <test name="Domain_Operations">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.ControllerOperationTest"/>
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>
+                <include name="operation"/>
+            </run>
+        </groups>
+    </test>
     <test name="Domain_Management">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.DomainManagementTest"/>
