@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
@@ -126,5 +127,22 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     	if (sshStandalone!=null)
     		sshStandalone.disconnect();
     	
+    }
+    /**
+     * asserts whether last operation on current resource (you have to be on resource page) 
+     * defined by 'opName' was successful
+     * @param opName
+     */
+    public void assertOperationSuccess(String opName) {
+    	log.fine("Asserting operation '"+opName+"' success...");
+    	sahiTasks.getNavigator().inventorySelectTab("Summary");
+    	int timeout = 120*1000;
+    	int time = 0;
+    	while (time<timeout && sahiTasks.image("Operation_inprogress_16.png").in(sahiTasks.div(opName+"[0]").parentNode("tr")).exists()) {
+    		time+=10*1000;
+    		log.fine("Operation '"+opName+"' in progress, waiting 10s");
+    		sahiTasks.waitFor(10*1000);
+    	}
+    	Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div(opName+"[0]").parentNode("tr")).exists(),opName+" operation successfull");
     }
 }

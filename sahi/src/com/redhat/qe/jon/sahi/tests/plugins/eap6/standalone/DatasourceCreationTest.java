@@ -67,9 +67,8 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(waitTime);
 		
-		// assert operation success
-		sahiTasks.getNavigator().inventorySelectTab("Summary");
-		Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div("Add Datasource[0]").parentNode("tr")).exists(),"Creation operation successfull");
+
+		assertOperationSuccess("Add Datasource");
 		assertDatasourceExists(nonXA_def);		
 		//  assert datasource was discovered by agent
 		Assert.assertTrue(waitForDatasourceUI(datasource_nonXA), "Created datasource discovered by agent");
@@ -131,9 +130,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(waitTime);
 		
-		// assert operation success
-		sahiTasks.getNavigator().inventorySelectTab("Summary");
-		Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div("Add XA Datasource[0]").parentNode("tr")).exists(),"Creation operation successfull");
+		assertOperationSuccess("Add XA Datasource");
 		// assert datasource exists
 		assertDatasourceExists(XA_def);
 		//  assert datasource was discovered by agent

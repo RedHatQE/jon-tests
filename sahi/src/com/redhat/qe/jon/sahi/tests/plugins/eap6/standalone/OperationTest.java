@@ -29,8 +29,7 @@ public class OperationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(5000);
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(5000);
-		sahiTasks.getNavigator().inventorySelectTab("Summary");
-		Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div("Shutdown[0]").parentNode("tr")).exists(),"Shutdown operation successfull");
+		assertOperationSuccess("Shutdown");
 		log.fine("Waiting 30s for server to stop");
 		Assert.assertFalse(sshClient.isRunning(), "Server process is running");
 		Assert.assertFalse(httpStandalone.isRunning(), "Server is reachable via HTTP request");
@@ -59,8 +58,7 @@ public class OperationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(5000);
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(5000);
-		sahiTasks.getNavigator().inventorySelectTab("Summary");
-		Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div("Start[0]").parentNode("tr")).exists(),"Start operation successfull");
+		assertOperationSuccess("Start");
 		log.fine("Waiting 30s for server to stop");
 		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
 		Assert.assertTrue(httpStandalone.isRunning(), "Server is reachable via HTTP request");
@@ -89,8 +87,7 @@ public class OperationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(5000);
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(5000);
-		sahiTasks.getNavigator().inventorySelectTab("Summary");
-		Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div("Restart[0]").parentNode("tr")).exists(),"Restart operation successfull");
+		assertOperationSuccess("Restart");
 		log.fine("Waiting 30s for server to stand up");
 		sahiTasks.waitFor(30*1000);
 		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
