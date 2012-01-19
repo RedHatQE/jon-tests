@@ -29,23 +29,6 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 		mgmtClient = mgmtStandalone;
 		sshClient.connect();
 	}
-	@Test(groups="secure")
-	public void createRHQUser() {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.standalone.name"));
-		sahiTasks.cell("New").click();
-		sahiTasks.selectComboBoxes("selectItemText-->Install RHQ user");
-		sahiTasks.waitFor(5000);
-		String user = "u"+new Date().getTime();
-		sahiTasks.textbox("user").setValue(user);
-		sahiTasks.waitFor(5000);
-		sahiTasks.cell("Schedule").click();
-		sahiTasks.waitFor(5000);
-		// assert operation success
-		sahiTasks.getNavigator().inventorySelectTab("Summary");
-		Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div("Install RHQ user[0]").parentNode("tr")).exists(),"Creation operation successfull");
-		String command = "grep '"+user+"' "+System.getProperty("as7.standalone.home") + "/standalone/configuration/mgmt-users.properties";
-		Assert.assertTrue(sshClient.runAndWait(command).getStdout().contains(user), "New user was found on EAP machine in mgmt-users.properties");
-	}
 
 	@Test(groups = "secure")
 	public void connectToSecured() {
