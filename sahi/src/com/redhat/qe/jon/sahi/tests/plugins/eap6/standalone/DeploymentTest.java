@@ -1,20 +1,9 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-
-import net.sf.sahi.client.ElementStub;
-
-import org.jboss.dmr.ModelNode;
-import com.redhat.qe.auto.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 /**
@@ -60,7 +49,7 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		sahiTasks.xy(sahiTasks.cell("Finish"),3,3).click();
 		assertDeploymentExists(war);
 		Assert.assertTrue(existsResourceUI(war),"Deployment discovered by agent");
-		assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
+		httpStandalone.assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
 	}
 	@Test(groups = {"deployment","blockedByBug-767974"}, dependsOnMethods="deployWAR")
 	public void deployWARVersion2() {
@@ -79,7 +68,7 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		sahiTasks.xy(sahiTasks.cell("Finish"),3,3).click();
 		assertDeploymentExists(war);
 		Assert.assertTrue(existsResourceUI(war),"Deployment discovered by agent");
-		assertDeploymentContent(war,"Modified","Check whether modified version of WAR has been deployed");
+		httpStandalone.assertDeploymentContent(war,"Modified","Check whether modified version of WAR has been deployed");
 	}
 
 	@Test(groups = "deployment", dependsOnMethods="deployWAR")
@@ -90,33 +79,6 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Yes").click();
 		assertDeploymentDoesNotExist(war);
 		Assert.assertFalse(existsResourceUI(war), "Deployment exists in UI");
-	}
-	
-	private void assertDeploymentContent(String deployment,String contains,String message) {
-		String context = deployment.replaceFirst("\\..*", "");
-		String url = "http://"+System.getProperty("as7.standalone.hostname")+":"+System.getProperty("as7.standalone.http.port")+"/"+context;
-		HttpURLConnection connection = null;
-		try {
-			URL u = new URL(url);
-			connection = (HttpURLConnection) u.openConnection();
-			Assert.assertTrue(connection.getResponseCode() == HttpURLConnection.HTTP_OK, "Deployment "+deployment+" is reachable on EAP via HTTP request");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			for (String line; (line = reader.readLine()) != null;) {
-	            if (line.contains(contains)) {
-	            	Assert.assertTrue(true, message);
-	            	return;
-	            }
-	        }
-			Assert.assertTrue(false,message);
-		} catch (MalformedURLException e1) {
-			throw new RuntimeException(e1);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-		}
 	}
 
 	private boolean existsResourceUI(String name) {
