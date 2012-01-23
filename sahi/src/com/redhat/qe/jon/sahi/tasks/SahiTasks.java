@@ -2,9 +2,11 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.tasks.Navigator.InventoryNavigation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
@@ -2009,6 +2011,38 @@ public class SahiTasks extends ExtendedSahi {
     	this.cell("Delete").near(this.cell("Disable")).click();
     	this.cell("Yes").near(this.cell("No")).click(); 
     	return this.link(templateName.trim()).exists();
+    }
+    /**
+     * asserts resource existence
+     * @param shouldExist - true for asserting resource existence, false for checking resource non-existence
+     * @param nav - navigation object as an abstraction of agent name, selected inventory tab and resource path
+     */
+    public void assertResourceExists(boolean shouldExist, InventoryNavigation nav) {
+    	_logger.fine("Asserting resource "+nav.toString()+" exists");
+    	int waitTime=5000;
+    	int count=10;
+    	String[] parentPath = new String[nav.getResourcePath().length-1];
+    	String resourceName = nav.getResourceName();
+    	for (int i=0;i<nav.getResourcePath().length-1;i++) {
+    		parentPath[i] = nav.getResourcePath()[i];
+    	}
+    	getNavigator().inventoryGoToResource(nav.setInventoryTab("Inventory").pathPop());
+    	getNavigator().inventorySelectTab("Inventory", "Child Resources");
+    	boolean exists=false;
+    	for (int i = 0;i<count;i++) {
+    		exists=cell(resourceName).exists();
+    		if (shouldExist && exists) {
+    			Assert.assertTrue(exists, "Resource '"+resourceName+"' exists.");
+    			return;
+    		}
+    		if (!shouldExist && !exists) {
+    			Assert.assertFalse(false, "Resource '"+resourceName+"' exists.");
+    			return;
+    		}
+    		waitFor(waitTime);
+    		cell("Refresh").click();
+    	}
+    	Assert.assertTrue(!shouldExist, "Resource '"+resourceName+"' exists.");
     }
 
 }

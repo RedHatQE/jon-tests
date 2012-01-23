@@ -78,20 +78,107 @@ public class Navigator {
 	 * @param resourcePath for example 'Eap server-one','datasources','java:jboss/datasources/ExampleDS'
 	 * would navigate to example datasource on EAP server-one resource
 	 */
-	public void inventoryGoToResource(String agent, String it, String... resourcePath) {
+	public void inventoryGoToResource(String agent, String it, String... resourcePath) {		
+        inventoryGoToResource(new InventoryNavigation(agent, it, resourcePath));
+	}
+	
+	public void inventoryGoToResource(InventoryNavigation nav) {
 		tasks.link("Inventory").click();
         tasks.cell("Platforms").click();
-        log.fine("select agent "+agent);
-        tasks.link(agent).click();
-        for (String element : resourcePath) {
-        	log.fine("select resource : "+element);
+        log.fine("Select agent "+nav.getAgent());
+        tasks.link(nav.getAgent()).click();
+        for (String element : nav.getResourcePath()) {
+        	log.fine("Select resource : "+element);
         	tasks.waitFor(timeout);
 	        inventorySelectTab("Inventory","Child Resources");	        
 	        tasks.link(element).click();
-	        log.fine("clicked resource : "+element);
+	        log.fine("Clicked resource : "+element);
         }
         tasks.waitFor(timeout);
-        inventorySelectTab(it);
-        log.fine("Navigation to "+Arrays.toString(resourcePath)+ " done.");
+        inventorySelectTab(nav.getInventoryTab());
+        log.fine("Navigation to "+nav.toString()+ " done.");
+	}
+	
+	public static class InventoryNavigation {
+		private final String agent;
+		private final String inventoryTab;
+		private final String[] resourcePath;
+		
+		public InventoryNavigation(String agent, String it,String...resourcePath) {
+			this.agent = agent;
+			this.inventoryTab = it;
+			this.resourcePath = resourcePath;
+			assert resourcePath.length > 0;
+		}
+		/**
+		 * gets name of agent
+		 * @return
+		 */
+		public String getAgent() {
+			return agent;
+		}
+		/**
+		 * gets Inventory tab
+		 * @return
+		 */
+		public String getInventoryTab() {
+			return inventoryTab;
+		}
+		/**
+		 * gets path to be navigated to within agent
+		 * @return
+		 */
+		public String[] getResourcePath() {
+			return resourcePath;
+		}
+		/**
+		 * gets target resource name (last item of {@link InventoryNavigation#getResourcePath()}
+		 * @return
+		 */
+		public String getResourceName() {
+			return getResourcePath()[getResourcePath().length-1];
+		}
+		/**
+		 * returns new instance of Navigation class with added item 'element' at the end of resourcePath
+		 * @param element
+		 * @return
+		 */
+		public InventoryNavigation pathPush(String element) {
+			InventoryNavigation nav = new InventoryNavigation(this.agent, this.inventoryTab, Arrays.copyOf(this.resourcePath, this.resourcePath.length+1));
+			nav.resourcePath[nav.resourcePath.length-1] = element;
+			//log.fine("Created new navigation: "+nav.toString());
+			return nav;
+		}
+		/**
+		 * returns new instance of Navigation class with last item removed from resourcePath
+		 * @return
+		 */
+		public InventoryNavigation pathPop() {
+			String newPath[] = new String[this.resourcePath.length-1];
+			for (int i=0;i<this.resourcePath.length-1;i++) {
+				newPath[i] = this.resourcePath[i];
+			}
+			InventoryNavigation nav = new InventoryNavigation(this.agent, this.inventoryTab, newPath);
+			//log.fine("Created new navigation: "+nav.toString());
+			return nav;
+		}
+		/**
+		 * returns new instance of Navigation class having inventory tab specified by 'name' param
+		 * @param name
+		 * @return
+		 */
+		public InventoryNavigation setInventoryTab(String name) {
+			InventoryNavigation nav = new InventoryNavigation(this.agent, name, resourcePath);
+			//log.fine("Created new navigation: "+nav.toString());
+			return nav;
+		}
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder(getInventoryTab()+" : "+getAgent());
+			for (String path : getResourcePath()) {
+				sb.append("/"+path);
+			}
+			return sb.toString();
+		}
 	}
 }
