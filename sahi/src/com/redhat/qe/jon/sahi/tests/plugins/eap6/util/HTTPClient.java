@@ -24,10 +24,9 @@ public class HTTPClient {
 	 * @return
 	 */
 	public boolean isRunning() {
-		String url = "http://"+host+":"+String.valueOf(port);
 		HttpURLConnection connection = null;
 		try {
-			URL u = new URL(url);
+			URL u = new URL(getServerAddress());
 			connection = (HttpURLConnection) u.openConnection();
 			return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
 		} catch (MalformedURLException e1) {
@@ -44,6 +43,13 @@ public class HTTPClient {
 		}
 	}
 	/**
+	 * gets server's http URL, where it is available
+	 * @return
+	 */
+	public String getServerAddress() {
+		return "http://"+host+":"+String.valueOf(port);
+	}
+	/**
 	 * asserts deployment content
 	 * @param deployment name (like xxx.war, xxx.ear), note: this will try to reach server:port/xxx deployment
 	 * @param contains string that should be present on deployment's home page
@@ -51,7 +57,7 @@ public class HTTPClient {
 	 */
 	public void assertDeploymentContent(String deployment,String contains,String message) {
 		String context = deployment.replaceFirst("\\..*", "");
-		String url = "http://"+host+":"+String.valueOf(port)+"/"+context;
+		String url = getServerAddress()+"/"+context;
 		HttpURLConnection connection = null;
 		try {
 			URL u = new URL(url);

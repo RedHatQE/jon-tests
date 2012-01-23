@@ -218,8 +218,13 @@ public class ManagementClient {
 	public void assertResourcePresence(String address, String childType,
 			String resource, boolean exists) {
 		for (int i = 0; i < repeatCount; i++) {
-			if (exists && existsResource(address, childType, resource)) {
+			boolean existence = existsResource(address, childType, resource); 
+			if (exists && existence) {
 				Assert.assertTrue(exists, "[mgmt API] Resource \'"+resource+"\' exists");
+				return;
+			}
+			if (!exists && !existence) {
+				Assert.assertFalse(false, "[mgmt API] Resource \'"+resource+"\' exists");
 				return;
 			}
 			waitFor(waitTime);
