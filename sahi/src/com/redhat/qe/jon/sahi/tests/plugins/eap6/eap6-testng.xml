@@ -175,6 +175,18 @@
             </run>
         </groups>
     </test>
+	<test name="Domain_Deployment">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.DeploymentTest"/>
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>
+                <include name="deployment"/>
+            </run>
+        </groups>
+    </test>
     <test name="Domain_Management">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.DomainManagementTest"/>
