@@ -95,6 +95,7 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		// deployment should be on both of them
 		httpDomainOne.assertDeploymentContent(war, "Original", "Check whether original version of WAR has been deployed to "+httpDomainOne.getServerAddress());
 		httpDomainTwo.assertDeploymentContent(war, "Original", "Check whether original version of WAR has been deployed to "+httpDomainTwo.getServerAddress());
+		
 	}
 	@Test(groups = "deployment", dependsOnMethods="deployToServerGroup")
 	public void undeployFromServerGroup() {
@@ -104,6 +105,8 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Yes").click();
 		mgmtDomain.assertResourcePresence("/server-group=main-server-group", "deployment", war, false);
 		sahiTasks.assertResourceExists(false,navController.pathPush("main-server-group").pathPush(war));
+		Assert.assertTrue(!httpDomainOne.isDeploymentAvailable(war),"Deployment is no longer reachable on "+httpDomainOne.getServerAddress());
+		Assert.assertTrue(!httpDomainTwo.isDeploymentAvailable(war),"Deployment is no longer reachable on "+httpDomainTwo.getServerAddress());
 	}
 	@Test(groups = "deployment", dependsOnMethods="undeployFromServerGroup")
 	public void removeDomainDeployment() {
