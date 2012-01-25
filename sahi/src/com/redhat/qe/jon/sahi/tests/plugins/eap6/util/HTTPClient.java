@@ -7,11 +7,12 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 import com.redhat.qe.auto.testng.Assert;
 
 public class HTTPClient {
-	
+	private static final Logger log = Logger.getLogger(HTTPClient.class.getName());
 	private final String host;
 	private final int port;
 	
@@ -24,6 +25,7 @@ public class HTTPClient {
 	 * @return
 	 */
 	public boolean isRunning() {
+		log.fine("Check whether "+getServerAddress()+" is running");
 		HttpURLConnection connection = null;
 		try {
 			URL u = new URL(getServerAddress());
@@ -58,6 +60,7 @@ public class HTTPClient {
 	public void assertDeploymentContent(String deployment,String contains,String message) {
 		String context = deployment.replaceFirst("\\..*", "");
 		String url = getServerAddress()+"/"+context;
+		log.fine("Check whether "+context+" is available and returns content that contains : "+contains);
 		HttpURLConnection connection = null;
 		try {
 			URL u = new URL(url);
@@ -75,6 +78,33 @@ public class HTTPClient {
 			throw new RuntimeException(e1);
 		}catch (ConnectException e) {
 			Assert.assertTrue(false,message);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
+		}
+	}
+	/**
+	 * returns true when given deployment is reachable/available on server
+	 * @param deployment name (like xxx.war, xxx.ear), note: this will try to reach server:port/xxx deployment
+	 * @return
+	 */
+	public boolean isDeploymentAvailable(String deployment) {
+		String context = deployment.replaceFirst("\\..*", "");
+		String url = getServerAddress()+"/"+context;
+		log.fine("Check whether "+context+" is available");
+		HttpURLConnection connection = null;
+		try {
+			URL u = new URL(url);
+			connection = (HttpURLConnection) u.openConnection();
+			return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
+
+		} catch (MalformedURLException e1) {
+			throw new RuntimeException(e1);
+		}catch (ConnectException e) {
+			return false;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {

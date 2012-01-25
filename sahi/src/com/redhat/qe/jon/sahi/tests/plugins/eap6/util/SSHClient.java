@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.util.logging.Logger;
 import com.redhat.qe.tools.SSHCommandResult;
 import com.redhat.qe.tools.SSHCommandRunner;
 import com.trilead.ssh2.Connection;
@@ -17,9 +17,10 @@ public class SSHClient {
 	private final String host;
 	private final String key;
 	private final String asHome;
-	
+	protected static final Logger log = Logger.getLogger(SSHClient.class.getName());
 	private static final SimpleDateFormat sdfServerLog = new SimpleDateFormat("HH:mm:ss");
 	public SSHClient(String user, String host, String key, String asHome) {
+		log.fine("Creating instance that will connect to:" +user+"@"+host+" with private key file="+key+" asHome="+asHome);
 		this.user = user;
 		this.host  = host;
 		this.key = key;

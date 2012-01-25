@@ -45,6 +45,7 @@ public class ManagementClient {
 	}
 	
 	public ManagementClient(String host, int port) {
+		log.fine("Creating instance that will conect to:"+host+":"+port);
 		try {
 			client = ModelControllerClient.Factory.create(
 					InetAddress.getByName(host), port,authHandler);
