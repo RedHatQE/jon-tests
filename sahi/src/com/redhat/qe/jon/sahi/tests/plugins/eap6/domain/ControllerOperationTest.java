@@ -6,6 +6,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.tasks.Navigator.InventoryNavigation;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
@@ -19,14 +20,16 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.SSHClient;
 public class ControllerOperationTest extends AS7PluginSahiTestScript {
 
 	private static final String managed_server="server-four";
+	private static final String managed_server_name="EAP "+managed_server;
 	private static final String managed_server_portoffset="300";
 	private static final int waitTime = 5000;
 	
-
+	private InventoryNavigation nav;
 	private SSHClient sshClient;
 	@BeforeClass(groups = "operation")
 	protected void setupAS7Plugin() {
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
+		nav = new InventoryNavigation(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.domain.controller.name"));
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
         sshClient = sshDomain;
         sshClient.connect();
@@ -34,13 +37,13 @@ public class ControllerOperationTest extends AS7PluginSahiTestScript {
 	@Test(groups="operation")
 	public void shutdown() {
 		Assert.assertTrue(httpDomainManager.isRunning(), "Server must be online before we try to stop it");
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.domain.controller.name"));
+		sahiTasks.getNavigator().inventoryGoToResource(nav.setInventoryTab("Operations"));
 		sahiTasks.cell("New").click();
 		sahiTasks.selectComboBoxes("selectItemText-->Shut down this host controller");
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(waitTime);
-		assertOperationSuccess("Shut down this host controller");
+		assertOperationSuccess(nav,"Shut down this host controller");
 		log.fine("Waiting 30s for server to stop");
 		Assert.assertFalse(sshClient.isRunning(), "Server process is running");
 		Assert.assertFalse(httpDomainManager.isRunning(), "DomainManager is reachable via HTTP request");
@@ -66,14 +69,14 @@ public class ControllerOperationTest extends AS7PluginSahiTestScript {
 	@Test(groups="operation",dependsOnMethods="shutdown")
 	public void start() {
 		Assert.assertFalse(httpDomainManager.isRunning(), "Server must be offline before we try to stop it");
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.domain.controller.name"));
+		sahiTasks.getNavigator().inventoryGoToResource(nav.setInventoryTab("Operations"));
 		sahiTasks.cell("New").click();
 		sahiTasks.selectComboBoxes("selectItemText-->Start this host controller");
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(waitTime);
-		assertOperationSuccess("Start this host controller");
-		log.fine("Waiting 30s for server to stop");
+		assertOperationSuccess(nav,"Start this host controller");
+		log.fine("Waiting 30s for server to start");
 		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
 		Assert.assertTrue(httpDomainManager.isRunning(), "DomainManager is reachable via HTTP request");
 		Assert.assertTrue(httpDomainOne.isRunning(), "server-one is reachable via HTTP request");
@@ -94,7 +97,7 @@ public class ControllerOperationTest extends AS7PluginSahiTestScript {
 	}
 	@Test(groups="operation")
 	public void addManagedServer() {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.domain.controller.name"));
+		sahiTasks.getNavigator().inventoryGoToResource(nav.setInventoryTab("Operations"));
 		sahiTasks.cell("New").click();
 		sahiTasks.selectComboBoxes("selectItemText-->Add managed server");
 		sahiTasks.waitFor(waitTime);
@@ -108,36 +111,32 @@ public class ControllerOperationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(waitTime);
 		Assert.assertFalse(sahiTasks.image("exclamation.png").exists(), "All required inputs were provided");
 		sahiTasks.cell("Schedule").click();
-		assertOperationSuccess("Add managed server");
+		assertOperationSuccess(nav,"Add managed server");
 		mgmtDomain.assertResourcePresence("/host="+System.getProperty("as7.domain.host.name"), "server-config", managed_server, true);
 		as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-		sahiTasks.getNavigator().inventoryDiscoveryQueue();
-		sahiTasks.cell(System.getProperty("agent.name")).doubleClick();
-        Assert.assertTrue(sahiTasks.cell("EAP "+managed_server).exists(), "Resource "+managed_server+" is detected by agent");
+		sahiTasks.assertResourceExists(true, nav.pathPush(managed_server_name));		
 	}
 	
 	@Test(groups="operation",dependsOnMethods="addManagedServer")
 	public void removeManagedServer() {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.domain.controller.name"));
+		sahiTasks.getNavigator().inventoryGoToResource(nav.setInventoryTab("Operations"));
 		sahiTasks.cell("New").click();
 		sahiTasks.selectComboBoxes("selectItemText-->Remove managed server");
 		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("servername").setValue(managed_server);
+		sahiTasks.radio(managed_server_name).check();
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.radio(System.getProperty("as7.domain.host.name")).check();
 		Assert.assertFalse(sahiTasks.image("exclamation.png").exists(), "All required inputs were provided");
 		sahiTasks.cell("Schedule").click();
-		assertOperationSuccess("Remove managed server");
+		assertOperationSuccess(nav,"Remove managed server");
 		mgmtDomain.assertResourcePresence("/host="+System.getProperty("as7.domain.host.name"), "server-config", managed_server, false);
 		as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-		sahiTasks.getNavigator().inventoryDiscoveryQueue();
-		sahiTasks.cell(System.getProperty("agent.name")).doubleClick();
-		Assert.assertFalse(sahiTasks.cell("EAP "+managed_server).exists(), "Resource "+managed_server+" is detected by agent");
+		sahiTasks.assertResourceExists(false, nav.pathPush(managed_server_name));
 	}
 	
 	@Test(groups="operation")
 	public void installRHQUser() {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.domain.controller.name"));
+		sahiTasks.getNavigator().inventoryGoToResource(nav.setInventoryTab("Operations"));
 		sahiTasks.cell("New").click();
 		sahiTasks.selectComboBoxes("selectItemText-->Install RHQ user");
 		sahiTasks.waitFor(waitTime);
@@ -146,7 +145,7 @@ public class ControllerOperationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(waitTime);
-		assertOperationSuccess("Install RHQ user");
+		assertOperationSuccess(nav,"Install RHQ user");
 		String command = "grep '"+user+"' "+System.getProperty("as7.domain.home") + "/domain/configuration/mgmt-users.properties";
 		Assert.assertTrue(sshClient.runAndWait(command).getStdout().contains(user), "New user was found on EAP machine in mgmt-users.properties");
 	}

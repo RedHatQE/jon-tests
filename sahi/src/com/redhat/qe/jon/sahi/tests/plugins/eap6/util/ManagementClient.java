@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.security.auth.callback.Callback;
@@ -17,17 +18,22 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 
 import com.redhat.qe.auto.testng.Assert;
-
+/**
+ * AS 7 DMR Management client
+ * @author lzoubek
+ *
+ */
 public class ManagementClient {
 
-	protected ModelControllerClient client;
 	protected static final Logger log = Logger.getLogger(ManagementClient.class
 			.getName());
 
-
+	private final ModelControllerClient client;
 	private CredentialsCallbackHandler authHandler = new CredentialsCallbackHandler(); 
 	private String username = "admin"+new Date().getTime();
 	private String password = "123456";
+	private final String host;
+	private final int port;
 	
 	/**
 	 * gets the username that our client will pass to client API when requested
@@ -46,16 +52,31 @@ public class ManagementClient {
 	
 	public ManagementClient(String host, int port) {
 		log.fine("Creating instance that will conect to:"+host+":"+port);
+		this.host=host;
+		this.port=port;
+		client = createClient();
+	}
+	protected ModelControllerClient createClient() {
+		ModelControllerClient client = null;
 		try {
 			client = ModelControllerClient.Factory.create(
 					InetAddress.getByName(host), port,authHandler);
+			return client;
 		} catch (Exception e) {
+			close();
 			throw new RuntimeException(
-					"Cannot create model controller client for host: " + host
-							+ " and port " + port, e);
+					"Cannot create DMR Controller client for host: " + host+ ":" + port, e);
 		}
 	}
 	
+	public void close() {
+		try {
+			log.fine("Releasing managementClient resources...");
+			client.close();
+		} catch (IOException e) {
+			log.log(Level.SEVERE, "Error when closing conection", e);
+		}
+	}
 	
 	protected class CredentialsCallbackHandler implements CallbackHandler {
 		
@@ -106,9 +127,7 @@ public class ManagementClient {
 		this.waitTime = waitTime;
 	}
 
-	public void close() throws IOException {
-		client.close();
-	}
+
 	
 	private void waitFor(int millis) {
 		try {
@@ -140,8 +159,17 @@ public class ManagementClient {
 
 	public ModelNode executeOperation(final ModelNode op) throws IOException {
 		log.fine("execute operation : "+op.toString());
+		//ModelControllerClient client = createClient();
 		ModelNode ret = client.execute(op);
+		//close(client);
 		return ret;
+	}
+	/**
+	 * checks, whether client's connection is valid, by simply calling some operation
+	 */
+	public void checkConnection() throws Exception{
+		log.fine("Checking whether DMR connection is working");
+		executeOperation(createOperation("", "read-children-names", "child-type=deployment"));
 	}
 
 	/**
@@ -171,7 +199,7 @@ public class ManagementClient {
 
 	public ModelNode executeOperationAndAssertSuccess(String msg,
 			final ModelNode op) throws IOException {
-		ModelNode ret = client.execute(op);
+		ModelNode ret = executeOperation(op);
 		Assert.assertTrue("success".equals(ret.get("outcome").asString()), msg
 				+ ret.get("failure-description").asString());
 		return ret;
@@ -179,7 +207,7 @@ public class ManagementClient {
 
 	public ModelNode executeOperationAndAssertFailure(String msg,
 			final ModelNode op) throws IOException {
-		ModelNode ret = client.execute(op);
+		ModelNode ret = executeOperation(op);
 		Assert.assertTrue("failed".equals(ret.get("outcome").asString()), msg);
 		return ret;
 	}

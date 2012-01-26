@@ -2040,8 +2040,10 @@ public class SahiTasks extends ExtendedSahi {
     			return;
     		}
     		waitFor(waitTime);
+    		_logger.fine("Waiting for resource, refreshing afterwards..");
     		cell("Refresh").click();
     	}
+    	_logger.fine("Resource change timed out");
     	Assert.assertTrue(!shouldExist, "Resource '"+resourceName+"' exists.");
     }
 

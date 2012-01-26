@@ -84,12 +84,12 @@ public class DeploymentTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(waitTime);
 		Assert.assertFalse(sahiTasks.image("exclamation.png").exists(), "All required inputs were provided");
 		sahiTasks.cell("Schedule").click();
-		assertOperationSuccess("Deploy to Server-Group");
+		assertOperationSuccess(navController.pathPush(war),"Deploy to Server-Group");
 		mgmtDomain.assertResourcePresence("/server-group=main-server-group", "deployment", war, true);
 		// deployments on server group are not recognized automatically, we need to run manual discovery
 		as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
 		log.fine("Waiting after manual autodiscovery..");
-		sahiTasks.waitFor(waitTime*5);
+		sahiTasks.waitFor(waitTime*10);
 		sahiTasks.assertResourceExists(true,navController.pathPush("main-server-group").pathPush(war));
 		// we KNOW that managed servers server-one, server-two belong to main-server-group and are UP 
 		// deployment should be on both of them

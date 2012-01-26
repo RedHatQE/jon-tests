@@ -32,7 +32,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
     
     @Test(groups={"resourceConfiguration"})
     public void predefinedMetricsOfHostControllerTest() {
-        sahiTasks.getNavigator().inventoryGoToResource(navController);
+        sahiTasks.getNavigator().inventoryGoToResource(navController.setInventoryTab("Monitoring"));
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
         String[] predefinedMetrics = {
             "Maximum request time",
@@ -49,7 +49,7 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
     
     @Test(groups={"resourceConfiguration"})
     public void predefinedMetricsOfManagedInstancesTest() {                         
-        sahiTasks.getNavigator().inventoryGoToResource(navController.pathPush("as7.domain.host.server-one.name"));
+        sahiTasks.getNavigator().inventoryGoToResource(navController.pathPush(System.getProperty("as7.domain.host.server-one.name")).setInventoryTab("Monitoring"));
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
         String[] predefinedMetrics = {
             "Server state"

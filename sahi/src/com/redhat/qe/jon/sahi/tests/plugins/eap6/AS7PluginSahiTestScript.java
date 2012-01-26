@@ -10,6 +10,7 @@ import org.testng.annotations.BeforeSuite;
 
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.tasks.Navigator.InventoryNavigation;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.SSHClient;
@@ -117,40 +118,34 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
 
     @AfterSuite(groups="teardown")
     public void clientsCleanup() {
-    	try {
-    		if (mgmtStandalone!=null)
-    			mgmtStandalone.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (mgmtDomain!=null) {
+			mgmtDomain.close();
 		}
-    	try {
-    		if (mgmtDomain!=null)
-    			mgmtDomain.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (mgmtStandalone!=null) {
+			mgmtStandalone.close();
 		}
+    	
     	if (sshDomain!=null)
     		sshDomain.disconnect();
     	if (sshStandalone!=null)
-    		sshStandalone.disconnect();
-    	
+    		sshStandalone.disconnect();    	
     }
     /**
      * asserts whether last operation on current resource (you have to be on resource page) 
      * defined by 'opName' was successful
      * @param opName
      */
-    public void assertOperationSuccess(String opName) {
+    public void assertOperationSuccess(InventoryNavigation nav,String opName) {
     	log.fine("Asserting operation '"+opName+"' success...");
-    	sahiTasks.getNavigator().inventorySelectTab("Summary");
-    	int timeout = 120*1000;
+    	nav = nav.setInventoryTab("Summary");
+    	sahiTasks.getNavigator().inventoryGoToResource(nav);
+    	int timeout = 600*1000;
     	int time = 0;
     	while (time<timeout && sahiTasks.image("Operation_inprogress_16.png").in(sahiTasks.div(opName+"[0]").parentNode("tr")).exists()) {
     		time+=10*1000;
     		log.fine("Operation '"+opName+"' in progress, waiting 10s");
     		sahiTasks.waitFor(10*1000);
+    		sahiTasks.getNavigator().inventoryGoToResource(nav);
     	}
     	Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div(opName+"[0]").parentNode("tr")).exists(),opName+" operation successfull");
     }

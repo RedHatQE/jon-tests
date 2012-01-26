@@ -28,9 +28,12 @@ public class AutodetectConfigurationTest extends AS7PluginSahiTestScript {
     	
     	as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
         as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-
-        sahiTasks.assertResourceExists(true, nav.pathPush("as7.domain.host.server-one.name"));
-        
+        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
+        sahiTasks.assertResourceExists(true, nav.pathPush(System.getProperty("as7.domain.host.server-one.name")));
+        String resourceTypeHTML = (sahiTasks.cell(System.getProperty("as7.domain.host.server-one.name")).parentNode("TR")).fetch("innerHTML");
+        if(resourceTypeHTML.indexOf("Managed") == -1) {
+            Assert.fail("Could not verify that server \"" + System.getProperty("as7.domain.host.server-one.name") + "\" in the domain was detected as of type Managed. HTML snippet: " + resourceTypeHTML);                        
+        } 
     }    
     
     

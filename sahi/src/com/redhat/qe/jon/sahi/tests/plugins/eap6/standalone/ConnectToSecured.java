@@ -1,7 +1,6 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 
 import org.jboss.sasl.util.UsernamePasswordHashUtil;
 import org.testng.annotations.BeforeClass;

@@ -157,9 +157,7 @@ public class AS7PluginSahiTasks {
         if (tasks.image("Server_up_24.png").exists()) {
             log.finer("Resource " + Arrays.toString(resourcePath) + " is online!");
             tasks.getNavigator().inventorySelectTab("Inventory");
-            if (!tasks.image("availability_red_16.png").exists()) {
-            	return true;
-            }
+            return !tasks.image("availability_red_16.png").exists();
         }
         Assert.fail("Could not verify whether a resource is online or offline -- neither Server_down_16.png nor Server_up_16.png was found");
         return false;

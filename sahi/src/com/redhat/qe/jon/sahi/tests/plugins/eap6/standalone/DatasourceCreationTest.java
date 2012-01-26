@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.tasks.Navigator.InventoryNavigation;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 
@@ -34,11 +35,12 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	private static final int waitTime = 5000;
 	protected String agentName = System.getProperty("agent.name");
 	protected String serverName = System.getProperty("as7.standalone.name");
-
+	private InventoryNavigation navDatasources;
 	@BeforeClass(groups = "datasourceCreation")
     protected void setupAS7Plugin() {
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+        navDatasources = new InventoryNavigation(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
     }
 
 	@Test(groups = "datasourceCreation")
@@ -50,7 +52,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 			as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
 			log.info("manual discovery done");
 		}
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.standalone.name"),"datasources");
+		sahiTasks.getNavigator().inventoryGoToResource(navDatasources.setInventoryTab("Operations"));
 		sahiTasks.cell("New").click();
 		sahiTasks.selectComboBoxes("selectItemText-->Add Datasource");
 		sahiTasks.textbox("name").setValue(datasource_nonXA);
@@ -68,7 +70,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(waitTime);
 		
 
-		assertOperationSuccess("Add Datasource");
+		assertOperationSuccess(navDatasources,"Add Datasource");
 		assertDatasourceExists(nonXA_def);		
 		//  assert datasource was discovered by agent
 		Assert.assertTrue(waitForDatasourceUI(datasource_nonXA), "Created datasource discovered by agent");
@@ -76,7 +78,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 
 	@Test(groups = "datasourceCreation", dependsOnMethods="addDatasource")
 	public void uninventoryDatasource() {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
+		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
 		sahiTasks.xy(sahiTasks.cell(datasource_nonXA), 3, 3).click();
 		log.fine("datasource selected");
@@ -110,7 +112,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 			as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
 			log.info("manual discovery done");
 		}
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Operations", System.getProperty("as7.standalone.name"),"datasources");
+		sahiTasks.getNavigator().inventoryGoToResource(navDatasources.setInventoryTab("Operations"));
 		sahiTasks.cell("New").click();
 		sahiTasks.selectComboBoxes("selectItemText-->Add XA Datasource");
 		sahiTasks.textbox("name").setValue(datasource_XA);
@@ -130,7 +132,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Schedule").click();
 		sahiTasks.waitFor(waitTime);
 		
-		assertOperationSuccess("Add XA Datasource");
+		assertOperationSuccess(navDatasources,"Add XA Datasource");
 		// assert datasource exists
 		assertDatasourceExists(XA_def);
 		//  assert datasource was discovered by agent
