@@ -61,9 +61,7 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.textbox("jndi-name").setValue("java:jboss/datasources/"+datasource_nonXA);
 		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("connection-url").setValue("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("pool-name").setValue("H2DS");		
+		sahiTasks.textbox("connection-url").setValue("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");		
 		sahiTasks.waitFor(waitTime);
 		Assert.assertFalse(sahiTasks.image("exclamation.png").exists(), "All required inputs were provided");
 		sahiTasks.cell("Schedule").click();
@@ -73,7 +71,8 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		assertOperationSuccess(navDatasources,"Add Datasource");
 		assertDatasourceExists(nonXA_def);		
 		//  assert datasource was discovered by agent
-		Assert.assertTrue(waitForDatasourceUI(datasource_nonXA), "Created datasource discovered by agent");
+		as7SahiTasks.performManualAutodiscovery(agentName);
+		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_nonXA));
 	}
 
 	@Test(groups = "datasourceCreation", dependsOnMethods="addDatasource")
@@ -87,12 +86,13 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Yes").click();
 		assertDatasourceExists(nonXA_def);
 		Assert.assertFalse(existsDatasourceUI(datasource_nonXA), "Datasource exists in UI");
-		Assert.assertTrue(waitForDatasourceUI(datasource_nonXA), "Uninventorized datasource discovered by agent");
+		as7SahiTasks.performManualAutodiscovery(agentName);
+		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_nonXA));
 	}
 
 	@Test(groups = "datasourceCreation", dependsOnMethods="uninventoryDatasource")
 	public void deleteDatasource() {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
+		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
 		sahiTasks.xy(sahiTasks.cell(datasource_nonXA), 3, 3).click();
 		log.fine("datasource selected");
@@ -119,14 +119,12 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.textbox("driver-name").setValue("h2");
 		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("xa-data-source-class").setValue("org.h2.jdbcx.JdbcDataSource");
+		sahiTasks.textbox("xa-datasource-class").setValue("org.h2.jdbcx.JdbcDataSource");
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.textbox("jndi-name").setValue("java:jboss/datasources/"+datasource_XA);
 		sahiTasks.waitFor(waitTime);
 		// TODO remove inserting connection-url https://bugzilla.redhat.com/show_bug.cgi?id=758655
-		sahiTasks.textbox("connection-url").setValue("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("pool-name").setValue("H2XADS");		
+		sahiTasks.textbox("connection-url").setValue("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");	
 		sahiTasks.waitFor(waitTime);
 		Assert.assertFalse(sahiTasks.image("exclamation.png").exists(), "All required inputs were provided");
 		sahiTasks.cell("Schedule").click();
@@ -136,12 +134,13 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		// assert datasource exists
 		assertDatasourceExists(XA_def);
 		//  assert datasource was discovered by agent
-		Assert.assertTrue(waitForDatasourceUI(datasource_XA), "Created XA datasource discovered by agent");
+		as7SahiTasks.performManualAutodiscovery(agentName);
+		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_XA));
 	}
 
 	@Test(groups = "XAdatasourceCreation",dependsOnMethods="addXADatasource")
 	public void uninventoryXADatasource() {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
+		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
 		sahiTasks.xy(sahiTasks.cell(datasource_XA), 3, 3).click();
 		log.fine("datasource selected");
@@ -150,13 +149,14 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.cell("Yes").click();
 		assertDatasourceExists(XA_def);
 		Assert.assertFalse(existsDatasourceUI(datasource_XA), "XA datasource exists in UI");
-		Assert.assertTrue(waitForDatasourceUI(datasource_XA), "Uninventorized XA datasource discovered by agent");		
+		as7SahiTasks.performManualAutodiscovery(agentName);
+		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_XA));		
 	}
 
 	
 	@Test(groups = "XAdatasourceCreation",dependsOnMethods="uninventoryXADatasource")
 	public void deleteXADatasource() {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
+		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
 		sahiTasks.xy(sahiTasks.cell(datasource_XA), 3, 3).click();
 		log.fine("datasource selected");
@@ -167,49 +167,13 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		Assert.assertFalse(existsDatasourceUI(datasource_XA), "Datasource exists in UI");
 	}
 
-
-	/**
-	 * performs autodiscovery and waits for datasource identified by name until it appears in UI
-	 * @param datasource
-	 * @return true if datasource appeared, false otherwise
-	 */
-	private boolean waitForDatasourceUI(String datasource) {
-		log.fine("manual discovery");
-		as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-		log.fine("manual discovery done");
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		for (int i = 0;i <retryCount;i++) {
-			log.fine("Waiting for datasource to appear #"+String.valueOf(i));
-			if (sahiTasks.cell(datasource).exists()) {
-				log.fine("Success");
-				return true;
-			}
-			sahiTasks.waitFor(waitTime);
-			sahiTasks.cell("Refresh").click();
-		}
-		log.fine("Datasource did not appear, trying manual discovery");
-		log.fine("manual discovery");
-		as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-		log.fine("manual discovery done");
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		log.fine("Waiting for datasource to appear #"+String.valueOf(retryCount));
-		if (sahiTasks.cell(datasource).exists()) {
-			log.fine("Success");
-			return true;
-		}
-		log.fine("Datasource does not exist in UI");
-		return false;
-	}
 	/**
 	 * navigates to inventory and checks whether datasource defined by name exists in UI
 	 * @param datasource
 	 * @return
 	 */
 	private boolean existsDatasourceUI(String datasource) {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
+		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
 		return sahiTasks.cell(datasource).exists();
 	}
