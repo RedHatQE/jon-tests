@@ -15,6 +15,15 @@
 			</class>
 		</classes>
 	 </test>
+   <test name="Version Information">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.BuildVersionInfoTest">
+			<methods>
+				 <include name="getBuildInfo"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
  	<test name="Standalone_Operations">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.OperationTest"/>
