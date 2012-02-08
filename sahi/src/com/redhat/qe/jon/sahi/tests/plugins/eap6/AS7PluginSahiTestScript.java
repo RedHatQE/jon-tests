@@ -2,7 +2,6 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.testng.annotations.AfterSuite;
@@ -136,7 +135,17 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
      * @param opName
      */
     public void assertOperationSuccess(InventoryNavigation nav,String opName) {
-    	log.fine("Asserting operation '"+opName+"' success...");
+    	assertOperationResult(nav, opName, true);
+    }
+
+    /**
+     * asserts whether last operation on current resource (you have to be on resource page) 
+     * defined by 'opName' resulted.
+     * @param opName
+     * @param success - true if you expect operation to succeed, false if you expect it to fail
+     */
+    public void assertOperationResult(InventoryNavigation nav,String opName, boolean success) {
+    	log.fine("Asserting operation '"+opName+"' result...");
     	nav = nav.setInventoryTab("Summary");
     	sahiTasks.getNavigator().inventoryGoToResource(nav);
     	int timeout = 600*1000;
@@ -147,6 +156,23 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     		sahiTasks.waitFor(10*1000);
     		sahiTasks.getNavigator().inventoryGoToResource(nav);
     	}
-    	Assert.assertTrue(sahiTasks.image("Operation_ok_16.png").in(sahiTasks.div(opName+"[0]").parentNode("tr")).exists(),opName+" operation successfull");
+    	String resultImage = "Operation_failed_16.png";
+    	String succ="fail";
+    	if (success) {
+    		resultImage = "Operation_ok_16.png";
+    		succ="success";
+    	}
+    	
+    	Assert.assertTrue(sahiTasks.image(resultImage).in(sahiTasks.div(opName+"[0]").parentNode("tr")).exists(),opName+" operation result:"+succ);
     }
+    /**
+     * asserts whether last operation on current resource (you have to be on resource page) 
+     * defined by 'opName' failed
+     * @param opName
+     */
+    public void assertOperationFailure(InventoryNavigation nav,String opName) {
+    	assertOperationResult(nav, opName, false);
+    }
+    
+    
 }

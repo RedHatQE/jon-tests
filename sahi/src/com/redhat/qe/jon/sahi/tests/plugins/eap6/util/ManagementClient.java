@@ -158,10 +158,9 @@ public class ManagementClient {
 	}
 
 	public ModelNode executeOperation(final ModelNode op) throws IOException {
-		log.fine("execute operation : "+op.toString());
-		//ModelControllerClient client = createClient();
+		log.fine("Execute operation : "+op.toString());
 		ModelNode ret = client.execute(op);
-		//close(client);
+		log.fine("Operation executed result: " + ret.toString());
 		return ret;
 	}
 	/**
@@ -211,7 +210,23 @@ public class ManagementClient {
 		Assert.assertTrue("failed".equals(ret.get("outcome").asString()), msg);
 		return ret;
 	}
-
+	
+	public ModelNode readAttribute(String address, String attribute) {
+		log.fine("Read attribute \'"+attribute+ "\' of \'"+address+"\'");
+		ModelNode op = createOperation(address, "read-attribute", new String[] {"name="+attribute});		
+		try {
+			op = executeOperation(op);
+			return op;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			log.throwing(ManagementClient.class.getCanonicalName(),
+					" readAttribute", e);
+			e.printStackTrace();
+			Assert.fail();
+			return null;
+		}
+	}
+	
 	public boolean existsResource(String address, String childType,
 			String resource) {
 		log.fine("Exists resource \'" + resource + "\'?");

@@ -1,7 +1,5 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import java.io.IOException;
-import java.util.List;
 
 import org.jboss.dmr.ModelNode;
 import org.testng.annotations.BeforeClass;
@@ -33,17 +31,19 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	
 	private static final int retryCount = 50;
 	private static final int waitTime = 5000;
-	protected String agentName = System.getProperty("agent.name");
-	protected String serverName = System.getProperty("as7.standalone.name");
+	protected String agentName;
+	protected String serverName;
 	private InventoryNavigation navDatasources;
-	@BeforeClass(groups = "datasourceCreation")
+	@BeforeClass(groups = "datasource")
     protected void setupAS7Plugin() {
+		agentName = System.getProperty("agent.name");
+		serverName = System.getProperty("as7.standalone.name");
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         navDatasources = new InventoryNavigation(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
     }
 
-	@Test(groups = "datasourceCreation")
+	@Test(groups = "datasource")
 	public void addDatasource() {		
 		if (existsDatasourceAPI(nonXA_def)) {
 			removeDatasource(nonXA_def);
@@ -75,35 +75,42 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_nonXA));
 	}
 
-	@Test(groups = "datasourceCreation", dependsOnMethods="addDatasource")
-	public void uninventoryDatasource() {
-		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell(datasource_nonXA), 3, 3).click();
-		log.fine("datasource selected");
-		sahiTasks.cell("Uninventory").click();
-		log.fine("uninventory clicked");
-		sahiTasks.cell("Yes").click();
-		assertDatasourceExists(nonXA_def);
-		Assert.assertFalse(existsDatasourceUI(datasource_nonXA), "Datasource exists in UI");
-		as7SahiTasks.performManualAutodiscovery(agentName);
-		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_nonXA));
-	}
-
-	@Test(groups = "datasourceCreation", dependsOnMethods="uninventoryDatasource")
-	public void deleteDatasource() {
-		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell(datasource_nonXA), 3, 3).click();
-		log.fine("datasource selected");
-		sahiTasks.cell("Delete").near(sahiTasks.cell("Uninventory")).click();
-		log.fine("delete clicked");
-		sahiTasks.cell("Yes").click();
-		assertDatasourceDoesNotExist(nonXA_def);
-		Assert.assertFalse(existsDatasourceUI(datasource_nonXA), "Datasource exists in UI");
+	@Test(groups = "datasource", dependsOnMethods="addDatasource")
+	public void configureDatasource() {
+		
 	}
 	
-	@Test(groups = "XAdatasourceCreation")
+	
+	@Test(groups = "datasource", dependsOnMethods="addDatasource")
+	public void enableDatasource() {
+		enableDS(nonXA_def,true);
+	}
+	
+	@Test(groups = "datasource", dependsOnMethods="enableDatasource")
+	public void enableEnabledDatasource() {
+		enableDS(nonXA_def,false);
+	}
+	
+	@Test(groups = "datasource", dependsOnMethods="enableEnabledDatasource")
+	public void disableDatasource() {
+		disableDS(nonXA_def,true);
+	}
+	@Test(groups = "datasource", dependsOnMethods="disableDatasource")
+	public void disableDisabledDatasource() {
+		disableDS(nonXA_def,false);
+	}
+	
+	@Test(groups = "datasource", dependsOnMethods={"configureDatasource","disableDisabledDatasource"})
+	public void uninventoryDatasource() {
+		uninventoryDS(nonXA_def);
+	}
+
+	@Test(groups = "datasource", dependsOnMethods="uninventoryDatasource")
+	public void deleteDatasource() {		
+		deleteDS(nonXA_def);
+	}
+	
+	@Test(groups = "XAdatasource")
 	public void addXADatasource() {		
 		if (existsDatasourceAPI(XA_def)) {
 			removeDatasource(XA_def);
@@ -137,45 +144,92 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		as7SahiTasks.performManualAutodiscovery(agentName);
 		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_XA));
 	}
+	
+	@Test(groups = "XAdatasource", dependsOnMethods="addXADatasource")
+	public void configureXADatasource() {
+		
+	}
 
-	@Test(groups = "XAdatasourceCreation",dependsOnMethods="addXADatasource")
+	@Test(groups = "XAdatasource", dependsOnMethods="addXADatasource")
+	public void enableXADatasource() {
+		enableDS(XA_def,true);
+	}
+	@Test(groups = "XAdatasource", dependsOnMethods="enableXADatasource")
+	public void enableEnabledXADatasource() {
+		enableDS(XA_def,false);
+	}
+		
+	@Test(groups = "XAdatasource", dependsOnMethods="enableEnabledXADatasource")
+	public void disableXADatasource() {
+		disableDS(XA_def,true);
+	}
+	
+	@Test(groups = "XAdatasource", dependsOnMethods="disableXADatasource")
+	public void disableDisabledXADatasource() {
+		disableDS(XA_def,false);
+	}
+	
+	
+	@Test(groups = "XAdatasource",dependsOnMethods={"configureXADatasource","disableDisabledXADatasource"})
 	public void uninventoryXADatasource() {
+		uninventoryDS(XA_def);
+	}
+
+	
+	@Test(groups = "XAdatasource",dependsOnMethods="uninventoryXADatasource")
+	public void deleteXADatasource() {		
+		deleteDS(XA_def);
+	}
+	private void disableDS(String[] ds_def,boolean expectSuccess) {
+		InventoryNavigation nav = navDatasources.pathPush(ds_def[0]).setInventoryTab("Operations");
+		sahiTasks.getNavigator().inventoryGoToResource(nav);
+		sahiTasks.cell("New").click();
+		sahiTasks.selectComboBoxes("selectItemText-->Disable");
+		sahiTasks.waitFor(waitTime);
+		sahiTasks.cell("Schedule").click();
+		sahiTasks.waitFor(waitTime);
+		assertOperationResult(nav,"Disable",expectSuccess);
+		assertAttributeValue(ds_def, "enabled", "false");
+		assertAttributeValueUI(ds_def, "Enabled", "false");
+	}
+	
+	private void enableDS(String[] ds_def, boolean expectSuccess) {
+		InventoryNavigation nav = navDatasources.pathPush(ds_def[0]).setInventoryTab("Operations");
+		sahiTasks.getNavigator().inventoryGoToResource(nav);
+		sahiTasks.cell("New").click();
+		sahiTasks.selectComboBoxes("selectItemText-->Enable");
+		sahiTasks.waitFor(waitTime);
+		sahiTasks.cell("Schedule").click();
+		sahiTasks.waitFor(waitTime);
+		assertOperationResult(nav,"Enable",expectSuccess);
+		assertAttributeValue(ds_def, "enabled", "true");
+		assertAttributeValueUI(ds_def, "Enabled", "true");
+	}
+	
+	private void uninventoryDS(String[] ds_def) {
 		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell(datasource_XA), 3, 3).click();
+		sahiTasks.xy(sahiTasks.cell(ds_def[0]), 3, 3).click();
 		log.fine("datasource selected");
 		sahiTasks.cell("Uninventory").click();
 		log.fine("uninventory clicked");
 		sahiTasks.cell("Yes").click();
-		assertDatasourceExists(XA_def);
-		Assert.assertFalse(existsDatasourceUI(datasource_XA), "XA datasource exists in UI");
+		assertDatasourceExists(ds_def);
+		sahiTasks.assertResourceExists(false, navDatasources.pathPush(ds_def[0]));
 		as7SahiTasks.performManualAutodiscovery(agentName);
-		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_XA));		
+		sahiTasks.assertResourceExists(true, navDatasources.pathPush(ds_def[0]));
 	}
-
 	
-	@Test(groups = "XAdatasourceCreation",dependsOnMethods="uninventoryXADatasource")
-	public void deleteXADatasource() {
+	private void deleteDS(String[] ds_def) {
 		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
 		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell(datasource_XA), 3, 3).click();
+		sahiTasks.xy(sahiTasks.cell(ds_def[0]), 3, 3).click();
 		log.fine("datasource selected");
 		sahiTasks.cell("Delete").near(sahiTasks.cell("Uninventory")).click();
 		log.fine("delete clicked");
 		sahiTasks.cell("Yes").click();
-		assertDatasourceDoesNotExist(XA_def);
-		Assert.assertFalse(existsDatasourceUI(datasource_XA), "Datasource exists in UI");
-	}
-
-	/**
-	 * navigates to inventory and checks whether datasource defined by name exists in UI
-	 * @param datasource
-	 * @return
-	 */
-	private boolean existsDatasourceUI(String datasource) {
-		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		return sahiTasks.cell(datasource).exists();
+		assertDatasourceDoesNotExist(ds_def);
+		sahiTasks.assertResourceExists(false, navDatasources.pathPush(ds_def[0]));
 	}
 	/**
 	 * asserts whether datasource exist using mgmt API
@@ -198,6 +252,15 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	 */
 	private boolean existsDatasourceAPI(String[] ds_def) {
 		return mgmtStandalone.existsResource("/subsystem=datasources", ds_def[1], ds_def[0]);
+	}
+	private void assertAttributeValue(String[] ds_def,String attribute, String value) {
+		ModelNode ret = mgmtStandalone.readAttribute("/subsystem=datasources/"+ds_def[1]+"="+ds_def[0], attribute);
+		Assert.assertTrue(ret.get("result").asString().equalsIgnoreCase(value), "Datasource \'"+ds_def[0]+"\' : attribute "+attribute+"="+value);
+	}
+	private void assertAttributeValueUI(String[] ds_def, String attribute, String value) {
+		//sahiTasks.getNavigator().inventoryGoToResource(navDatasources.pathPush(ds_def[0]).setInventoryTab("Configuration"));
+		//String html = sahiTasks.cell(2).in(sahiTasks.cell(attribute).parentNode("tr")).fetch("innerHTML");
+		//Assert.assertTrue(html.equals(value),"Datasource "+ds_def[0]+" has Attribute \'"+attribute+"="+value);
 	}
 	/**
 	 * removes datasource

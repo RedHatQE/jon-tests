@@ -110,7 +110,7 @@
         </groups>
     </test>
 
-	<test name="Standalone_DatasourceCreation">
+	<test name="Standalone_Datasources">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.DatasourceCreationTest"/>
         </classes>
@@ -118,8 +118,8 @@
             <run>
                 <include name="setup"/>
                 <include name="teardown"/>
-                <include name="datasourceCreation"/>
-                <include name="XAdatasourceCreation"/>
+                <include name="datasource"/>
+                <include name="XAdatasource"/>
             </run>
         </groups>
     </test>
