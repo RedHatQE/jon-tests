@@ -36,20 +36,35 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 		String user = mgmtClient.getUsername();
 		String pass = mgmtClient.getPassword();
 		String hash = null;
+		// we also add default user admin:admin
+		String defaultUser = "admin";
+		String defaultHash = null;
 		// let's generate hash for pass and store it into mgmt-users.properties
 		try {
 			hash = new UsernamePasswordHashUtil().generateHashedHexURP(user,
 					"ManagementRealm", pass.toCharArray());
+			defaultHash = new UsernamePasswordHashUtil().generateHashedHexURP(defaultUser,
+					"ManagementRealm", "admin".toCharArray());
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(
 					"Unable to generate password hash to setup EAP", e);
 		}
-		StringBuilder command = new StringBuilder("echo " + user + "=" + hash
-				+ " >> ");
-
+		
+		StringBuilder command = new StringBuilder("echo " + defaultUser + "=" + defaultHash
+				+ " > ");
 		command.append(sshClient.getAsHome()
 				+ "/standalone/configuration/mgmt-users.properties");
 		sshClient.runAndWait(command.toString());
+		log.info("Created default user:pass "+defaultUser+":admin");
+		
+		command = new StringBuilder("echo " + user + "=" + hash
+				+ " >> ");
+		command.append(sshClient.getAsHome()
+				+ "/standalone/configuration/mgmt-users.properties");
+		sshClient.runAndWait(command.toString());
+		log.info("Created testing user:pass "+user+":"+pass);
+		
+		
 		// use SED to enable ManagementRealm on native interface
 		command = new StringBuilder(
 				"sed -i \'s/<native-interface[^>]*>/<native-interface security-realm=\"ManagementRealm\">/' ");
@@ -166,7 +181,7 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 					break;
 				}
 			}
-			log.info("server connection recovery done");
+			log.info("server connection recovery done, we continue in UNSECURE mode");
 			Assert.fail("Failed due to exception: "+e.getMessage(), e);
 		}
 	}
