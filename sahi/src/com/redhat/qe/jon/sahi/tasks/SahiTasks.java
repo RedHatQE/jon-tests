@@ -2020,13 +2020,11 @@ public class SahiTasks extends ExtendedSahi {
     public void assertResourceExists(boolean shouldExist, InventoryNavigation nav) {
     	_logger.fine("Asserting resource "+nav.toString()+" exists");
     	int waitTime=5000;
-    	int count=10;
-    	String[] parentPath = new String[nav.getResourcePath().length-1];
+    	int count=13;
+    	
     	String resourceName = nav.getResourceName();
-    	for (int i=0;i<nav.getResourcePath().length-1;i++) {
-    		parentPath[i] = nav.getResourcePath()[i];
-    	}
-    	getNavigator().inventoryGoToResource(nav.setInventoryTab("Inventory").pathPop());
+    	InventoryNavigation parent = nav.setInventoryTab("Inventory").pathPop();
+    	getNavigator().inventoryGoToResource(parent);
     	getNavigator().inventorySelectTab("Inventory", "Child Resources");
     	boolean exists=false;
     	for (int i = 0;i<count;i++) {
@@ -2039,11 +2037,14 @@ public class SahiTasks extends ExtendedSahi {
     			Assert.assertFalse(false, "Resource '"+resourceName+"' exists.");
     			return;
     		}
+    		if (i % 4 == 0) {
+    			getNavigator().inventoryGoToResource(parent);
+    		}
+    		_logger.fine("Waiting for resource, refreshing ..");
     		waitFor(waitTime);
-    		_logger.fine("Waiting for resource, refreshing afterwards..");
     		cell("Refresh").click();
     	}
-    	_logger.fine("Resource change timed out");
+    	_logger.fine("Checking resurce (un)existence timed out");
     	Assert.assertTrue(!shouldExist, "Resource '"+resourceName+"' exists.");
     }
 
