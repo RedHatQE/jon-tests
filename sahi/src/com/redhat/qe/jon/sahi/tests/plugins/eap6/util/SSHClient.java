@@ -102,6 +102,12 @@ public class SSHClient {
 	 */
 	public void restart(String script) {
 		stop();
+		try {
+			Thread.currentThread().join(10*1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		start(script);		
 	}
 	/**
@@ -109,7 +115,7 @@ public class SSHClient {
 	 * @param script name of startup script located in {@link SSHClient#getAsHome()} / bin
 	 */
 	public void start(String script) {
-		run("sleep 3 && cd "+asHome+"/bin && nohup ./"+script+" &");
+		run("cd "+asHome+"/bin && nohup ./"+script+" &");
 	}
 	/**
 	 * stops server by killing it
