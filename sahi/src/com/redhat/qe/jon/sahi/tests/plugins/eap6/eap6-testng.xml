@@ -24,6 +24,30 @@
 			</class>
 		</classes>
   	</test>
+  	<test name="Standalone_AutodetectConfiguration">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.AutodetectConfigurationTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                   
+                <include name="autodetectConfiguration"/>                                
+            </run>
+        </groups>
+    </test>
+    <test name="Standalone_ConnectSecured">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ConnectToSecured"/>
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>
+                <include name="secure"/>
+            </run>
+        </groups>
+    </test>
  	<test name="Standalone_Operations">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.OperationTest"/>
@@ -33,18 +57,6 @@
                 <include name="setup"/>
                 <include name="teardown"/>
                 <include name="operation"/>
-            </run>
-        </groups>
-    </test>
-     <test name="Standalone_AutodetectConfiguration">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.AutodetectConfigurationTest"/>
-        </classes>
-        <groups>
-            <run>				
-                <include name="setup"/>           
-                <include name="teardown"/>                                   
-                <include name="autodetectConfiguration"/>                                
             </run>
         </groups>
     </test>
