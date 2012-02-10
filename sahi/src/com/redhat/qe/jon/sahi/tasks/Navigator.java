@@ -108,7 +108,9 @@ public class Navigator {
 			this.agent = agent;
 			this.inventoryTab = it;
 			this.resourcePath = resourcePath;
-			assert resourcePath.length > 0;
+			assert this.agent != null;
+			assert this.inventoryTab != null;
+			assert this.resourcePath !=null;
 		}
 		/**
 		 * gets name of agent
@@ -154,13 +156,18 @@ public class Navigator {
 		 * @return
 		 */
 		public InventoryNavigation pathPop() {
-			String newPath[] = new String[this.resourcePath.length-1];
-			for (int i=0;i<this.resourcePath.length-1;i++) {
-				newPath[i] = this.resourcePath[i];
+			if (this.resourcePath.length>0) {
+				String newPath[] = new String[this.resourcePath.length-1];
+				for (int i=0;i<this.resourcePath.length-1;i++) {
+					newPath[i] = this.resourcePath[i];
+				}
+				InventoryNavigation nav = new InventoryNavigation(this.agent, this.inventoryTab, newPath);
+				//log.fine("Created new navigation: "+nav.toString());
+				return nav;
 			}
-			InventoryNavigation nav = new InventoryNavigation(this.agent, this.inventoryTab, newPath);
-			//log.fine("Created new navigation: "+nav.toString());
-			return nav;
+			else {
+				throw new RuntimeException("cannot pop item from path, path is already empty");
+			}
 		}
 		/**
 		 * returns new instance of Navigation class having inventory tab specified by 'name' param
