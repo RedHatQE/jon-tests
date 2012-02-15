@@ -1,0 +1,18 @@
+<suite name="RHQ CLI JS/JAVA Test">
+
+<parameter name="cli.username"  value="rhqadmin"/>
+<parameter name="cli.password"  value="rhqadmin"/>
+<!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
+
+<test name="Impoert-Resources">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="ImportResourcers.js"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+</suite>
