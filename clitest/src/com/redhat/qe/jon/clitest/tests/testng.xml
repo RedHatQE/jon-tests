@@ -2,7 +2,7 @@
 
 <parameter name="cli.username"  value="rhqadmin"/>
 <parameter name="cli.password"  value="rhqadmin"/>
-<parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/>
+<!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
 
 <test name="Impoert-Resources">
   	<classes>

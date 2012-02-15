@@ -31,7 +31,8 @@ public class CliTest{
 		cliTasks = CliTasks.getCliTasks();
 		cliTasks.getConnection(System.getenv().get("HOST_NAME"), System.getenv().get("HOST_USER"), System.getenv().get("HOST_PASSWORD"));
 		this.cliShLocation = System.getenv().get("CLI_AGENT_BIN_SH");
-		this.javaHome = System.getenv().get("JAVA_HOME");
+		this.javaHome = System.getenv().get("JAVA_HOME").trim();
+		this.rhqTarget = System.getenv().get("RHQ_TARGET").trim();
 		
 		this.jsFileLocation = System.getProperty("user.dir")+"/"+System.getProperty("js.files.dir");
 		if(!jsFileLocation.endsWith("/")){
