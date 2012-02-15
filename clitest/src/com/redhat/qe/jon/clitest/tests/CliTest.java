@@ -45,6 +45,7 @@ public class CliTest extends CliTestScript{
 	@Test
 	public void runJSfile(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure) throws IOException, CliTasksException{
 		loadSetup(rhqTarget, cliUsername, cliPassword, makeFilure);
+		cliTasks = CliTasks.getCliTasks();
 		String output = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+jsFileLocation+jsFile);
 		_logger.log(Level.INFO, output);
 	}	
