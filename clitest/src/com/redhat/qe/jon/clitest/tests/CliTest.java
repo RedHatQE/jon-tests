@@ -10,10 +10,11 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
+import com.redhat.qe.jon.clitest.base.CliTestScript;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 
-public class CliTest{
+public class CliTest extends CliTestScript{
 	private static Logger _logger = Logger.getLogger(CliTest.class.getName());
 	public static String cliShLocation;
 	public static String jsFileLocation;
