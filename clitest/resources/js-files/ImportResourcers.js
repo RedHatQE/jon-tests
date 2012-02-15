@@ -1,3 +1,10 @@
+// With the help of this test case can import all (only NEW) the resouce(s) from Discovery
+
+/**
+ * @author jkandasa@redhat.com (Jeeva Kandasamy)
+ * Feb 14, 2012
+ */
+
 var criteria = new ResourceCriteria(); // Create new criteria
 criteria.addFilterInventoryStatus(InventoryStatus.NEW) //Add a filter to get New resources
 var resourcesNew = ResourceManager.findResourcesByCriteria(criteria); // get new resources
@@ -34,12 +41,3 @@ for(i=0;i<resourcesNew.size();i++){
 	assertTrue(status, "Resource not imported! - ["+resourcesNew.get(i)+"]");
 	status = false;
 }
-
-assertTrue(false, "make the test failure");
-
-/*
-var oldSize = resourcesNew.size();
-criteria.addFilterInventoryStatus(InventoryStatus.NEW) //Add a filter to get New resources
-resourcesNew = ResourceManager.findResourcesByCriteria(criteria);
-assertEquals(oldSize.toString(), resourcesNew.size().toString(), "Failed to import resource(s): ["+resourcesNew+"]");
-*/
