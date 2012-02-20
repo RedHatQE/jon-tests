@@ -3,9 +3,6 @@ package com.redhat.qe.jon.clitest.tests;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -22,7 +19,6 @@ public class CliTest extends CliTestScript{
 	public static String rhqTarget;
 	private String cliUsername;
 	private String cliPassword;
-	private String makeFailure;
 	private CliTasks cliTasks;
 		
 	
@@ -37,8 +33,6 @@ public class CliTest extends CliTestScript{
 			this.cliUsername = cliUsername;
 		if(cliPassword != null)
 			this.cliPassword = cliPassword;
-		if(makeFailure != null)
-			this.makeFailure = makeFailure;
 	}
 	
 	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure"})
@@ -46,7 +40,13 @@ public class CliTest extends CliTestScript{
 	public void runJSfile(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure) throws IOException, CliTasksException{
 		loadSetup(rhqTarget, cliUsername, cliPassword, makeFilure);
 		cliTasks = CliTasks.getCliTasks();
-		String output = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+jsFileLocation+jsFile);
-		_logger.log(Level.INFO, output);
+		String consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+jsFileLocation+jsFile);
+		_logger.log(Level.INFO, consoleOutput);
+		if(makeFilure != null){
+			cliTasks.validateErrorString(consoleOutput , makeFilure);
+		}
+		if(expectedResult != null){
+			cliTasks.validateExpectedResultString(consoleOutput , expectedResult);
+		}
 	}	
 }
