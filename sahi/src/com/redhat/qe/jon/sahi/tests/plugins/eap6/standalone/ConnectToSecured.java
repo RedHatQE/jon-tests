@@ -85,6 +85,8 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 			log.info("Since now, standalone mgmt and HTTP API requires authorization");
 			// let's wait some time 'till agent restarts EAP and EAP stands up
 			sahiTasks.waitFor(60 * 1000);
+			Assert.assertTrue(sshClient.isRunning(), "EAP server process is running");
+			Assert.assertTrue(httpStandalone.isRunning(),"server is reachable via HTTP");
 			Assert.assertTrue(mgmtClient.isAuthRequired(),
 					"EAP configuration was successfully changed to require username and password");
 			boolean ok = false;
