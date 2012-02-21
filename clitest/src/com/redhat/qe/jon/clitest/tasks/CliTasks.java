@@ -62,4 +62,28 @@ public class CliTasks {
 		}
 		return output;
 	}
+	
+	public static String[] getArrayofCommaValues(String commaValues){
+		return commaValues.split(",");
+	}
+	
+	public void validateErrorString(String consoleOutput, String errorString) throws CliTasksException{
+		for(String validateString : getArrayofCommaValues(errorString)){
+			if(consoleOutput.contains(validateString.trim())){
+				throw new CliTasksException("Result Contains Error String: "+validateString.trim());
+			}else{
+				_logger.log(Level.INFO, "Error String not available: ["+validateString.trim()+"]");
+			}
+		}		
+	}
+	
+	public void validateExpectedResultString(String consoleOutput, String resultString) throws CliTasksException{
+		for(String validateString : getArrayofCommaValues(resultString)){
+			if(!consoleOutput.contains(validateString.trim())){
+				throw new CliTasksException("Result doesn't Contains: "+validateString.trim());
+			}else{
+				_logger.log(Level.INFO, "Expected result available: ["+validateString.trim()+"]");
+			}
+		}		
+	}
 }

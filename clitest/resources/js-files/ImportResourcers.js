@@ -41,3 +41,4 @@ for(i=0;i<resourcesNew.size();i++){
 	assertTrue(status, "Resource not imported! - ["+resourcesNew.get(i)+"]");
 	status = false;
 }
+println("Resources are impoerted successfully!");
