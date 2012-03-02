@@ -1,0 +1,150 @@
+package com.redhat.qe.jon.sahi.base.inventory;
+
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tasks.Timing;
+
+public class Configuration extends ResourceTab {
+
+	public Configuration(SahiTasks tasks, Resource resource) {
+		super(tasks, resource);
+	}
+
+	@Override
+	protected void navigate() {
+		selectTab("Configuration");
+	}
+
+	/**
+	 * navigates to <b>Current</b> subtab and returns helper object
+	 * 
+	 * @return
+	 */
+	public CurrentConfig current() {
+		selectTab("Configuration", "Current");
+		return new CurrentConfig(tasks);
+	}
+
+	/**
+	 * navigates to <b>History</b> subtab and returns helper object
+	 * 
+	 * @return
+	 */
+	public ConfigHistory history() {
+		selectTab("Configuration", "History");
+		return new ConfigHistory(tasks);
+	}
+
+	public static class CurrentConfig {
+		private final SahiTasks tasks;
+
+		private CurrentConfig(SahiTasks tasks) {
+			this.tasks = tasks;
+		}
+
+		/**
+		 * creates new config entry, click the <b>+</b> buttton and returns helper object
+		 * @param index of button on page
+		 * @return
+		 */
+		public ConfigEntry newEntry(int index) {
+			int imgindex = index = 1;
+			tasks.image("add.png[" + imgindex + "]").focus();
+			tasks.execute("_sahi._keyPress(_sahi._image('add.png[" + imgindex
+					+ "]'), 32);");
+			return new ConfigEntry(tasks);
+		}
+		/**
+		 * retrieves entry from table and returns helper object
+		 * @param name of entry, must be present in entry row
+		 * @return
+		 */
+		public ConfigEntry getEntry(String name) {
+			tasks.xy(tasks.image("edit.png").in(tasks.cell(name).parentNode("tr")),3,3).click();
+			return new ConfigEntry(tasks);
+		}
+		/**
+		 * removes entry by name from table (first match)
+		 * @param name
+		 */
+		public void removeEntry(String name) {
+			tasks.xy(tasks.image("remove.png").in(tasks.cell(name).parentNode("tr")),3,3).click();
+			tasks.xy(tasks.cell("OK"), 3, 3).click();
+		}
+
+		/**
+		 * saves configuration
+		 */
+		public void save() {
+			tasks.xy(tasks.cell("Save"), 3, 3).click();
+		}
+	}
+
+	public static class ConfigEntry {
+		private final SahiTasks tasks;
+
+		private ConfigEntry(SahiTasks tasks) {
+			this.tasks = tasks;
+		}
+
+		/**
+		 * sets text field value
+		 * @param name of field
+		 * @param value to be set
+		 */
+		public void setField(String name, String value) {
+			tasks.textbox(name).setValue(value);
+		}
+
+		/**
+		 * clicks <b>OK</b> to confirm entry editing
+		 */
+		public void OK() {
+			tasks.xy(tasks.cell("OK"), 3, 3).click();
+		}
+	}
+
+	public static class ConfigHistory {
+		private final SahiTasks tasks;
+
+		private ConfigHistory(SahiTasks tasks) {
+			this.tasks = tasks;
+		}
+
+		/**
+		 * 
+		 * @return true if any of config change requests is pending
+		 */
+		public boolean isPending() {
+		 return tasks.image("Configure_inprogress_16.png").exists();
+		}
+		/**
+		 * checks whether there is a pending config change request, tries to wait, until no pending request exists
+		 * @return true if there is no pending config change, false is there still exists some
+		 */
+		public boolean waitForPending() {
+			for (int i = 0; i < Timing.REPEAT;i++) {
+				if (!isPending()) {
+					return true;
+				}
+				tasks.waitFor(Timing.WAIT_TIME);
+				refresh();
+			}
+			return false;
+		}
+		// public boolean isSuccessLastChange() {
+		// return
+		// tasks.image("Configure_ok_16.png").in(tasks.div("Individual[0]").parentNode("tr")).exists();
+		// }
+		// public boolean isFailureLastChange() {
+		// return
+		// tasks.image("Configure_failed_16.png").in(tasks.div("Individual[0]").parentNode("tr")).exists();
+		// }
+
+		/**
+		 * refreshes history view
+		 */
+		public void refresh() {
+			tasks.xy(tasks.cell("Refresh"), 3, 3).click();
+		}
+	}
+}

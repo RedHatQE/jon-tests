@@ -12,7 +12,7 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 import com.redhat.qe.jon.sahi.tasks.Navigator.InventoryNavigation;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.SSHClient;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.AS7SSHClient;
 
 /**
  * @author jmartisk, lzoubek
@@ -39,12 +39,12 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     /**
      * SSH Client to to some stuff on machine where runs standalone AS7
      */
-    protected static SSHClient sshStandalone;
+    protected static AS7SSHClient sshStandalone;
     
     /**
      * SSH Client to to some stuff on machine where runs domain AS7
      */
-    protected static SSHClient sshDomain;
+    protected static AS7SSHClient sshDomain;
     /**
      * HTTP Client for standalone instance 
      */
@@ -87,18 +87,9 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         mgmtStandalone = new ManagementClient(MGMT_HOST_STANDALONE, MGMT_PORT_STANDALONE);
         mgmtDomain = new ManagementClient(MGMT_HOST_DOMAIN, MGMT_PORT_DOMAIN);
 
-        String user = System.getProperty("as7.runs.as.user");
-        String host = System.getProperty("as7.standalone.hostname");
-        String key = System.getProperty("user.home")+"/"+System.getProperty("as7.key");
-        sshStandalone = new SSHClient(
-        		System.getProperty("as7.runs.as.user"),
-        		System.getProperty("as7.standalone.hostname"),
-        		System.getProperty("user.home")+"/"+System.getProperty("as7.key"),
+        sshStandalone = new AS7SSHClient(
         		System.getProperty("as7.standalone.home"));
-        sshDomain = new SSHClient(
-        		System.getProperty("as7.runs.as.user"),
-        		System.getProperty("as7.domain.hostname"),
-        		System.getProperty("user.home")+"/"+System.getProperty("as7.key"),
+        sshDomain = new AS7SSHClient(
         		System.getProperty("as7.domain.home"));
         httpStandalone = new HTTPClient(System.getProperty("as7.standalone.hostname"), Integer.parseInt(System.getProperty("as7.standalone.http.port")));
         httpDomainManager = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.http.port")));

@@ -3,89 +3,73 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
+import com.redhat.qe.jon.sahi.base.inventory.Resource;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 /**
  * @author Libor Zoubek (lzoubek@redhat.com)
  * @since 15.12.2011
  * @see TCMS cases 96455 102978 96443
  */
-public class DeploymentTest extends AS7PluginSahiTestScript {
+public class DeploymentTest extends AS7StandaloneTest {
 
-	private static final long waitTime = 5000;
+	private static final long waitTime = Timing.WAIT_TIME;
 
 	private static final String war = "hello.war";
+	private Resource warResource;
 	@BeforeClass(groups = "deployment")
     protected void setupAS7Plugin() {
-		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+		as7SahiTasks.importResource(server);
+		warResource = server.child(war);
     }
 
 	@Test(groups = "deployment")
 	public void deployWAR() {
-		if (mgmtStandalone.existsResource("", "deployment", war)) {
+		if (mgmtClient.existsResource("", "deployment", war)) {
 			removeDeployment(war);
 			log.fine("Deployment removed using API, we have perform manual discovery for ds to disappear from RHQ UI");
 			log.info("manual discovery");
-			as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-			log.info("manual discovery done");
+			server.performManualAutodiscovery();
 		}
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"));
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell("Create Child"),3,3).click();
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.xy(sahiTasks.cell("Deployment").in(sahiTasks.table("menuTable")),3,3).click();
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.xy(sahiTasks.cell("Next"),3,3).click();
-
-		sahiTasks.setFileToUpload("fileUploadItem","deploy/original/"+war);
-		sahiTasks.xy(sahiTasks.cell("Upload"),3,3).click();
+		Inventory inventory = server.inventory();
+		ChildResources childResources = inventory.childResources();
+		NewChildWizard newChild = childResources.newChild("Deployment");
+		newChild.next();
+		newChild.upload("deploy/original/"+war);
 		//wait for upload to finish
 		sahiTasks.waitFor(2*waitTime);
-		sahiTasks.xy(sahiTasks.cell("Next"),3,3).click();
-		sahiTasks.waitFor(waitTime);
-
-		sahiTasks.xy(sahiTasks.cell("Finish"),3,3).click();
+		newChild.next();
+		newChild.finish();
 		assertDeploymentExists(war);
-		Assert.assertTrue(existsResourceUI(war),"Deployment discovered by agent");
-		httpStandalone.assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
+		warResource.assertExists(true);
+		httpClient.assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
 	}
 	@Test(groups = {"deployment","blockedByBug-767974"}, dependsOnMethods="deployWAR")
 	public void deployWARVersion2() {
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell("Create Child"),3,3).click();
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.xy(sahiTasks.cell("Deployment").in(sahiTasks.table("menuTable")),3,3).click();
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.xy(sahiTasks.cell("Next"),3,3).click();
-		sahiTasks.setFileToUpload("fileUploadItem","deploy/modified/"+war);
-		sahiTasks.xy(sahiTasks.cell("Upload"),3,3).click();
+		Inventory inventory = server.inventory();
+		ChildResources childResources = inventory.childResources();
+		NewChildWizard newChild = childResources.newChild("Deployment");
+		newChild.next();
+		newChild.upload("deploy/modified/"+war);
 		//wait for upload to finish
 		sahiTasks.waitFor(2*waitTime);
-		sahiTasks.xy(sahiTasks.cell("Next"),3,3).click();
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.xy(sahiTasks.cell("Finish"),3,3).click();
+		newChild.next();
+		newChild.finish();
 		assertDeploymentExists(war);
-		Assert.assertTrue(existsResourceUI(war),"Deployment discovered by agent");
+		warResource.assertExists(true);
 		httpStandalone.assertDeploymentContent(war,"Modified","Check whether modified version of WAR has been deployed");
 	}
 
 	@Test(groups = "deployment", dependsOnMethods="deployWAR")
 	public void undeployWAR() {
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell(war), 3, 3).click();
-		sahiTasks.byXPath("//td[@class='buttonTitle' and .='Delete']").click();
-		sahiTasks.cell("Yes").click();
+		warResource.delete();
 		assertDeploymentDoesNotExist(war);
-		Assert.assertFalse(existsResourceUI(war), "Deployment exists in UI");
+		warResource.assertExists(false);
 	}
 
-	private boolean existsResourceUI(String name) {
-		sahiTasks.getNavigator().inventoryGoToResource(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"));
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		return sahiTasks.cell(name).exists();
-	}
 	private void assertDeploymentExists(String name) {
 		mgmtStandalone.assertResourcePresence("", "deployment", name, true);
 	}

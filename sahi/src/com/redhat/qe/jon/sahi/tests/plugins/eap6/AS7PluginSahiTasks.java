@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQueueException;
 import net.sf.sahi.client.ElementStub;
@@ -39,6 +40,7 @@ public class AS7PluginSahiTasks {
         this.tasks = tasks;
     }
 
+    @Deprecated
     public void uninventorizeResourceByNameIfExists(String agentName, String resourceName) {
         log.fine("Uninventorizing resource \"" + resourceName + "\" from agent \"" + agentName + "\"");
         Boolean inInventory = inventoryState.get(agentName+resourceName);
@@ -82,6 +84,7 @@ public class AS7PluginSahiTasks {
      *
      * @param agentName
      */
+    @Deprecated()
     public void performManualAutodiscovery(String agentName) {
         tasks.link("Inventory").click();
         tasks.cell("Platforms").click();
@@ -92,6 +95,48 @@ public class AS7PluginSahiTasks {
         tasks.cell("Schedule").click();
     }
 
+    /**
+     * imports given resource. First check internal state whether resource is already in inventory, 
+     * secondly actually check inventory, whether resource is there, third, perform autodiscovery an finally import resource
+     * @param res
+     */
+    public void importResource(Resource res) {
+    	String resourceName = res.getName();
+    	String agentName = res.getPlatform();
+    	log.fine("Trying to inventorize resource \"" + resourceName + "\" of agent \"" + agentName + "\".");
+        Boolean inInventory = inventoryState.get(agentName+resourceName);
+        if (inInventory==null) {
+        	inInventory = Boolean.FALSE;
+        }
+        if (inInventory) {
+        	log.fine("[inventoryState] Resource \"" + resourceName + "\" of agent \"" + agentName + "\" have been already inventorized");
+        	return;
+        }
+        if (!inInventory) {
+        	if (res.exists()) {
+        		log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" have been already inventorized");
+        		inventoryState.put(agentName+resourceName, Boolean.TRUE);
+        		return;
+        	}
+        	log.fine("Will perform manual autodiscovery first.");
+	        res.performManualAutodiscovery();
+	        try {
+	            this.navigate(Navigate.AUTODISCOVERY_QUEUE, agentName, null);
+	        } catch (NothingInDiscoveryQueueException ex) {
+	            log.fine("Could not inventorize resource " + resourceName + ", nothing appeared in autodiscovery queue even after performing manual autodiscovery");
+	            return;
+	        }
+	        ElementStub elm = tasks.image("unchecked.png").near(tasks.cell(resourceName));
+	        if (elm.exists()) {
+	            elm.check();
+	            tasks.cell("Import").click();
+	        } else {
+	            log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
+	        }
+	        inventoryState.put(agentName+resourceName, Boolean.TRUE);
+        }
+    }
+    @Deprecated
     public void inventorizeResourceByName(String agentName, String resourceName) {
         log.fine("Trying to inventorize resource \"" + resourceName + "\" of agent \"" + agentName + "\".");
         Boolean inInventory = inventoryState.get(agentName+resourceName);

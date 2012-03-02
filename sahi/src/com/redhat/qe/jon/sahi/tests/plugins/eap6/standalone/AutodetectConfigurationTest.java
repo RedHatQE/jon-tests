@@ -1,42 +1,68 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks.Navigate;
-import com.redhat.qe.auto.testng.Assert;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
+import java.util.HashMap;
+import java.util.LinkedList;
+
+import net.sf.sahi.client.ElementStub;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.tasks.Timing;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
+
 /**
- *
+ * 
  * @author Jan Martiska (jmartisk@redhat.com)
  * @see TCMS test case 96426
  * @since 7 September 2011
  * 
  */
-public class AutodetectConfigurationTest extends AS7PluginSahiTestScript {                                
-    
-    @BeforeClass(groups="autodetectConfiguration")
-    protected void setupAS7Plugin() {        
-        as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-    }
-    
-    @Test(groups={"autodetectConfiguration"})
-    public void autodetectConfiguration() {
-        as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
-        as7SahiTasks.navigate(Navigate.AUTODISCOVERY_QUEUE, System.getProperty("agent.name"), null);                
-        Assert.assertTrue(sahiTasks.cell(System.getProperty("as7.standalone.name")).exists(), "Resource "+System.getProperty("as7.standalone.name")+" is detected by agent");
-        String resourceTypeHTML = (sahiTasks.cell(System.getProperty("as7.standalone.name")).parentNode("TABLE")).parentNode("TR").fetch("innerHTML");
-        
-        boolean found = false;
-        if(resourceTypeHTML.indexOf("JBossAS7 Standalone") != -1) {
-            found = true;
-        }
-        if(resourceTypeHTML.indexOf("EAP6") != -1) {
-            found = true;
-        }        
-        Assert.assertTrue(found, "The resource type of a standalone instance should be \"JBossAS7-Standalone\" or \"EAP6\"");
-    }    
-    
+public class AutodetectConfigurationTest extends AS7StandaloneTest {
+
+	@Test(groups = { "autodetectConfiguration" })
+	public void autodetectConfiguration() {
+		server.uninventory(false);
+		server.performManualAutodiscovery();
+		sahiTasks.getNavigator().inventoryDiscoveryQueue();
+		boolean ok = false;
+		String resourceTypeHTML = "";
+
+		sahiTasks.xy(
+				sahiTasks.image("opener_closed.png").in(
+						sahiTasks.cell(server.getPlatform() + "[0]")
+								.parentNode("tr")), 3, 3).click();
+		sahiTasks.waitFor(Timing.WAIT_TIME);
+		LinkedList<HashMap<String, String>> discoveryQueue = sahiTasks
+				.getRHQgwtTableFullDetails(
+						"listTable",
+						2,
+						"Resource Name, Resource Key, Resource Type, Description, Inventory Status, Discovery Time",
+						null);
+		log.info("Table Details: Number of Row(s): " + discoveryQueue.size());
+		for (int i = 0; i < discoveryQueue.size(); i++) {
+			if (server.getName().equalsIgnoreCase(
+					discoveryQueue.get(i).get("Resource Name"))) {
+				ok = true;
+				resourceTypeHTML = discoveryQueue.get(i).get(" Resource Type");
+				break;
+			}
+		}
+
+		Assert.assertTrue(ok, "Resource [" + server.getName()
+				+ "] is detected by agent");
+
+		boolean found = false;
+		if (resourceTypeHTML.indexOf("JBossAS7 Standalone") != -1) {
+			found = true;
+		}
+		if (resourceTypeHTML.indexOf("EAP6") != -1) {
+			found = true;
+		}
+		Assert.assertTrue(
+				found,
+				"The resource type of a standalone instance should be \"JBossAS7 Standalone\" or \"EAP6\"");
+	}
+
 }

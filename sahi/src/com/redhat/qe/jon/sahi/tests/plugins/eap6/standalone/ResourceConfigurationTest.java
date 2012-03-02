@@ -1,11 +1,14 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks.Navigate;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.redhat.qe.jon.sahi.base.inventory.Configuration;
+import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
+import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
+import com.redhat.qe.jon.sahi.tasks.Timing;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
  *
@@ -14,17 +17,15 @@ import org.testng.annotations.Test;
  * @since 7 September 2011
  * 
  */
-public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
+public class ResourceConfigurationTest extends AS7StandaloneTest {
     
-    
-    @BeforeClass(groups="inventoryTest")
+    @BeforeClass(groups={"configuration","inventoryTest"})
     protected void setupAS7Plugin() {        
-        as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
-        log.finer("Waiting 30s till server is properly inventorized");
-        sahiTasks.waitFor(30000);
-        Assert.assertTrue(as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.standalone.name")), 
-                "Resource " + System.getProperty("as7.standalone.name") + "should be ONLINE, but I could not verify this!");
+        as7SahiTasks.importResource(server);        
+        log.finer("Waiting "+Timing.toString(Timing.TIME_30S)+" till server is properly inventorized");
+        sahiTasks.waitFor(Timing.TIME_30S);
+        Assert.assertTrue(server.isAvailable(), 
+                "Resource " + server.toString() + " should be ONLINE, but I could not verify this!");
     }
     
     /**
@@ -32,16 +33,16 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
      * @see TCMS test case 96428
      */
     @Test(groups={"inventoryTest"})
-    public void inventoryTest() {        
-        as7SahiTasks.assertResourceExistsInInventory(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
+    public void inventoryTest() {
+        server.assertExists(true);
     }
     
     /**
      * @see TCMS testcase 96429
      */
     @Test(groups={"inventoryTest"}, dependsOnMethods={"inventoryTest"})
-    public void predefinedMetricsTest() {
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));               
+    public void predefinedMetricsTest() {               
+        server.monitoring();
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
 
         String[] predefinedMetrics = {
@@ -56,6 +57,23 @@ public class ResourceConfigurationTest extends AS7PluginSahiTestScript {
             Assert.assertTrue(sahiTasks.cell(s).exists(), "Check that predefined metric exists: "+s);        
         }
     }
+    @Test(groups={"configuration"})
+    public void addNewSystemPropertyTest() {
+    	Configuration config = server.configuration();
+    	CurrentConfig current = config.current();
+    	ConfigEntry entry = current.newEntry(0);
+    	entry.setField("name", "prop");
+    	entry.setField("value", "value");
+    	entry.OK();
+        current.save();
+        sahiTasks.waitFor(5000);
+        Assert.assertTrue(readPropertyValue("prop").equals("value"));
+    }
+    
+    private String readPropertyValue(String name) {    	
+    	return mgmtClient.readAttribute("/system-property="+name, "value").get("result").asString();
+    }
+    
     
     
     

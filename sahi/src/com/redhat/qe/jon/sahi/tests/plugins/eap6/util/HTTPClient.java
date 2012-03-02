@@ -16,9 +16,10 @@ public class HTTPClient {
 	private final String host;
 	private final int port;
 	
-	public HTTPClient(String host, int port) {
+	public HTTPClient(String host, int port) {		
 		this.host = host;
 		this.port = port;
+		log.info("Creating HTTPClient that will connect to ["+getServerAddress()+"]");
 	}
 	/**
 	 * returns true if server is reachable and responds 200

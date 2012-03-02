@@ -51,7 +51,7 @@ public class ManagementClient {
 	}
 	
 	public ManagementClient(String host, int port) {
-		log.fine("Creating instance that will conect to:"+host+":"+port);
+		log.fine("Creating AS7 DRM Client that will conect to ["+host+":"+port+"]");
 		this.host=host;
 		this.port=port;
 		client = createClient();
@@ -212,7 +212,7 @@ public class ManagementClient {
 	}
 	
 	public ModelNode readAttribute(String address, String attribute) {
-		log.fine("Read attribute \'"+attribute+ "\' of \'"+address+"\'");
+		log.fine("Read attribute ["+attribute+ "] of ["+address+"]");
 		ModelNode op = createOperation(address, "read-attribute", new String[] {"name="+attribute});		
 		try {
 			op = executeOperation(op);
@@ -229,7 +229,7 @@ public class ManagementClient {
 	
 	public boolean existsResource(String address, String childType,
 			String resource) {
-		log.fine("Exists resource \'" + resource + "\'?");
+		log.fine("Exists resource [" + resource + "] of type ["+childType+"]?");
 		ModelNode op = createOperation(address, "read-children-names",
 				new String[] { "child-type=" + childType });
 		try {

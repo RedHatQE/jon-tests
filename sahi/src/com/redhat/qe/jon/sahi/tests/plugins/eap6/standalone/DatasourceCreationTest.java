@@ -6,16 +6,19 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
-import com.redhat.qe.jon.sahi.tasks.Navigator.InventoryNavigation;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory;
+import com.redhat.qe.jon.sahi.base.inventory.Operations;
+import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
+import com.redhat.qe.jon.sahi.base.inventory.Resource;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 
 /**
  * @author Libor Zoubek (lzoubek@redhat.com)
  * @since 25.11.2011
  * @see TCMS cases 108958 108951 108957 108953
  */
-public class DatasourceCreationTest extends AS7PluginSahiTestScript {
+public class DatasourceCreationTest extends AS7StandaloneTest {
     
 	private static final String datasource_nonXA = "rhqDS";
 	/**
@@ -29,18 +32,13 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	 */
 	private static final String[] XA_def = {datasource_XA, "xa-data-source"};
 	
-	private static final int retryCount = 50;
-	private static final int waitTime = 5000;
-	protected String agentName;
-	protected String serverName;
-	private InventoryNavigation navDatasources;
+	private static final int waitTime = Timing.WAIT_TIME;
+
+	private Resource datasources;
 	@BeforeClass(groups = "datasource")
     protected void setupAS7Plugin() {
-		agentName = System.getProperty("agent.name");
-		serverName = System.getProperty("as7.standalone.name");
-		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        navDatasources = new InventoryNavigation(System.getProperty("agent.name"), "Inventory", System.getProperty("as7.standalone.name"),"datasources");
+        as7SahiTasks.importResource(server);
+        datasources = server.child("datasources");
     }
 
 	@Test(groups = "datasource")
@@ -49,12 +47,12 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 			removeDatasource(nonXA_def);
 			log.fine("Datasource removed using API, we have perform manual discovery for ds to disappear from RHQ UI");
 			log.info("manual discovery");
-			as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
+			server.performManualAutodiscovery();
 			log.info("manual discovery done");
 		}
-		sahiTasks.getNavigator().inventoryGoToResource(navDatasources.setInventoryTab("Operations"));
-		sahiTasks.cell("New").click();
-		sahiTasks.selectComboBoxes("selectItemText-->Add Datasource");
+		Operations operations = datasources.operations();
+		Operation add = operations.newOperation("Add Datasource");
+
 		sahiTasks.textbox("name").setValue(datasource_nonXA);
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.textbox("driver-name").setValue("h2");
@@ -63,16 +61,16 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.textbox("connection-url").setValue("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");		
 		sahiTasks.waitFor(waitTime);
-		Assert.assertFalse(sahiTasks.image("exclamation.png").exists(), "All required inputs were provided");
-		sahiTasks.cell("Schedule").click();
-		sahiTasks.waitFor(waitTime);
-		
 
-		assertOperationSuccess(navDatasources,"Add Datasource");
+		add.assertRequiredInputs();
+		add.schedule();		
+		sahiTasks.waitFor(waitTime);
+		operations.assertOperationResult(add, true);
+
 		assertDatasourceExists(nonXA_def);		
 		//  assert datasource was discovered by agent
-		as7SahiTasks.performManualAutodiscovery(agentName);
-		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_nonXA));
+		server.performManualAutodiscovery();
+		datasources.child(datasource_nonXA).assertExists(true);
 	}
 
 	@Test(groups = "datasource", dependsOnMethods="addDatasource")
@@ -95,12 +93,8 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 	public void disableDatasource() {
 		disableDS(nonXA_def,true);
 	}
-	@Test(groups = "datasource", dependsOnMethods="disableDatasource")
-	public void disableDisabledDatasource() {
-		disableDS(nonXA_def,false);
-	}
 	
-	@Test(groups = "datasource", dependsOnMethods={"configureDatasource","disableDisabledDatasource"})
+	@Test(groups = "datasource", dependsOnMethods={"configureDatasource","disableDatasource"})
 	public void uninventoryDatasource() {
 		uninventoryDS(nonXA_def);
 	}
@@ -116,12 +110,12 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 			removeDatasource(XA_def);
 			log.fine("Datasource removed using API, we have perform manual discovery for ds to disappear from RHQ UI");
 			log.info("manual discovery");
-			as7SahiTasks.performManualAutodiscovery(System.getProperty("agent.name"));
+			server.performManualAutodiscovery();
 			log.info("manual discovery done");
 		}
-		sahiTasks.getNavigator().inventoryGoToResource(navDatasources.setInventoryTab("Operations"));
-		sahiTasks.cell("New").click();
-		sahiTasks.selectComboBoxes("selectItemText-->Add XA Datasource");
+		Operations operations = datasources.operations();
+		Operation add = operations.newOperation("Add XA Datasource");
+
 		sahiTasks.textbox("name").setValue(datasource_XA);
 		sahiTasks.waitFor(waitTime);
 		sahiTasks.textbox("driver-name").setValue("h2");
@@ -133,16 +127,17 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		// TODO remove inserting connection-url https://bugzilla.redhat.com/show_bug.cgi?id=758655
 		sahiTasks.textbox("connection-url").setValue("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");	
 		sahiTasks.waitFor(waitTime);
-		Assert.assertFalse(sahiTasks.image("exclamation.png").exists(), "All required inputs were provided");
-		sahiTasks.cell("Schedule").click();
-		sahiTasks.waitFor(waitTime);
 		
-		assertOperationSuccess(navDatasources,"Add XA Datasource");
+		add.assertRequiredInputs();
+		add.schedule();		
+		sahiTasks.waitFor(waitTime);
+		operations.assertOperationResult(add, true);
+
 		// assert datasource exists
 		assertDatasourceExists(XA_def);
 		//  assert datasource was discovered by agent
-		as7SahiTasks.performManualAutodiscovery(agentName);
-		sahiTasks.assertResourceExists(true, navDatasources.pathPush(datasource_XA));
+		server.performManualAutodiscovery();
+		datasources.child(datasource_XA).assertExists(true);
 	}
 	
 	@Test(groups = "XAdatasource", dependsOnMethods="addXADatasource")
@@ -164,13 +159,8 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		disableDS(XA_def,true);
 	}
 	
-	@Test(groups = "XAdatasource", dependsOnMethods="disableXADatasource")
-	public void disableDisabledXADatasource() {
-		disableDS(XA_def,false);
-	}
 	
-	
-	@Test(groups = "XAdatasource",dependsOnMethods={"configureXADatasource","disableDisabledXADatasource"})
+	@Test(groups = "XAdatasource",dependsOnMethods={"configureXADatasource","disableXADatasource"})
 	public void uninventoryXADatasource() {
 		uninventoryDS(XA_def);
 	}
@@ -181,55 +171,38 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		deleteDS(XA_def);
 	}
 	private void disableDS(String[] ds_def,boolean expectSuccess) {
-		InventoryNavigation nav = navDatasources.pathPush(ds_def[0]).setInventoryTab("Operations");
-		sahiTasks.getNavigator().inventoryGoToResource(nav);
-		sahiTasks.cell("New").click();
-		sahiTasks.selectComboBoxes("selectItemText-->Disable");
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.cell("Schedule").click();
-		sahiTasks.waitFor(waitTime);
-		assertOperationResult(nav,"Disable",expectSuccess);
+		Operations operations = datasources.child(ds_def[0]).operations();
+		Operation add = operations.newOperation("Disable");
+		add.schedule();
+		operations.assertOperationResult(add, expectSuccess);
 		assertAttributeValue(ds_def, "enabled", "false");
 		assertAttributeValueUI(ds_def, "Enabled", "false");
+		
 	}
 	
 	private void enableDS(String[] ds_def, boolean expectSuccess) {
-		InventoryNavigation nav = navDatasources.pathPush(ds_def[0]).setInventoryTab("Operations");
-		sahiTasks.getNavigator().inventoryGoToResource(nav);
-		sahiTasks.cell("New").click();
-		sahiTasks.selectComboBoxes("selectItemText-->Enable");
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.cell("Schedule").click();
-		sahiTasks.waitFor(waitTime);
-		assertOperationResult(nav,"Enable",expectSuccess);
+		Operations operations = datasources.child(ds_def[0]).operations();
+		Operation add = operations.newOperation("Enable");
+		add.schedule();
+		operations.assertOperationResult(add, expectSuccess);		
 		assertAttributeValue(ds_def, "enabled", "true");
 		assertAttributeValueUI(ds_def, "Enabled", "true");
 	}
 	
 	private void uninventoryDS(String[] ds_def) {
-		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell(ds_def[0]), 3, 3).click();
-		log.fine("datasource selected");
-		sahiTasks.cell("Uninventory").click();
-		log.fine("uninventory clicked");
-		sahiTasks.cell("Yes").click();
+		Inventory inventory = datasources.inventory();
+		inventory.childResources().uninventoryChild(ds_def[0]);
 		assertDatasourceExists(ds_def);
-		sahiTasks.assertResourceExists(false, navDatasources.pathPush(ds_def[0]));
-		as7SahiTasks.performManualAutodiscovery(agentName);
-		sahiTasks.assertResourceExists(true, navDatasources.pathPush(ds_def[0]));
+		datasources.child(ds_def[0]).assertExists(false);
+		server.performManualAutodiscovery();
+		datasources.child(ds_def[0]).assertExists(true);
 	}
 	
 	private void deleteDS(String[] ds_def) {
-		sahiTasks.getNavigator().inventoryGoToResource(navDatasources);
-		sahiTasks.getNavigator().inventorySelectTab("Inventory", "Child Resources");
-		sahiTasks.xy(sahiTasks.cell(ds_def[0]), 3, 3).click();
-		log.fine("datasource selected");
-		sahiTasks.cell("Delete").near(sahiTasks.cell("Uninventory")).click();
-		log.fine("delete clicked");
-		sahiTasks.cell("Yes").click();
+		Inventory inventory = datasources.inventory();
+		inventory.childResources().deleteChild(ds_def[0]);		
 		assertDatasourceDoesNotExist(ds_def);
-		sahiTasks.assertResourceExists(false, navDatasources.pathPush(ds_def[0]));
+		datasources.child(ds_def[0]).assertExists(false);
 	}
 	/**
 	 * asserts whether datasource exist using mgmt API
@@ -258,9 +231,10 @@ public class DatasourceCreationTest extends AS7PluginSahiTestScript {
 		Assert.assertTrue(ret.get("result").asString().equalsIgnoreCase(value), "Datasource \'"+ds_def[0]+"\' : attribute "+attribute+"="+value);
 	}
 	private void assertAttributeValueUI(String[] ds_def, String attribute, String value) {
-		//sahiTasks.getNavigator().inventoryGoToResource(navDatasources.pathPush(ds_def[0]).setInventoryTab("Configuration"));
-		//String html = sahiTasks.cell(2).in(sahiTasks.cell(attribute).parentNode("tr")).fetch("innerHTML");
-		//Assert.assertTrue(html.equals(value),"Datasource "+ds_def[0]+" has Attribute \'"+attribute+"="+value);
+//		datasources.child(ds_def[0]).configuration().current();		
+//		String html = sahiTasks.cell(2).in(sahiTasks.cell(attribute).parentNode("tr")).fetch("innerHTML");
+//		log.info(html);
+//		Assert.assertTrue(html.contains(value),"Datasource "+ds_def[0]+" has Attribute \'"+attribute+"="+value);
 	}
 	/**
 	 * removes datasource

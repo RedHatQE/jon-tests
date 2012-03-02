@@ -69,6 +69,7 @@
                 <include name="setup"/>
                 <include name="teardown"/>                                  
                 <include name="inventoryTest"/>
+                <include name="configuration"/>
             </run>
         </groups>
     </test>
@@ -123,7 +124,18 @@
             </run>
         </groups>
     </test>
-
+	<test name="Standalone_SystemProperties">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.SystemPropertiesConfigurationTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                   
+                <include name="configuration"/>                        
+            </run>
+        </groups>
+    </test>
     <test name="Domain_AutodetectConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.AutodetectConfigurationTest"/>
@@ -145,6 +157,18 @@
                 <include name="setup"/>           
                 <include name="teardown"/>                                   
                 <include name="resourceConfiguration"/>                                
+            </run>
+        </groups>
+    </test>
+    <test name="Domain_SystemProperties">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.SystemPropertiesConfigurationTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                   
+                <include name="configuration"/>                                
             </run>
         </groups>
     </test>

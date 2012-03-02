@@ -7,26 +7,18 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.ConnectionSettings;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.SSHClient;
 
-public class ConnectToSecured extends AS7PluginSahiTestScript {
+public class ConnectToSecured extends AS7StandaloneTest {
 
-	private SSHClient sshClient;
-	private ManagementClient mgmtClient;
 	
 	@BeforeClass(groups = "secure")
 	protected void setupAS7Plugin() {
-		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-		as7SahiTasks.inventorizeResourceByName(
-				System.getProperty("agent.name"),
-				System.getProperty("as7.standalone.name"));
+		as7SahiTasks.importResource(server);
 		
-		sshClient = sshStandalone;
-		mgmtClient = mgmtStandalone;
-		sshClient.connect();
 	}
 
 	@Test(groups = "secure")
@@ -84,35 +76,31 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 		try {
 			log.info("Since now, standalone mgmt and HTTP API requires authorization");
 			// let's wait some time 'till agent restarts EAP and EAP stands up
-			sahiTasks.waitFor(60 * 1000);
-			Assert.assertTrue(sshClient.isRunning(), "EAP server process is running");
-			Assert.assertTrue(httpStandalone.isRunning(),"server is reachable via HTTP");
-			Assert.assertTrue(mgmtClient.isAuthRequired(),
-					"EAP configuration was successfully changed to require username and password");
+			sahiTasks.waitFor(Timing.TIME_1M);
+			if (!sshClient.isRunning() || !httpClient.isRunning() || !mgmtClient.isAuthRequired()) {
+				throw new Exception("EAP is not running or authentication was not setup correctly");
+			}
+
 			boolean ok = false;
-			for (int i = 0; i < 10; i++) {
-				sahiTasks.waitFor(30000);
+			for (int i = 0; i < Timing.REPEAT; i++) {
+				sahiTasks.waitFor(Timing.TIME_30S);
 				log.fine("Checking that resource is offline: try #"
-						+ Integer.toString(i + 1) + " of 10");
-				if (!as7SahiTasks.checkIfResourceIsOnline(
-						System.getProperty("agent.name"),
-						System.getProperty("as7.standalone.name"))) {
+						+ Integer.toString(i + 1) + " of "+Timing.REPEAT);
+				if (!server.isAvailable()) {
 					log.fine("Success - resource is offline!");
 					ok = true;
 					break;
 				}
 			}
-			Assert.assertTrue(ok,
-					"EAP server is offline when not having set auth credentials properly");
+			if (!ok) {
+				throw new Exception("server did not appear OFFLINE in JON after securing and restarting it");
+			}
 			ok = false;
 
 			// lets setup user and pass
-			sahiTasks.getNavigator().inventoryGoToResource(
-					System.getProperty("agent.name"), "Inventory",
-					System.getProperty("as7.standalone.name"));
-			sahiTasks.waitFor(5000);
-			sahiTasks.getNavigator().inventorySelectTab("Inventory",
-					"Connection Settings");
+			Inventory inventory = server.inventory();
+			ConnectionSettings settings = inventory.connectionSettings();
+			
 			if (sahiTasks.image("checked.png").exists()) {
 				sahiTasks.image("checked.png").click();
 			}
@@ -123,14 +111,13 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 			}
 			sahiTasks.password("password").setValue(pass);
 
-			sahiTasks.cell("Save").click();
-			for (int i = 0; i < 12; i++) {
-				sahiTasks.waitFor(30000);
+			settings.save();
+			
+			for (int i = 0; i < Timing.REPEAT; i++) {
+				sahiTasks.waitFor(Timing.TIME_30S);
 				log.fine("Checking that resource is online: try #"
-						+ Integer.toString(i + 1) + " of 12");
-				if (as7SahiTasks.checkIfResourceIsOnline(
-						System.getProperty("agent.name"),
-						System.getProperty("as7.standalone.name"))) {
+						+ Integer.toString(i + 1) + " of "+Timing.REPEAT);
+				if (server.isAvailable()) {
 					log.fine("Success - Resource is back online!");
 					ok = true;
 					break;
@@ -159,19 +146,18 @@ public class ConnectToSecured extends AS7PluginSahiTestScript {
 			// now we restart server
 			sshClient.restart("standalone.sh");
 			// lets remove user and pass settings
-			sahiTasks.getNavigator().inventoryGoToResource(
-					System.getProperty("agent.name"), "Inventory",
-					System.getProperty("as7.standalone.name"));
-			sahiTasks.waitFor(5000);
-			sahiTasks.getNavigator().inventorySelectTab("Inventory",
-					"Connection Settings");
+
+			Inventory inventory = server.inventory();
+			ConnectionSettings settings = inventory.connectionSettings();
+			
+			
 			if (sahiTasks.image("unchecked.png").exists()) {
 				sahiTasks.xy(sahiTasks.image("unchecked.png"),3,3).click();
 			}
 			if (sahiTasks.image("unchecked.png").exists()) {
 				sahiTasks.xy(sahiTasks.image("unchecked.png"),3,3).click();
 			}
-			sahiTasks.cell("Save").click();
+			settings.save();
 			for (int i = 0; i < 12; i++) {
 				sahiTasks.waitFor(30000);
 				log.fine("Checking that resource is back online: try #"

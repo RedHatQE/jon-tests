@@ -1,7 +1,6 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.domain;
 
 import com.redhat.qe.jon.sahi.tasks.Navigator.InventoryNavigation;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks.Navigate;
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
