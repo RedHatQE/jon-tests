@@ -88,7 +88,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 
 		sahiTasks.radio(managed_server_name).check();
 		sahiTasks.waitFor(waitTime);				
-		sahiTasks.radio(System.getProperty(hostController.getName())).check();
+		sahiTasks.radio(hostController.getName()).check();
 		sahiTasks.waitFor(waitTime);
 		op.assertRequiredInputs();
 		op.schedule();
