@@ -209,7 +209,7 @@ public class Resource {
     		tasks.waitFor(waitTime);
     	}
     	log.fine("Checking resurce (un)existence timed out");
-    	Assert.assertTrue(!shouldBeAvailable, message);
+    	Assert.assertTrue(false, message);
     }
 	
 	
@@ -244,7 +244,7 @@ public class Resource {
     		children.refresh();
     	}
     	log.fine("Checking resurce (un)existence timed out");
-    	Assert.assertTrue(!shouldExist, "Resource ["+resourceName+"] exists.");
+    	Assert.assertTrue(false, "Resource ["+resourceName+"] exists.");
     }
 	
 	@Override
