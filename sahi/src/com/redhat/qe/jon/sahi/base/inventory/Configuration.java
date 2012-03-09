@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
+import org.testng.Assert;
+
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -36,9 +38,13 @@ public class Configuration extends ResourceTab {
 
 	public static class CurrentConfig {
 		private final SahiTasks tasks;
-
+		private final Editor editor;
 		private CurrentConfig(SahiTasks tasks) {
 			this.tasks = tasks;
+			this.editor = new Editor(tasks);
+		}
+		public Editor getEditor() {
+			return editor;
 		}
 
 		/**
@@ -130,6 +136,26 @@ public class Configuration extends ResourceTab {
 				refresh();
 			}
 			return false;
+		}
+		/*
+		 * waits reasonable amount of time whether any config change request is pending
+		 * if this time expires and there is still pending config change, Assert.fail is called
+		 */
+		public void failOnPending() {
+			if (!waitForPending()) {
+				Assert.fail("Configuraton change took too much time to process");
+			}			
+		}
+		public void failOnFailure() {
+			waitForPending();
+			Assert.assertFalse(hasFailure(),"Configuration change failed");
+		}
+		/**
+		 * 
+		 * @return true if any config change failed
+		 */
+		public boolean hasFailure() {
+			return tasks.image("Configure_failed_16.png").exists();
 		}
 		// public boolean isSuccessLastChange() {
 		// return

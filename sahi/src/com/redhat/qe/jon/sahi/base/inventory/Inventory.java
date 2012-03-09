@@ -55,9 +55,14 @@ public class Inventory extends ResourceTab{
 	}
 	
 	public static class NewChildWizard {
+		private final Editor editor;
 		private final SahiTasks tasks;
 		private NewChildWizard(SahiTasks tasks) {
 			this.tasks = tasks;
+			this.editor = new Editor(tasks);
+		}
+		public Editor getEditor() {
+			return editor;
 		}
 		/**
 		 * clicks <b>Next</b> button

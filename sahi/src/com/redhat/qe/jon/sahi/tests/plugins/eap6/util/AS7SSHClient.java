@@ -50,8 +50,7 @@ public class AS7SSHClient extends SSHClient {
 	}
 	/**
 	 * check whether EAP server is running
-	 * @param script name of startup script located in {@link AS7SSHClient#getAsHome()} / bin
-	 * @return
+	 * @return true if server process is running
 	 */
 	public boolean isRunning() {
 		return runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);

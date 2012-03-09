@@ -59,10 +59,11 @@ public class Operations extends ResourceTab {
 	public static class Operation {
 		private final SahiTasks tasks;
 		private final String name;
-		
+		private final Editor editor;
 		public Operation(SahiTasks tasks, String name) {
 			this.tasks = tasks;
 			this.name = name;
+			this.editor = new Editor(tasks);
 			tasks.cell("New").click();
 			tasks.selectComboBoxes("selectItemText-->"+this.name);
 		}
@@ -70,7 +71,10 @@ public class Operations extends ResourceTab {
 		 * asserts all required input fields have been filled
 		 */
 		public void assertRequiredInputs() {
-			Assert.assertTrue(!tasks.image("exclamation.png").exists(), "All required inputs were provided");
+			getEditor().assertRequiredInputs();
+		}
+		public Editor getEditor() {
+			return editor;
 		}
 		/**
 		 * clicks <b>Schedule</b> button to start operation

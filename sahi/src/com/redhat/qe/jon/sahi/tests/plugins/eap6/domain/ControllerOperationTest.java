@@ -65,14 +65,10 @@ public class ControllerOperationTest extends AS7DomainTest {
 	public void addManagedServer() {
 		Operations operations = controller.operations();
 		Operation op = operations.newOperation("Add managed server");
-		sahiTasks.textbox("servername").setValue(managed_server);
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.radio(hostController.getName()).check();
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.radio("main-server-group").check();
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("port-offset").setValue(managed_server_portoffset);
-		sahiTasks.waitFor(waitTime);
+		op.getEditor().setText("servername",managed_server);		
+		op.getEditor().checkRadio(hostController.getName());
+		op.getEditor().checkRadio("main-server-group");
+		op.getEditor().setText("port-offset", managed_server_portoffset);
 		op.assertRequiredInputs();
 		op.schedule();
 		operations.assertOperationResult(op, true);
@@ -85,11 +81,8 @@ public class ControllerOperationTest extends AS7DomainTest {
 	public void removeManagedServer() {
 		Operations operations = controller.operations();
 		Operation op = operations.newOperation("Remove managed server");
-
-		sahiTasks.radio(managed_server_name).check();
-		sahiTasks.waitFor(waitTime);				
-		sahiTasks.radio(hostController.getName()).check();
-		sahiTasks.waitFor(waitTime);
+		op.getEditor().checkRadio(managed_server_name);
+		op.getEditor().checkRadio(hostController.getName());
 		op.assertRequiredInputs();
 		op.schedule();
 		operations.assertOperationResult(op, true);		
@@ -103,8 +96,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 		Operations operations = controller.operations();
 		Operation op = operations.newOperation("Install RHQ user");	
 		String user = "u"+new Date().getTime();
-		sahiTasks.textbox("user").setValue(user);
-		sahiTasks.waitFor(Timing.WAIT_TIME);
+		op.getEditor().setText("user", user);
 		op.schedule();
 		operations.assertOperationResult(op,true);				
 		String command = "grep '"+user+"' "+sshClient.getAsHome() + "/domain/configuration/mgmt-users.properties";
