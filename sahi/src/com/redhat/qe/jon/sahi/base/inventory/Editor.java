@@ -6,6 +6,7 @@ import net.sf.sahi.client.ElementStub;
 
 import org.testng.Assert;
 
+import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -48,4 +49,18 @@ public class Editor {
 			tasks.xy(tasks.image("checked.png["+index+"]"),3,3).click();
 		}
 	}
+	
+	/**
+	 * creates new config entry, click the <b>+</b> buttton and returns helper object
+	 * @param index of button on page
+	 * @return
+	 */
+	public ConfigEntry newEntry(int index) {
+		int imgindex = index = 1;
+		tasks.image("add.png[" + imgindex + "]").focus();
+		tasks.execute("_sahi._keyPress(_sahi._image('add.png[" + imgindex
+				+ "]'), 32);");
+		return new ConfigEntry(tasks);
+	}
+	
 }

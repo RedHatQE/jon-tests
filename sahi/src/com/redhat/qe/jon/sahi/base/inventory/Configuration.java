@@ -88,7 +88,7 @@ public class Configuration extends ResourceTab {
 	public static class ConfigEntry {
 		private final SahiTasks tasks;
 
-		private ConfigEntry(SahiTasks tasks) {
+		ConfigEntry(SahiTasks tasks) {
 			this.tasks = tasks;
 		}
 

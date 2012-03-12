@@ -110,7 +110,18 @@
             </run>
         </groups>
     </test>
-
+	<test name="Standalne_JMSDestinations">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.JMSDestinationsTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                    
+                <include name="jms"/>                                
+            </run>
+        </groups>
+    </test>
 	<test name="Standalone_Datasources">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.DatasourceCreationTest"/>
