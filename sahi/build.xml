@@ -36,10 +36,10 @@
 		<path refid="utils.cp" />
 	</path>
 
-    <taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="${env.SAHI_BASE}/lib/ant-sahi.jar"/>
+	<taskdef name="sahi" classname="net.sf.sahi.ant.RunSahiTask" classpath="${env.SAHI_BASE}/lib/ant-sahi.jar"/>
 	<taskdef name="testng" classpathref="utils.cp" classname="org.testng.TestNGAntTask" />
 
-    <target name="rhq_tests" description="run RHQ sahi tests">
+	<target name="rhq_tests" description="run RHQ sahi tests">
 		<sahi suite="${user.data}/functional_test.suite"
 			browser="firefox --display=:1.0"
 			baseurl="http://10.16.79.219:7080"
@@ -51,7 +51,7 @@
 			threads="1"
 		>
 		</sahi>
-    </target>
+	</target>
 
 	<target name="deps">
 		<echo message="Compiling dependencies in ${webui-framework.dir}" />
@@ -71,17 +71,17 @@
 		</javac>
 		<mkdir dir="${test.build.dir}/resources"/>
 		<copy todir="${test.build.dir}/resources">
-		    <fileset dir="${test.resources.dir}"/>
-		  </copy>
+			<fileset dir="${test.resources.dir}"/>
+		</copy>
 		<echo message="Done." />
 	</target>
 
 	<target name="run" description="run RHQ sahi java test" depends="compile">
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
-                        <xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="testng.xml"/>
+			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="testng.xml"/>
 		</testng>
 	</target>
-	
+
 	<target name="run-eap6" description="run RHQ sahi java test" depends="compile">
 		<property name="testsuite" value="eap6-testng.xml" />
 		<property name="eap6plugin.configfile" value="config/eap6plugin.properties" />
@@ -90,7 +90,7 @@
 			<sysproperty key="eap6plugin.configfile" value="${eap6plugin.configfile}" />
 		</testng>
 	</target>
-	
+
 	<target name="run-rest-groovy" description="run groovy REST API tests" depends="compile">
 		<property name="rest.username" value="rhqadmin" />
 		<property name="rest.password" value="rhqadmin" />
@@ -107,8 +107,38 @@
 	<target name="clean">
 		<echo message="Cleaning ${test.build.dir}"/>
 		<delete failonerror="true" quiet="false" includeemptydirs="true">
-	    		<fileset dir="${test.build.dir}" includes="**/*"/>
-	      	</delete>
+			<fileset dir="${test.build.dir}" includes="**/*"/>
+		</delete>
 		<delete dir="${test.output.dir}"/>
 	</target>
+
+	<target name="javadoc">
+		<javadoc
+		   classpathref="tests.cp"
+      	 	    destdir="javadoc"
+     	 	    author="true"
+           version="true"
+           use="true"
+           windowtitle="Test API">
+
+			<packageset dir="${test.src.dir}" defaultexcludes="yes">
+				<include name="com/redhat/**"/>
+			</packageset>
+			<packageset dir="${test.src.dir}/../../clitest/src" defaultexcludes="yes">
+				<include name="com/redhat/**" />
+			</packageset>
+			<packageset dir="${test.src.dir}/../../rest-java/src" defaultexcludes="yes">
+				<include name="com/redhat/**" />
+			</packageset>
+			
+			<group title="SAHI Tasks" packages="com.redhat.qe.jon.sahi.tasks*:com.redhat.qe.jon.sahi.base*"/>
+			<group title="SAHI Tests" packages="com.redhat.qe.jon.sahi.tests*"/>
+			<group title="REST Java" packages="com.redhat.qe.jon.rest*"/>
+			<group title="CLI Tests" packages="com.redhat.qe.jon.clitest*"/>
+			<doctitle>
+				<![CDATA[<h1>JON 3.x QE Automation</h1>]]></doctitle>
+		<bottom>
+			<![CDATA[<i>Copyright &#169; 2012 Red Hat. All Rights Reserved.</i>]]></bottom>
+</javadoc>
+</target>
 </project>
