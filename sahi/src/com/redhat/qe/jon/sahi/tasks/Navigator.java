@@ -102,7 +102,9 @@ public class Navigator {
 	}
 	public void inventoryGoToResource(Resource res) {
 		tasks.link("Inventory").click();
-        tasks.cell("Platforms").click();
+		tasks.waitFor(timeout);
+		tasks.cell("Platforms").click();
+		tasks.waitFor(timeout);
         log.fine("Select platform ["+res.getPlatform()+"]");
         tasks.link(res.getPlatform()).click();
         for (int i = 1;i<res.getPath().size();i++) {
