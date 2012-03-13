@@ -122,6 +122,18 @@
             </run>
         </groups>
     </test>
+    <test name="Standalne_SocketBindingGroups">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.SocketBindingGroupConfigurationTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                    
+                <include name="socketBindingGroup"/>                                
+            </run>
+        </groups>
+    </test>
 	<test name="Standalone_Datasources">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.DatasourceCreationTest"/>
