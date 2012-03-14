@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
+import net.sf.sahi.client.ElementStub;
+
 import org.testng.Assert;
 
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
@@ -45,6 +47,20 @@ public class Configuration extends ResourceTab {
 		}
 		public Editor getEditor() {
 			return editor;
+		}
+		/**
+		 * gathers error text (if any) from error notification field
+		 * @return null if no error is on Config page
+		 */
+		public String getErrorText() {
+			StringBuilder sb = new StringBuilder();
+			ElementStub es =  tasks.byXPath("//td[@class='ErrorBlock'][1]");
+			if (!es.exists()) {
+				return null;
+			}
+			sb.append(es.getText());			
+			return sb.toString();
+			
 		}
 
 		/**

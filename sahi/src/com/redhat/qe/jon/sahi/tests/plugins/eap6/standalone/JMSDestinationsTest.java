@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
+import junit.framework.Assert;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -19,6 +21,10 @@ public class JMSDestinationsTest extends AS7StandaloneTest {
         hornetq = server.child("messaging").child("default");
         queue = hornetq.child("test-queue");
         topic = hornetq.child("test-topic");
+        for (Resource child : hornetq.getChildrenTree()) {
+        	log.info(child.toString());
+        }
+        Assert.fail();
     }
 	@Test(groups="jms")	
 	public void addQueue() {

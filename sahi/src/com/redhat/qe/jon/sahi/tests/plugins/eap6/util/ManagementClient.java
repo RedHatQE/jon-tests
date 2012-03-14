@@ -51,7 +51,7 @@ public class ManagementClient {
 	}
 	
 	public ManagementClient(String host, int port) {
-		log.fine("Creating AS7 DRM Client that will conect to ["+host+":"+port+"]");
+		log.fine("Creating AS7 DMR Client that will conect to ["+host+":"+port+"]");
 		this.host=host;
 		this.port=port;
 		client = createClient();

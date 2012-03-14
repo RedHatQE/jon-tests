@@ -17,8 +17,7 @@ public abstract class ResourceTab {
 	
 
 	/**
-	 * Creates new instance of Resource tab, navigation is performed within
-	 * constructor call
+	 * Creates new instance of Resource tab
 	 * 
 	 * @param tasks
 	 * @param resource
@@ -27,9 +26,8 @@ public abstract class ResourceTab {
 		log = Logger.getLogger(this.getClass().getName());
 		this.tasks = tasks;
 		this.resource = resource;
-		navigateFull();
 	}
-
+	
 	/**
 	 * navigates to given Tab within the resource.
 	 */
@@ -48,9 +46,10 @@ public abstract class ResourceTab {
 	 * fully navigates to given Tab, (selects the resource from it's root, then
 	 * selects Tab)
 	 */
-	public void navigateFull() {
+	public ResourceTab navigateFull() {
 		getResource().navigate();
 		navigate();
+		return this;
 	}
 	/**
 	 * selects tab of given name on resource page (Inventory, Configuration etc.)

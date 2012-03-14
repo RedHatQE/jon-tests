@@ -2,6 +2,12 @@ package com.redhat.qe.jon.sahi.base.inventory;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import net.sf.sahi.client.ElementStub;
+
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -13,7 +19,7 @@ public class Inventory extends ResourceTab{
 
 	@Override
 	protected void navigate() {
-		selectTab("Inventory","Child Resources");
+		selectTab("Inventory",null);
 	}
 	/**
 	 * selects <b>Child Resources</b> subtab and returns helper object
@@ -22,6 +28,13 @@ public class Inventory extends ResourceTab{
 	public ChildResources childResources() {
 		selectTab("Inventory","Child Resources");
 		return new ChildResources(tasks);
+	}
+	/**
+	 * returns true whether there can be some children resources
+	 * @return
+	 */
+	public boolean hasChildren() {
+		return tasks.cell("Child Resources").exists();
 	}
 	/**
 	 * selects <b>Connection Settings</b> subtab and returns helper object
@@ -98,7 +111,7 @@ public class Inventory extends ResourceTab{
 	
 	public static class ChildResources {
 		private final SahiTasks tasks;
-		
+		private final Logger log = Logger.getLogger(this.getClass().getName());
 		private ChildResources(SahiTasks tasks) {
 			this.tasks = tasks;
 		}
@@ -143,6 +156,19 @@ public class Inventory extends ResourceTab{
 			tasks.byXPath("//td[@class='buttonTitle' and .='Delete']").click();
 			//tasks.cell("Delete").near(tasks.cell("Uninventory")).click();
 			tasks.cell("Yes").click();
+		}
+		/**
+		 * lists children resrource names
+		 * @return
+		 */
+		public String[] listChildren() {
+			List<String> children = new ArrayList<String>();
+			for (ElementStub row : tasks.row("").in(tasks.table("listTable[2]")).collectSimilar()) {
+				String child = tasks.cell(1).in(row).getText();
+				children.add(child);
+				log.fine("Found child ["+child+"]");
+			}
+			return children.toArray(new String[]{});
 		}
 	}
 

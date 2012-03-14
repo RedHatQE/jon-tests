@@ -4,11 +4,7 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.sahi.base.inventory.Configuration;
-import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
-import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.tasks.Timing;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
  *
@@ -56,26 +52,5 @@ public class ResourceConfigurationTest extends AS7StandaloneTest {
             log.finer("Check that predefined metrics exist: " + s);
             Assert.assertTrue(sahiTasks.cell(s).exists(), "Check that predefined metric exists: "+s);        
         }
-    }
-    @Test(groups={"configuration"})
-    public void addNewSystemPropertyTest() {
-    	Configuration config = server.configuration();
-    	CurrentConfig current = config.current();
-    	ConfigEntry entry = current.newEntry(0);
-    	entry.setField("name", "prop");
-    	entry.setField("value", "value");
-    	entry.OK();
-        current.save();
-        sahiTasks.waitFor(5000);
-        Assert.assertTrue(readPropertyValue("prop").equals("value"));
-    }
-    
-    private String readPropertyValue(String name) {    	
-    	return mgmtClient.readAttribute("/system-property="+name, "value").get("result").asString();
-    }
-    
-    
-    
-    
-    
+    }   
 }

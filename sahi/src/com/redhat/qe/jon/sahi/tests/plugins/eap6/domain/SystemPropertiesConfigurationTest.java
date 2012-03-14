@@ -90,9 +90,8 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
     	entry.setField("value", addedPropValue);
     	entry.OK();
         current.save();
-        if (!config.history().waitForPending()) {
-        	fail("Adding a system property took too much time to process");
-        }
+        config.history().failOnPending();
+        config.history().failOnFailure();
 	}
 	
 	private void editSystemProperty(Resource resource) {
@@ -101,10 +100,9 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
 		ConfigEntry entry = current.getEntry(addedPropName);
 		entry.setField("value", editedPropValue);
 		entry.OK();
-		current.save();
-		if (!config.history().waitForPending()) {
-        	fail("Editing a system property took too much time to process");
-        }
+		current.save();		
+		config.history().failOnPending();
+        config.history().failOnFailure();
 	}
 	
 	public void deleteProperty(Resource resource) {
@@ -112,9 +110,8 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
     	CurrentConfig current = config.current();
 		current.removeEntry(addedPropName);
 		current.save();
-		if (!config.history().waitForPending()) {
-        	fail("Deleting a system property took too much time to process");
-        }
+		config.history().failOnPending();
+        config.history().failOnFailure();
 	}
 	
 	

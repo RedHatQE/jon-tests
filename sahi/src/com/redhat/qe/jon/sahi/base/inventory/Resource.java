@@ -51,13 +51,21 @@ public class Resource {
 	 * @return
 	 */
 	public Inventory inventory() {
-		return new Inventory(tasks, this);
+		return (Inventory)new Inventory(tasks, this).navigateFull();
 	}
 	/**
 	 * creates <b>Configuration</b> resource tab for this resource and navigates to it
 	 * @return
 	 */
 	public Configuration configuration() {
+		return (Configuration)new Configuration(tasks,this).navigateFull();
+	}
+	/**
+	 * returns {@link ResourceTab} object representing <b>Configuration</b> tab
+	 * without navigating to it
+	 * @return
+	 */
+	public Configuration configurationNoNav() {
 		return new Configuration(tasks,this);
 	}
 	/**
@@ -65,21 +73,21 @@ public class Resource {
 	 * @return
 	 */
 	public Operations operations() {
-		return new Operations(tasks, this);
+		return (Operations)new Operations(tasks, this).navigateFull();
 	}
 	/**
 	 * creates <b>Summary</b> resource tab for this resource and navigates to it
 	 * @return
 	 */
 	public Summary summary() {
-		return new Summary(tasks, this);
+		return (Summary)new Summary(tasks, this).navigateFull();
 	}
 	/**
 	 * creates <b>Monitoring</b> resource tab for this resource and navigates to it
 	 * @return
 	 */
 	public Monitoring monitoring() {
-		return new Monitoring(tasks, this);
+		return (Monitoring)new Monitoring(tasks, this).navigateFull();
 	}
 	/**
 	 * resource's path
@@ -101,6 +109,26 @@ public class Resource {
 	 */
 	public String getName() {
 		return this.path.get(this.path.size()-1);
+	}
+	/**
+	 * this method navigates through all child resources of current resource recursively
+	 * @return a List of resources that are direct or indirect ancestors to this resource
+	 */
+	public List<Resource> getChildrenTree() {
+		log.fine("getChildrenRecursive for resource "+toString());
+		List<Resource> children = new ArrayList<Resource>();
+		Inventory inventory = inventory();
+		if (inventory.hasChildren()) {
+			for (String childName : inventory.childResources().listChildren()) {
+				Resource child = child(childName);
+				children.add(child);
+				children.addAll(child.getChildrenTree());
+			}
+		}
+		else {
+			log.fine("Resource "+toString()+" does not have any children");
+		}
+		return children;
 	}
 	/**
 	 * 
