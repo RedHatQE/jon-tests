@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.sf.sahi.client.ElementStub;
+
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -19,7 +22,12 @@ public class ImportResources extends SahiTestScript{
 	
 	@Test (groups="importResourceTest", dataProvider="importResourceData")
 	public void importResource(String resourceName) throws InterruptedException, IOException{
-		sahiTasks.importResources(resourceName);
+		if (!sahiTasks.importResources(resourceName)) {
+			ElementStub es =  sahiTasks.byXPath("//td[@class='ErrorBlock'][1]");
+			if (es.exists()) {
+				Assert.fail("Importing Resources failed with error :"+es.getText());
+			}
+		}
 	}
 	
 	@DataProvider(name="importResourceData")
