@@ -29,10 +29,9 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
     	entry.setField("name", addedPropName);
     	entry.setField("value", addedPropValue);
     	entry.OK();
-        current.save();
-        if (!config.history().waitForPending()) {
-        	fail("Adding a system property took too much time to process");
-        }
+        current.save();        
+        config.history().failOnPending();
+        config.history().failOnFailure();
 	}
 	
 	@Test(groups={"configuration"})
@@ -47,10 +46,9 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
 		ConfigEntry entry = current.getEntry(addedPropName);
 		entry.setField("value", editedPropValue);
 		entry.OK();
-		current.save();
-		if (!config.history().waitForPending()) {
-        	fail("Editing a system property took too much time to process");
-        }
+		current.save();		
+		config.history().failOnPending();
+        config.history().failOnFailure();
         Assert.assertTrue(readPropertyValue(addedPropName).equals(editedPropValue),"System property has correct value");
 	}
 	@Test(groups={"configuration"},dependsOnMethods="editPropertyTest")
@@ -58,10 +56,9 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
 		Configuration config = server.configuration();
     	CurrentConfig current = config.current();
 		current.removeEntry(addedPropName);
-		current.save();
-		if (!config.history().waitForPending()) {
-        	fail("Deleting a system property took too much time to process");
-        }
+		current.save();		
+		config.history().failOnPending();
+        config.history().failOnFailure();
 		mgmtClient.assertResourcePresence("/", "system-property", addedPropName, false);
 	}
 	
