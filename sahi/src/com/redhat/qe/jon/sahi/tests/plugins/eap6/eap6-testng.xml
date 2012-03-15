@@ -36,6 +36,7 @@
             </run>
         </groups>
     </test>
+    <!-- temporarily disabled
     <test name="Standalone_ConnectSecured">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ConnectToSecured"/>
@@ -48,6 +49,7 @@
             </run>
         </groups>
     </test>
+     -->
  	<test name="Standalone_Operations">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.OperationTest"/>
