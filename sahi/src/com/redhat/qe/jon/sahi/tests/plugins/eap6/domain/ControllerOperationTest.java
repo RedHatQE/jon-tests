@@ -18,13 +18,6 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 */
 public class ControllerOperationTest extends AS7DomainTest {
 
-	private static final String managed_server="server-four";
-	private static final String managed_server_name="EAP "+managed_server;
-	private static final String managed_server_portoffset="300";
-	private static final int waitTime = 5000;
-	
-
-
 	@BeforeClass(groups = "operation")
 	protected void setupAS7Plugin() {
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
@@ -60,35 +53,6 @@ public class ControllerOperationTest extends AS7DomainTest {
 		Assert.assertTrue(httpDomainManager.isRunning(), "DomainManager is reachable via HTTP request");
 		Assert.assertTrue(httpDomainOne.isRunning(), "server-one is reachable via HTTP request");
 		controller.assertAvailable(true, "EAP server is online when server was started");
-	}
-	@Test(groups="operation")
-	public void addManagedServer() {
-		Operations operations = controller.operations();
-		Operation op = operations.newOperation("Add managed server");
-		op.getEditor().setText("servername",managed_server);		
-		op.getEditor().checkRadio(hostController.getName());
-		op.getEditor().checkRadio("main-server-group");
-		op.getEditor().setText("port-offset", managed_server_portoffset);
-		op.assertRequiredInputs();
-		op.schedule();
-		operations.assertOperationResult(op, true);
-		mgmtDomain.assertResourcePresence("/host="+hostController.getName(), "server-config", managed_server, true);
-		controller.performManualAutodiscovery();
-		controller.child(managed_server_name).assertExists(true);		
-	}
-	
-	@Test(groups="operation",dependsOnMethods="addManagedServer")
-	public void removeManagedServer() {
-		Operations operations = controller.operations();
-		Operation op = operations.newOperation("Remove managed server");
-		op.getEditor().checkRadio(managed_server_name);
-		op.getEditor().checkRadio(hostController.getName());
-		op.assertRequiredInputs();
-		op.schedule();
-		operations.assertOperationResult(op, true);		
-		mgmtDomain.assertResourcePresence("/host="+hostController.getName(), "server-config", managed_server, false);
-		controller.performManualAutodiscovery();
-		controller.child(managed_server_name).assertExists(false);
 	}
 	
 	@Test(groups="operation")
