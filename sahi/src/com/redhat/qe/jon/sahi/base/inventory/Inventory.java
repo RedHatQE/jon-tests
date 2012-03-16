@@ -163,7 +163,8 @@ public class Inventory extends ResourceTab{
 		 */
 		public String[] listChildren() {
 			List<String> children = new ArrayList<String>();
-			for (ElementStub row : tasks.row("").in(tasks.table("listTable[2]")).collectSimilar()) {
+			int count = tasks.table("listTable").countSimilar();
+			for (ElementStub row : tasks.row("").in(tasks.table("listTable["+(count-1)+"]")).collectSimilar()) {
 				String child = tasks.cell(1).in(row).getText();
 				children.add(child);
 				log.fine("Found child ["+child+"]");

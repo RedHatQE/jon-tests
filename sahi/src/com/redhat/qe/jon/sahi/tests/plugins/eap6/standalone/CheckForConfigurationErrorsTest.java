@@ -1,6 +1,5 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.redhat.qe.auto.testng.Assert;
