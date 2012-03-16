@@ -23,7 +23,7 @@ public class ServersManagementTest extends AS7DomainTest {
 	
 	private Resource managedServer;
     
-	@BeforeClass(groups = "operation")
+	@BeforeClass(groups = "serversManagement")
 	protected void setupAS7Plugin() {
 		as7SahiTasks.importResource(controller);
 		managedServer = controller.child(managed_server_name);
