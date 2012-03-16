@@ -19,7 +19,7 @@ public class Inventory extends ResourceTab{
 
 	@Override
 	protected void navigate() {
-		selectTab("Inventory",null);
+		selectTab("Inventory");
 	}
 	/**
 	 * selects <b>Child Resources</b> subtab and returns helper object

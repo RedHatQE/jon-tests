@@ -60,6 +60,7 @@ public class Editor {
 		tasks.image("add.png[" + imgindex + "]").focus();
 		tasks.execute("_sahi._keyPress(_sahi._image('add.png[" + imgindex
 				+ "]'), 32);");
+		tasks.waitFor(Timing.WAIT_TIME);
 		return new ConfigEntry(tasks);
 	}
 	

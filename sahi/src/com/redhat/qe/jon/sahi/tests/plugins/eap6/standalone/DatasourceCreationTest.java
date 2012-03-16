@@ -6,12 +6,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.base.inventory.Configuration;
+import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
+import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.Timing;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
  * @author Libor Zoubek (lzoubek@redhat.com)
@@ -31,11 +33,9 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	 * definition array for XA datasource, {DS name,childType}
 	 */
 	private static final String[] XA_def = {datasource_XA, "xa-data-source"};
-	
-	private static final int waitTime = Timing.WAIT_TIME;
 
 	private Resource datasources;
-	@BeforeClass(groups = "datasource")
+	@BeforeClass(groups = "setup")
     protected void setupAS7Plugin() {
         as7SahiTasks.importResource(server);
         datasources = server.child("datasources");
@@ -52,19 +52,13 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		}
 		Operations operations = datasources.operations();
 		Operation add = operations.newOperation("Add Datasource");
-
-		sahiTasks.textbox("name").setValue(datasource_nonXA);
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("driver-name").setValue("h2");
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("jndi-name").setValue("java:jboss/datasources/"+datasource_nonXA);
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("connection-url").setValue("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");		
-		sahiTasks.waitFor(waitTime);
+		add.getEditor().setText("name", datasource_nonXA);
+		add.getEditor().setText("driver-name","h2");
+		add.getEditor().setText("jndi-name","java:jboss/datasources/"+datasource_nonXA);
+		add.getEditor().setText("connection-url","jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");		
 
 		add.assertRequiredInputs();
 		add.schedule();		
-		sahiTasks.waitFor(waitTime);
 		operations.assertOperationResult(add, true);
 
 		assertDatasourceExists(nonXA_def);		
@@ -75,7 +69,14 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 
 	@Test(groups = "datasource", dependsOnMethods="addDatasource")
 	public void configureDatasource() {
-		
+		Configuration configuration = datasources.child(datasource_nonXA).configuration();
+		CurrentConfig current = configuration.current();
+		current.getEditor().checkBox(0, false);
+		current.getEditor().setText("max-pool-size", "666");
+		current.save();
+		configuration.history().failOnPending();
+		configuration.history().failOnFailure();
+		assertAttributeValue(nonXA_def, "max-pool-size", "666");
 	}
 	
 	
@@ -116,25 +117,24 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		Operations operations = datasources.operations();
 		Operation add = operations.newOperation("Add XA Datasource");
 
-		sahiTasks.textbox("name").setValue(datasource_XA);
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("driver-name").setValue("h2");
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("xa-datasource-class").setValue("org.h2.jdbcx.JdbcDataSource");
-		sahiTasks.waitFor(waitTime);
-		sahiTasks.textbox("jndi-name").setValue("java:jboss/datasources/"+datasource_XA);
-		sahiTasks.waitFor(waitTime);
-		// TODO remove inserting connection-url https://bugzilla.redhat.com/show_bug.cgi?id=758655
-		sahiTasks.textbox("connection-url").setValue("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");	
-		sahiTasks.waitFor(waitTime);
-		
+		add.getEditor().setText("name",datasource_XA);
+		add.getEditor().setText("driver-name","h2");
+		add.getEditor().setText("xa-datasource-class","org.h2.jdbcx.JdbcDataSource");
+		add.getEditor().setText("connection-url","jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
+		add.getEditor().setText("jndi-name","java:jboss/datasources/"+datasource_XA);
+
 		add.assertRequiredInputs();
 		add.schedule();		
-		sahiTasks.waitFor(waitTime);
-		operations.assertOperationResult(add, true);
 
+		operations.assertOperationResult(add, true);
+		
 		// assert datasource exists
 		assertDatasourceExists(XA_def);
+		assertAttributeValue(XA_def, "driver-name", "h2");
+		
+		ModelNode ret = mgmtClient.readAttribute("/subsystem=datasources/"+XA_def[1]+"="+XA_def[0]+"/xa-datasource-properties=connection-url", "value");
+		Assert.assertTrue(ret.get("result").asString().equalsIgnoreCase("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1"), "Datasource ["+XA_def[0]+"] : xa-property connection-url=jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
+		
 		//  assert datasource was discovered by agent
 		server.performManualAutodiscovery();
 		datasources.child(datasource_XA).assertExists(true);
@@ -142,7 +142,14 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	
 	@Test(groups = "XAdatasource", dependsOnMethods="addXADatasource")
 	public void configureXADatasource() {
-		
+		Configuration configuration = datasources.child(datasource_XA).configuration();
+		CurrentConfig current = configuration.current();
+		current.getEditor().checkBox(0, false);
+		current.getEditor().setText("max-pool-size", "666");
+		current.save();
+		configuration.history().failOnPending();
+		configuration.history().failOnFailure();
+		assertAttributeValue(XA_def, "max-pool-size", "666");
 	}
 
 	@Test(groups = "XAdatasource", dependsOnMethods="addXADatasource")
@@ -209,25 +216,26 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	 * @param ds_def
 	 */
 	private void assertDatasourceExists(String[] ds_def) {
-		mgmtStandalone.assertResourcePresence("/subsystem=datasources", ds_def[1], ds_def[0], true);
+		mgmtClient.assertResourcePresence("/subsystem=datasources", ds_def[1], ds_def[0], true);
 	}
 	/**
 	 * asserts whether datasource does not exist using mgmt API
 	 * @param ds_def
 	 */
 	private void assertDatasourceDoesNotExist(String[] ds_def) {
-		mgmtStandalone.assertResourcePresence("/subsystem=datasources", ds_def[1], ds_def[0], false);
-	}	
+		mgmtClient.assertResourcePresence("/subsystem=datasources", ds_def[1], ds_def[0], false);
+	}
+	
 	/**
 	 * checks data source existence using mgmt API
 	 * @param ds_def
 	 * @return
 	 */
 	private boolean existsDatasourceAPI(String[] ds_def) {
-		return mgmtStandalone.existsResource("/subsystem=datasources", ds_def[1], ds_def[0]);
+		return mgmtClient.existsResource("/subsystem=datasources", ds_def[1], ds_def[0]);
 	}
 	private void assertAttributeValue(String[] ds_def,String attribute, String value) {
-		ModelNode ret = mgmtStandalone.readAttribute("/subsystem=datasources/"+ds_def[1]+"="+ds_def[0], attribute);
+		ModelNode ret = mgmtClient.readAttribute("/subsystem=datasources/"+ds_def[1]+"="+ds_def[0], attribute);
 		Assert.assertTrue(ret.get("result").asString().equalsIgnoreCase(value), "Datasource \'"+ds_def[0]+"\' : attribute "+attribute+"="+value);
 	}
 	private void assertAttributeValueUI(String[] ds_def, String attribute, String value) {
@@ -242,7 +250,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	 */
 	private void removeDatasource(String[] ds_meta) {
 		log.info("remove datasource API");
-		if (mgmtStandalone.executeOperationVoid("/subsystem=datasources/"+ds_meta[1]+"="+ds_meta[0], "remove", new String[]{})) {
+		if (mgmtClient.executeOperationVoid("/subsystem=datasources/"+ds_meta[1]+"="+ds_meta[0], "remove", new String[]{})) {
 			log.info("[mgmt API] Datasource was removed");
 		}
 	}
