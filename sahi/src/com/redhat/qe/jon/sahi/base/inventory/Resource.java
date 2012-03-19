@@ -3,6 +3,7 @@ package com.redhat.qe.jon.sahi.base.inventory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.testng.Assert;
@@ -117,7 +118,14 @@ public class Resource {
 	public List<Resource> getChildrenTree() {
 		log.fine("getChildrenRecursive for resource "+toString());
 		List<Resource> children = new ArrayList<Resource>();
-		Inventory inventory = inventory();
+		Inventory inventory = null;
+		try {
+			inventory = inventory();
+		}
+		catch (Exception ex) {
+			log.log(Level.SEVERE, "Skipping resource "+toString()+" navigation ERROR", ex);
+			return children;
+		}
 		if (inventory.hasChildren()) {
 			for (String childName : inventory.childResources().listChildren()) {
 				Resource child = child(childName);

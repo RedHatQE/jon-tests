@@ -163,6 +163,9 @@ public class Inventory extends ResourceTab{
 		 */
 		public String[] listChildren() {
 			List<String> children = new ArrayList<String>();
+			if (tasks.cell("No items to show.").exists()) {
+				return new String[]{};
+			}
 			int count = tasks.table("listTable").countSimilar();
 			if (count>1) {
 				for (ElementStub row : tasks.row("").in(tasks.table("listTable["+(count-1)+"]")).collectSimilar()) {
