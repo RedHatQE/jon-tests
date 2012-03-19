@@ -10,7 +10,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Resource;
  * @author lzoubek
  *
  */
-public class JMSDestinationsTtest extends AS7DomainTest {
+public class JMSDestinationsTest extends AS7DomainTest {
 	private Resource hornetq; 
 	private Resource queue;
 	private Resource topic;
