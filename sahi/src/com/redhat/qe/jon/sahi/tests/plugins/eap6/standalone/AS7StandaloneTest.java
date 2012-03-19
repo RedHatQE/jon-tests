@@ -19,12 +19,17 @@ public class AS7StandaloneTest extends AS7PluginSahiTestScript {
 	  * AS7 Standalone server resource
 	  */
 	 protected Resource server;
+	 /**
+	  * AS7 Standalone server resource (2nd instance)
+	  */
+	 protected Resource server2;
 	 @BeforeClass(groups = "setup")
 	 public void setup2() {
 		 as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
 		 sshClient = sshStandalone;
 		 mgmtClient = mgmtStandalone;
 		 httpClient = httpStandalone;
-		 server = new Resource(sahiTasks, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));		 
+		 server = new Resource(sahiTasks, System.getProperty("agent.name"), System.getProperty("as7.standalone1.name"));
+		 server2 = new Resource(sahiTasks, System.getProperty("agent.name"), System.getProperty("as7.standalone2.name"));
 	 }
 }

@@ -1,19 +1,19 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks.Navigate;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 import net.sf.sahi.client.ElementStub;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
  *
  * @author jmartisk@redhat.com
  * @see TCMS testcase 96430
  */
-public class ResourceCreationTest extends AS7PluginSahiTestScript {
+public class ResourceCreationTest extends AS7StandaloneTest {
 
     // this address will be set in the connection settings, should be any random address that isn't running any AS instance :)
     private static final String IP_ADDR = "239.12.33.74";
@@ -21,12 +21,12 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     @BeforeClass(groups = "resourceCreation001")
     protected void setupAS7Plugin() {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+        as7SahiTasks.importResource(server);
     }
 
     @Test(groups = "resourceCreation001", alwaysRun=true)
     public void checkPersistenceOfChanges() {        
-        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+        server.inventory();
         try {
             Thread.sleep(5000);
         } catch(Exception e) {}
@@ -47,8 +47,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             startScript_element.setValue("abccbcblsd.sh");
             sahiTasks.cell("Save").click();
         } finally {
-            as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-
+            server.inventory();
             try {
             Thread.sleep(5000);
         } catch(Exception e) {}
@@ -76,8 +75,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     }
 
     @Test(groups = "resourceCreation001", alwaysRun=true)
-    public void inputValidButIncorrectConnectionSettings() {        
-        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));              
+    public void inputValidButIncorrectConnectionSettings() {                      
+        server.inventory();
         sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
         ElementStub hostname_element = sahiTasks.textbox("hostname");
@@ -92,7 +91,6 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
         hostname_element.setValue(IP_ADDR);
         port_element.setValue(Integer.toString(Integer.parseInt(old_port) + 1349));
         sahiTasks.cell("Save").click();
-
         boolean ok = false;
         try {
             // the resource should go down after some time -- check for it
@@ -100,7 +98,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             for (int i = 0; i < 12; i++) {
                 sahiTasks.waitFor(30000);
                 log.fine("Checking that resource went offline: try #" + Integer.toString(i + 1) + " of 12");
-                if (!as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"))) {
+                if (!server.isAvailable()) {
                     log.fine("Success - Resource went offline! Now I will change connection settings back to normal.");
                     ok = true;
                     break;
@@ -108,7 +106,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             }
         } finally {
             // return the old values back
-            as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
+            server.inventory();
             sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
 
             hostname_element = sahiTasks.textbox("hostname");
@@ -123,7 +121,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             for (int i = 0; i < 12; i++) {
                 sahiTasks.waitFor(30000);
                 log.fine("Checking that resource is back online: try #" + Integer.toString(i + 1) + " of 12");
-                if (as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"))) {
+                if (server.isAvailable()) {
                     log.fine("Success - Resource is back online!");
                     break;
                 }

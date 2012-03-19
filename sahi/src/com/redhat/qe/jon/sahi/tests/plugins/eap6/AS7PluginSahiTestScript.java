@@ -24,6 +24,8 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     protected AS7PluginSahiTasks as7SahiTasks;
     private static int MGMT_PORT_STANDALONE;
     private static String MGMT_HOST_STANDALONE;
+    private static int MGMT_PORT_STANDALONE2;
+    private static String MGMT_HOST_STANDALONE2;
     private static int MGMT_PORT_DOMAIN;
     private static String MGMT_HOST_DOMAIN;
 
@@ -31,6 +33,10 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
      * AS7 management API client for standalone instance
      */
     protected static ManagementClient mgmtStandalone;
+    /**
+     * AS7 management API client for standalone instance  (2nd instance)
+     */
+    protected static ManagementClient mgmtStandalone2;
     /**
      * AS7 management API client for domain instance
      */
@@ -42,6 +48,12 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     protected static AS7SSHClient sshStandalone;
     
     /**
+     * SSH Client to to some stuff on machine where runs standalone AS7 (2nd instance)
+     */
+    protected static AS7SSHClient sshStandalone2;
+    
+    
+    /**
      * SSH Client to to some stuff on machine where runs domain AS7
      */
     protected static AS7SSHClient sshDomain;
@@ -49,6 +61,10 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
      * HTTP Client for standalone instance 
      */
     protected static HTTPClient httpStandalone;
+    /**
+     * HTTP Client for standalone instance (2nd instance)
+     */
+    protected static HTTPClient httpStandalone2;
     protected static HTTPClient httpDomainManager;
     protected static HTTPClient httpDomainOne;
     protected static HTTPClient httpDomainTwo;
@@ -79,19 +95,25 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         // ********************************************
         // MANAGEMENT INTERFACE INITIALIZATION ********
         // ********************************************
-        MGMT_PORT_STANDALONE = Integer.parseInt(System.getProperty("as7.standalone.port", "9999"));
-        MGMT_HOST_STANDALONE = System.getProperty("as7.standalone.hostname", "localhost");
+        MGMT_PORT_STANDALONE = Integer.parseInt(System.getProperty("as7.standalone1.port", "9999"));
+        MGMT_HOST_STANDALONE = System.getProperty("as7.standalone1.hostname", "localhost");
+        MGMT_PORT_STANDALONE2 = Integer.parseInt(System.getProperty("as7.standalone2.port", "9999"));
+        MGMT_HOST_STANDALONE2 = System.getProperty("as7.standalone2.hostname", "localhost");
         MGMT_PORT_DOMAIN = Integer.parseInt(System.getProperty("as7.domain.port", "9999"));
         MGMT_HOST_DOMAIN = System.getProperty("as7.domain.hostname", "localhost");
 
         mgmtStandalone = new ManagementClient(MGMT_HOST_STANDALONE, MGMT_PORT_STANDALONE);
+        mgmtStandalone2 = new ManagementClient(MGMT_HOST_STANDALONE2, MGMT_PORT_STANDALONE2);
         mgmtDomain = new ManagementClient(MGMT_HOST_DOMAIN, MGMT_PORT_DOMAIN);
 
         sshStandalone = new AS7SSHClient(
-        		System.getProperty("as7.standalone.home"));
+        		System.getProperty("as7.standalone1.home"));
+        sshStandalone2 = new AS7SSHClient(
+        		System.getProperty("as7.standalone2.home"));
         sshDomain = new AS7SSHClient(
         		System.getProperty("as7.domain.home"));
-        httpStandalone = new HTTPClient(System.getProperty("as7.standalone.hostname"), Integer.parseInt(System.getProperty("as7.standalone.http.port")));
+        httpStandalone = new HTTPClient(System.getProperty("as7.standalone1.hostname"), Integer.parseInt(System.getProperty("as7.standalone1.http.port")));
+        httpStandalone = new HTTPClient(System.getProperty("as7.standalone2.hostname"), Integer.parseInt(System.getProperty("as7.standalone2.http.port")));
         httpDomainManager = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.http.port")));
         httpDomainOne = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-one.http.port")));
         httpDomainTwo = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-two.http.port")));

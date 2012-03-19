@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
+import com.redhat.qe.jon.sahi.base.inventory.Monitoring;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks.Navigate;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
@@ -13,14 +14,13 @@ import org.testng.annotations.Test;
  *
  * @author jmartisk, lzoubek
  */
-public class MonitoringTest extends AS7PluginSahiTestScript {
+public class MonitoringTest extends AS7StandaloneTest {
     
     @BeforeClass(groups="monitoringTest")
     protected void setupAS7Plugin() {        
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));        
+        as7SahiTasks.importResource(server);        
     }
-    
     
     private ElementStub getMetricsCell() {
     	int tables = sahiTasks.table("listTable").countSimilar();
@@ -29,8 +29,9 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     }    
     
     @Test(groups={"monitoringTest"})
-    public void disableMetricsTest()  {        
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));               
+    public void disableMetricsTest()  {
+    	server.monitoring();
+                       
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();        
         // step1: disable one of the metrics         
         sahiTasks.waitFor(5000);
@@ -48,8 +49,8 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
 
     
     @Test(groups={"monitoringTest"})
-    public void enableMetricsTest()  {        
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));                       
+    public void enableMetricsTest()  {                               
+        server.monitoring();
         // check that the metric is present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
         sahiTasks.waitFor(5000);
@@ -57,8 +58,8 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     }
 
     @Test(groups={"monitoringTest"})
-    public void specifyMonitoringIntervalTest() {        
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));               
+    public void specifyMonitoringIntervalTest() {                       
+        server.monitoring();
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click(); 
         sahiTasks.waitFor(5000);
         sahiTasks.xy(getMetricsCell(),3,3).click();
