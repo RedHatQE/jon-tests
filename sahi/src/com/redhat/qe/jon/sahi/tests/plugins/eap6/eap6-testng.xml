@@ -245,6 +245,18 @@
             </run>
         </groups>
     </test>
+	<test name="Domain_JMSDestinations">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.JMSDestinationsTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                    
+                <include name="jms"/>                                
+            </run>
+        </groups>
+    </test>
 	<test name="Domain_Deployment">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.DeploymentTest"/>

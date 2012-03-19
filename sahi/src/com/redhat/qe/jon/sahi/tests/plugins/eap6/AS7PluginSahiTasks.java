@@ -1,7 +1,10 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
+import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
+import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQueueException;
 import net.sf.sahi.client.ElementStub;
@@ -246,5 +249,39 @@ public class AS7PluginSahiTasks {
                 break;
         }
     }
+    /**
+     * adds a JMS queue 
+     * @param hornetq resource representing hornetq
+     * @param queue resource representing queue (should be child of hornetq)
+     */
+	public void addJMSQueue(Resource hornetq, Resource queue) {
+		Operations operations = hornetq.operations();
+		Operation op = operations.newOperation("Add destination");
+		op.getEditor().setText("name", queue.getName());
+		ConfigEntry ce = op.getEditor().newEntry(0);
+		ce.setField("entry", queue.getName());
+		ce.OK();
+		op.getEditor().checkRadio("type[0]");
+		op.assertRequiredInputs();
+		op.schedule();
+		operations.assertOperationResult(op, true);
+	}
+    /**
+     * adds a JMS topic 
+     * @param hornetq resource representing hornetq
+     * @param topic resource representing topic (should be child of hornetq)
+     */
+	public void addJMSTopic(Resource hornetq, Resource topic) {
+		Operations operations = hornetq.operations();
+		Operation op = operations.newOperation("Add destination");
+		op.getEditor().setText("name", topic.getName());
+		ConfigEntry ce = op.getEditor().newEntry(0);
+		ce.setField("entry", topic.getName());
+		ce.OK();
+		op.getEditor().checkRadio("type[1]");
+		op.assertRequiredInputs();
+		op.schedule();
+		operations.assertOperationResult(op, true);
+	}
 
 }

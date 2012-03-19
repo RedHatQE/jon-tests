@@ -3,9 +3,6 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
-import com.redhat.qe.jon.sahi.base.inventory.Operations;
-import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 
 public class JMSDestinationsTest extends AS7StandaloneTest {
@@ -22,16 +19,7 @@ public class JMSDestinationsTest extends AS7StandaloneTest {
     }
 	@Test(groups="jms")	
 	public void addQueue() {
-		Operations operations = hornetq.operations();
-		Operation op = operations.newOperation("Add destination");
-		op.getEditor().setText("name", queue.getName());
-		ConfigEntry ce = op.getEditor().newEntry(0);
-		ce.setField("entry", queue.getName());
-		ce.OK();
-		op.getEditor().checkRadio("type[0]");
-		op.assertRequiredInputs();
-		op.schedule();
-		operations.assertOperationResult(op, true);
+		as7SahiTasks.addJMSQueue(hornetq, queue);
 		mgmtClient.assertResourcePresence("/subsystem=messaging/hornetq-server=default", "jms-queue", queue.getName(), true);		
 		server.performManualAutodiscovery();
 		queue.assertExists(true);
@@ -46,16 +34,7 @@ public class JMSDestinationsTest extends AS7StandaloneTest {
 	
 	@Test(groups="jms")	
 	public void addTopic() {
-		Operations operations = hornetq.operations();
-		Operation op = operations.newOperation("Add destination");
-		op.getEditor().setText("name", topic.getName());
-		ConfigEntry ce = op.getEditor().newEntry(0);
-		ce.setField("entry", topic.getName());
-		ce.OK();
-		op.getEditor().checkRadio("type[1]");
-		op.assertRequiredInputs();
-		op.schedule();
-		operations.assertOperationResult(op, true);
+		as7SahiTasks.addJMSTopic(hornetq, topic);
 		mgmtClient.assertResourcePresence("/subsystem=messaging/hornetq-server=default", "jms-topic", topic.getName(), true);		
 		server.performManualAutodiscovery();
 		topic.assertExists(true);
