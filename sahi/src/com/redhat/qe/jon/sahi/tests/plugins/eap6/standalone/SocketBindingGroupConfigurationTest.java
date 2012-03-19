@@ -22,7 +22,7 @@ public class SocketBindingGroupConfigurationTest extends AS7StandaloneTest {
 		as7SahiTasks.importResource(server);
         sbGroup = server.child("standard-sockets");
     }
-	@Test(groups="socketBindingGroup")
+	@Test(groups={"socketBindingGroup","blockedByBug-802794"})
 	public void addPort() {
 		Configuration configuration = sbGroup.configuration();
 		CurrentConfig current = configuration.current();

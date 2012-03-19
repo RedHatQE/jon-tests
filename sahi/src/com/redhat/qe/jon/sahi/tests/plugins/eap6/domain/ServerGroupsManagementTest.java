@@ -36,7 +36,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
 		serverGroup.assertExists(true);        
     }
     
-    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup") 
+    @Test(groups={"serverGroupsManagement","blockedByBug-802561"},dependsOnMethods="addServerGroup") 
     public void assignSocketBindingGroupToServerGroup() {
         Configuration configuration = serverGroup.configuration();
         CurrentConfig current = configuration.current();
@@ -47,7 +47,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+serverGroup.getName(), "socket-binding-group").get("result").asString().equals("ha-sockets"),"Configuration changed");
     }
     
-    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup") 
+    @Test(groups={"serverGroupsManagement","blockedByBug-802561"},dependsOnMethods="addServerGroup") 
     public void changeProfileToServerGroup() {
         Configuration configuration = serverGroup.configuration();
         CurrentConfig current = configuration.current();
@@ -58,7 +58,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+serverGroup.getName(), "profile").get("result").asString().equals("full-ha"),"Configuration changed");
     }
     
-    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup")     
+    @Test(groups={"serverGroupsManagement","blockedByBug-802561","blockedByBug-801849"},dependsOnMethods="addServerGroup")     
     public void changeJvmParametersForServerGroup() {
     	Configuration configuration = serverGroup.configuration();
         CurrentConfig current = configuration.current();
