@@ -113,7 +113,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         sshDomain = new AS7SSHClient(
         		System.getProperty("as7.domain.home"));
         httpStandalone = new HTTPClient(System.getProperty("as7.standalone1.hostname"), Integer.parseInt(System.getProperty("as7.standalone1.http.port")));
-        httpStandalone = new HTTPClient(System.getProperty("as7.standalone2.hostname"), Integer.parseInt(System.getProperty("as7.standalone2.http.port")));
+        httpStandalone2 = new HTTPClient(System.getProperty("as7.standalone2.hostname"), Integer.parseInt(System.getProperty("as7.standalone2.http.port")));
         httpDomainManager = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.http.port")));
         httpDomainOne = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-one.http.port")));
         httpDomainTwo = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-two.http.port")));
