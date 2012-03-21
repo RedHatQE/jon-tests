@@ -1,22 +1,25 @@
-package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
+package com.redhat.qe.jon.sahi.tests;
 
 import java.util.List;
-
-import com.redhat.qe.auto.testng.Assert;
-import com.redhat.qe.jon.sahi.base.inventory.Configuration;
-import com.redhat.qe.jon.sahi.base.inventory.Resource;
+import java.util.logging.Logger;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class CheckForConfigurationErrorsTest extends AS7StandaloneTest {
+import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.base.inventory.Configuration;
+import com.redhat.qe.jon.sahi.base.inventory.Resource;
 
+public class CheckForConfigurationErrorsTest extends SahiTestScript {
+
+	private static Logger log = Logger.getLogger(CheckForConfigurationErrorsTest.class.getName());
+	
 	@DataProvider
 	public Object[][] getResourceTree() {
-		Resource root = server;
+		Resource root = new Resource(sahiTasks,System.getenv("AGENT_NAME"));
 		List<Resource> tree = root.getChildrenTree();
 		tree.add(0, root);
-		tree.add(server.child("webservices"));
 		Object[][] output = new Object[tree.size()][];
 		for (int i=0;i<tree.size();i++) {
 			output[i] = new Object[] {tree.get(i)};
