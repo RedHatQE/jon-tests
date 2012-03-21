@@ -32,23 +32,34 @@ public class Resource {
 
 	private final List<String> path;
 	private final SahiTasks tasks;
+	private final String id;
 	private static final Logger log = Logger.getLogger(Resource.class.getName());
 
 	public Resource(SahiTasks tasks, String... path) {
-		this(tasks,Arrays.asList(path));
+		this(null,tasks,Arrays.asList(path));
+	}
+	public Resource(String id,SahiTasks tasks, String... path) {
+		this(id,tasks,Arrays.asList(path));
 	}
 	/**
 	 * creates new instance of resource, no actions (navigation etc) are performed
 	 * @param tasks
 	 * @param path
 	 */
-	private Resource(SahiTasks tasks, List<String> path) {
+	private Resource(String id,SahiTasks tasks, List<String> path) {
 		this.tasks = tasks;
 		this.path = path;
-
+		this.id = id;
 		if (this.path.isEmpty()) {
 			throw new RuntimeException("Resource path cannot be empty");
 		}
+	}
+	/**
+	 * gets ID of resource, can be null which is perfectly valid for cases when we do not use/know it
+	 * @return
+	 */
+	public String getId() {
+		return id;
 	}
 	/**
 	 * navigates to this resource, note that Resource Tab that being selected is undefined
@@ -150,7 +161,7 @@ public class Resource {
 	private List<Resource> getChidrenRecursive(RestClient rc, WebResource res, String myID, Resource current) throws Exception {
 		List<Resource> children = new ArrayList<Resource>();
 		for (Entry<String,String> entry : getChildren(rc, res, myID).entrySet()) {
-			Resource child = current.child(entry.getValue());
+			Resource child = current.child(entry.getValue(),entry.getKey());
 			children.add(child);
 			children.addAll(getChidrenRecursive(rc, res, entry.getKey(), child));
 		}
@@ -241,13 +252,26 @@ public class Resource {
 	/**
 	 * 
 	 * @param name of child resource
+	 * @param id id of a new child resource
+	 * @return new Resource instance representing its child of given name
+	 * 
+	 */
+	public Resource child(String name, String id) {
+		List<String> newPath = new ArrayList<String>();
+		newPath.addAll(this.path);
+		newPath.add(name);
+		return new Resource(id, tasks,newPath);
+	}
+	/**
+	 * 
+	 * @param name of child resource
 	 * @return new Resource instance representing its child of given name
 	 */
 	public Resource child(String name) {
 		List<String> newPath = new ArrayList<String>();
 		newPath.addAll(this.path);
 		newPath.add(name);
-		return new Resource(tasks,newPath);
+		return new Resource(null, tasks,newPath);
 	}
 	/**
 	 * @return new instance of resource representing its parent
@@ -259,7 +283,7 @@ public class Resource {
 			throw new RuntimeException("You cannot get parent resource for platform !!");
 		}
 		newPath.remove(newPath.size()-1);
-		return new Resource(tasks,newPath);
+		return new Resource(null,tasks,newPath);
 	}
 	/**
 	 * checks whether this resource is available (ONLINE) by navigating to it's summary 

@@ -1,7 +1,9 @@
 package com.redhat.qe.jon.sahi.tasks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -18,6 +20,7 @@ public class Navigator {
 	private final SahiTasks tasks;
 	private final Map<String,String> itNav;
 	private int timeout = Timing.WAIT_TIME;
+	
 	public Navigator(SahiTasks tasks) {
 		this.tasks = tasks;
 		// initialize navigation mappings
@@ -101,22 +104,22 @@ public class Navigator {
         log.fine("Navigation to "+nav.toString()+ " done.");
 	}
 	public void inventoryGoToResource(Resource res) {
-		tasks.link("Inventory").click();
-		tasks.waitFor(timeout);
-		tasks.cell("Platforms").click();
-		tasks.waitFor(timeout);
-        log.fine("Select platform ["+res.getPlatform()+"]");
-        tasks.link(res.getPlatform()).click();
-        for (int i = 1;i<res.getPath().size();i++) {
-        	String element = res.getPath().get(i);
-        	log.fine("Select element ["+element+"]");
-        	tasks.waitFor(timeout);
-	        inventorySelectTab("Inventory","Child Resources");	        
-	        tasks.link(element).click();
-	        log.fine("Clicked element ["+element+"]");
-        }
-        tasks.waitFor(timeout);
-        log.fine("Navigation to "+res.toString()+ " done.");
+	tasks.link("Inventory").click();
+	tasks.waitFor(timeout);
+	tasks.cell("Platforms").click();
+	tasks.waitFor(timeout);
+    log.fine("Select platform ["+res.getPlatform()+"]");
+    tasks.link(res.getPlatform()).click();
+    for (int i = 1;i<res.getPath().size();i++) {
+       	String element = res.getPath().get(i);
+       	log.fine("Select element ["+element+"]");
+       	tasks.waitFor(timeout);
+        inventorySelectTab("Inventory","Child Resources");	        
+        tasks.link(element).click();
+        log.fine("Clicked element ["+element+"]");
+      }	
+      tasks.waitFor(timeout);
+      log.fine("Navigation to "+res.toString()+ " done.");
 	}
 	
 	public static class InventoryNavigation {

@@ -3,12 +3,13 @@ package com.redhat.qe.jon.sahi.tests;
 import java.util.List;
 import java.util.logging.Logger;
 
+import net.sf.sahi.client.ElementStub;
+
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
-import com.redhat.qe.jon.sahi.base.inventory.Configuration;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 
 public class CheckForConfigurationErrorsTest extends SahiTestScript {
@@ -19,11 +20,10 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 	public Object[][] getResourceTree() {
 		Resource root = new Resource(sahiTasks,System.getenv("AGENT_NAME"));
 		List<Resource> tree = root.getChildrenTree();
-		tree.add(0, root);
 		Object[][] output = new Object[tree.size()][];
 		for (int i=0;i<tree.size();i++) {
 			output[i] = new Object[] {tree.get(i)};
-		}
+		}		
 		return output;
 	}
 
@@ -32,17 +32,34 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 			description="This test checks whether there is any error on Configuration tab of particular resource"
 	)
 	public void resourceConfigurationWithoutErrors(final Resource resource) {
-		Configuration config = resource.configurationNoNav();
-		try {
-			config.navigateFull();
-		} catch (Exception ex) {
+		if (resource.getId()==null) {
+			Assert.fail("resource ID must NOT be null");
+		}
+		String url = System.getProperty("jon.server.url");
+		if (!url.endsWith("coregui")) {
+			url+="/coregui/";
+		}
+		url+="#Resource/"+resource.getId()+"/Configuration/Current";
+		sahiTasks.navigateTo(url);
+		if (!sahiTasks.cell("Configuration").exists()) {
 			log.info("Resource " + resource.toString()
 					+ " does not HAVE Configuration TAB");
 			return;
 		}
-		String errorText = config.current().getErrorText();
+		String errorText = getErrorText();
 		Assert.assertNull(errorText, "Resource " + resource.toString()
 				+ " has error on Configuration TAB : " + errorText);
 
+	}
+	
+	private String getErrorText() {
+		StringBuilder sb = new StringBuilder();
+		ElementStub es =  sahiTasks.byXPath("//td[@class='ErrorBlock'][1]");
+		if (!es.exists()) {
+			return null;
+		}
+		sb.append(es.getText());			
+		return sb.toString();
+		
 	}
 }
