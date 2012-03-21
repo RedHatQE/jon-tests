@@ -25,6 +25,9 @@
 		<fileset dir="../rest/lib">
 			<include name="*.jar" />
 		</fileset>
+		<fileset dir="../rest-java/lib">
+			<include name="*.jar" />
+		</fileset>
 	</path>
 
 	<path id="tests.cp">
@@ -33,6 +36,8 @@
 			<include name="*.jar" />
 		</fileset>
 		<pathelement location="${webui-framework.dir}/bin" />
+		<pathelement location="../rest-java/bin" />
+		<pathelement location="../clitest/bin" />
 		<path refid="utils.cp" />
 	</path>
 
@@ -60,8 +65,13 @@
 			<property name="basedir" value="${webui-framework.dir}" />
 		</ant>
 	</target>
-
-	<target name="compile" depends="">
+	<target name="compile-cli">
+		<ant inheritAll="false" antfile="../clitest/build.xml" />
+	</target>
+	<target name="compile-rest">
+		<ant inheritAll="false" antfile="../rest-java/build.xml" />
+	</target>
+	<target name="compile" depends="compile-cli,compile-rest">
 		<echo message="Compiling testsuite in ${basedir}" />
 		<antcall target="deps" />
 		<mkdir dir="${test.build.dir}" />
@@ -85,7 +95,7 @@
 	<target name="run-eap6" description="run RHQ sahi java test" depends="compile">
 		<property name="testsuite" value="eap6-testng.xml" />
 		<property name="eap6plugin.configfile" value="config/eap6plugin.properties" />
-		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener">
+		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter">
 			<xmlfileset dir="src/com/redhat/qe/jon/sahi/tests" includes="plugins/eap6/${testsuite}"/>
 			<sysproperty key="eap6plugin.configfile" value="${eap6plugin.configfile}" />
 		</testng>
