@@ -67,9 +67,16 @@
 	</target>
 	<target name="compile-cli">
 		<ant inheritAll="false" antfile="../clitest/build.xml" />
+		<copy todir="${test.build.dir}">
+			<fileset dir="../clitest/bin" />
+		</copy>
+
 	</target>
 	<target name="compile-rest">
 		<ant inheritAll="false" antfile="../rest-java/build.xml" />
+		<copy todir="${test.build.dir}">
+			<fileset dir="../rest-java/bin" />
+		</copy>
 	</target>
 	<target name="compile" depends="compile-cli,compile-rest">
 		<echo message="Compiling testsuite in ${basedir}" />
