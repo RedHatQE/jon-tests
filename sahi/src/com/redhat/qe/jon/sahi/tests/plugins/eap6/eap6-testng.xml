@@ -161,18 +161,6 @@
             </run>
         </groups>
     </test>
-    <test name="Standalne_CheckForConfigurationErrors">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.CheckForConfigurationErrorsTest"/>
-        </classes>
-        <groups>
-            <run>				
-                <include name="setup"/>           
-                <include name="teardown"/>                                    
-                <include name="check"/>                                
-            </run>
-        </groups>
-    </test>
     <test name="Domain_AutodetectConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.AutodetectConfigurationTest"/>
