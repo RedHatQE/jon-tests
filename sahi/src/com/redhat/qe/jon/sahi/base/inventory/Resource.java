@@ -2,16 +2,24 @@ package com.redhat.qe.jon.sahi.base.inventory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.testng.Assert;
 
+import com.redhat.qe.jon.rest.tasks.RestClient;
+import com.redhat.qe.jon.rest.tasks.RestClient.URIs;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+import com.sun.jersey.api.client.WebResource;
 /**
  * this represents RHQ Resource. Each resource is defined by its path within inventory. 
  * Path starts with {@link Resource#getPlatform()} and ends with {@link Resource#getName()}
@@ -25,6 +33,7 @@ public class Resource {
 	private final List<String> path;
 	private final SahiTasks tasks;
 	private static final Logger log = Logger.getLogger(Resource.class.getName());
+
 	public Resource(SahiTasks tasks, String... path) {
 		this(tasks,Arrays.asList(path));
 	}
@@ -36,6 +45,7 @@ public class Resource {
 	private Resource(SahiTasks tasks, List<String> path) {
 		this.tasks = tasks;
 		this.path = path;
+
 		if (this.path.isEmpty()) {
 			throw new RuntimeException("Resource path cannot be empty");
 		}
@@ -112,29 +122,119 @@ public class Resource {
 		return this.path.get(this.path.size()-1);
 	}
 	/**
-	 * this method navigates through all child resources of current resource recursively
+	 * this method uses REST API to retrieve all children of current resource
 	 * @return a List of resources that are direct or indirect ancestors to this resource
 	 */
 	public List<Resource> getChildrenTree() {
 		log.fine("getChildrenRecursive for resource "+toString());
 		List<Resource> children = new ArrayList<Resource>();
-		Inventory inventory = null;
+		
+		//first we need to find current resource
+		String url = System.getProperty("jon.server.url")+"/rest/1";
+		RestClient rc = new RestClient();
+		WebResource res = rc.getWebResource(url, "rhqadmin", "rhqadmin");		
+		String platformId = findPlatformId(rc, res);
+		if (platformId==null) {
+			throw new RuntimeException("Unable to find platform ID of "+toString()+" using REST API");
+		}
+		
 		try {
-			inventory = inventory();
+			String myId = findResourceId(rc, res, platformId);
+			return getChidrenRecursive(rc, res, myId, this);			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		catch (Exception ex) {
-			log.log(Level.SEVERE, "Skipping resource "+toString()+" navigation ERROR", ex);
-			return children;
+		return children;
+	}
+	private List<Resource> getChidrenRecursive(RestClient rc, WebResource res, String myID, Resource current) throws Exception {
+		List<Resource> children = new ArrayList<Resource>();
+		for (Entry<String,String> entry : getChildren(rc, res, myID).entrySet()) {
+			Resource child = current.child(entry.getValue());
+			children.add(child);
+			children.addAll(getChidrenRecursive(rc, res, entry.getKey(), child));
 		}
-		if (inventory.hasChildren()) {
-			for (String childName : inventory.childResources().listChildren()) {
-				Resource child = child(childName);
-				children.add(child);
-				children.addAll(child.getChildrenTree());
+		return children;
+	}
+	/**
+	 * finds id of platform for this resource
+	 * @param rc
+	 * @param res
+	 * @return
+	 */
+	private String findPlatformId(RestClient rc, WebResource res) {
+		HashMap<String, Object> result = rc.getReponse(res, URIs.PLATFORMS.getUri()+".json");
+		
+		JSONArray jsonArray = null;
+		try {
+			jsonArray = rc.getJSONArray((String) result.get("response.content"));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+		log.fine("Number of Platfoms(s): "+jsonArray.size());
+		Assert.assertTrue(jsonArray.size()>0, "Number of Platform(s) [>0] : "+jsonArray.size());
+		JSONObject jsonObject;
+		String platformId = null;
+		for(int i=0; i<jsonArray.size();i++){
+			jsonObject = (JSONObject) jsonArray.get(i);
+			String platform = jsonObject.get("resourceName").toString();
+			if (getPlatform().equals(platform)) {
+				platformId = jsonObject.get("resourceId").toString();
+				break;
 			}
 		}
-		else {
-			log.fine("Resource "+toString()+" does not have any children");
+		return platformId;
+	}
+	/**
+	 * finds ID of this resource using REST
+	 * @param rc
+	 * @param res
+	 * @param platformId
+	 * @return
+	 * @throws Exception
+	 */
+	private String findResourceId(RestClient rc, WebResource res, String platformId) throws Exception {
+		int pathIndex = 1;
+		String currentResource = platformId;
+		while (pathIndex<getPath().size()) {
+			String node = getPath().get(pathIndex);
+			boolean found = false;
+			for (Entry<String,String> entry : getChildren(rc, res, currentResource).entrySet()) {
+				if (entry.getValue().equals(node)) {
+					currentResource = entry.getKey();
+					pathIndex+=1;
+					found = true;
+					break;
+				}	
+			}
+			if (!found) {
+				throw new RuntimeException("Unable to find resource child ["+node+"] with parent [ID="+currentResource+"] via REST API");
+			}
+			
+		}
+		
+		return currentResource;
+	}
+	/**
+	 * gets children of given resource (resourceId) using REST
+	 * @param rc
+	 * @param res
+	 * @param resourceId
+	 * @return
+	 * @throws Exception
+	 */
+	private Map<String,String> getChildren(RestClient rc, WebResource res,String resourceId) throws Exception {
+		Map<String,String> children = new HashMap<String, String>();
+		HashMap<String, Object> result = rc.getReponse(res,"resource/"+resourceId+"/children.json");
+		
+		JSONArray jsonArray = rc.getJSONArray((String)result.get("response.content"));		
+		
+		log.fine("Number of Resource(s): "+jsonArray.size());
+		JSONObject jsonObject;
+		for(int i=0; i<jsonArray.size();i++){
+			jsonObject = (JSONObject) jsonArray.get(i);
+			children.put(jsonObject.get("resourceId").toString(),jsonObject.get("resourceName").toString());
 		}
 		return children;
 	}
