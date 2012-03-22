@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
+import java.util.logging.Logger;
+
 import net.sf.sahi.client.ElementStub;
 
 import org.testng.Assert;
@@ -15,7 +17,10 @@ public class Configuration extends ResourceTab {
 
 	@Override
 	protected void navigate() {
-		selectTab("Configuration");
+		navigateUnderResource("Configuration");
+		// we need to assert it, because direct navigation could redirect us somewhere else, 
+		// when Configuration tab does not exist
+		raiseErrorIfCellDoesNotExist("Configuration");
 	}
 
 	/**
@@ -24,7 +29,7 @@ public class Configuration extends ResourceTab {
 	 * @return
 	 */
 	public CurrentConfig current() {
-		selectTab("Configuration", "Current");
+		navigateUnderResource("Configuration/Current");
 		return new CurrentConfig(tasks);
 	}
 
@@ -34,13 +39,14 @@ public class Configuration extends ResourceTab {
 	 * @return
 	 */
 	public ConfigHistory history() {
-		selectTab("Configuration", "History");
+		navigateUnderResource("Configuration/History");
 		return new ConfigHistory(tasks);
 	}
 
 	public static class CurrentConfig {
 		private final SahiTasks tasks;
 		private final Editor editor;
+		private final Logger log = Logger.getLogger(this.getClass().getName());
 		private CurrentConfig(SahiTasks tasks) {
 			this.tasks = tasks;
 			this.editor = new Editor(tasks);
@@ -97,7 +103,9 @@ public class Configuration extends ResourceTab {
 		 * saves configuration
 		 */
 		public void save() {
-			tasks.xy(tasks.cell("Save"), 3, 3).click();
+			int buttons = tasks.cell("Save").countSimilar();
+			log.info("Save buttons : "+buttons);
+			tasks.xy(tasks.cell("Save["+(buttons-1)+"]"), 3, 3).click();
 		}
 	}
 
@@ -148,7 +156,7 @@ public class Configuration extends ResourceTab {
 				if (!isPending()) {
 					return true;
 				}
-				tasks.waitFor(Timing.WAIT_TIME);
+				tasks.waitFor(Timing.TIME_10S);
 				refresh();
 			}
 			return false;

@@ -43,10 +43,10 @@ public class Editor {
 	 */
 	public void checkBox(int index, boolean check) {
 		if (check) {
-			tasks.xy(tasks.image("unchecked.png["+index+"]"),3,3).click();
+			tasks.xy(tasks.image("unchecked.png["+index+"]").parentNode(),3,3).click();
 		}
 		else {
-			tasks.xy(tasks.image("checked.png["+index+"]"),3,3).click();
+			tasks.xy(tasks.image("checked.png["+index+"]").parentNode(),3,3).click();
 		}
 	}
 	

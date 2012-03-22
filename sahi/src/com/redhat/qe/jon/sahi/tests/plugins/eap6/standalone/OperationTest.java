@@ -67,9 +67,7 @@ public class OperationTest extends AS7StandaloneTest {
 			sahiTasks.waitFor(Timing.TIME_30S);
 			log.fine("Checking that resource is online: try #"
 					+ Integer.toString(i + 1) + " of 10");
-			if (!as7SahiTasks.checkIfResourceWithChildrenIsOnline(
-					System.getProperty("agent.name"),
-					System.getProperty("as7.standalone.name"))) {
+			if (!server.isAvailable()) {
 				log.fine("Resource is offline!");
 				ok = false;
 			}

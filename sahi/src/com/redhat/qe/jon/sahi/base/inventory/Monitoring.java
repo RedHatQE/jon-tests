@@ -10,7 +10,7 @@ public class Monitoring extends ResourceTab {
 
 	@Override
 	protected void navigate() {
-		selectTab("Monitoring");
+		navigateUnderResource("Monitoring");
 	}
 
 

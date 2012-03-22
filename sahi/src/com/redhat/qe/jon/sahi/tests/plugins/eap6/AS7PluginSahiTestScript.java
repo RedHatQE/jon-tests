@@ -7,12 +7,10 @@ import java.util.logging.Logger;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
-import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
-import com.redhat.qe.jon.sahi.tasks.Navigator.InventoryNavigation;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.AS7SSHClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.AS7SSHClient;
 
 /**
  * @author jmartisk, lzoubek
@@ -141,51 +139,5 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     		sshDomain.disconnect();
     	if (sshStandalone!=null)
     		sshStandalone.disconnect();    	
-    }
-    /**
-     * asserts whether last operation on current resource (you have to be on resource page) 
-     * defined by 'opName' was successful
-     * @param opName
-     */
-    public void assertOperationSuccess(InventoryNavigation nav,String opName) {
-    	assertOperationResult(nav, opName, true);
-    }
-
-    /**
-     * asserts whether last operation on current resource (you have to be on resource page) 
-     * defined by 'opName' resulted.
-     * @param opName
-     * @param success - true if you expect operation to succeed, false if you expect it to fail
-     */
-    public void assertOperationResult(InventoryNavigation nav,String opName, boolean success) {
-    	log.fine("Asserting operation '"+opName+"' result...");
-    	nav = nav.setInventoryTab("Summary");
-    	sahiTasks.getNavigator().inventoryGoToResource(nav);
-    	int timeout = 600*1000;
-    	int time = 0;
-    	while (time<timeout && sahiTasks.image("Operation_inprogress_16.png").in(sahiTasks.div(opName+"[0]").parentNode("tr")).exists()) {
-    		time+=10*1000;
-    		log.fine("Operation '"+opName+"' in progress, waiting 10s");
-    		sahiTasks.waitFor(10*1000);
-    		sahiTasks.getNavigator().inventoryGoToResource(nav);
-    	}
-    	String resultImage = "Operation_failed_16.png";
-    	String succ="fail";
-    	if (success) {
-    		resultImage = "Operation_ok_16.png";
-    		succ="success";
-    	}
-    	
-    	Assert.assertTrue(sahiTasks.image(resultImage).in(sahiTasks.div(opName+"[0]").parentNode("tr")).exists(),opName+" operation result:"+succ);
-    }
-    /**
-     * asserts whether last operation on current resource (you have to be on resource page) 
-     * defined by 'opName' failed
-     * @param opName
-     */
-    public void assertOperationFailure(InventoryNavigation nav,String opName) {
-    	assertOperationResult(nav, opName, false);
-    }
-    
-    
+    } 
 }

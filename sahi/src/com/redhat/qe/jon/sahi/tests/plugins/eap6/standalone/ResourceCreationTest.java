@@ -26,12 +26,7 @@ public class ResourceCreationTest extends AS7StandaloneTest {
 
     @Test(groups = "resourceCreation001", alwaysRun=true)
     public void checkPersistenceOfChanges() {        
-        server.inventory();
-        try {
-            Thread.sleep(5000);
-        } catch(Exception e) {}
-        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-
+        server.inventory().connectionSettings();
 
         ElementStub configuration_element = sahiTasks.textbox("config");
         ElementStub startScript_element = sahiTasks.textbox("startScript");
@@ -47,11 +42,8 @@ public class ResourceCreationTest extends AS7StandaloneTest {
             startScript_element.setValue("abccbcblsd.sh");
             sahiTasks.cell("Save").click();
         } finally {
-            server.inventory();
-            try {
-            Thread.sleep(5000);
-        } catch(Exception e) {}
-            sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
+            
+        	server.inventory().connectionSettings();
 
             // check that the changes are persistent
             configuration_element = sahiTasks.textbox("config");
@@ -76,8 +68,7 @@ public class ResourceCreationTest extends AS7StandaloneTest {
 
     @Test(groups = "resourceCreation001", alwaysRun=true)
     public void inputValidButIncorrectConnectionSettings() {                      
-        server.inventory();
-        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
+        server.inventory().connectionSettings();
 
         ElementStub hostname_element = sahiTasks.textbox("hostname");
         ElementStub port_element = sahiTasks.textbox("port");
@@ -106,8 +97,7 @@ public class ResourceCreationTest extends AS7StandaloneTest {
             }
         } finally {
             // return the old values back
-            server.inventory();
-            sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
+            server.inventory().connectionSettings();
 
             hostname_element = sahiTasks.textbox("hostname");
             port_element = sahiTasks.textbox("port");

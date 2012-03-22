@@ -3,6 +3,7 @@ package com.redhat.qe.jon.sahi.base.inventory;
 import java.util.logging.Logger;
 
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 /**
  * this abstract class is extended by each Resource Tab (Inventory, Configuration, Operations etc)
  * it has always reference to {@link Resource} object
@@ -51,20 +52,19 @@ public abstract class ResourceTab {
 		navigate();
 		return this;
 	}
+
 	/**
-	 * selects tab of given name on resource page (Inventory, Configuration etc.)
-	 * @param it
+	 * navigates to anything under resource's URI 
+	 * @param uri for example "Configuration/Current" will navigate to resource's current configuration
 	 */
-	protected void selectTab(String it) {
-		selectTab(it,null);
+	protected void navigateUnderResource(String uri) {
+		String url = tasks.getNavigator().getServerBaseUrl()+"/#Resource/"+resource.getId()+"/"+uri;
+		tasks.navigateTo(url,false);
+		tasks.waitFor(Timing.WAIT_TIME);
 	}
-	/**
-	 * same as {@link ResourceTab#selectTab(String)} but you can also specify sub tab under given tab. 
-	 * For example <b>Connection Settings</b> is a subtab of <b>Inventory</b>
-	 * @param it
-	 * @param subTab
-	 */
-	protected void selectTab(String it, String subTab) {		
-		tasks.getNavigator().inventorySelectTab(it, subTab);
+	protected void raiseErrorIfCellDoesNotExist(String cell) {
+		if (!tasks.cell(cell).exists()) {
+			throw new RuntimeException("Tab ["+cell+"] does not exist for resource "+getResource().toString());
+		}
 	}
 }

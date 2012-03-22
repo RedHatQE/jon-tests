@@ -10,7 +10,8 @@ public class Summary extends ResourceTab {
 
 	@Override
 	protected void navigate() {
-		selectTab("Summary");
+		navigateUnderResource("Summary");
+		raiseErrorIfCellDoesNotExist("Summary");
 	}
 
 }

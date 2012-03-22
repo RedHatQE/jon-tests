@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
+import net.sf.sahi.client.ElementStub;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -30,9 +32,13 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class Resource {
 
+	/**
+	 * internal static cache of resource IDs
+	 */
+	private static final Map<String,String> idChache = new HashMap<String, String>();
 	private final List<String> path;
 	private final SahiTasks tasks;
-	private final String id;
+	private String id;
 	private static final Logger log = Logger.getLogger(Resource.class.getName());
 
 	public Resource(SahiTasks tasks, String... path) {
@@ -53,6 +59,9 @@ public class Resource {
 		if (this.path.isEmpty()) {
 			throw new RuntimeException("Resource path cannot be empty");
 		}
+		if (getId()!=null) {
+			idChache.put(toString(), getId());
+		}
 	}
 	/**
 	 * gets ID of resource, can be null which is perfectly valid for cases when we do not use/know it
@@ -65,7 +74,18 @@ public class Resource {
 	 * navigates to this resource, note that Resource Tab that being selected is undefined
 	 */
 	public void navigate() {
-		tasks.getNavigator().inventoryGoToResource(this);
+		fetchId(false);
+		String serverBaseUrl = tasks.getNavigator().getServerBaseUrl();
+		tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
+		ElementStub es =  tasks.byXPath("//td[@class='WarnBlock'][1]");
+		if (es.exists() && es.getText().contains("does not exist")) {
+			// need to refresh resource's ID
+			fetchId(true);
+			if (getId()!=null) {
+				tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
+			}
+		}
+		log.fine("Navigation to "+toString()+ " done.");
 	}
 
 	/**
@@ -131,6 +151,39 @@ public class Resource {
 	 */
 	public String getName() {
 		return this.path.get(this.path.size()-1);
+	}
+	/**
+	 * whis method checks whether {@link Resource#getId()} is null. 
+	 * If it is, it tries to get it using REST API. If this resource does not exist within RHQ 
+	 * ( is not found using REST API) no error is raised, but  {@link Resource#getId()} stays null
+	 * @param overwrite = set to true to overwrite ID even it is not null (this may be useful, when ID of a resource
+	 * changes - for example by re-inventorying it)
+	 */
+	private void fetchId(boolean overwrite) {
+		this.id = idChache.get(toString());
+		
+		if (overwrite || this.id == null) {
+			//first we need to find current resource
+			String url = System.getProperty("jon.server.url")+"/rest/1";
+			RestClient rc = new RestClient();
+			WebResource res = rc.getWebResource(url, "rhqadmin", "rhqadmin");		
+			String platformId = findPlatformId(rc, res);
+			if (platformId==null) {
+						return;
+			}
+			try {
+				this.id = findResourceId(rc, res, platformId);
+				if (getId()!=null) {
+					idChache.put(toString(), getId());
+				}
+				log.fine("Resource "+toString()+" fetched ID="+this.id);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (this.id==null) {
+			throw new RuntimeException("Unable to fetch ID for resource "+toString()+" using REST!!");
+		}
 	}
 	/**
 	 * this method uses REST API to retrieve all children of current resource
@@ -292,6 +345,9 @@ public class Resource {
 	 * @return true if this resource is online, false if it is offline
 	 */
 	public boolean isAvailable() {
+		// because UI caches availability things and we keep refreshing same page
+		// we need to force it to reload .. so we navigate somewhere else
+		tasks.link("Dashboard").click();
 		this.summary();
         if (tasks.image("Server_down_24.png").exists()) {
             log.fine("Resource [" + getName() + "] is offline!");
@@ -306,7 +362,8 @@ public class Resource {
 
 	}
 	/**
-	 * navigates to parent resource of this resource and checks whether this resource exists
+	 * navigates to parent resource of this resource and checks whether this resource exists.
+	 * Parent resource MUST exist!!
 	 * @return true if this resource exists
 	 */
 	public boolean exists() {
@@ -346,7 +403,7 @@ public class Resource {
      */
     public void assertAvailable(boolean shouldBeAvailable, String message) {
     	log.fine("Asserting resource "+toString()+" is available - expected: "+shouldBeAvailable);
-    	int waitTime=Timing.WAIT_TIME;
+    	int waitTime=Timing.TIME_30S;
     	int count=Timing.REPEAT;
     	
     	String resourceName = getName();
@@ -365,7 +422,7 @@ public class Resource {
     			Assert.assertFalse(false, message);
     			return;
     		}
-    		log.fine("Waiting for resource, refreshing ..");
+    		log.fine("Waiting "+Timing.toString(waitTime)+" for resource, refreshing ..");    		
     		tasks.waitFor(waitTime);
     	}
     	log.fine("Checking resurce (un)existence timed out");
@@ -379,7 +436,7 @@ public class Resource {
      */
     public void assertExists(boolean shouldExist) {
     	log.fine("Asserting resource "+toString()+" exists");
-    	int waitTime=Timing.WAIT_TIME;
+    	int waitTime=Timing.TIME_30S;
     	int count=Timing.REPEAT;
     	
     	String resourceName = getName();

@@ -1,6 +1,10 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
+import java.util.logging.Logger;
+
+import net.sf.sahi.client.ElementStub;
+
 import org.testng.Assert;
 
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
@@ -19,8 +23,9 @@ public class Operations extends ResourceTab {
 	}
 
 	@Override
-	protected void navigate() {
-		selectTab("Operations","Schedules");
+	protected void navigate() {		
+		navigateUnderResource("Operations/Schedules");
+		raiseErrorIfCellDoesNotExist("Operations");
 	}
 	/**
 	 * Creates new Operation of given name, also selects it in <b>Operation:</b> combo
@@ -28,6 +33,7 @@ public class Operations extends ResourceTab {
 	 * @return
 	 */
 	public Operation newOperation(String name) {
+		tasks.cell("New").click();
 		return new Operation(tasks, name);
 	}
 	/**
@@ -60,12 +66,28 @@ public class Operations extends ResourceTab {
 		private final SahiTasks tasks;
 		private final String name;
 		private final Editor editor;
+		private final Logger log = Logger.getLogger(this.getClass().getName());
 		public Operation(SahiTasks tasks, String name) {
 			this.tasks = tasks;
 			this.name = name;
 			this.editor = new Editor(tasks);
-			tasks.cell("New").click();
-			tasks.selectComboBoxes("selectItemText-->"+this.name);
+			tasks.waitFor(Timing.WAIT_TIME);
+			selectOperation(this.name);
+		}
+		public void selectOperation(String op) {
+			 int pickers = tasks.image("comboBoxPicker.png").countSimilar();
+			 log.fine("Found "+pickers+" comboboxes");			 
+			 for (ElementStub picker : tasks.image("comboBoxPicker.png").collectSimilar()) {
+				 tasks.xy(picker.parentNode(),3,3).click();
+				 ElementStub operation = tasks.row(op);
+				 if (operation.exists()) {
+					 tasks.xy(operation, 3, 3).click();
+					 log.fine("Selected operation ["+op+"].");
+					 return;
+				 }
+			 }
+			 throw new RuntimeException("Unable to select operation ["+op+"] clicked on each combo, but operation did NOT pop up");
+		     
 		}
 		/**
 		 * asserts all required input fields have been filled

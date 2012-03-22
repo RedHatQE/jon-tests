@@ -19,14 +19,15 @@ public class Inventory extends ResourceTab{
 
 	@Override
 	protected void navigate() {
-		selectTab("Inventory");
+		navigateUnderResource("Inventory");
+		raiseErrorIfCellDoesNotExist("Inventory");
 	}
 	/**
 	 * selects <b>Child Resources</b> subtab and returns helper object
 	 * @return
 	 */
 	public ChildResources childResources() {
-		selectTab("Inventory","Child Resources");
+		navigateUnderResource("Inventory/Children");
 		return new ChildResources(tasks);
 	}
 	/**
@@ -41,7 +42,7 @@ public class Inventory extends ResourceTab{
 	 * @return
 	 */
 	public ConnectionSettings connectionSettings() {
-		selectTab("Inventory","Connection Settings");
+		navigateUnderResource("Inventory/ConnectionSettings");
 		return new ConnectionSettings(tasks);
 	}
 	/**
@@ -142,17 +143,22 @@ public class Inventory extends ResourceTab{
 		 * @param name
 		 */
 		public void uninventoryChild(String name) {
-			tasks.xy(tasks.cell(name), 3, 3).click();
+			selectChild(name);
 			tasks.cell("Uninventory").click();
 			tasks.cell("Yes").click();
 			
+		}
+		private void selectChild(String name) {
+			int children = tasks.cell(name).countSimilar();
+			log.fine("Matched cells "+children);
+			tasks.xy(tasks.cell(name+"["+(children-1)+"]"), 3, 3).click();
 		}
 		/**
 		 * deletes child by given name from repository
 		 * @param name
 		 */
 		public void deleteChild(String name) {
-			tasks.xy(tasks.cell(name), 3, 3).click();
+			selectChild(name);
 			tasks.byXPath("//td[@class='buttonTitle' and .='Delete']").click();
 			//tasks.cell("Delete").near(tasks.cell("Uninventory")).click();
 			tasks.cell("Yes").click();
