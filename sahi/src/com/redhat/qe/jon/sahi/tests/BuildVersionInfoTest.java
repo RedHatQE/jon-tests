@@ -23,6 +23,8 @@ public class BuildVersionInfoTest extends SahiTestScript {
 		Assert.assertTrue(buildInfo.get("gwt.version") != null, "GWT Version validation");
 		Assert.assertTrue(buildInfo.get("smartgwt.version") != null, "Smart GWT Version validation");
 		
+		System.setProperty("rhq.build.version", buildInfo.get("build.number")+"\n"+buildInfo.get("version")+"\n"+buildInfo.get("gwt.version")+"\n"+buildInfo.get("smartgwt.version"));
+		
 		Reporter.log("<BR><b>"+buildInfo.get("version")+"</b>");
 		Reporter.log("<BR><b>"+buildInfo.get("build.number")+"</b>");
 		Reporter.log("<BR><b>"+buildInfo.get("gwt.version")+"</b>");
