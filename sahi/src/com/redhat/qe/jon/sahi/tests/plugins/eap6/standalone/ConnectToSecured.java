@@ -162,9 +162,7 @@ public class ConnectToSecured extends AS7StandaloneTest {
 				sahiTasks.waitFor(30000);
 				log.fine("Checking that resource is back online: try #"
 						+ Integer.toString(i + 1) + " of 12");
-				if (as7SahiTasks.checkIfResourceIsOnline(
-						System.getProperty("agent.name"),
-						System.getProperty("as7.standalone.name"))) {
+				if (server.isAvailable()) {
 					log.fine("Success - Resource is back online!");
 					break;
 				}

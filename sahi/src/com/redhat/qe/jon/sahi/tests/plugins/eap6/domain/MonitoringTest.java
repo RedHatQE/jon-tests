@@ -13,12 +13,12 @@ import org.testng.annotations.Test;
  *
  * @author jmartisk
  */
-public class MonitoringTest extends AS7PluginSahiTestScript {
+public class MonitoringTest extends AS7DomainTest {
     
     @BeforeClass(groups="monitoringTest")
     protected void setupAS7Plugin() {        
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));        
+        as7SahiTasks.importResource(controller);        
     }
     
     private ElementStub getMetricsCell() {
@@ -29,7 +29,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     
     @Test(groups={"monitoringTest"})
     public void disableMetricsTest() {
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
+        controller.monitoring();
         sahiTasks.waitFor(5000);
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
         // step1: disable one of the metrics
@@ -46,7 +46,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     
     @Test(groups={"monitoringTest"})
     public void enableMetricsTest()  {        
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));                       
+    	controller.monitoring();                       
         // check that the metric is present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
         sahiTasks.waitFor(5000);
@@ -55,7 +55,7 @@ public class MonitoringTest extends AS7PluginSahiTestScript {
     
     @Test(groups={"monitoringTest"})
     public void specifyMonitoringIntervalTest() {
-        as7SahiTasks.navigate(Navigate.RESOURCE_MONITORING, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
+        controller.monitoring();
         sahiTasks.waitFor(5000);
         sahiTasks.xy(sahiTasks.cell("Schedules"), 3, 3).click();
         sahiTasks.waitFor(5000);

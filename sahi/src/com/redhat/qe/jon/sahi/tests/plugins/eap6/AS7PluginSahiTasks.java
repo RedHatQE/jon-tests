@@ -43,59 +43,9 @@ public class AS7PluginSahiTasks {
         this.tasks = tasks;
     }
 
-    @Deprecated
-    public void uninventorizeResourceByNameIfExists(String agentName, String resourceName) {
-        log.fine("Uninventorizing resource \"" + resourceName + "\" from agent \"" + agentName + "\"");
-        Boolean inInventory = inventoryState.get(agentName+resourceName);
-        if (inInventory == null) {
-        	inInventory = Boolean.TRUE;
-        }
-        if (!inInventory.booleanValue()) {
-        	log.finer("[inventoryState] Resource \"" + resourceName + "\" for agent \"" + agentName + "\" is NOT in inventory. Skipping.");
-            return;
-        }
-        if (inInventory.booleanValue()) {
-        	inventoryState.put(agentName+resourceName, Boolean.FALSE);
-        	this.navigate(Navigate.AGENT_INVENTORY, agentName, null);
-	        tasks.image("Inventory_grey_16.png").click();//near(tasks.cell("Alerts")).click();
-	        try {
-	            Thread.sleep(2500);
-	        } catch (InterruptedException ex) {
-	        }
-	        ElementStub elm = tasks.div(0).in(tasks.cell(resourceName));
-	        if (!elm.exists()) {
-	            log.finer("Resource \"" + resourceName + "\" was not found in the inventory for agent \"" + agentName + "\". Skipping.");
-	            return;
-	        }
-	        elm.mouseDown();
-	        try {
-	            Thread.sleep(2500);
-	        } catch (InterruptedException ex) {
-	        }
-	        tasks.cell("Uninventory").click();
-	        tasks.cell("Yes").click();
-	        log.fine("Successfully uninventorized resource \"" + resourceName + "\" from agent \"" + agentName + "\"");
-        }
-    }
 
     public void uninventorizeAllDomainAS() {
     	// FIXME: update inventoryState
-    }
-
-    /**
-     * Performs 'manual autodiscovery' operation on the agent of the specified name. The agent has to be already inventorized!
-     *
-     * @param agentName
-     */
-    @Deprecated()
-    public void performManualAutodiscovery(String agentName) {
-        tasks.link("Inventory").click();
-        tasks.cell("Platforms").click();
-        tasks.link(agentName).click();
-        tasks.cell("Operations").click();
-        tasks.cell("New").click();
-        tasks.selectComboBoxes("selectItemText-->Manual Autodiscovery");
-        tasks.cell("Schedule").click();
     }
 
     /**
@@ -124,103 +74,7 @@ public class AS7PluginSahiTasks {
         	log.fine("Will perform manual autodiscovery first.");
 	        res.performManualAutodiscovery();
 	        try {
-	            this.navigate(Navigate.AUTODISCOVERY_QUEUE, agentName, null);
-	        } catch (NothingInDiscoveryQueueException ex) {
-	            log.fine("Could not inventorize resource " + resourceName + ", nothing appeared in autodiscovery queue even after performing manual autodiscovery");
-	            return;
-	        }
-	        ElementStub elm = tasks.image("unchecked.png").near(tasks.cell(resourceName));
-	        if (elm.exists()) {
-	            elm.check();
-	            tasks.cell("Import").click();
-	        } else {
-	            log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
-	        }
-	        inventoryState.put(agentName+resourceName, Boolean.TRUE);
-        }
-    }
-    @Deprecated
-    public void inventorizeResourceByName(String agentName, String resourceName) {
-        log.fine("Trying to inventorize resource \"" + resourceName + "\" of agent \"" + agentName + "\".");
-        Boolean inInventory = inventoryState.get(agentName+resourceName);
-        if (inInventory==null) {
-        	inInventory = Boolean.FALSE;
-        }
-        if (inInventory) {
-        	log.fine("[inventoryState] Resource \"" + resourceName + "\" of agent \"" + agentName + "\" have been already inventorized");
-        	return;
-        }
-        if (!inInventory) {
-        	log.fine("Will perform manual autodiscovery first.");
-	        this.performManualAutodiscovery(agentName);
-	        try {
-	            this.navigate(Navigate.AUTODISCOVERY_QUEUE, agentName, null);
-	        } catch (NothingInDiscoveryQueueException ex) {
-	            log.fine("Could not inventorize resource " + resourceName + ", nothing appeared in autodiscovery queue even after performing manual autodiscovery");
-	            return;
-	        }
-	        ElementStub elm = tasks.image("unchecked.png").near(tasks.cell(resourceName));
-	        if (elm.exists()) {
-	            elm.check();
-	            tasks.cell("Import").click();
-	        } else {
-	            log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
-	        }
-	        inventoryState.put(agentName+resourceName, Boolean.TRUE);
-        }
-
-    }
-
-    public void assertResourceExistsInInventory(String agentName, String resourceName) {
-        this.navigate(Navigate.AGENT_INVENTORY, agentName, null);
-        Assert.assertTrue(tasks.cell(resourceName).exists());
-    }
-
-    public boolean checkIfResourceIsOnline(String agentName, String resourceName) {
-        this.navigate(Navigate.AS_SUMMARY, agentName, resourceName);
-        if (tasks.image("Server_down_24.png").exists()) {
-            log.finer("Resource " + resourceName + " is offline!");
-            return false;
-        }
-        if (tasks.image("Server_up_24.png").exists()) {
-            log.finer("Resource " + resourceName + " is online!");
-            return true;
-        }
-        Assert.fail("Could not verify whether a resource is online or offline -- neither Server_down_16.png nor Server_up_16.png was found");
-        return false;
-    }
-    /**
-     * checks whether given resource and all its child resources is online
-     * @param agentName
-     * @param resourceName
-     * @param children
-     * @return
-     */
-    public boolean checkIfResourceWithChildrenIsOnline(String agentName, String... resourcePath) {
-        tasks.getNavigator().inventoryGoToResource(agentName, "Summary", resourcePath);
-        if (tasks.image("Server_down_24.png").exists()) {
-            log.finer("Resource " + Arrays.toString(resourcePath) + " is offline!");
-            return false;
-        }
-        if (tasks.image("Server_up_24.png").exists()) {
-            log.finer("Resource " + Arrays.toString(resourcePath) + " is online!");
-            tasks.getNavigator().inventorySelectTab("Inventory");
-            return !tasks.image("availability_red_16.png").exists();
-        }
-        Assert.fail("Could not verify whether a resource is online or offline -- neither Server_down_16.png nor Server_up_16.png was found");
-        return false;
-    }
-
-    /**
-     * @deprecated use {@link SahiTasks#getNavigator()} instead
-     * @param destination
-     * @param agentName
-     * @param resourceName
-     */
-    public void navigate(Navigate destination, String agentName, String resourceName) {
-        switch (destination) {
-            case AUTODISCOVERY_QUEUE:
-                tasks.link("Inventory").click();
+	            tasks.link("Inventory").click();
                 tasks.cell("Discovery Queue").click();
                 tasks.waitFor(3000);
                 ElementStub elm = tasks.cell(agentName);
@@ -229,26 +83,22 @@ public class AS7PluginSahiTasks {
                 } else {
                     throw new NothingInDiscoveryQueueException();
                 }
-                break;
-            case AGENT_INVENTORY:
-            	tasks.getNavigator().inventoryGoToResource(agentName, "Inventory", new String[]{});
-                break;
-            case AGENT_MONITORING:
-            	tasks.getNavigator().inventoryGoToResource(agentName, "Monitoring", new String[]{});
-                break;
-            case AS_INVENTORY:
-            	tasks.getNavigator().inventoryGoToResource(agentName, "Inventory", new String[]{resourceName});
-                break;
-            case RESOURCE_MONITORING:
-            	tasks.getNavigator().inventoryGoToResource(agentName, "Monitoring", new String[]{resourceName});
-                break;
-            case AS_SUMMARY:
-            	tasks.getNavigator().inventoryGoToResource(agentName, "Summary", new String[]{resourceName});
-                break;
-            default:
-                break;
+	            
+	        } catch (NothingInDiscoveryQueueException ex) {
+	            log.fine("Could not inventorize resource " + resourceName + ", nothing appeared in autodiscovery queue even after performing manual autodiscovery");
+	            return;
+	        }
+	        ElementStub elm = tasks.image("unchecked.png").near(tasks.cell(resourceName));
+	        if (elm.exists()) {
+	            elm.check();
+	            tasks.cell("Import").click();
+	        } else {
+	            log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
+	        }
+	        inventoryState.put(agentName+resourceName, Boolean.TRUE);
         }
     }
+
     /**
      * adds a JMS queue 
      * @param hornetq resource representing hornetq

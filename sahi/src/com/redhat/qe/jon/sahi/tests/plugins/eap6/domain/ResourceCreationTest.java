@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
  * @author jmartisk@redhat.com
  * @see TCMS testcase 96430
  */
-public class ResourceCreationTest extends AS7PluginSahiTestScript {
+public class ResourceCreationTest extends AS7DomainTest {
 
     // this address will be set in the connection settings, should be any random address that isn't running any AS instance :)
     private static final String IP_ADDR = "239.12.33.74";
@@ -21,14 +21,12 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     @BeforeClass(groups = "resourceCreation")
     protected void setupAS7Plugin() {
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
+        as7SahiTasks.importResource(controller);
     }
 
     @Test(groups = "resourceCreation", alwaysRun=true)
-    public void checkPersistenceOfChanges() {        
-        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
-        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-
+    public void checkPersistenceOfChanges() {
+        controller.inventory().connectionSettings();
         ElementStub configuration_element = sahiTasks.textbox("domainConfig");
         ElementStub startScript_element = sahiTasks.textbox("startScript");
 
@@ -43,10 +41,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             startScript_element.setValue("abccbcblsd.sh");
             sahiTasks.cell("Save").click();
         } finally {
-            as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
 
-            sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-
+            controller.inventory().connectionSettings();
             // check that the changes are persistent
             configuration_element = sahiTasks.textbox("domainConfig");
             startScript_element = sahiTasks.textbox("startScript");
@@ -69,11 +65,8 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
     }
 
     @Test(groups = "resourceCreation", alwaysRun=true)
-    public void inputValidButIncorrectConnectionSettings() {        
-        as7SahiTasks.inventorizeResourceByName(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
-        as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));        
-        sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-
+    public void inputValidButIncorrectConnectionSettings() {                
+        controller.inventory().connectionSettings();
         ElementStub hostname_element = sahiTasks.textbox("hostname");
         ElementStub port_element = sahiTasks.textbox("port");
 
@@ -94,7 +87,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             for (int i = 0; i < 12; i++) {
                 sahiTasks.waitFor(30000);
                 log.finer("Checking that resource went offline: try #" + Integer.toString(i + 1) + " of 12");
-                if (!as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"))) {
+                if (!controller.isAvailable()) {
                     log.fine("Success - Resource went offline! Now I will change connection settings back to normal.");
                     ok = true;
                     break;
@@ -102,10 +95,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             }
         } finally {
             // return the old values back
-            as7SahiTasks.navigate(Navigate.AS_INVENTORY, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
-
-            sahiTasks.xy(sahiTasks.cell("Connection Settings"), 3, 3).click();
-
+            controller.inventory().connectionSettings();
             hostname_element = sahiTasks.textbox("hostname");
             port_element = sahiTasks.textbox("port");
 
@@ -117,7 +107,7 @@ public class ResourceCreationTest extends AS7PluginSahiTestScript {
             for (int i = 0; i < 12; i++) {
                 sahiTasks.waitFor(30000);
                 log.finer("Checking that resource went back online: try #" + Integer.toString(i + 1) + " of 12");
-                if (as7SahiTasks.checkIfResourceIsOnline(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"))) {
+                if (controller.isAvailable()) {
                     log.fine("Success - Resource went back online!");
                     break;
                 }
