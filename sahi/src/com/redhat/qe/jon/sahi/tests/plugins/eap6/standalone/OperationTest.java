@@ -20,7 +20,7 @@ public class OperationTest extends AS7StandaloneTest {
         sshClient.connect();
     }
 	
-	@Test(groups="operation")
+	@Test(groups={"operation","blockedByBug-807942"})
 	public void shutdown() {
 		Assert.assertTrue(httpClient.isRunning(), "Server must be online before we try to stop it");		
 		Operations operations = server.operations();
@@ -46,7 +46,7 @@ public class OperationTest extends AS7StandaloneTest {
 		server.assertAvailable(true,"EAP server is online when server was started again");
 	}
 
-	@Test(groups="operation")
+	@Test(groups={"operation","blockedByBug-807942"})
 	public void restart() {
 		Date startupDate = sshClient.getStartupTime("standalone/log/boot.log");
 		

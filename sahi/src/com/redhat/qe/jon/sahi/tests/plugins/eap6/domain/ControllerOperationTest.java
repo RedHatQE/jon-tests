@@ -23,7 +23,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
 		as7SahiTasks.importResource(controller);
     }
-	@Test(groups="operation")
+	@Test(groups={"operation","blockedByBug-807942"})
 	public void shutdown() {
 		Assert.assertTrue(httpDomainManager.isRunning(), "Server must be online before we try to stop it");
 		Operations operations = controller.operations();
