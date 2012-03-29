@@ -81,4 +81,18 @@
 	</classes>
 </test>
 
+
+<test name="measurementdefinitions">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="measurementdefinitions.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
 </suite>
