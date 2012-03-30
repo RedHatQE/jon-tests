@@ -107,4 +107,16 @@
 	</classes>
 </test>
 
+<test name="dataaccessmanager">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="dataaccessmanager.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
 </suite>
