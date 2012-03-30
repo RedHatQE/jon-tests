@@ -16,8 +16,10 @@ import com.redhat.qe.jon.clitest.tests.CliTest;
  * @author jkandasa@redhat.com (Jeeva Kandasamy)
  * Feb 15, 2012
  */
-public class CliTestScript extends TestScript{
+public abstract class CliTestScript extends TestScript{
+	
 	private static Logger _logger = Logger.getLogger(CliTestScript .class.getName());
+	
 	public CliTestScript(){
 		super();
 	}
