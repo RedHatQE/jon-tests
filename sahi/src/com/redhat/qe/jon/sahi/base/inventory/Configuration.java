@@ -196,7 +196,9 @@ public class Configuration extends ResourceTab {
 		 * refreshes history view
 		 */
 		public void refresh() {
-			tasks.xy(tasks.cell("Refresh"), 3, 3).click();
+			for (ElementStub refresh : tasks.cell("Refresh").collectSimilar()) {
+				tasks.xy(refresh, 3, 3).click();
+			}
 		}
 	}
 }

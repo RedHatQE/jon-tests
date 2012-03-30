@@ -6,6 +6,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQueueException;
 import net.sf.sahi.client.ElementStub;
 
@@ -76,7 +77,7 @@ public class AS7PluginSahiTasks {
 	        try {
 	            tasks.link("Inventory").click();
                 tasks.cell("Discovery Queue").click();
-                tasks.waitFor(3000);
+                tasks.waitFor(Timing.WAIT_TIME);
                 ElementStub elm = tasks.cell(agentName);
                 if (elm.exists()) {
                     elm.doubleClick();
@@ -92,6 +93,8 @@ public class AS7PluginSahiTasks {
 	        if (elm.exists()) {
 	            elm.check();
 	            tasks.cell("Import").click();
+	            log.fine("Waiting "+Timing.toString(Timing.TIME_1M)+" for resource to import...");
+	            tasks.waitFor(Timing.TIME_1M);
 	        } else {
 	            log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
 	        }
