@@ -43,9 +43,9 @@ public class ResourceConfigurationTest extends AS7StandaloneTest {
 
         String[] predefinedMetrics = {
             "Maximum request time",
-            "Number of management requests",
+            //"Number of management requests",
             "Number of management requests per Minute",
-            "Time used for management requests",
+            //"Time used for management requests",
             "Time used for management requests per Minute"
         };
         for(String s:predefinedMetrics) {
