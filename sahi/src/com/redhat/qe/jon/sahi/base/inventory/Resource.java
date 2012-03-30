@@ -345,21 +345,27 @@ public class Resource {
 	 * @return true if this resource is online, false if it is offline
 	 */
 	public boolean isAvailable() {
-		// because UI caches availability things and we keep refreshing same page
-		// we need to force it to reload .. so we navigate somewhere else
-		tasks.link("Dashboard").click();
-		this.summary();
-        if (tasks.image("Server_down_24.png").exists()) {
-            log.fine("Resource [" + getName() + "] is offline!");
-            return false;
+		// we need to retry detection when resource is in unknown state
+		int count = 0;
+		while (count < Timing.REPEAT) {
+			count++;
+			// because UI caches availability things and we keep refreshing same page
+			// we need to force it to reload .. so we navigate somewhere else
+			tasks.link("Dashboard").click();
+			this.summary();
+	        if (tasks.image("Server_down_24.png").exists()) {
+	            log.fine("Resource [" + getName() + "] is offline!");
+	            return false;
+	        }
+	        if (tasks.image("Server_up_24.png").exists()) {
+	            log.fine("Resource [" + getName() + "] is online!");
+	            return true;
+	        }
+	        log.info("Waiting "+Timing.toString(Timing.TIME_30S)+" for resource to be in known state ..");
+	        tasks.waitFor(Timing.TIME_30S);
         }
-        if (tasks.image("Server_up_24.png").exists()) {
-            log.fine("Resource [" + getName() + "] is online!");
-            return true;
-        }
-        log.info("Could not verify whether a resource ["+getName()+"] is online or offline -- neither Server_down_16.png nor Server_up_16.png was found");
+        log.info("Could not verify whether a resource ["+getName()+"] is online or offline -- neither Server_down_16.png nor Server_up_16.png was found and resource remained in unknown state for too long");
         return false;
-
 	}
 	/**
 	 * navigates to parent resource of this resource and checks whether this resource exists.

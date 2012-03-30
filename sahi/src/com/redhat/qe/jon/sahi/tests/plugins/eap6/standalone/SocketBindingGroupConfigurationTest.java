@@ -1,7 +1,5 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import static org.junit.Assert.fail;
-
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -15,7 +13,7 @@ public class SocketBindingGroupConfigurationTest extends AS7StandaloneTest {
 
 	private Resource sbGroup;
 	private static final String port="6666";
-	private static final String port2="66665";
+	private static final String port2="6123";
 	private static final String name="testing-service";
 	@BeforeClass(groups = "setup")
 	protected void setupAS7Plugin() {

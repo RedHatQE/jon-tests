@@ -87,6 +87,8 @@ public class Configuration extends ResourceTab {
 		 * @return
 		 */
 		public ConfigEntry getEntry(String name) {
+			int entries = tasks.image("edit.png").in(tasks.cell(name).parentNode("tr")).countSimilar();
+			log.info("Found entries :"+entries);
 			tasks.xy(tasks.image("edit.png").in(tasks.cell(name).parentNode("tr")),3,3).click();
 			return new ConfigEntry(tasks);
 		}
