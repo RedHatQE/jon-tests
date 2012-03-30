@@ -119,4 +119,29 @@
 	</classes>
 </test>
 
+<test name="example30">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="example30.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+<test name="example31">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="example31.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
 </suite>
