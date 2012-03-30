@@ -1,5 +1,11 @@
 <suite name="RHQ CLI JS/JAVA Test">
 
+  	<listeners>
+  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
+  	</listeners>
+
+
 <parameter name="cli.username"  value="rhqadmin"/>
 <parameter name="cli.password"  value="rhqadmin"/>
 <!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
