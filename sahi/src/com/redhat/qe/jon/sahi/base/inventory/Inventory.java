@@ -159,6 +159,8 @@ public class Inventory extends ResourceTab{
 		 */
 		public void deleteChild(String name) {
 			selectChild(name);
+			int buttons = tasks.byXPath("//td[@class='buttonTitle' and .='Delete']").countSimilar();
+			log.fine("Found Delete buttons :"+buttons);
 			tasks.byXPath("//td[@class='buttonTitle' and .='Delete']").click();
 			//tasks.cell("Delete").near(tasks.cell("Uninventory")).click();
 			tasks.cell("Yes").click();
