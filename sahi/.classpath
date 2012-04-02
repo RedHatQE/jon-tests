@@ -25,8 +25,8 @@
 	<classpathentry exported="true" kind="lib" path="../rest-java/lib/jersey-client-1.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="../rest-java/lib/jersey-core-1.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="../rest-java/lib/json_simple-1.1.jar"/>
-	<!-- Report Engine Client -->
-	<classpathentry exported="true" kind="lib" path="lib/cajo.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/ReportEngineClient.jar"/>
+        <!-- Report Engine Client -->
+        <classpathentry exported="true" kind="lib" path="lib/cajo.jar"/>
+        <classpathentry exported="true" kind="lib" path="lib/ReportEngineClient.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
