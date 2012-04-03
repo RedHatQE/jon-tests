@@ -12,6 +12,6 @@
 	<classpathentry kind="lib" path="/webui-framework/lib/xmlrpc-client-3.1.3.jar"/>
 	<!-- Report Engine Client -->
         <classpathentry exported="true" kind="lib" path="../sahi/lib/cajo.jar"/>
-        <classpathentry exported="true" kind="lib" path="lib/ReportEngineClient.jar"/>
+        <classpathentry exported="true" kind="lib" path="../sahi/lib/ReportEngineClient.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
