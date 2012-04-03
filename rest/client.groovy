@@ -38,11 +38,13 @@ class RestClientTest {
     }
 
     def acceptHeaderTest(resource) {
-    	client.get(path : resource, headers : [ Accept : 'application/xml' ]) { resp,xml ->	
+    	println 'Accept header [application/xml]'
+	client.get(path : resource, headers : [ Accept : 'application/xml' ]) { resp,xml ->	
 		Assert.assertTrue resp.status == 200, 'Response status is 200'
 		Assert.assertTrue resp.contentType == 'application/xml', 'reponse contentType is XML'
 		print xml.class
 	}
+    	println 'Accept header [application/json]'
     	client.get(path : resource, headers : [ Accept : 'application/json' ]) { resp,json ->	
 		Assert.assertTrue resp.status == 200, 'Response status is 200'
 		Assert.assertTrue resp.contentType == 'application/json', 'reponse contentType is JSON'
