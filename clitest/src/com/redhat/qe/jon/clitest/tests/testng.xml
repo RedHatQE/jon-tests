@@ -9,8 +9,7 @@
 <parameter name="cli.username"  value="rhqadmin"/>
 <parameter name="cli.password"  value="rhqadmin"/>
 <!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
-<parameter name="make.failure"  value="Login failed:"/>
-
+<parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
 <test name="Impoert-Resources">
   	<classes>
