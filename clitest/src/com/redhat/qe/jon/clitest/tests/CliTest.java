@@ -20,6 +20,8 @@ public class CliTest extends CliTestScript{
 	private String cliUsername;
 	private String cliPassword;
 	private CliTasks cliTasks;
+	
+	public static boolean isVersionSet = false;
 		
 	
 	
@@ -41,6 +43,12 @@ public class CliTest extends CliTestScript{
 		loadSetup(rhqTarget, cliUsername, cliPassword, makeFilure);
 		cliTasks = CliTasks.getCliTasks();
 		String consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+jsFileLocation+jsFile);
+		if(!isVersionSet){
+			System.setProperty("rhq.build.version", consoleOutput.substring(consoleOutput.indexOf("Remote server version is:")+25, consoleOutput.indexOf("Login successful")).trim());
+			isVersionSet = true;
+			_logger.log(Level.INFO, "RHQ/JON Version: "+System.getProperty("rhq.build.version"));
+		}
+		
 		_logger.log(Level.INFO, consoleOutput);
 		if(makeFilure != null){
 			cliTasks.validateErrorString(consoleOutput , makeFilure);
@@ -48,21 +56,7 @@ public class CliTest extends CliTestScript{
 		if(expectedResult != null){
 			cliTasks.validateExpectedResultString(consoleOutput , expectedResult);
 		}
-	}	
-	
-	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure"})
-	@Test
-	public void getCliVersion(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure) throws IOException, CliTasksException{
-		loadSetup(rhqTarget, cliUsername, cliPassword, makeFilure);
-		cliTasks = CliTasks.getCliTasks();
-		String consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+jsFileLocation+jsFile);
-		_logger.log(Level.INFO, consoleOutput);
-		if(makeFilure != null){
-			cliTasks.validateErrorString(consoleOutput , makeFilure);
-		}
-		if(expectedResult != null){
-			cliTasks.validateExpectedResultString(consoleOutput , expectedResult);
-		}
+		
 	}	
 	
 }

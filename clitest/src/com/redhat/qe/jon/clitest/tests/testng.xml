@@ -11,18 +11,6 @@
 <!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
-<test name="Version Information">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="Version.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
-			<methods>
-				<include name="getCliVersion"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
 <test name="Impoert-Resources">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
