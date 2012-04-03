@@ -23,6 +23,8 @@ println("Sleeping 2 minute(s) to sync!!");
 sleep(1000*60*2);
 }
 
+assertTrue(resourcesNew.size() > 0, "There is no resource to import!!");
+
 
 criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED) //Add a filter to get Commited resources
 var resourcesCommited = ResourceManager.findResourcesByCriteria(criteria); // get Commited resources
