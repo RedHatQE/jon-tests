@@ -36,7 +36,9 @@ public class MonitoringTest extends AS7DomainTest {
         sahiTasks.waitFor(5000);
         sahiTasks.xy(getMetricsCell(), 3, 3).click();
         sahiTasks.waitFor(2000);
-        sahiTasks.cell("Disable").click();      
+        for (ElementStub disable : sahiTasks.cell("Disable").collectSimilar()) {
+        	disable.click();
+        }
         sahiTasks.waitFor(2000);
         // step2: check that the metric is not present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
