@@ -83,7 +83,7 @@ public class Operations extends ResourceTab {
 		public void selectOperation(String op) {
 			 int pickers = tasks.image("comboBoxPicker.png").countSimilar();
 			 log.fine("Found "+pickers+" comboboxes");			 
-			 for (ElementStub picker : tasks.image("comboBoxPicker.png").collectSimilar()) {
+			 ElementStub picker = tasks.image("comboBoxPicker.png["+(pickers-2)+"]");
 				 tasks.xy(picker.parentNode(),3,3).click();
 				 ElementStub operation = tasks.row(op);
 				 if (operation.exists()) {
@@ -91,7 +91,7 @@ public class Operations extends ResourceTab {
 					 log.fine("Selected operation ["+op+"].");
 					 return;
 				 }
-			 }
+			 
 			 throw new RuntimeException("Unable to select operation ["+op+"] clicked on each combo, but operation did NOT pop up");
 		     
 		}
