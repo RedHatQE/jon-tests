@@ -51,14 +51,20 @@ public class Operations extends ResourceTab {
     	}		
 		log.fine("Asserting operation ["+opName+"] result, expecting "+succ);
     	getResource().summary();
-    	int timeout = 10 * Timing.TIME_1M;
+    	int timeout = 20 * Timing.TIME_1M;
     	int time = 0;
     	while (time<timeout && tasks.image("Operation_inprogress_16.png").in(tasks.div(opName+"[0]").parentNode("tr")).exists()) {
     		time+=Timing.TIME_10S;
     		log.fine("Operation ["+opName+"] in progress, waiting "+Timing.toString(Timing.TIME_10S));
     		tasks.waitFor(Timing.TIME_10S);
     		getResource().summary(); 
-    	}    	    	
+    	}
+    	if (tasks.image("Operation_inprogress_16.png").in(tasks.div(opName+"[0]").parentNode("tr")).exists()) {
+    		log.info("Operation ["+opName+"] did NOT finish after "+Timing.toString(time)+"!!!");
+    	}
+    	else {
+    		log.info("Operation ["+opName+"] finished after "+Timing.toString(time));
+    	}
     	Assert.assertTrue(tasks.image(resultImage).in(tasks.div(opName+"[0]").parentNode("tr")).exists(),"Operation ["+opName+"] result: "+succ);
     }
 	
@@ -77,7 +83,7 @@ public class Operations extends ResourceTab {
 		public void selectOperation(String op) {
 			 int pickers = tasks.image("comboBoxPicker.png").countSimilar();
 			 log.fine("Found "+pickers+" comboboxes");			 
-			 for (ElementStub picker : tasks.image("comboBoxPicker.png").collectSimilar()) {
+			 ElementStub picker = tasks.image("comboBoxPicker.png["+(pickers-2)+"]");
 				 tasks.xy(picker.parentNode(),3,3).click();
 				 ElementStub operation = tasks.row(op);
 				 if (operation.exists()) {
@@ -85,7 +91,7 @@ public class Operations extends ResourceTab {
 					 log.fine("Selected operation ["+op+"].");
 					 return;
 				 }
-			 }
+			 
 			 throw new RuntimeException("Unable to select operation ["+op+"] clicked on each combo, but operation did NOT pop up");
 		     
 		}
