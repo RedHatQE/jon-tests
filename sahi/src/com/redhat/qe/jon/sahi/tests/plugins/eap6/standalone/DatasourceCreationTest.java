@@ -79,8 +79,13 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		assertAttributeValue(nonXA_def, "max-pool-size", "666");
 	}
 	
-	
 	@Test(groups = "datasource", dependsOnMethods="addDatasource")
+	public void disableDatasource() {
+		disableDS(nonXA_def,true);
+	}
+	
+	
+	@Test(groups = "datasource", dependsOnMethods="disableDatasource")
 	public void enableDatasource() {
 		enableDS(nonXA_def,true);
 	}
@@ -90,10 +95,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		enableDS(nonXA_def,false);
 	}
 	
-	@Test(groups = "datasource", dependsOnMethods="enableEnabledDatasource")
-	public void disableDatasource() {
-		disableDS(nonXA_def,true);
-	}
+	
 	
 	@Test(groups = "datasource", dependsOnMethods={"configureDatasource","disableDatasource"})
 	public void uninventoryDatasource() {
@@ -153,6 +155,11 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	}
 
 	@Test(groups = "XAdatasource", dependsOnMethods="addXADatasource")
+	public void disableXADatasource() {
+		disableDS(XA_def,true);
+	}
+	
+	@Test(groups = "XAdatasource", dependsOnMethods="disableXADatasource")
 	public void enableXADatasource() {
 		enableDS(XA_def,true);
 	}
@@ -161,10 +168,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		enableDS(XA_def,false);
 	}
 		
-	@Test(groups = "XAdatasource", dependsOnMethods="enableEnabledXADatasource")
-	public void disableXADatasource() {
-		disableDS(XA_def,true);
-	}
+	
 	
 	
 	@Test(groups = "XAdatasource",dependsOnMethods={"configureXADatasource","disableXADatasource"})
