@@ -62,10 +62,99 @@
 	</classes>
 </test>
 
+
+
 <test name="subjectsusercreate">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="subjectsusercreate.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+<test name="systemmanager">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="systemmanager.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+<test name="measurementdefinitions">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="measurementdefinitions.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+<test name="resourcetypemanager">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="resourcetypemanager.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+<test name="dataaccessmanager">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="dataaccessmanager.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+<test name="example30">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="example30.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+<test name="example31">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="example31.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+<test name="repo">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="repo.js"/>
 			<parameter name="expected.result"  value="Login successful"/>
 			<methods>
 				<include name="runJSfile"></include>		
