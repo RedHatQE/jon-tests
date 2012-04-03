@@ -162,8 +162,11 @@
 		</class>
 	</classes>
 </test>
-<<<<<<< HEAD
 
+
+
+
+<!-- This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
 <test name="Uninventory-Platforms">
   	<classes>
@@ -176,7 +179,5 @@
 		</class>
 	</classes>
 </test>
-=======
->>>>>>> 99a052c73bd20eca7f438c162c273addbc8bfd56
 
 </suite>
