@@ -17,7 +17,7 @@ public class Timing {
 	public static int DISCOVERY_WAIT = TIME_30S;
 	
 	public static String toString(int time) {
-		return String.valueOf((int)(time/1000))+"s";
+		return String.valueOf((time/1000))+"s";
 	}
 	
 }
