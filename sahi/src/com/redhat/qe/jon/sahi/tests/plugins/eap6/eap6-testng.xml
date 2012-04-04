@@ -1,4 +1,4 @@
-<suite name="RHQ_4.0_UI_AS7Plugin_Test">
+<suite name="RHQ_4.4_UI_AS7Plugin_Test">
     
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->
