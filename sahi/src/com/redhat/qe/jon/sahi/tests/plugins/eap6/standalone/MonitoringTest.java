@@ -1,14 +1,12 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import com.redhat.qe.jon.sahi.base.inventory.Monitoring;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks.Navigate;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 import net.sf.sahi.client.ElementStub;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
  *
@@ -37,7 +35,9 @@ public class MonitoringTest extends AS7StandaloneTest {
         sahiTasks.waitFor(5000);
         sahiTasks.xy(getMetricsCell(),3,3).click();
         sahiTasks.waitFor(2000);
-        sahiTasks.cell("Disable").click();      
+        for (ElementStub disable : sahiTasks.cell("Disable").collectSimilar()) {
+        	disable.click();
+        }
 
         sahiTasks.waitFor(10000);
         // step2: check that the metric is not present in "Tables" tab                
@@ -54,7 +54,7 @@ public class MonitoringTest extends AS7StandaloneTest {
         // check that the metric is present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
         sahiTasks.waitFor(5000);
-        Assert.assertTrue(sahiTasks.cell("Maximum request time").exists());                              
+        Assert.assertTrue(sahiTasks.cell("Maximum request time").isVisible());                              
     }
 
     @Test(groups={"monitoringTest"})

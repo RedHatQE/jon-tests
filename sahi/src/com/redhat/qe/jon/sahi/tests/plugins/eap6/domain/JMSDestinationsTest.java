@@ -25,7 +25,6 @@ public class JMSDestinationsTest extends AS7DomainTest {
 	public void addQueue() {
 		as7SahiTasks.addJMSQueue(hornetq, queue);
 		mgmtClient.assertResourcePresence("/profile=full/subsystem=messaging/hornetq-server=default", "jms-queue", queue.getName(), true);		
-		controller.performManualAutodiscovery();
 		queue.assertExists(true);
 	}
 	@Test(groups="jms",dependsOnMethods="addQueue")
@@ -40,7 +39,6 @@ public class JMSDestinationsTest extends AS7DomainTest {
 	public void addTopic() {
 		as7SahiTasks.addJMSTopic(hornetq, topic);
 		mgmtClient.assertResourcePresence("/profile=full/subsystem=messaging/hornetq-server=default", "jms-topic", topic.getName(), true);		
-		controller.performManualAutodiscovery();
 		topic.assertExists(true);
 	}
 	@Test(groups="jms",dependsOnMethods="addTopic")

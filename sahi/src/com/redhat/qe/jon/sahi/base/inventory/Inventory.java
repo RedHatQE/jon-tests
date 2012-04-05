@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import net.sf.sahi.client.ElementStub;
 
+import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -29,6 +30,14 @@ public class Inventory extends ResourceTab{
 	public ChildResources childResources() {
 		navigateUnderResource("Inventory/Children");
 		return new ChildResources(tasks);
+	}
+	/**
+	 * selects <b>Child History</b> subtab and returns helper object
+	 * @return
+	 */
+	public ChildHistory childHistory() {
+		navigateUnderResource("Inventory/ChildHistory");
+		return new ChildHistory(tasks);
 	}
 	/**
 	 * returns true whether there can be some children resources
@@ -108,6 +117,78 @@ public class Inventory extends ResourceTab{
 			tasks.waitFor(Timing.WAIT_TIME);
 			tasks.xy(tasks.cell("Cancel"),3,3).click();
 		}
+	}
+	
+	public static class ChildHistory {
+		private final SahiTasks tasks;
+		private final Logger log = Logger.getLogger(this.getClass().getName());
+		
+		private ChildHistory(SahiTasks tasks) {
+			this.tasks = tasks;
+		}
+		/**
+		 * gets status of last item in child history (first row in table) 
+		 * @return
+		 */
+		public String getLastResourceChangeStatus() {
+			int tables = tasks.table("listTable").countSimilar();
+			log.fine("Tables :"+tables);
+			ElementStub row = tasks.row(0).in(tasks.table("listTable["+(tables-1)+"]"));
+			return tasks.cell(4).in(row).getText();
+		}
+		/**
+		 * asserts whether resource addition/removal was successfull or not (success param)
+		 * also waits 'till operation is no longer in <b>In Progress</b>
+		 * @param success
+		 */
+		public void assertLastResourceChange(boolean success) {
+			
+			String status_success="Success";
+			String status_failed="Failed";
+			String status_progress="In Progress";
+	    	String desired_status=status_success;
+	    	if (!success) {
+	    		desired_status=status_failed;
+	    	}
+	    	log.info("Asserting last child addition/removal - expected: "+desired_status);
+			int waitTime=Timing.TIME_30S;
+	    	int count=Timing.REPEAT;
+	    	String message ="Last resource removal/addition was successfull";
+
+	    	for (int i = 0;i<count;i++) {
+	    		log.fine("Checking resource removal/addition status="+desired_status+": try #" + Integer.toString(i + 1) + " of "+count);
+	    		String status = getLastResourceChangeStatus();
+	    		if (success && status_success.equals(status)) {
+	    			Assert.assertTrue(true, message);
+	    			return;
+	    		}
+	    		if (!success && status_failed.equals(status)) {
+	    			Assert.assertFalse(false, message);
+	    			return;
+	    		}
+	    		if (status_progress.equals(status)) {
+	    			log.fine("Operation in progess, waiting "+Timing.toString(waitTime)+", refreshing ..");    		
+		    		tasks.waitFor(waitTime);
+		    		refresh();
+		    		continue;
+	    		} else {
+	    			Assert.assertEquals(!success, success,message);
+	    		}
+	    		
+	    	}
+	    	log.info("Checking resurce addition/removal timed out");
+	    	Assert.assertTrue(false, message);
+		}
+		
+		/**
+		 * refreshes history view
+		 */
+		public void refresh() {
+			for (ElementStub refresh : tasks.cell("Refresh").collectSimilar()) {
+				tasks.xy(refresh, 3, 3).click();
+			}
+		}
+		
 	}
 	
 	public static class ChildResources {

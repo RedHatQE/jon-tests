@@ -36,12 +36,14 @@ public class MonitoringTest extends AS7DomainTest {
         sahiTasks.waitFor(5000);
         sahiTasks.xy(getMetricsCell(), 3, 3).click();
         sahiTasks.waitFor(2000);
-        sahiTasks.cell("Disable").click();      
+        for (ElementStub disable : sahiTasks.cell("Disable").collectSimilar()) {
+        	disable.click();
+        }
         sahiTasks.waitFor(2000);
         // step2: check that the metric is not present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
         sahiTasks.waitFor(5000);
-        Assert.assertFalse(getMetricsCell().exists(),"Metrics 'Maximum request time' is not visible in results table");
+        Assert.assertFalse(getMetricsCell().isVisible(),"Metrics 'Maximum request time' is not visible in results table");
     }
     
     @Test(groups={"monitoringTest"})

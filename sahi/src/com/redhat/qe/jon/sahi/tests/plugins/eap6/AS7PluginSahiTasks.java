@@ -1,6 +1,9 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
@@ -108,16 +111,16 @@ public class AS7PluginSahiTasks {
      * @param queue resource representing queue (should be child of hornetq)
      */
 	public void addJMSQueue(Resource hornetq, Resource queue) {
-		Operations operations = hornetq.operations();
-		Operation op = operations.newOperation("Add destination");
-		op.getEditor().setText("name", queue.getName());
-		ConfigEntry ce = op.getEditor().newEntry(0);
+		Inventory inventory = hornetq.inventory();
+		ChildResources childResources = inventory.childResources();
+		NewChildWizard child = childResources.newChild("JMS Queue");		
+		child.getEditor().setText("resourceName", queue.getName());		
+		child.next();
+		ConfigEntry ce = child.getEditor().newEntry(0);
 		ce.setField("entry", queue.getName());
 		ce.OK();
-		op.getEditor().checkRadio("type[0]");
-		op.assertRequiredInputs();
-		op.schedule();
-		operations.assertOperationResult(op, true);
+		child.finish();
+		inventory.childHistory().assertLastResourceChange(true);
 	}
     /**
      * adds a JMS topic 
@@ -125,16 +128,17 @@ public class AS7PluginSahiTasks {
      * @param topic resource representing topic (should be child of hornetq)
      */
 	public void addJMSTopic(Resource hornetq, Resource topic) {
-		Operations operations = hornetq.operations();
-		Operation op = operations.newOperation("Add destination");
-		op.getEditor().setText("name", topic.getName());
-		ConfigEntry ce = op.getEditor().newEntry(0);
+		Inventory inventory = hornetq.inventory();
+		ChildResources childResources = inventory.childResources();
+		NewChildWizard child = childResources.newChild("JMS Topic");		
+		child.getEditor().setText("resourceName", topic.getName());		
+		child.next();
+		ConfigEntry ce = child.getEditor().newEntry(0);
 		ce.setField("entry", topic.getName());
 		ce.OK();
-		op.getEditor().checkRadio("type[1]");
-		op.assertRequiredInputs();
-		op.schedule();
-		operations.assertOperationResult(op, true);
+		child.finish();
+		inventory.childHistory().assertLastResourceChange(true);
+		
 	}
 
 }
