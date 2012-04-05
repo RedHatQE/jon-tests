@@ -20,6 +20,23 @@ import org.testng.Assert;
  */
 public class AgentLog {
 
+	/**
+	 * creates default instance of AgentLog only if
+	 * environment all variables $HOST_USER $HOST_NAME $HOST_PASSWORD are defined
+	 * otherwise returns null
+	 * @return
+	 */
+	public static AgentLog createDefault() {
+		String user = System.getenv().get("HOST_USER");
+		String host = System.getenv().get("HOST_NAME");
+		String pass = System.getenv().get("HOST_PASSWORD");
+		if (user==null || host == null || pass == null) {
+			log.fine("Required environment variables HOST_USER HOST_NAME HOST_PASSWORD are not defined - default AgentLog instance not created");
+			return null;
+		}
+		return new AgentLog();
+	}
+	
 	protected static final Logger log = Logger.getLogger(AgentLog.class.getName());
 	private final String agentHome;
 	private final SSHClient client;

@@ -15,7 +15,7 @@ public class SSHClient {
 	private final String pass;
 	protected static final Logger log = Logger.getLogger(SSHClient.class.getName());
 
-	protected SSHClient(String user, String host, String pass) {
+	protected SSHClient(String user, String host, String pass) {		
 		log.fine("Creating SSHClient that will connect to [" +user+"@"+host+"]");
 		this.user = user;
 		this.host  = host;
