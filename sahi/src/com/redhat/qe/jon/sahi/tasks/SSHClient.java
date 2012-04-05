@@ -21,6 +21,24 @@ public class SSHClient {
 		this.host  = host;
 		this.pass = pass;
 	}
+	public String getHost() {
+		return host;
+	}
+	public String getUser() {
+		return user;
+	}
+	public String getPass() {
+		return pass;
+	}
+	public SSHCommandRunner getSshCommandRunner() {
+		return sshCommandRunner;
+	}
+	/**
+	 * creates new SSHClient instance, input parameters are taken from environment variables
+	 * @param HOST_USER - for user
+	 * @param HOST_NAME - for server address
+	 * @param HOST_PASSWORD - for user's password
+	 */
 	public SSHClient() {
 		this(System.getenv().get("HOST_USER"), System.getenv().get("HOST_NAME"), System.getenv().get("HOST_PASSWORD"));
 	}

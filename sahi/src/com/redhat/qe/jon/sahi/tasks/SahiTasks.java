@@ -19,12 +19,17 @@ public class SahiTasks extends ExtendedSahi {
 
     private static Logger _logger = Logger.getLogger(SahiTasks.class.getName());
     private Navigator navigator;
+    private final AgentLog agentLog;
     public SahiTasks(String browserPath, String browserName, String browserOpt, String sahiBaseDir, String sahiUserdataDir) {
         super(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
         this.navigator = new Navigator(this);
+        this.agentLog = new AgentLog();
     }
     public Navigator getNavigator() {
 		return navigator;
+	}
+    public AgentLog getAgentLog() {
+		return agentLog;
 	}
 
     // ***************************************************************************
