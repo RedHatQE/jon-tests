@@ -977,9 +977,9 @@ public class SahiTasks extends ExtendedSahi {
 
         //Define new alert name and Description(if any)
         this.cell("New").click();
-        this.textbox(0).setValue(alertName);
+        this.textbox("textItem").near(this.row("Name :")).setValue(alertName);
         if (alertDescription != null) {
-            this.textarea(0).setValue(alertDescription);
+            this.textarea("textItem").near(this.row("Description :")).setValue(alertDescription);
         }
 
         //Add conditions
@@ -1628,8 +1628,8 @@ public class SahiTasks extends ExtendedSahi {
          tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
     	
     	metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
+    	_logger.log(Level.INFO, "Metric: New Status: "+metricDetail);
     	if(metricDetail.get("Metric").equalsIgnoreCase(metricName)){
-    		_logger.log(Level.INFO, "Metric: New Status: "+metricDetail);
     		if(updateCollectionInterval){
         		if(metricDetail.get("Collection Interval").equalsIgnoreCase(collectionIntervalStr)){
             		return true;
