@@ -175,8 +175,8 @@ public class Inventory extends ResourceTab{
 	    		}
 	    		if (status_progress.equals(status)) {
 	    			log.fine("Operation in progess, waiting "+Timing.toString(waitTime)+", refreshing ..");    		
-		    		tasks.waitFor(waitTime);
-		    		refresh();
+	    			refresh();
+	    			tasks.waitFor(waitTime);
 		    		continue;
 	    		} else {
 	    			Assert.assertEquals(!success, success,message);
