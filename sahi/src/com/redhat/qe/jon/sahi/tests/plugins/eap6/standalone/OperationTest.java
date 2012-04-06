@@ -2,6 +2,7 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
 import java.util.Date;
 
+import org.jboss.dmr.ModelNode;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -44,6 +45,31 @@ public class OperationTest extends AS7StandaloneTest {
 		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
 		Assert.assertTrue(httpClient.isRunning(), "Server is reachable via HTTP request");
 		server.assertAvailable(true,"EAP server is online when server was started again");
+	}
+	
+	@Test(groups="operation",dependsOnMethods="start")
+	public void reload() throws Exception {
+		Assert.assertTrue(httpClient.isRunning(), "Server must run before we try to reload it");
+		// we do some change using DMR so server requires reload
+		String ajpPort = mgmtClient.readAttribute("/socket-binding-group=standard-sockets/socket-binding=ajp", "port").get("result").asString();
+		ModelNode result = mgmtClient.executeOperation(mgmtClient.createOperation("/socket-binding-group=standard-sockets/socket-binding=ajp", "write-attribute", new String[] {"name=port","value=55555"}));
+		Assert.assertTrue("success".equals(result.get("outcome").asString()));
+		Assert.assertTrue(mgmtClient.reloadRequired(result));
+		
+		Operations operations = server.operations();
+		Operation op = operations.newOperation("Reload");
+		op.schedule();
+		operations.assertOperationResult(op,true);
+		
+		log.fine("Waiting "+Timing.toString(Timing.TIME_30S)+" for server to reload");
+		sahiTasks.waitFor(Timing.TIME_30S);
+		
+		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
+		Assert.assertTrue(httpClient.isRunning(), "Server is reachable via HTTP request");
+		Assert.assertFalse(mgmtClient.reloadRequired(mgmtClient.readAttribute("/socket-binding-group=standard-sockets/socket-binding=ajp", "port")),"Server sends reload-required header right after reloading");
+		// revert config change back
+		mgmtClient.executeOperationAndAssertSuccess("",mgmtClient.createOperation("/socket-binding-group=standard-sockets/socket-binding=ajp", "write-attribute", new String[] {"name=port","value="+ajpPort}));
+		server.assertAvailable(true,"EAP server is online");
 	}
 
 	@Test(groups={"operation","blockedByBug-807942"})

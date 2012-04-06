@@ -210,6 +210,19 @@ public class ManagementClient {
 		Assert.assertTrue("failed".equals(ret.get("outcome").asString()), msg);
 		return ret;
 	}
+	/**
+	 * checks whether given model node (server's response) contains flag 
+	 * from server saying, that server needs to be reloaded (some config change required it)
+	 * @param result
+	 * @return
+	 */
+	public boolean reloadRequired(ModelNode result) {
+		ModelNode headers = result.get("response-headers");
+		if (headers==null) {
+			return false;
+		}
+		return "".equals(headers.get("reload-required").asString());
+	}
 	
 	public ModelNode readAttribute(String address, String attribute) {
 		log.fine("Read attribute ["+attribute+ "] of ["+address+"]");
