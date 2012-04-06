@@ -80,6 +80,7 @@ public class Inventory extends ResourceTab{
 	public static class NewChildWizard {
 		private final Editor editor;
 		private final SahiTasks tasks;
+		private final Logger log = Logger.getLogger(this.getClass().getName());
 		private NewChildWizard(SahiTasks tasks) {
 			this.tasks = tasks;
 			this.editor = new Editor(tasks);
@@ -99,7 +100,13 @@ public class Inventory extends ResourceTab{
 		 */
 		public void finish() {
 			tasks.waitFor(Timing.WAIT_TIME);
-			tasks.xy(tasks.cell("Finish"),3,3).click();
+			log.fine("Finish buttons: "+tasks.cell("Finish").countSimilar());
+			ElementStub es = tasks.cell("Finish");
+			tasks.xy(es,3,3).click();
+			// if click does not work we send enter key and pray
+			if (es.isVisible()) {
+				tasks.execute("_sahi._keyPress(_sahi._cell('Finish'), 13);"); //13 - Enter key
+			}
 		}
 		/**
 		 * sets file to upload and starts uploading it
