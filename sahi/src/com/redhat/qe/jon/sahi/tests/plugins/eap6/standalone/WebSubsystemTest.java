@@ -1,10 +1,10 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.inventory.Configuration;
-import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigHistory;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
@@ -28,7 +28,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		as7SahiTasks.importResource(server);
         web = server.child("web");
         httpConnector = web.child("http");
-        myConnector = web.child("myConnector");
+        myConnector = web.child("myconnector");
     }
 	@Test(groups={"connector"})
 	public void configureConnector() {
@@ -39,7 +39,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		ConfigHistory history = configuration.history();
 		history.failOnPending();
 		history.failOnFailure();
-		// TODO validate using DMR
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/connector=http", "max-save-post-size").get("result").asString().equals("8192"),"Connector configuration change was successfull");
 	}
 	
 	@Test(groups={"connector"})
@@ -50,14 +50,27 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		nc.next();
 		// wait a little bit longer - it takes time to load connector configuration
 		sahiTasks.waitFor(Timing.WAIT_TIME);
-		nc.getEditor().setText("protocol", "HTTP/1.1");
 		nc.getEditor().setText("socket-binding", "http");
-		ConfigEntry entry = nc.getEditor().newEntry(0);
-		entry.setField("virtual-server", virtualServer);
-		entry.OK();
+//		int scrollbars = sahiTasks.image("vscroll_track.png").countSimilar();
+//		if (scrollbars>1) {
+//			ElementStub es = sahiTasks.image("vscroll_track.png["+(scrollbars-1)+"]");
+//			String strHeight = es.style("height");
+//			strHeight = strHeight.replace("px", "");
+//			int height = Integer.parseInt(strHeight);
+//			log.fine("height "+height);
+//			sahiTasks.xy(es,3,height-3).click();
+//			sahiTasks.waitFor(Timing.WAIT_TIME);
+//			sahiTasks.xy(sahiTasks.image("vscroll_end.png[1]"),3,3).click();
+//			for (int i = 0; i < 10 ; i++) {
+//				sahiTasks.xy(sahiTasks.image("vscroll_Over_end.png"),3,3).click();
+//			}
+//		}
+//		sahiTasks.waitFor(Timing.WAIT_TIME);
 		nc.finish();
+		sahiTasks.waitFor(Timing.WAIT_TIME);
+		
 		inventory.childHistory().assertLastResourceChange(true);
-		// TODO validate using DMR
+		mgmtClient.assertResourcePresence("/subsytem=web", "connector", myConnector.getName(), true);
 		myConnector.assertExists(true);
 
 	}
@@ -65,7 +78,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 	public void removeConnector() {
 		myConnector.delete();
 		web.inventory().childHistory().assertLastResourceChange(true);
-		// TODO validate using DMR
+		mgmtClient.assertResourcePresence("/subsytem=web", "connector", myConnector.getName(), false);
 		myConnector.assertExists(false);
 	}
 	
