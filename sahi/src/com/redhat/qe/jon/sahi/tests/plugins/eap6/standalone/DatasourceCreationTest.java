@@ -95,7 +95,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	
 	
 	
-	@Test(groups = "datasource", dependsOnMethods={"configureDatasource","disableDatasource"})
+	@Test(groups = "datasource", dependsOnMethods={"addDatasource","enableEnabledDatasource"})
 	public void uninventoryDatasource() {
 		uninventoryDS(nonXA_def);
 	}
@@ -166,10 +166,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		enableDS(XA_def,false);
 	}
 		
-	
-	
-	
-	@Test(groups = "XAdatasource",dependsOnMethods={"configureXADatasource","disableXADatasource"})
+	@Test(groups = "XAdatasource",dependsOnMethods={"addXADatasource","enableEnabledXADatasource"})
 	public void uninventoryXADatasource() {
 		uninventoryDS(XA_def);
 	}
