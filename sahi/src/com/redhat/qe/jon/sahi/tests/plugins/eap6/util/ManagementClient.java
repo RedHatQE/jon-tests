@@ -216,12 +216,13 @@ public class ManagementClient {
 	 * @param result
 	 * @return
 	 */
-	public boolean reloadRequired(ModelNode result) {
+	public boolean reloadOrRestartRequired(ModelNode result) {
 		ModelNode headers = result.get("response-headers");
 		if (headers==null) {
+			log.fine("headers null");
 			return false;
 		}
-		return "".equals(headers.get("reload-required").asString());
+		return headers.get("process-state").asString().contains("required");
 	}
 	
 	public ModelNode readAttribute(String address, String attribute) {
