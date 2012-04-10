@@ -42,7 +42,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/connector=http", "max-save-post-size").get("result").asString().equals("8192"),"Connector configuration change was successfull");
 	}
 	
-	@Test(groups={"connector"})
+	@Test(groups={"connector","blockedByBug-811149"})
 	public void createConnector() {
 		Inventory inventory = web.inventory();
 		NewChildWizard nc = inventory.childResources().newChild("Connector");
