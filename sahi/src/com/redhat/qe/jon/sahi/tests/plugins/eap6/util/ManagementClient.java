@@ -18,6 +18,7 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 /**
  * AS 7 DMR Management client
  * @author lzoubek
@@ -150,9 +151,11 @@ public class ManagementClient {
 			}
 		}
 		op.get("operation").set(operation);
-		for (String param : params) {
-			String[] elements = param.split("=");
-			op.get(elements[0]).set(elements[1]);
+		if (params!=null) {
+			for (String param : params) {
+				String[] elements = param.split("=");
+				op.get(elements[0]).set(elements[1]);
+			}
 		}
 		return op;
 	}
@@ -263,6 +266,19 @@ public class ManagementClient {
 					"existsResource", e);
 			e.printStackTrace();
 			return false;
+		}
+	}
+	/**
+	 * invokes 'Reload' command on server
+	 */
+	public void reload() {
+		executeOperationVoid("/", "reload", new String[]{});
+		try {
+			log.fine("Waiting "+Timing.toString(Timing.TIME_30S)+" for server to reload");
+			Thread.currentThread().join(Timing.TIME_30S);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
