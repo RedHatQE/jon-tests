@@ -54,7 +54,7 @@ public class MonitoringTest extends AS7StandaloneTest {
         // check that the metric is present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
         sahiTasks.waitFor(5000);
-        Assert.assertTrue(sahiTasks.cell("Maximum request time").isVisible());                              
+        Assert.assertTrue(getMetricsCell().isVisible());                              
     }
 
     @Test(groups={"monitoringTest"})

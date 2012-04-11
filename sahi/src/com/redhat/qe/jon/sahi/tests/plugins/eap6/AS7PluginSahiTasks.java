@@ -96,8 +96,8 @@ public class AS7PluginSahiTasks {
 	        if (elm.exists()) {
 	            elm.check();
 	            tasks.cell("Import").click();
-	            log.fine("Waiting "+Timing.toString(Timing.TIME_1M)+" for resource to import...");
-	            tasks.waitFor(Timing.TIME_1M);
+	            log.fine("Waiting "+Timing.toString(2*Timing.TIME_1M)+" for resource to import...");
+	            tasks.waitFor(2*Timing.TIME_1M);
 	        } else {
 	            log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
 	        }

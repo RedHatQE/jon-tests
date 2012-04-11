@@ -7,13 +7,11 @@ import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration;
-import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
-import com.redhat.qe.jon.sahi.tasks.Timing;
 
 /**
  * @author Libor Zoubek (lzoubek@redhat.com)
@@ -97,7 +95,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	
 	
 	
-	@Test(groups = "datasource", dependsOnMethods={"configureDatasource","disableDatasource"})
+	@Test(groups = "datasource", dependsOnMethods={"addDatasource","enableEnabledDatasource"})
 	public void uninventoryDatasource() {
 		uninventoryDS(nonXA_def);
 	}
@@ -168,10 +166,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		enableDS(XA_def,false);
 	}
 		
-	
-	
-	
-	@Test(groups = "XAdatasource",dependsOnMethods={"configureXADatasource","disableXADatasource"})
+	@Test(groups = "XAdatasource",dependsOnMethods={"addXADatasource","enableEnabledXADatasource"})
 	public void uninventoryXADatasource() {
 		uninventoryDS(XA_def);
 	}
@@ -182,6 +177,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		deleteDS(XA_def);
 	}
 	private void disableDS(String[] ds_def,boolean expectSuccess) {
+		mgmtClient.reload();
 		Operations operations = datasources.child(ds_def[0]).operations();
 		Operation add = operations.newOperation("Disable");
 		add.schedule();
@@ -192,6 +188,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	}
 	
 	private void enableDS(String[] ds_def, boolean expectSuccess) {
+		mgmtClient.reload();
 		Operations operations = datasources.child(ds_def[0]).operations();
 		Operation add = operations.newOperation("Enable");
 		add.schedule();

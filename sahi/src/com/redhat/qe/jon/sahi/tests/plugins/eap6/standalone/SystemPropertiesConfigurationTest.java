@@ -39,7 +39,7 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
     	addSystemProperty(server);
         Assert.assertTrue(readPropertyValue(addedPropName).equals(addedPropValue),"System property has correct value");
     }
-	@Test(groups={"configuration"},dependsOnMethods="addPropertyTest")
+	@Test(groups={"configuration","blockedByBug-708332"},dependsOnMethods="addPropertyTest")
 	public void editPropertyTest() {
 		Configuration config = server.configuration();
     	CurrentConfig current = config.current();

@@ -79,6 +79,18 @@
             </run>
         </groups>
     </test>
+     <test name="Standalone_Web_Subsystem">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.WebSubsystemTest"/>                
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>                                  
+                <include name="connector"/>
+            </run>
+        </groups>
+    </test>
     <test name="Standalone_ResourceCreation">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceCreationTest"/>                

@@ -18,6 +18,7 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 /**
  * AS 7 DMR Management client
  * @author lzoubek
@@ -150,9 +151,11 @@ public class ManagementClient {
 			}
 		}
 		op.get("operation").set(operation);
-		for (String param : params) {
-			String[] elements = param.split("=");
-			op.get(elements[0]).set(elements[1]);
+		if (params!=null) {
+			for (String param : params) {
+				String[] elements = param.split("=");
+				op.get(elements[0]).set(elements[1]);
+			}
 		}
 		return op;
 	}
@@ -210,6 +213,20 @@ public class ManagementClient {
 		Assert.assertTrue("failed".equals(ret.get("outcome").asString()), msg);
 		return ret;
 	}
+	/**
+	 * checks whether given model node (server's response) contains flag 
+	 * from server saying, that server needs to be reloaded (some config change required it)
+	 * @param result
+	 * @return
+	 */
+	public boolean reloadOrRestartRequired(ModelNode result) {
+		ModelNode headers = result.get("response-headers");
+		if (headers==null) {
+			log.fine("headers null");
+			return false;
+		}
+		return headers.get("process-state").asString().contains("required");
+	}
 	
 	public ModelNode readAttribute(String address, String attribute) {
 		log.fine("Read attribute ["+attribute+ "] of ["+address+"]");
@@ -249,6 +266,19 @@ public class ManagementClient {
 					"existsResource", e);
 			e.printStackTrace();
 			return false;
+		}
+	}
+	/**
+	 * invokes 'Reload' command on server
+	 */
+	public void reload() {
+		executeOperationVoid("/", "reload", new String[]{});
+		try {
+			log.fine("Waiting "+Timing.toString(Timing.TIME_30S)+" for server to reload");
+			Thread.currentThread().join(Timing.TIME_30S);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

@@ -2,6 +2,7 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
 import java.util.Date;
 
+import org.jboss.dmr.ModelNode;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -9,7 +10,6 @@ import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.Timing;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 public class OperationTest extends AS7StandaloneTest {
 	
@@ -44,6 +44,31 @@ public class OperationTest extends AS7StandaloneTest {
 		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
 		Assert.assertTrue(httpClient.isRunning(), "Server is reachable via HTTP request");
 		server.assertAvailable(true,"EAP server is online when server was started again");
+	}
+	
+	@Test(groups="operation")
+	public void reload() throws Exception {
+		Assert.assertTrue(httpClient.isRunning(), "Server must run before we try to reload it");
+		// we do some change using DMR so server requires reload
+		// we'll just disable default Datasource
+		ModelNode result = mgmtClient.executeOperation(mgmtClient.createOperation("/subsystem=datasources/data-source=ExampleDS", "disable", new String[] {}));
+		Assert.assertTrue("success".equals(result.get("outcome").asString()),"DMR Operation call was successfulll");		
+		Assert.assertTrue(mgmtClient.reloadOrRestartRequired(result),"Server sent [reload|restart-required] header in response");		
+		
+		Operations operations = server.operations();
+		Operation op = operations.newOperation("Reload");
+		op.schedule();
+		operations.assertOperationResult(op,true);
+		
+		log.fine("Waiting "+Timing.toString(Timing.TIME_30S)+" for server to reload");
+		sahiTasks.waitFor(Timing.TIME_30S);
+		
+		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
+		Assert.assertTrue(httpClient.isRunning(), "Server is reachable via HTTP request");
+		Assert.assertFalse(mgmtClient.reloadOrRestartRequired(mgmtClient.readAttribute("/subsystem=datasource/data-source-ExampleDS", "jndi-name")),"Server sent [reload|restart-required] header right after reloading");
+		// revert config change back
+		mgmtClient.executeOperationAndAssertSuccess("Reverting back config after server reload was successfull",mgmtClient.createOperation("/subsystem=datasources/data-source=ExampleDS", "enable", new String[] {}));
+		server.assertAvailable(true,"EAP server is online");
 	}
 
 	@Test(groups={"operation","blockedByBug-807942"})
