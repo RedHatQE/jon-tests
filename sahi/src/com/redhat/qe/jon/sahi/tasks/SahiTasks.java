@@ -1622,7 +1622,7 @@ public class SahiTasks extends ExtendedSahi {
         		this.cell("Disable").click();
         	}
     	}
-    	
+    	this.waitFor(1000*2); //wait 2 seconds to get load table details
     	 numberTableAvailable = this.table(tableName).countSimilar();
      	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
          tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
