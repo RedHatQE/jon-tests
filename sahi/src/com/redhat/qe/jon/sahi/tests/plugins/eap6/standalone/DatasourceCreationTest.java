@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
@@ -48,20 +49,16 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 			server.performManualAutodiscovery();
 			log.info("manual discovery done");
 		}
-		Operations operations = datasources.operations();
-		Operation add = operations.newOperation("Add Datasource");
-		add.getEditor().setText("name", datasource_nonXA);
+		Inventory inventory = datasources.inventory();
+		NewChildWizard add = inventory.childResources().newChild("DataSource");
+		add.getEditor().setText("resourceName", datasource_nonXA);
+		add.next();
+		add.getEditor().setText("connection-url","jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
 		add.getEditor().setText("driver-name","h2");
 		add.getEditor().setText("jndi-name","java:jboss/datasources/"+datasource_nonXA);
-		add.getEditor().setText("connection-url","jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");		
-
-		add.assertRequiredInputs();
-		add.schedule();		
-		operations.assertOperationResult(add, true);
-
-		assertDatasourceExists(nonXA_def);		
-		//  assert datasource was discovered by agent
-		server.performManualAutodiscovery();
+		add.finish();
+		inventory.childHistory().assertLastResourceChange(true);
+		assertDatasourceExists(nonXA_def);
 		datasources.child(datasource_nonXA).assertExists(true);
 	}
 
@@ -114,20 +111,17 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 			server.performManualAutodiscovery();
 			log.info("manual discovery done");
 		}
-		Operations operations = datasources.operations();
-		Operation add = operations.newOperation("Add XA Datasource");
-
-		add.getEditor().setText("name",datasource_XA);
-		add.getEditor().setText("driver-name","h2");
+		Inventory inventory = datasources.inventory();
+		NewChildWizard add = inventory.childResources().newChild("XADataSource");
+		add.getEditor().setText("resourceName",datasource_XA);
+		add.next();
 		add.getEditor().setText("xa-datasource-class","org.h2.jdbcx.JdbcDataSource");
-		add.getEditor().setText("connection-url","jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
 		add.getEditor().setText("jndi-name","java:jboss/datasources/"+datasource_XA);
+		add.getEditor().setText("driver-name","h2");
+		//add.getEditor().setText("connection-url","jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
+		add.finish();
 
-		add.assertRequiredInputs();
-		add.schedule();		
-
-		operations.assertOperationResult(add, true);
-		
+		inventory.childHistory().assertLastResourceChange(true);
 		// assert datasource exists
 		assertDatasourceExists(XA_def);
 		assertAttributeValue(XA_def, "driver-name", "h2");
@@ -135,8 +129,6 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		ModelNode ret = mgmtClient.readAttribute("/subsystem=datasources/"+XA_def[1]+"="+XA_def[0]+"/xa-datasource-properties=connection-url", "value");
 		Assert.assertTrue(ret.get("result").asString().equalsIgnoreCase("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1"), "Datasource ["+XA_def[0]+"] : xa-property connection-url=jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
 		
-		//  assert datasource was discovered by agent
-		server.performManualAutodiscovery();
 		datasources.child(datasource_XA).assertExists(true);
 	}
 	
