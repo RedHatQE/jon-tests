@@ -50,6 +50,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		nc.next();
 		// wait a little bit longer - it takes time to load connector configuration
 		sahiTasks.waitFor(Timing.WAIT_TIME);
+		nc.getEditor().checkRadio("http");
 		nc.getEditor().setText("socket-binding", "http");
 //		int scrollbars = sahiTasks.image("vscroll_track.png").countSimilar();
 //		if (scrollbars>1) {
