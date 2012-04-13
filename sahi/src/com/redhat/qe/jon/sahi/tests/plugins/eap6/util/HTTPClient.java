@@ -13,12 +13,15 @@ import com.redhat.qe.auto.testng.Assert;
 
 public class HTTPClient {
 	private static final Logger log = Logger.getLogger(HTTPClient.class.getName());
-	private final String host;
-	private final int port;
+
+	private final String serverAddress;
 	
 	public HTTPClient(String host, int port) {		
-		this.host = host;
-		this.port = port;
+		this("http://"+host+":"+String.valueOf(port));
+	}
+	
+	public HTTPClient(String serverAddress) {
+		this.serverAddress = serverAddress;
 		log.info("Creating HTTPClient that will connect to ["+getServerAddress()+"]");
 	}
 	/**
@@ -50,7 +53,7 @@ public class HTTPClient {
 	 * @return
 	 */
 	public String getServerAddress() {
-		return "http://"+host+":"+String.valueOf(port);
+		return serverAddress;
 	}
 	/**
 	 * asserts deployment content

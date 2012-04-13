@@ -3,6 +3,8 @@ package com.redhat.qe.jon.sahi.tasks;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import com.redhat.qe.jon.sahi.base.inventory.Resource;
 /**
  * This class should abstract navigation on RHQ in general
  * @author lzoubek
@@ -79,5 +81,23 @@ public class Navigator {
         tasks.link("Inventory").click();
         tasks.cell("Discovery Queue").click();
         tasks.waitFor(timeout);
+	}
+	public void inventoryGoToResource(Resource res) {
+		tasks.link("Inventory").click();
+		tasks.waitFor(timeout);
+		tasks.cell("Platforms").click();
+		tasks.waitFor(timeout);
+        log.fine("Select platform ["+res.getPlatform()+"]");
+        tasks.link(res.getPlatform()).click();
+        for (int i = 1;i<res.getPath().size();i++) {
+        	String element = res.getPath().get(i);
+        	log.fine("Select element ["+element+"]");
+        	tasks.waitFor(timeout);
+	        inventorySelectTab("Inventory","Child Resources");	        
+	        tasks.link(element).click();
+	        log.fine("Clicked element ["+element+"]");
+        }
+        tasks.waitFor(timeout);
+        log.fine("Navigation to "+res.toString()+ " done.");
 	}
 }

@@ -21,6 +21,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.sun.jersey.api.client.WebResource;
 /**
  * this represents RHQ Resource. Each resource is defined by its path within inventory. 
@@ -40,6 +41,22 @@ public class Resource {
 	private final SahiTasks tasks;
 	private String id;
 	private static final Logger log = Logger.getLogger(Resource.class.getName());
+	/**
+	 * this value says, whether RHQ REST API will be used to get resource IDs and thus faster
+	 * navigation, this is auto-detected (by checking whether RHQ REST end-point returns 200)
+	 */
+	public static final boolean HAVE_REST_API;
+	
+	static {
+		HTTPClient client = new HTTPClient(System.getProperty("jon.server.url")+"/rest/1"); 		
+		HAVE_REST_API = client.isRunning();
+		if (HAVE_REST_API) {
+			log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured with REST API, resource navigation will be fast as hell");
+		}
+		else {
+			log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured without REST API, resource navigation will be slower");
+		}
+	}
 
 	public Resource(SahiTasks tasks, String... path) {
 		this(null,tasks,Arrays.asList(path));
@@ -74,18 +91,23 @@ public class Resource {
 	 * navigates to this resource, note that Resource Tab that being selected is undefined
 	 */
 	public void navigate() {
-		fetchId(false);
-		String serverBaseUrl = tasks.getNavigator().getServerBaseUrl();
-		tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
-		ElementStub es =  tasks.byXPath("//td[@class='WarnBlock'][1]");
-		if (es.exists() && es.getText().contains("does not exist")) {
-			// need to refresh resource's ID
-			fetchId(true);
-			if (getId()!=null) {
-				tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
+		if (HAVE_REST_API) {
+			fetchId(false);
+			String serverBaseUrl = tasks.getNavigator().getServerBaseUrl();
+			tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
+			ElementStub es =  tasks.byXPath("//td[@class='WarnBlock'][1]");
+			if (es.exists() && es.getText().contains("does not exist")) {
+				// need to refresh resource's ID
+				fetchId(true);
+				if (getId()!=null) {
+					tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
+				}
 			}
+			log.fine("Navigation to "+toString()+ " done.");
 		}
-		log.fine("Navigation to "+toString()+ " done.");
+		else {
+			tasks.getNavigator().inventoryGoToResource(this);
+		}
 	}
 
 	/**
@@ -191,6 +213,9 @@ public class Resource {
 	 */
 	public List<Resource> getChildrenTree() {
 		log.fine("getChildrenRecursive for resource "+toString());
+		if (!HAVE_REST_API) {
+			throw new RuntimeException("Cannot retrieve children tree, REST API does not seem to be available on "+System.getProperty("jon.server.url"));
+		}
 		List<Resource> children = new ArrayList<Resource>();
 		
 		//first we need to find current resource
