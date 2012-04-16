@@ -48,7 +48,7 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 		}
 	}
 	
-	@Test (groups="metricCollectionResourceTest", dataProvider="metricTestData",dependsOnMethods={"disableMetric"})
+	@Test (groups="metricCollectionResourceTest", dataProvider="metricTestData")
 	public void enableMetric(HashMap<String, String> metricDetail){
 		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), readMetricTable(metricDetail.get(RESOURCE_NAME)), false, metricDetail.get(COLLECTION_INTERVAL), true, tableOffset), "Enable Metric validation");
 	}
