@@ -1879,8 +1879,12 @@ public class SahiTasks extends ExtendedSahi {
     	this.link("Inventory").click();
     	this.cell("Discovery Queue").click();
     	if(this.waitForElementRowExists(this, "No items to show", 1000*5)){
-    		_logger.log(Level.WARNING, "No items to import!");
-    		return false;
+    		_logger.log(Level.INFO, "Do not find any resources in Discovery Queue, Clicking Refresh button and checking again...");
+    		this.cell("Refresh").near(this.cell("Deselect All")).click();
+    		if(this.waitForElementRowExists(this, "No items to show", 1000*5)){
+    			_logger.log(Level.WARNING, "No items to import!");
+        		return false;
+    		}    		
     	}
     	if(resourceName != null){
     		LinkedList<HashMap<String, String>> discoveryQueue = getRHQgwtTableFullDetails("listTable", 2, "Resource Name, Resource Key, Resource Type, Description, Inventory Status, Discovery Time", null);
