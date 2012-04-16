@@ -55,6 +55,40 @@ public class ControllerOperationTest extends AS7DomainTest {
 		controller.assertAvailable(true, "EAP server is online when server was started");
 	}
 	
+	@Test(groups={"operation"})
+	public void restart() {
+		Date startupDate = sshClient.getStartupTime("domain/log/process-controller.log");
+		
+		Operations operations = controller.operations();
+		Operation op = operations.newOperation("Restart");
+		op.schedule();
+		operations.assertOperationResult(op,true);
+
+		log.fine("Waiting "+Timing.toString(Timing.TIME_30S)+" for server to restart");
+		sahiTasks.waitFor(Timing.TIME_30S);
+		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
+		Date restartDate = sshClient.getStartupTime("domain/log/process-controller.log");
+		Assert.assertTrue(restartDate.getTime()>startupDate.getTime(), "Server process-controller.log first message timestamp check: Server has been restarted");
+		Assert.assertTrue(httpDomainManager.isRunning(), "Controller is reachable via HTTP request");
+		Assert.assertTrue(httpDomainOne.isRunning(), "Managed Server is reachable via HTTP request");
+		log.info("Now, we'll ensure that EAP did not go down after restart");
+		boolean ok = true;
+		for (int i = 0; i < Timing.REPEAT; i++) {
+			sahiTasks.waitFor(Timing.TIME_30S);
+			log.fine("Checking that resource is online: try #"
+					+ Integer.toString(i + 1) + " of 10");
+			if (!controller.isAvailable()) {
+				log.fine("Resource is offline!");
+				ok = false;
+			}
+			else {
+				ok = true;
+				log.fine("Resource is online!");
+			}
+		}
+		Assert.assertTrue(ok,"EAP server is online after server was restarted");
+	}
+	
 	@Test(groups="operation")
 	public void installRHQUser() {
 		Operations operations = controller.operations();

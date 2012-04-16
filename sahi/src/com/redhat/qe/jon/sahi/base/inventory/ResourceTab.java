@@ -1,5 +1,8 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
@@ -15,7 +18,21 @@ public abstract class ResourceTab {
 	public final Logger log;
 	protected final SahiTasks tasks;
 	protected final Resource resource;
-	
+	protected static Map<String,String[]> uriToTabmapping= new HashMap<String, String[]>();
+	static {
+		uriToTabmapping.put("Inventory", new String[] {"Inventory"});
+		uriToTabmapping.put("Inventory/Children", new String[] {"Inventory","Child Resources"});
+		uriToTabmapping.put("Inventory/ChildHistory", new String[] {"Inventory","Child History"});
+		uriToTabmapping.put("Inventory/ConnectionSettings", new String[] {"Inventory","Connection Settings"});
+		uriToTabmapping.put("Inventory/Children", new String[] {"Inventory","Child Resources"});
+		uriToTabmapping.put("Configuration", new String[] {"Configuration"});
+		uriToTabmapping.put("Configuration/Current", new String[] {"Configuration","Current"});
+		uriToTabmapping.put("Configuration/History", new String[] {"Configuration","History"});
+		uriToTabmapping.put("Monitoring", new String[] {"Monitoring"});
+		uriToTabmapping.put("Operations", new String[] {"Operations"});
+		uriToTabmapping.put("Operations/Schedules", new String[] {"Operations","Schedules"});
+		uriToTabmapping.put("Summary", new String[] {"Summary"});
+	}
 
 	/**
 	 * Creates new instance of Resource tab
@@ -53,14 +70,37 @@ public abstract class ResourceTab {
 		return this;
 	}
 
+	private void navigateDirectly(String uri) {
+		String url = tasks.getNavigator().getServerBaseUrl()+"/#Resource/"+resource.getId()+"/"+uri;
+		tasks.navigateTo(url,false);
+		tasks.waitFor(Timing.WAIT_TIME);
+	}
+	private void navigateByClick(String uri) {
+		String[] tabs = uriToTabmapping.get(uri);
+		if (tabs==null) {
+			throw new RuntimeException("No mapping for ["+uri+"] cannot navigate by clicking!!! fix the code");
+		}
+		if (tabs.length==1) {
+			tasks.getNavigator().inventorySelectTab(tabs[0]);
+		}
+		else if (tabs.length==2) {
+			tasks.getNavigator().inventorySelectTab(tabs[0], tabs[1]);
+		}
+		else {
+			throw new RuntimeException("Invalid mapping "+Arrays.toString(tabs)+" for URI ["+uri+"], fix the code");
+		}
+	}
 	/**
 	 * navigates to anything under resource's URI 
 	 * @param uri for example "Configuration/Current" will navigate to resource's current configuration
 	 */
 	protected void navigateUnderResource(String uri) {
-		String url = tasks.getNavigator().getServerBaseUrl()+"/#Resource/"+resource.getId()+"/"+uri;
-		tasks.navigateTo(url,false);
-		tasks.waitFor(Timing.WAIT_TIME);
+		if (Resource.HAVE_REST_API) {
+		navigateDirectly(uri);
+		}
+		else {
+			navigateByClick(uri);
+		}
 	}
 	protected void raiseErrorIfCellDoesNotExist(String cell) {
 		if (!tasks.cell(cell).exists()) {

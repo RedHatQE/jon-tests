@@ -35,10 +35,8 @@ public class DeploymentTest extends AS7DomainTest {
 		if (mgmtDomain.existsResource("", "deployment", war)) {
 			removeDeployment(war);
 			log.fine("Deployment removed using API, we have perform manual discovery for deployment to disappear from RHQ UI");
-			controller.performManualAutodiscovery();
-			
-		}
-		
+			controller.performManualAutodiscovery();			
+		}		
 		Inventory inventory = controller.inventory();
 		ChildResources childResources = inventory.childResources();
 		NewChildWizard newChild = childResources.newChild("DomainDeployment");
@@ -84,8 +82,7 @@ public class DeploymentTest extends AS7DomainTest {
 		// we KNOW that managed servers server-one, server-two belong to main-server-group and are UP 
 		// deployment should be on both of them
 		httpDomainOne.assertDeploymentContent(war, "Original", "Check whether original version of WAR has been deployed to "+httpDomainOne.getServerAddress());
-		httpDomainTwo.assertDeploymentContent(war, "Original", "Check whether original version of WAR has been deployed to "+httpDomainTwo.getServerAddress());
-		
+		httpDomainTwo.assertDeploymentContent(war, "Original", "Check whether original version of WAR has been deployed to "+httpDomainTwo.getServerAddress());		
 	}
 	@Test(groups = "deployment", dependsOnMethods="deployToServerGroup")
 	public void undeployFromServerGroup() {
@@ -101,14 +98,34 @@ public class DeploymentTest extends AS7DomainTest {
 		mgmtDomain.assertResourcePresence("", "deployment", war, false);
 		controller.child(war).assertExists(false);
 	}
-
+	
+	@Test(groups = "deployment", dependsOnMethods="undeployFromServerGroup")
+	public void createWARChildOnServerGroup() {
+		Inventory inventory = serverGroup.inventory();
+		ChildResources childResources = inventory.childResources();
+		NewChildWizard newChild = childResources.newChild("Deployment");
+		newChild.next();
+		newChild.upload("deploy/original/"+war);
+		//wait for upload to finish
+		sahiTasks.waitFor(2*waitTime);
+		newChild.next();
+		newChild.finish();
+		inventory.childHistory().assertLastResourceChange(true);
+		mgmtClient.assertResourcePresence("/server-group="+serverGroup.getName(), "deployment", war, true);		
+		serverGroup.child(war).assertExists(true);
+		// we KNOW that managed servers server-one, server-two belong to main-server-group and are UP 
+		// deployment should be on both of them
+		httpDomainOne.assertDeploymentContent(war, "Original", "Check whether original version of WAR has been deployed to "+httpDomainOne.getServerAddress());
+		httpDomainTwo.assertDeploymentContent(war, "Original", "Check whether original version of WAR has been deployed to "+httpDomainTwo.getServerAddress());
+		undeployFromServerGroup();
+	}
 
 	/**
 	 * removes deployment
 	 * @param name
 	 */
 	private void removeDeployment(String name) {
-		log.info("remove datasource API");
+		log.info("Removing deployment using DMR API");
 		if (mgmtDomain.executeOperationVoid("/deployment="+name, "remove", new String[]{})) {
 			log.info("[mgmt API] Deployment was removed");
 		}
