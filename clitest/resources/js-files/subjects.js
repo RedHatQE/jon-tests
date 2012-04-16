@@ -31,7 +31,7 @@
     criteria.addFilterName('rhqadmin');
     criteria.fetchConfiguration(true);
     criteria.fetchRoles(true);
-    criteria.fetchSubjectNotifications(true);
+//    criteria.fetchSubjectNotifications(true); this is no longer in API (RHQ 4.4)
 
     var subjects = SubjectManager.findSubjectsByCriteria(criteria);
 
