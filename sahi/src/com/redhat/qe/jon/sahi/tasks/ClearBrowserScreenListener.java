@@ -39,15 +39,31 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 		_logger.log(Level.INFO, "[Clear pop-up] Entering...");
 		//For buttons
 		for(String buttonNameTmp : buttonsToClick){
-			for(int i=elementCount;i>=0; i--){
-				String buttonName = buttonNameTmp+"["+i+"]";
-				if(sahiTasks.cell(buttonName).exists()){
-					sahiTasks.cell(buttonName).click();
-					_logger.log(Level.INFO, "[Clear pop-up] Button [\""+buttonName+"\"] found and clicked");
-				}else{
-					_logger.log(Level.FINE, "[Clear pop-up] Button [\""+buttonName+"\"] not available..");
+			elementCount = sahiTasks.cell(buttonNameTmp).countSimilar();
+			_logger.log(Level.INFO, "Number of '"+buttonNameTmp+"' buttons: "+elementCount);
+			if(elementCount != 0){
+				for(int i=elementCount;i>0; i--){
+					String buttonName = buttonNameTmp+"["+(i-1)+"]";
+					if(sahiTasks.cell(buttonName).exists()){
+						sahiTasks.cell(buttonName).click();
+						_logger.log(Level.FINE, "[Clear pop-up] Button [\""+buttonName+"\"] found and clicked");
+						if(sahiTasks.cell(buttonName).exists()){
+							_logger.log(Level.INFO, "Failed to click '"+buttonName+"'  button with normal click action, trying with keyPress..");
+							sahiTasks.execute("_sahi._keyPress(_sahi._cell('"+buttonName+"'), 32);"); //32 - Space bar
+							_logger.log(Level.INFO, "[Clear pop-up] Button [\""+buttonName+"\"] found and clicked by keyPress");
+							if(sahiTasks.cell(buttonName).exists()){
+								_logger.log(Level.WARNING, "[Clear pop-up] Button [\""+buttonName+"\"] Still exists!");
+							}
+						}
+						
+					}else{
+						_logger.log(Level.FINE, "[Clear pop-up] Button [\""+buttonName+"\"] not available to click");
+					}
 				}
+			}else{
+				_logger.log(Level.INFO, "There is no '"+buttonNameTmp+"' to click!");
 			}
+			
 		}
 		//For links
 		for(String linkNameTmp : linksToClick){
