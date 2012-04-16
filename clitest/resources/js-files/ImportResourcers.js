@@ -25,7 +25,11 @@ sleep(1000*60*2);
 
 assertTrue(resourcesNew.size() > 0, "There is no resource to import!!");
 
-
+/*
+ * Workaround: Add filter to get just selected resources (not their children)
+ * findResourcesByCriteria(criteria) retuns maximally just first 200 resources, not complete set of resources. So this is to be sure, that our tested resources are contained in returnet set.
+ */
+criteria.addFilterIds(resourcesArray); 
 criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED) //Add a filter to get Commited resources
 var resourcesCommited = ResourceManager.findResourcesByCriteria(criteria); // get Commited resources
 //println("Commited Resource(s)[#"+resourcesCommited.size()+"]: "+resourcesCommited);
