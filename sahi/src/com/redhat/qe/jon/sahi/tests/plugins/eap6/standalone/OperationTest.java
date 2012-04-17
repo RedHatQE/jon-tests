@@ -9,7 +9,9 @@ import org.testng.annotations.Test;
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
+import com.redhat.qe.jon.sahi.tasks.CheckAgentLog;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+
 
 public class OperationTest extends AS7StandaloneTest {
 	
@@ -19,10 +21,10 @@ public class OperationTest extends AS7StandaloneTest {
 		as7SahiTasks.importResource(server);
         sshClient.connect();
     }
-	
+
 	@Test(groups={"operation","blockedByBug-807942"})
 	public void shutdown() {
-		Assert.assertTrue(httpClient.isRunning(), "Server must be online before we try to stop it");		
+		Assert.assertTrue(httpClient.isRunning(), "Server must be online before we try to stop it");
 		Operations operations = server.operations();
 		Operation op = operations.newOperation("Shutdown");
 		op.schedule();
@@ -34,7 +36,7 @@ public class OperationTest extends AS7StandaloneTest {
 		server.assertAvailable(false,"EAP server is offline when server is stopped");
 	}
 
-	@Test(groups="operation",dependsOnMethods="shutdown")
+	@Test(alwaysRun=true,groups="operation",dependsOnMethods="shutdown")
 	public void start() {
 		Assert.assertFalse(httpClient.isRunning(), "Server must be offline before we try to stop it");
 		Operations operations = server.operations();
@@ -45,7 +47,7 @@ public class OperationTest extends AS7StandaloneTest {
 		Assert.assertTrue(httpClient.isRunning(), "Server is reachable via HTTP request");
 		server.assertAvailable(true,"EAP server is online when server was started again");
 	}
-	
+
 	@Test(groups="operation")
 	public void reload() throws Exception {
 		Assert.assertTrue(httpClient.isRunning(), "Server must run before we try to reload it");
@@ -71,7 +73,7 @@ public class OperationTest extends AS7StandaloneTest {
 		server.assertAvailable(true,"EAP server is online");
 	}
 
-	@Test(groups={"operation","blockedByBug-807942"})
+	@Test(groups={"operation","blockedByBug-807942"},dependsOnMethods="start")
 	public void restart() {
 		Date startupDate = sshClient.getStartupTime("standalone/log/boot.log");
 		
