@@ -5,7 +5,12 @@
  * March 30, 2012
  */
 
+// get ids of imported platforms
+var resCriteria = new ResourceCriteria();
+resCriteria.addFilterInventoryStatus(InventoryStatus.COMMITTED);
+resCriteria.addFilterResourceCategories(ResourceCategory.PLATFORM);
+var committedPlatforms = ResourceManager.findResourcesByCriteria(resCriteria);
+assertTrue(committedPlatforms.size() > 0, "There is no committed platform in inventory!!");
 
-var myvar = ProxyFactory.getResource(10001);
+var myvar = ProxyFactory.getResource(committedPlatforms.get(0).getId());//get platform
 Assert.assertNotNull(myvar);
-

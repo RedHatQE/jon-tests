@@ -126,9 +126,8 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		assertDatasourceExists(XA_def);
 		assertAttributeValue(XA_def, "driver-name", "h2");
 		
-		ModelNode ret = mgmtClient.readAttribute("/subsystem=datasources/"+XA_def[1]+"="+XA_def[0]+"/xa-datasource-properties=connection-url", "value");
-		Assert.assertTrue(ret.get("result").asString().equalsIgnoreCase("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1"), "Datasource ["+XA_def[0]+"] : xa-property connection-url=jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
-		
+		//ModelNode ret = mgmtClient.readAttribute("/subsystem=datasources/"+XA_def[1]+"="+XA_def[0]+"/xa-datasource-properties=connection-url", "value");
+		//Assert.assertTrue(ret.get("result").asString().equalsIgnoreCase("jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1"), "Datasource ["+XA_def[0]+"] : xa-property connection-url=jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");		
 		datasources.child(datasource_XA).assertExists(true);
 	}
 	
