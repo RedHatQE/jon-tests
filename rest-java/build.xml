@@ -18,6 +18,10 @@
 		<fileset dir="./lib">
 			<include name="*.jar" />
 		</fileset>
+		<fileset dir="../sahi/lib">
+			<include name="cajo.jar" />
+			<include name="ReportEngineClient.jar" />
+		</fileset>
 	</path>
 
 	<path id="tests.cp">

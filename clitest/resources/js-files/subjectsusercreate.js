@@ -6,8 +6,8 @@
  */
 
 
- 
-var testHost     = 'localhost';
+// TODO pass this as a script argument?? 
+//var testHost     = 'localhost';
 var testPort     = '7080';
 
 var testRole     = 'All Resources Role';
@@ -23,7 +23,9 @@ var testPassword = 'redhat';
 
 var TestsEnabled = true;
 
-var subject = rhq.login('rhqadmin', 'rhqadmin', testHost, testPort);
+// workaround: testHost must be passed as a script argument, rhq.login fails when testHost='localhost' and there is no rhq-server installed on localhost 
+var subject = subject;
+//var subject = rhq.login('rhqadmin', 'rhqadmin', testHost, testPort);
 
    var c = new RoleCriteria();
    c.addFilterName( testRole );   
