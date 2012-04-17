@@ -18,6 +18,12 @@ for(i=0;i<platformsDiscovered.size();i++){
 }
 println("Platforms about to Uninventory: "+platformsArray);
 ResourceManager.uninventoryResources(platformsArray);
+
+// Sleeping 10s. Just to be sure
+println("Sleeping 10sec to sync!!");
+sleep(1000*10);
+
+ 
 platformsDiscovered = ResourceManager.findResourcesByCriteria(criteria); // get All platforms
 assertEquals(platformsDiscovered.getTotalSize(), 0, "Number of Discovered platforms,");
 println("All Platforms successfully removed from server");
