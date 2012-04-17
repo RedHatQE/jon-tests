@@ -112,12 +112,14 @@
 		<property name="rest.username" value="rhqadmin" />
 		<property name="rest.password" value="rhqadmin" />
 		<property name="jon.server.url" value="http://localhost:7080" />
+		<property name="REPORT_ENGINE_PROPERTY_FILE" value="ReportEngineClient/ReportEngineClient-Rest-Groovy.properties" />
 		<taskdef name="groovyng" classpathref="utils.cp" classname="org.codehaus.groovy.testng.TestNGrooveTask" />
-		<groovyng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter">
+		<groovyng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter,com.redhat.reportengine.client.ReportEngineTestNGListner">
 			<scriptfileset dir="../rest" includes="*.groovy"/>
 			<sysproperty key="jon.server.url" value="${jon.server.url}" />
 			<sysproperty key="rest.username" value="${rest.username}" />
 			<sysproperty key="rest.password" value="${rest.password}" />
+			<sysproperty key="REPORT_ENGINE_PROPERTY_FILE" value="${REPORT_ENGINE_PROPERTY_FILE}" />
 		</groovyng>
 	</target>
 
