@@ -36,6 +36,24 @@ public class Editor {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.radio(selection).check();
 	}
+	public void selectCombo(int index, String selection) {
+		 int pickers = tasks.image("comboBoxPicker.png").countSimilar();
+		 log.fine("Found "+pickers+" comboboxes, required index="+index);			 
+		 ElementStub picker = tasks.image("comboBoxPicker.png["+index+"]");
+		 tasks.xy(picker.parentNode(),3,3).click();
+		 int rows = tasks.row(selection).countSimilar();
+		 if (rows==1) {
+			 index = 0;
+		 }
+		 log.fine("Found rows matching ["+selection+"] : "+rows+" clicking on index="+index);
+		 ElementStub es = tasks.cell(selection+"["+index+"]");
+		 if (es.isVisible()) {
+			 tasks.xy(es, 3, 3).click();
+			 log.fine("Selected  ["+selection+"].");				
+			 return;
+		 }		 
+		 throw new RuntimeException("Unable to select ["+selection+"] comboBox did NOT pop up");
+	}
 	/**
 	 * check checkbox
 	 * @param index of checkbox
