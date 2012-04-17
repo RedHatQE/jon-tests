@@ -22,6 +22,7 @@
 			<class name="com.redhat.qe.jon.sahi.tests.CheckForConfigurationErrorsTest">
 			<methods>
 				 <include name="resourceConfigurationWithoutErrors"></include> 
+				 <include name="resourceConfigurationRetrieved"></include>
 			</methods>
 			</class>
 		</classes>
