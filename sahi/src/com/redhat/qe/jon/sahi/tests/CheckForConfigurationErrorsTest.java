@@ -29,7 +29,7 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 
 	@Test(groups = "check", 
 			dataProvider = "getResourceTree",
-			description="This test checks whether there is any error on Configuration tab of particular resource"
+			description="This test checks for each imported resource whether there is any error on Configuration tab and configuration can be retrieved"
 	)
 	public void resourceConfigurationWithoutErrors(final Resource resource) {
 		String errorText = null;
@@ -43,5 +43,14 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 		}
 		Assert.assertNull(errorText, "Resource " + resource.toString()
 				+ " has error on Configuration TAB : " + errorText);
+		ElementStub es =  sahiTasks.byXPath("//td[@class='InfoBlock'][2]");
+		if (es.exists()) {
+			String text = es.getText();
+			if (text!=null) {
+				if (text.contains("failed to load the configuration")) {
+					Assert.fail("No configuration was retrieved!");
+				}
+			}
+		}
 	}
 }

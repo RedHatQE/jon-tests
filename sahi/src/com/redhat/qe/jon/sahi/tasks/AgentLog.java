@@ -104,6 +104,10 @@ public class AgentLog {
 	public void watch() {
 		this.startLine = getLineNumbers(getAgentLogfile());
 	}
+	public void disconnect() {
+		client.disconnect();
+		backgoundClient.disconnect();
+	}
 	/**
 	 * returns content of <b>agent.log</b> since {@link AgentLog#watch()} 
 	 * or {@link AgentLog#getContent()} was called. Note that calling this also calls {@link AgentLog#watch()}
@@ -116,6 +120,10 @@ public class AgentLog {
 		}
 		int current = getLineNumbers(getAgentLogfile());
 		int lines = current - this.startLine;		
+		if (lines==0) {
+			this.startLine = -1;
+			return "";
+		}
 		if (lines>0) {
 			this.startLine = -1;
 			return client.runAndWait("tail -n "+lines+" "+getAgentLogfile()).getStdout();
@@ -137,19 +145,64 @@ public class AgentLog {
 		}
 	}
 	/**
+	 * returns content of <b>agent.log</b> since {@link AgentLog#watch()} 
+	 * or {@link AgentLog#getContent()} was called. Note that calling this also calls {@link AgentLog#watch()}
+	 * so you get only appended content
+	 * @param grep expression to filter results
+	 * @return
+	 */
+	public String getContent(String grep) {
+		if (this.startLine<0) {
+			return "";
+		}
+		int current = getLineNumbers(getAgentLogfile());
+		int lines = current - this.startLine;		
+		if (lines==0) {
+			this.startLine = -1;
+			return "";
+		}
+		if (lines>0) {
+			this.startLine = -1;
+			return client.runAndWait("tail -n "+lines+" "+getAgentLogfile()+" | grep "+grep).getStdout();
+		}
+		else {
+			// it seems'like log files was rotated, we'll return tail of agent.log.1 + whole agent.log
+			String rotatedLog = getAgentLogfile()+".1";
+			StringBuilder sb = new StringBuilder();
+			if (existsFile(rotatedLog)) {
+				current = getLineNumbers(rotatedLog);
+				lines = current - this.startLine;
+				if (lines>0) {
+					sb.append(client.runAndWait("tail -n "+lines+" "+rotatedLog+" | grep "+grep).getStdout());
+				}				
+			}
+			sb.append(client.runAndWait("cat "+getAgentLogfile()+" | grep "+grep).getStdout());
+			this.startLine = -1;
+			return sb.toString();
+		}
+	}
+	/**
+	 * 
+	 * @return all ERROR lines from <b>agent.log</b> since {@link AgentLog#watch()} was called
+	 */
+	public List<String> errorLines() {
+		String content = getContent("\' ERROR \'").trim();
+		String[] lines = content.split("\n");
+		List<String> errorLines = new ArrayList<String>();
+		for (String line : lines) {
+			if (line.length()>0) {
+				errorLines.add(line);
+			}
+		}
+		return errorLines;
+	}
+	/**
 	 * this is a convenient method for asserting that no <b>ERROR</b> message appended 
 	 * into <b>agent.log</b> since {@link AgentLog#watch()} was called
 	 * if such line is found, {@link Assert#fail()} is raised.
 	 */
 	public void assertNoError() {
-		String content = getContent();
-		String[] lines = content.split("\n");
-		List<String> errorLines = new ArrayList<String>();
-		for (String line : lines) {
-			if (line.contains(" ERROR ")) {
-				errorLines.add(line);
-			}
-		}
+		List<String> errorLines = errorLines();
 		if (!errorLines.isEmpty()) {
 			Assert.fail("Following ERROR lines were found in remote agent.log :"+Arrays.toString(errorLines.toArray()));
 		}
@@ -196,5 +249,9 @@ public class AgentLog {
 		this.backgoundClient.getSshCommandRunner().reset();
 		this.backgoundClient.connect();
 		log.fine("Redirecting disabled for log ["+client.getHost()+":"+getAgentLogfile()+"]");
+	}
+	@Override
+	public String toString() {
+		return "["+client.getUser()+"@"+client.getHost()+":"+getAgentLogfile()+"]";
 	}
 }

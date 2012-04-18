@@ -1,6 +1,8 @@
 <suite name="RHQ_4.4_UI_AS7Plugin_Test">
     
   	<listeners>
+  		<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found -->
+  		<listener class-name="com.redhat.qe.jon.sahi.tasks.AgentLogCheckTestNGListener" />
   	  	<!-- Listener to send report to Report Engine Server -->
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
   	  	<!-- Listener to clear pop-up's if any and take screenshots on test failure-->

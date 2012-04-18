@@ -25,7 +25,7 @@ public class HTTPClient {
 		log.info("Creating HTTPClient that will connect to ["+getServerAddress()+"]");
 	}
 	/**
-	 * returns true if server is reachable and responds 200
+	 * returns true if server is reachable and responds 200 or 401 (unauthorized)
 	 * @return
 	 */
 	public boolean isRunning() {
@@ -34,7 +34,7 @@ public class HTTPClient {
 		try {
 			URL u = new URL(getServerAddress());
 			connection = (HttpURLConnection) u.openConnection();
-			return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
+			return connection.getResponseCode() == HttpURLConnection.HTTP_OK || connection.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED;
 		} catch (MalformedURLException e1) {
 			throw new RuntimeException(e1);
 		} catch (ConnectException e) {
