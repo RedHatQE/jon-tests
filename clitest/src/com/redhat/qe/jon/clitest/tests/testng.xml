@@ -162,6 +162,18 @@
 		</class>
 	</classes>
 </test>
+<test name="echo_args">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="echo_args.js"/>
+                        <parameter name="cli.args" value="--args-style=named x=1 y=2"/>
+                        <parameter name="expected.result"  value="Login successful, named args...,x = 1,y = 2"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
 
 
 
