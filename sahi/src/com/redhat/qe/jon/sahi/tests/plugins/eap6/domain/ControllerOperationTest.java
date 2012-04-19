@@ -23,7 +23,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 		as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
 		as7SahiTasks.importResource(controller);
     }
-	@Test(groups={"operation","blockedByBug-807942"})
+	@Test(groups={"operation","blockedByBug-807942","blockedByBug-813409"})
 	public void shutdown() {
 		Assert.assertTrue(httpDomainManager.isRunning(), "Server must be online before we try to stop it");
 		Operations operations = controller.operations();
@@ -40,7 +40,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 		controller.assertAvailable(false, "EAP server is offline when server is stopped");
 	}
 
-	@Test(groups="operation",dependsOnMethods="shutdown")
+	@Test(groups={"operation","blockedByBug-813409"},dependsOnMethods="shutdown")
 	public void start() {
 		Assert.assertFalse(httpDomainManager.isRunning(), "Server must be offline before we try to stop it");
 		Operations operations = controller.operations();
@@ -55,7 +55,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 		controller.assertAvailable(true, "EAP server is online when server was started");
 	}
 	
-	@Test(groups={"operation"})
+	@Test(groups={"operation","blockedByBug-813409"})
 	public void restart() {
 		Date startupDate = sshClient.getStartupTime("domain/log/process-controller.log");
 		

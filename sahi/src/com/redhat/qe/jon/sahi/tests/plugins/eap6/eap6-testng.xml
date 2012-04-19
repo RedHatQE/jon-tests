@@ -56,30 +56,10 @@
         </groups>
     </test>
      -->
- 	<test name="Standalone_Operations">
+     <test name="Standalone_Logging_Subsystem">
         <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.OperationTest"/>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.LoggingSubsystem"/>                
         </classes>
-        <groups>
-            <run>
-                <include name="setup"/>
-                <include name="teardown"/>
-                <include name="operation"/>
-            </run>
-        </groups>
-    </test>
-     <test name="Standalone_ResourceConfiguration">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceConfigurationTest"/>                
-        </classes>
-        <groups>
-            <run>
-                <include name="setup"/>
-                <include name="teardown"/>                                  
-                <include name="inventoryTest"/>
-                <include name="configuration"/>
-            </run>
-        </groups>
     </test>
      <test name="Standalone_Web_Subsystem">
         <classes>
@@ -179,6 +159,32 @@
             </run>
         </groups>
     </test>
+    <test name="Standalone_Operations">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.OperationTest"/>
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>
+                <include name="operation"/>
+            </run>
+        </groups>
+    </test>
+     <test name="Standalone_ResourceConfiguration">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceConfigurationTest"/>                
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>                                  
+                <include name="inventoryTest"/>
+                <include name="configuration"/>
+            </run>
+        </groups>
+    </test>
+    
     <test name="Domain_AutodetectConfiguration">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.domain.AutodetectConfigurationTest"/>
