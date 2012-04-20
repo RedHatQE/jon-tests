@@ -24,9 +24,23 @@ public class MonitoringTest extends AS7StandaloneTest {
     	int tables = sahiTasks.table("listTable").countSimilar();
     	log.fine("listTable count = "+tables);
     	return sahiTasks.cell("Maximum request time").in(sahiTasks.table("listTable["+(tables-1)+"]"));
-    }    
+    }
+    private boolean metricsCellVisible() {
+    	int tables = sahiTasks.table("listTable").countSimilar();
+    	log.fine("listTable count = "+tables);
+    	for (ElementStub table : sahiTasks.table("listTable").collectSimilar()) {
+    		log.fine(table.fetch("innerHTML"));
+    	}
+    	
+    	for (ElementStub es : sahiTasks.cell("Maximum request time").in(sahiTasks.table("listTable["+(tables-1)+"]")).collectSimilar()) {
+    		if (es.isVisible()) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
     
-    @Test(groups={"monitoringTest"})
+    @Test(groups={"monitoringTest"},dependsOnMethods="enableMetricsTest")
     public void disableMetricsTest()  {
     	server.monitoring();
                        
@@ -44,7 +58,7 @@ public class MonitoringTest extends AS7StandaloneTest {
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
 
         sahiTasks.waitFor(5000);
-        Assert.assertFalse(getMetricsCell().isVisible(),"Metrics 'Maximum request time' is not visible in results table");
+        Assert.assertFalse(metricsCellVisible(),"Metrics 'Maximum request time' is not visible in results table");
     }
 
     
@@ -54,7 +68,7 @@ public class MonitoringTest extends AS7StandaloneTest {
         // check that the metric is present in "Tables" tab                
         sahiTasks.xy(sahiTasks.cell("Tables"), 3, 3).click(); 
         sahiTasks.waitFor(5000);
-        Assert.assertTrue(getMetricsCell().isVisible());                              
+        Assert.assertTrue(metricsCellVisible());                              
     }
 
     @Test(groups={"monitoringTest"})
@@ -70,7 +84,6 @@ public class MonitoringTest extends AS7StandaloneTest {
         	sahiTasks.xy(e,3,3).click();
         }
         sahiTasks.waitFor(2000); 
-        log.fine(sahiTasks.cell(4).in(getMetricsCell().parentNode("tr")).getText());
         Assert.assertTrue(sahiTasks.cell(4).in(getMetricsCell().parentNode("tr")).getText().indexOf("4") != -1, "Metric cell with changed time exists");
         
         // change time back to default
