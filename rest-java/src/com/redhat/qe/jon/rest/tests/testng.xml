@@ -33,6 +33,16 @@
 		</classes>
   	</test>
   	
+  	<test name="List Status">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="listStatus"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
   	<test name="Visit Platforms">
   	  	<classes>
 			<class name="com.redhat.qe.jon.rest.tests.RestTest">		

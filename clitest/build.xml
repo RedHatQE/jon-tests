@@ -6,6 +6,7 @@
 	<property name="test.resources.dir" location="resources" />
 	<property name="test.output.dir" location="test-output" />
 	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
+	<property name="env.js_files_dir" value="resources/js-files/"/>
 	<condition property="webui-framework.dir" value="../../../webui-framework">
 		<not>
 			<isset property="webui-framework.dir"/>
@@ -16,13 +17,14 @@
 		<fileset dir="${webui-framework.dir}/lib">
 			<include name="*.jar" />
 		</fileset>
+		<fileset dir="../sahi/lib">
+			<include name="cajo.jar" />
+			<include name="ReportEngineClient.jar" />
+		</fileset>
 	</path>
 
 	<path id="tests.cp">
-		<!-- <pathelement location="${test.build.dir}" />
-		<fileset dir="lib">
-			<include name="*.jar" />
-		</fileset> -->
+		<pathelement location="${test.build.dir}"/>
 		<pathelement location="${webui-framework.dir}/bin" />
 		<path refid="utils.cp" />
 	</path>

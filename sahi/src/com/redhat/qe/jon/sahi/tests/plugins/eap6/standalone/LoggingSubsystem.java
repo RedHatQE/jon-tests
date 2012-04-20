@@ -7,6 +7,8 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
@@ -32,12 +34,13 @@ public class LoggingSubsystem extends AS7StandaloneTest {
         myConsoleHandler = logging.child("MYCONSOLE");
         fileHandler = logging.child("FILE");
         defaultLogger = logging.child("jacorb");
-        myLogger = logging.child("org.rhq.logger");
+        myLogger = logging.child("orgrhqlogger");
     }
 	@Test(groups={"blockedByBug-814173"})
 	public void changeRootLoggerLevel() {
 		Operations operations = logging.operations();
 		Operation op = operations.newOperation("Change Root Log Level");
+		op.getEditor().checkBox(0, false);
 		op.getEditor().selectCombo(2, "DEBUG");
 		op.schedule();
 		operations.assertOperationResult(op, true);
@@ -56,7 +59,6 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	public void setRootLogger() {
 		Operations operations = logging.operations();
 		Operation op = operations.newOperation("Set Root Logger");
-		op.getEditor().selectCombo(2, "INFO");
 		ConfigEntry ce = op.getEditor().newEntry(0);
 		ce.setField("handler", consoleHandler.getName());
 		ce.OK();
@@ -74,61 +76,53 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	public void consoleHandlerConfigure() {
 		Configuration configuration = consoleHandler.configuration();
 		CurrentConfig current = configuration.current();
-		current.getEditor().setText("level", "DEBUG");
+		current.getEditor().selectCombo(0, "DEBUG");
 		current.save();
 		configuration.history().failOnFailure();
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/console-handler="+consoleHandler.getName(), "level").get("result").asString().equals("DEBUG"),"Console handler level was changed to DEBUG");
 	}
 	@Test(groups = {"blockedByBug-814152"})
 	public void consoleHandlerAdd() {
-		Operations operations = consoleHandler.operations();
-		Operation op = operations.newOperation("Add");
-		op.getEditor().setText("name", myConsoleHandler.getName());
-		op.schedule();
-		operations.assertOperationResult(op, true);
-		mgmtClient.assertResourcePresence("/subsystem-logging", "console-handler", myConsoleHandler.getName(),true);
-		logging.performManualAutodiscovery();
+		Inventory inventory = logging.inventory();
+		NewChildWizard op = inventory.childResources().newChild("Console Handler");
+		op.getEditor().setText("resourceName", myConsoleHandler.getName());
+		op.next();
+		op.finish();
+		inventory.childHistory().assertLastResourceChange(true);
+		mgmtClient.assertResourcePresence("/subsystem=logging", "console-handler", myConsoleHandler.getName(),true);
 		myConsoleHandler.assertExists(true);
 	}
 	
 	@Test(dependsOnMethods="consoleHandlerAdd")
 	public void consoleHandlerRemove() {
-		Operations operations = myConsoleHandler.operations();
-		Operation op = operations.newOperation("Remove");
-		op.schedule();
-		operations.assertOperationResult(op, true);		
-		mgmtClient.assertResourcePresence("/subsystem-logging", "console-handler", myConsoleHandler.getName(),false);
-		logging.performManualAutodiscovery();
+		myConsoleHandler.delete();		
+		mgmtClient.assertResourcePresence("/subsystem=logging", "console-handler", myConsoleHandler.getName(),false);
 		myConsoleHandler.assertExists(false);
 	}
 	@Test
 	public void loggerAdd() {
-		Operations operations = defaultLogger.operations();
-		Operation op = operations.newOperation("Add");
-		op.getEditor().setText("category", myLogger.getName());
-		op.schedule();
-		operations.assertOperationResult(op, true);
-		mgmtClient.assertResourcePresence("/subsystem-logging", "logger", myLogger.getName(),true);
-		logging.performManualAutodiscovery();
+		Inventory inventory = logging.inventory();
+		NewChildWizard op = inventory.childResources().newChild("Logger");
+		op.getEditor().setText("resourceName", myLogger.getName());
+		op.next();
+		op.finish();
+		inventory.childHistory().assertLastResourceChange(true);
+		mgmtClient.assertResourcePresence("/subsystem=logging", "logger", myLogger.getName(),true);
 		myLogger.assertExists(true);
 	}
 	
 	@Test(dependsOnMethods="loggerAdd")
 	public void loggerRemove() {
-		Operations operations = myLogger.operations();
-		Operation op = operations.newOperation("Remove");
-		op.schedule();
-		operations.assertOperationResult(op, true);
-		mgmtClient.assertResourcePresence("/subsystem-logging", "logger", myLogger.getName(),false);
-		logging.performManualAutodiscovery();
-		myConsoleHandler.assertExists(false);
+		myLogger.delete();
+		mgmtClient.assertResourcePresence("/subsystem=logging", "logger", myLogger.getName(),false);
+		myLogger.assertExists(false);
 	}
 	
 	@Test
 	public void loggerCofigure() {
 		Configuration configuration = defaultLogger.configuration();
 		CurrentConfig config = configuration.current();
-		config.getEditor().setText("level", "INFO");
+		config.getEditor().selectCombo(0, "INFO");
 		ConfigEntry ce = config.newEntry(0);
 		ce.setField("handlers", consoleHandler.getName());
 		ce.OK();
@@ -147,6 +141,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		operations.assertOperationResult(op, true);
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/logger="+defaultLogger.getName(), "handlers").get("result").asString().contains(fileHandler.getName()),"Logger configuration has ["+fileHandler.getName()+"] among hanlders");
 	}
+	
 	@Test(dependsOnMethods="loggerAssignHandler")
 	public void loggerUnassignHandler() {
 		Operations operations = defaultLogger.operations();

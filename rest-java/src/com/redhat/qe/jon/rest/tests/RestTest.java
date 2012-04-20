@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.rest.tests;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +42,19 @@ public class RestTest extends RestClient{
 
 	}
 
+	@Test (groups="restClientJava")
+	public void listStatus() throws ParseException{
+		HashMap<String, Object> result = this.getReponse(webResource, URIs.STATUS.getUri()+".json");
+		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200, "Response Code: "+result.get(RESPONSE_STATUS_CODE)+", Response Message: "+result.get(RESPONSE_STATUS_MESSAGE));
+			
+		JSONObject jsonObject = this.getJSONObject(""+result.get(RESPONSE_CONTENT));
+		jsonObject = (JSONObject) jsonObject.get(STATUS_VALUES);
+		
+		Assert.assertTrue(jsonObject != null, "Result set should not be NULL");
+		System.setProperty("rhq.build.version", jsonObject.get(SERVER_VERSION)+" ("+jsonObject.get(BUILD_NUMBER)+")");
+		_logger.info("Status Result: \n"+this.getKeyValue(jsonObject, new StringBuffer()));		
+	}
+	
 	@Test (groups="restClientJava")
 	public void unauthorizedLoginTest(){
 		webResource = this.getWebResource(SERVER_URI+URI_PREFIX);
@@ -89,8 +103,6 @@ public class RestTest extends RestClient{
 			this.printKeyValue(jsonObject);
 			Assert.assertEquals(parentId, ""+jsonObject.get(PARENT_ID), "Parent ID validation");
 		}
-
-
 	}
 
 }

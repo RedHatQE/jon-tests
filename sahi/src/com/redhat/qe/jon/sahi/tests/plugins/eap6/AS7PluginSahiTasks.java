@@ -1,22 +1,19 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
-import com.redhat.qe.auto.testng.Assert;
-import com.redhat.qe.jon.sahi.base.inventory.Inventory;
-import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
-import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
-import com.redhat.qe.jon.sahi.base.inventory.Operations;
-import com.redhat.qe.jon.sahi.base.inventory.Resource;
-import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
-import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.jon.sahi.tasks.Timing;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQueueException;
-import net.sf.sahi.client.ElementStub;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import net.sf.sahi.client.ElementStub;
+
+import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
+import com.redhat.qe.jon.sahi.base.inventory.Resource;
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tasks.Timing;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQueueException;
 
 
 /**
@@ -96,8 +93,8 @@ public class AS7PluginSahiTasks {
 	        if (elm.exists()) {
 	            elm.check();
 	            tasks.cell("Import").click();
-	            log.fine("Waiting "+Timing.toString(2*Timing.TIME_1M)+" for resource to import...");
-	            tasks.waitFor(2*Timing.TIME_1M);
+	            log.fine("Waiting "+Timing.toString(10*Timing.TIME_1M)+" for resource to import...");
+	            tasks.waitFor(10*Timing.TIME_1M);
 	        } else {
 	            log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
 	        }

@@ -140,14 +140,14 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
     		Assert.assertTrue(c.isRunning(), "Managed server is rachable via HTTP");
     	}
     	// we'll check startup time only for one of servers in group
-    	Date startupDate = sshClient.getStartupTime("domain/servers/server-one/boot.log");
+    	Date startupDate = sshClient.getStartupTime("domain/servers/server-one/log/boot.log");
 		Operations operations = mainServerGroup.operations();
 		Operation op = operations.newOperation("Restart Servers");
 		op.schedule();
 		operations.assertOperationResult(op,true);
 		log.fine("Waiting "+Timing.toString(Timing.TIME_30S)+" for servers to restart");
 		sahiTasks.waitFor(Timing.TIME_30S);
-		Date restartDate = sshClient.getStartupTime("domain/servers/server-one/boot.log");
+		Date restartDate = sshClient.getStartupTime("domain/servers/server-one/log/boot.log");
 		Assert.assertTrue(restartDate.getTime()>startupDate.getTime(), "Managed server server-one/boot.log first message timestamp check: Server has been restarted");
     	for (HTTPClient c : managedServerClients) {
     		Assert.assertTrue(c.isRunning(), "Managed server is rachable via HTTP");

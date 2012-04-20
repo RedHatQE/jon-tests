@@ -11,10 +11,14 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.AS7SSHClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
+import com.redhat.qe.tools.remotelog.CheckRemoteLog;
+import com.redhat.qe.tools.remotelog.RemoteLog;
 
 /**
  * @author jmartisk, lzoubek
  */
+//temporary disabled until https://bugzilla.redhat.com/show_bug.cgi?id=814243 is fixed
+//@CheckRemoteLog(logs=@RemoteLog(logFile="rhq-agent/logs/agent.log",host="${env:HOST_NAME}",user="${env:HOST_USER}",pass="${env:HOST_PASSWORD}"))
 public class AS7PluginSahiTestScript extends SahiTestScript {
 
     protected static final Logger log = Logger.getLogger(AS7PluginSahiTestScript.class.getName());

@@ -3,14 +3,10 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import net.sf.sahi.client.ElementStub;
-
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.tasks.Timing;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
  * 
@@ -63,6 +59,7 @@ public class AutodetectConfigurationTest extends AS7StandaloneTest {
 		Assert.assertTrue(
 				found,
 				"The resource type of a standalone instance should be \"JBossAS7 Standalone\" or \"EAP6\"");
+		as7SahiTasks.importResource(server);
 	}
 
 }
