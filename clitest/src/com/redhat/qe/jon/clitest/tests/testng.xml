@@ -199,6 +199,30 @@
         </classes>
 </test>
 -->
+<test name="displayingOutputExample">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="displayingOutputExample.js"/>
+                        <parameter name="expected.result"  value="Login successful,name=Memory Subsystem,name: Memory Subsystem"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="proxyExample">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="proxyExample.js"/>
+                        <parameter name="expected.result"  value="Login successful,OSName:,Invoking operation viewProcessList,Invoking operation updateAllPlugins,rhq.agent.plugins.directory ="/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
 <test name="Uninventory-Platforms">

@@ -31,8 +31,12 @@ public abstract class CliTestScript extends TestScript{
 		CliTest.cliShLocation = System.getenv().get("CLI_AGENT_BIN_SH");
 		CliTest.javaHome = System.getenv().get("JAVA_HOME").trim();
 		CliTest.rhqTarget = System.getenv().get("RHQ_TARGET").trim();
-		
-		CliTest.jsFileLocation = System.getProperty("user.dir")+"/"+System.getProperty("js.files.dir");
+		String jsFileLoc = System.getProperty("js.files.dir");
+		if(jsFileLoc == null){
+			jsFileLoc = "resources/js-files/"; //taking default location
+			_logger.info("JS file location is not specified.. Taking defailt location..."+jsFileLoc);
+		}
+		CliTest.jsFileLocation = System.getProperty("user.dir")+"/"+jsFileLoc;
 		if(!CliTest.jsFileLocation.endsWith("/")){
 			CliTest.jsFileLocation += "/";
 		}
