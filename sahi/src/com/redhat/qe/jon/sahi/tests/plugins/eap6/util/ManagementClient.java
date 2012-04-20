@@ -303,7 +303,8 @@ public class ManagementClient {
 			}
 			waitFor(waitTime);
 		}
-		Assert.assertTrue(!exists, "[mgmt API] Resource \'"+resource+"\' exists");
+		log.fine("Checking resurce (un)existence timed out");
+		Assert.assertEquals(!exists, exists,"[mgmt API] Resource \'"+resource+"\' exists");
 	}
 	/**
 	 * this does a dummy call to EAP mgmt API and detects, whether EAP requires authentication or not
