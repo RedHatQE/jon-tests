@@ -43,6 +43,12 @@ public class RestClient {
 	protected static String RESOURCE_ID = "resourceId";
 	protected static String PARENT_ID = "parentId";
 	
+	//Status.json page keys
+	protected static String STATUS_VALUES 	= "values";
+	protected static String SERVER_VERSION 	= "SERVER_VERSION";
+	protected static String BUILD_NUMBER 	= "BuildNumber";
+	
+	
 	protected static String SERVER_URI ;
 	protected static String URI_PREFIX = "/rest/1"; 
 	
