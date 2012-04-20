@@ -8,7 +8,6 @@ import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.Timing;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 /**
  * @author Libor Zoubek (lzoubek@redhat.com)
  * @since 15.12.2011
@@ -47,7 +46,9 @@ public class DeploymentTest extends AS7StandaloneTest {
 		warResource.assertExists(true);
 		httpClient.assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
 	}
-	@Test(groups = {"deployment","blockedByBug-767974"}, dependsOnMethods="deployWAR")
+	
+	// TODO re-deployment must be done using Content subsystem
+	//@Test(groups = {"deployment","blockedByBug-767974"}, dependsOnMethods="deployWAR")
 	public void deployWARVersion2() {
 		Inventory inventory = server.inventory();
 		ChildResources childResources = inventory.childResources();
