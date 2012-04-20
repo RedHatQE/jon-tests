@@ -61,11 +61,29 @@ public class Operations extends ResourceTab {
     	}
     	if (tasks.image("Operation_inprogress_16.png").in(tasks.div(opName+"[0]").parentNode("tr")).exists()) {
     		log.info("Operation ["+opName+"] did NOT finish after "+Timing.toString(time)+"!!!");
+    		Assert.assertEquals(!success, success,"Operation ["+opName+"] result: "+succ);
     	}
     	else {
     		log.info("Operation ["+opName+"] finished after "+Timing.toString(time));
     	}
-    	Assert.assertTrue(tasks.image(resultImage).in(tasks.div(opName+"[0]").parentNode("tr")).exists(),"Operation ["+opName+"] result: "+succ);
+    	boolean existsImage = tasks.image(resultImage).in(tasks.div(opName+"[0]").parentNode("tr")).exists();
+    	// when operation failed and success was expected, let's get operation error message
+    	if (!existsImage && success) {
+    		String message = null;
+    		tasks.xy(tasks.image("Operation_failed_16.png").in(tasks.div(opName+"[0]").parentNode("tr")),3,3).click();
+    		if (tasks.preformatted("").exists()) {
+    			message = tasks.preformatted("").getText();
+    		}
+    		tasks.waitFor(Timing.WAIT_TIME);
+    		int buttons = tasks.image("close.png").countSimilar();
+    		tasks.xy(tasks.image("close.png["+(buttons-1)+"]"),3,3).click();
+    		if (message!=null) {
+    			Assert.assertTrue(existsImage,"Operation ["+opName+"] result: "+succ+" errorMessage:\n"+message);
+    			return;
+    		}
+    		
+    	}
+    	Assert.assertTrue(existsImage,"Operation ["+opName+"] result: "+succ);
     }
 	
 	public static class Operation {
