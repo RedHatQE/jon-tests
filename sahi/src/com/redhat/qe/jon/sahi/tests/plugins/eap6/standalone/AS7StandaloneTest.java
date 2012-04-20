@@ -10,7 +10,8 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.AS7SSHClient;
-@CheckAgentLog
+// temporary disabled until https://bugzilla.redhat.com/show_bug.cgi?id=814243 is fixed
+//@CheckAgentLog
 public class AS7StandaloneTest extends AS7PluginSahiTestScript {
 
 	 protected AS7SSHClient sshClient;
