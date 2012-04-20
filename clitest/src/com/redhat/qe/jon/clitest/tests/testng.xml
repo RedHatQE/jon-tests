@@ -175,10 +175,31 @@
         </classes>
 </test>
 
-
-
-
-<!-- This case SHOULD BE LAST ONE-->
+<test name="criteriaSearchingExample">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="criteriaSearchingExample.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<!-- blocked by https://bugzilla.redhat.com/show_bug.cgi?id=814579 
+<test name="Bug814579">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="bug814579.js"/>
+                        <parameter name="expected.result"  value="Login successful,ResourceManagerBean"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+-->
+<!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
 <test name="Uninventory-Platforms">
   	<classes>
