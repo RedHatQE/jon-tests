@@ -38,7 +38,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
         defaultLogger = logging.child("jacorb");
         myLogger = logging.child("orgrhqlogger");
     }
-	@Test(groups={"blockedByBug-814173"})
+	//@Test(groups={"blockedByBug-814173"})
 	public void changeRootLoggerLevel() {
 		Operations operations = logging.operations();
 		Operation op = operations.newOperation("Change Root Log Level");
@@ -48,7 +48,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		operations.assertOperationResult(op, true);
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/root-logger=ROOT", "level").get("result").asString().equals("DEBUG"),"Root logger level was changed to DEBUG");
 	}
-	@Test(dependsOnMethods="changeRootLoggerLevel")
+	//@Test(dependsOnMethods="changeRootLoggerLevel")
 	public void removeRootLogger() {
 		Operations operations = logging.operations();
 		Operation op = operations.newOperation("Remove Root Logger");
@@ -57,7 +57,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		mgmtClient.assertResourcePresence("/subsystem-logging", "root-logger", "ROOT", false);
 	}
 	
-	@Test(dependsOnMethods="removeRootLogger")
+	//@Test(dependsOnMethods="removeRootLogger")
 	public void setRootLogger() {
 		Operations operations = logging.operations();
 		Operation op = operations.newOperation("Set Root Logger");
