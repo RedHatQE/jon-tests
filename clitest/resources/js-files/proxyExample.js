@@ -34,7 +34,10 @@ assertNotNull(processlist);
 pretty.print(processlist);
 
 agent.updateAllPlugins();
-// TODO check result of operation
+println("Waiting 20 sec to sync...");
+sleep(1000 * 20);
+// TODO find better soulution than hardcoded waiting
+// TODO check result of operation, currently not possible via Proxy but OperationManager must be used
 
 // TODO jbossas.restart();
 
