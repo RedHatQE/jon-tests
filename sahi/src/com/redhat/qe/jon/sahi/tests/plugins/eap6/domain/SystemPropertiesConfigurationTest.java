@@ -15,10 +15,12 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
 	private static final String addedPropName="prop";
 	private static final String addedPropValue="value";
 	private static final String editedPropValue="value2";
+	private Resource mainServerGroup;
 	
 	@BeforeClass(groups="configuration")
     protected void setupEapPlugin() {               
         as7SahiTasks.importResource(controller);
+        mainServerGroup = controller.child("main-server-group");
     }
 	
 	@Test(groups={"configuration"})
@@ -58,6 +60,27 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
     	deleteProperty(hostController);
     	mgmtClient.assertResourcePresence("/host="+hostController.getName()+"/", "system-property", addedPropName, false);
     }
+	
+	
+	
+	@Test(groups={"configuration"})
+    public void serverGroupAddPropertyTest() {
+    	addSystemProperty(mainServerGroup);
+        Assert.assertTrue(msgReadPropertyValue("prop").equals("value"),"System property has correct value");
+     }
+	
+	@Test(groups={"configuration"},dependsOnMethods="serverGroupAddPropertyTest")
+    public void serverGroupEditPropertyTest() {
+    	editSystemProperty(mainServerGroup);
+        Assert.assertTrue(msgReadPropertyValue(addedPropName).equals(editedPropValue),"System property has correct value");
+    }
+	
+	@Test(groups={"configuration"},dependsOnMethods="serverGroupEditPropertyTest")
+    public void serverGroupDeletePropertyTest() {
+    	deleteProperty(mainServerGroup);
+    	mgmtClient.assertResourcePresence("/host="+mainServerGroup.getName()+"/", "system-property", addedPropName, false);
+    }
+	
 	
 	
 	
@@ -110,7 +133,10 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
         config.history().failOnFailure();
 	}
 	
-	
+
+	private String msgReadPropertyValue(String name) {    	
+    	return mgmtClient.readAttribute("/server-group=main-server-group/system-property="+name, "value").get("result").asString();
+    }
 	
 	
 	private String dcReadPropertyValue(String name) {    	

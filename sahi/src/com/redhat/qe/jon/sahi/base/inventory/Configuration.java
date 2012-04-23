@@ -113,9 +113,13 @@ public class Configuration extends ResourceTab {
 
 	public static class ConfigEntry {
 		private final SahiTasks tasks;
-
+		private final Editor editor;
 		ConfigEntry(SahiTasks tasks) {
 			this.tasks = tasks;
+			this.editor = new Editor(tasks);
+		}
+		public Editor getEditor() {
+			return editor;
 		}
 
 		/**

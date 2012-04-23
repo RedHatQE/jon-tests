@@ -37,11 +37,14 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
 	 * list of HTTPClients for checking managedServers availability via HTTP
 	 */
 	private HTTPClient[] managedServerClients;
-	
+	private Resource myGroupDefaultJVM;
+	private Resource myGroupMyJVM;
     @BeforeClass(groups="serverGroupsManagement")
     protected void setupEapPlugin() {        
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         myServerGroup = controller.child("testing-server-group");
+        myGroupDefaultJVM = myServerGroup.child("default");
+        myGroupMyJVM = myServerGroup.child("nondefault");
         mainServerGroup = controller.child("main-server-group");
         managedServers = new Resource[] {serverOne,serverTwo};
         managedServerClients = new HTTPClient[] {httpDomainOne,httpDomainTwo};
@@ -79,8 +82,18 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName(), "profile").get("result").asString().equals("full-ha"),"Configuration changed");
     }
     
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup") 
+    public void addServerGroupJVM() {
+    	
+    }
+    
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroupJVM")
+    public void removeServerGroupJVM() {
+    	
+    }
+    
     @Test(groups={"serverGroupsManagement","blockedByBug-802561","blockedByBug-801849"},dependsOnMethods="addServerGroup")     
-    public void changeJvmParametersForServerGroup() {
+    public void configureServerGroupJVM() {
     	Configuration configuration = myServerGroup.configuration();
         CurrentConfig current = configuration.current();
         current.getEditor().checkBox(1, false);
@@ -89,6 +102,9 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         configuration.history().failOnFailure();
         mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", "default", true);
     }
+    
+    
+    
      
     @Test(alwaysRun=true,groups={"serverGroupsManagement"},dependsOnMethods={"assignSocketBindingGroupToServerGroup","changeJvmParametersForServerGroup"})
     public void removeServerGroup() {
