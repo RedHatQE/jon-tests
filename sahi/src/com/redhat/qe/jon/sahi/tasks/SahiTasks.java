@@ -1865,11 +1865,12 @@ public class SahiTasks extends ExtendedSahi {
     //*************************************************************************************
     //* Import Resources
     //*************************************************************************************
-    public boolean importResources(String resourceName){
+    public boolean importResources(String resourceName) throws InterruptedException{
     	this.link("Inventory").click();
     	this.cell("Discovery Queue").click();
     	if(this.waitForElementRowExists(this, "No items to show", 1000*5)){
     		_logger.log(Level.INFO, "Do not find any resources in Discovery Queue, Clicking Refresh button and checking again...");
+    		this.wait(1000*60*5); //Hold on 5 minutes, there will be an agent and server communication may be going on..
     		this.cell("Refresh").near(this.cell("Deselect All")).click();
     		if(this.waitForElementRowExists(this, "No items to show", 1000*5)){
     			_logger.log(Level.WARNING, "No items to import!");
