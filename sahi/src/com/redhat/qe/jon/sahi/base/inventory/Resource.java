@@ -492,7 +492,7 @@ public class Resource {
     		children.refresh();
     	}
     	log.fine("Checking resurce (un)existence timed out");
-    	Assert.assertTrue(false, "Resource ["+resourceName+"] exists.");
+    	Assert.assertEquals(!shouldExist,shouldExist, "Resource ["+resourceName+"] exists.");
     }
 	
 	@Override

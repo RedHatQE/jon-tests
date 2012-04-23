@@ -89,7 +89,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 		Assert.assertTrue(ok,"EAP server is online after server was restarted");
 	}
 	
-	@Test(groups="operation")
+	@Test(groups={"operation","blockedByBug-789292"})
 	public void installRHQUser() {
 		Operations operations = controller.operations();
 		Operation op = operations.newOperation("Install RHQ user");	
