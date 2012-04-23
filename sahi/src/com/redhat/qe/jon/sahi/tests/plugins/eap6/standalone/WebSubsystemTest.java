@@ -23,7 +23,6 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 	private Resource defaultConnector;
 	private Resource myConnector;
 	private Resource myVHost;
-	private Resource defaultVhost;
 	private String virtualServer = "tld.example.org";
 	
 	@BeforeClass(groups = "setup")
@@ -33,7 +32,6 @@ public class WebSubsystemTest extends AS7StandaloneTest {
         defaultConnector = web.child("http");
         myConnector = web.child("myconnector");
         myVHost = web.child("my-host");
-        defaultVhost = web.child("default-host");
     }
 	
 	@Test(groups={"configure","blockedByBug-815288"})
@@ -72,8 +70,21 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/virtual-server="+myVHost.getName(), "alias").get("result").asList().get(0).asString().equals(virtualServer),"New VHost has correctly set aliases");
 		myVHost.assertExists(true);
 	}
+
+	@Test(groups={"vhost"},dependsOnMethods="createVHost")
+	public void configureVHost() {
+		Configuration configuration = myVHost.configuration();
+		CurrentConfig config = configuration.current();
+		ConfigEntry ce = config.getEditor().newEntry(0);
+		ce.setField("alias", "test."+virtualServer);
+		ce.OK();
+		config.save();
+		ConfigHistory history = configuration.history();
+		history.failOnFailure();
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/virtual-server="+myVHost.getName(), "alias").get("result").asList().get(1).asString().equals("test."+virtualServer),"VHost configuration change was successfull");
+	}
 	
-	@Test(dependsOnMethods="createVHost",groups={"vhost"})
+	@Test(alwaysRun=true,dependsOnMethods="configureVHost",groups={"vhost"})
 	public void removeVHost() {
 		myVHost.delete();
 		web.inventory().childHistory().assertLastResourceChange(true);
@@ -81,18 +92,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		myVHost.assertExists(false);
 	}
 	
-	@Test(groups={"vhost"})
-	public void configureVHost() {
-		Configuration configuration = defaultVhost.configuration();
-		CurrentConfig config = configuration.current();
-		ConfigEntry ce = config.getEditor().newEntry(0);
-		ce.setField("alias", virtualServer);
-		ce.OK();
-		config.save();
-		ConfigHistory history = configuration.history();
-		history.failOnFailure();
-		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/virtual-server="+defaultVhost.getName(), "alias").get("result").asList().get(0).asString().equals(virtualServer),"VHost configuration change was successfull");
-	}
+
 	
 	
 	@Test(groups={"connector"})
@@ -116,11 +116,11 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		sahiTasks.waitFor(Timing.WAIT_TIME);
 		nc.getEditor().checkRadio("http");
 		nc.getEditor().selectCombo(1,"remoting");
-		nc.finish();
-		sahiTasks.waitFor(Timing.WAIT_TIME);
-		
+		nc.getEditor().checkBox(0, false);
+		nc.getEditor().checkRadio("enabled[1]");
+		nc.finish();		
 		inventory.childHistory().assertLastResourceChange(true);
-		mgmtClient.assertResourcePresence("/subsytem=web", "connector", myConnector.getName(), true);
+		mgmtClient.assertResourcePresence("/subsystem=web", "connector", myConnector.getName(), true);
 		myConnector.assertExists(true);
 
 	}
