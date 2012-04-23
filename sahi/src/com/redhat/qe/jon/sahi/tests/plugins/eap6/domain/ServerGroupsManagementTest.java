@@ -65,7 +65,6 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         CurrentConfig current = configuration.current();
         current.getEditor().checkRadio("ha-sockets");
         current.save();
-        configuration.history().failOnPending();
         configuration.history().failOnFailure();
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName(), "socket-binding-group").get("result").asString().equals("ha-sockets"),"Configuration changed");
     }
@@ -76,7 +75,6 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         CurrentConfig current = configuration.current();
         current.getEditor().checkRadio("full-ha");
         current.save();
-        configuration.history().failOnPending();
         configuration.history().failOnFailure();
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName(), "profile").get("result").asString().equals("full-ha"),"Configuration changed");
     }
@@ -88,7 +86,6 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         current.getEditor().checkBox(1, false);
         current.getEditor().setText("jvm", "default");
         current.save();
-    	configuration.history().failOnPending();
         configuration.history().failOnFailure();
         mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", "default", true);
     }

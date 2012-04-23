@@ -1,6 +1,5 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.domain;
 
-import static org.junit.Assert.fail;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -90,7 +89,6 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
     	entry.setField("value", addedPropValue);
     	entry.OK();
         current.save();
-        config.history().failOnPending();
         config.history().failOnFailure();
 	}
 	
@@ -101,7 +99,6 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
 		entry.setField("value", editedPropValue);
 		entry.OK();
 		current.save();		
-		config.history().failOnPending();
         config.history().failOnFailure();
 	}
 	
@@ -110,7 +107,6 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
     	CurrentConfig current = config.current();
 		current.removeEntry(addedPropName);
 		current.save();
-		config.history().failOnPending();
         config.history().failOnFailure();
 	}
 	

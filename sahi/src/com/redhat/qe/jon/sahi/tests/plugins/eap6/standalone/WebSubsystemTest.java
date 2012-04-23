@@ -35,6 +35,28 @@ public class WebSubsystemTest extends AS7StandaloneTest {
         myVHost = web.child("my-host");
         defaultVhost = web.child("default-host");
     }
+	
+	@Test(groups={"configure","blockedByBug-815288"})
+	public void updateConfiguration() {
+		String sendFile = "55555";
+		String checkInterval = "60";
+		String mappingName = "rhqmapping";
+		Configuration configuration = web.configuration();
+		CurrentConfig current = configuration.current();
+		current.getEditor().setText("sendfile", sendFile);
+		current.getEditor().setText("check-interval", checkInterval);
+		ConfigEntry ce = current.getEditor().newEntry(0);
+		ce.setField("name", mappingName);
+		ce.setField("value", "foo");
+		ce.OK();
+		current.save();
+		configuration.history().failOnFailure();
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=static-resources", "sendfile").get("result").asString().equals(sendFile)," Configuration update for static-resources was successfull");
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=jsp-configuration", "check-interval").get("result").asString().equals(checkInterval)," Configuration update for jsp-configuration was successfull");
+		// TODO validate mime-mapping
+		//Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=container", "mime-mapping").get("result").asList().get(0).asPropertyList().get(0).getName().equals(mappingName)," Configuration update for container was successfull");
+	}
+	
 	@Test(groups={"vhost"})
 	public void createVHost() {
 		Inventory inventory = web.inventory();
@@ -68,7 +90,6 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		ce.OK();
 		config.save();
 		ConfigHistory history = configuration.history();
-		history.failOnPending();
 		history.failOnFailure();
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/virtual-server="+defaultVhost.getName(), "alias").get("result").asList().get(0).asString().equals(virtualServer),"VHost configuration change was successfull");
 	}
@@ -81,7 +102,6 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		config.getEditor().setText("max-save-post-size", "8192");
 		config.save();
 		ConfigHistory history = configuration.history();
-		history.failOnPending();
 		history.failOnFailure();
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/connector="+defaultConnector.getName(), "max-save-post-size").get("result").asString().equals("8192"),"Connector configuration change was successfull");
 	}

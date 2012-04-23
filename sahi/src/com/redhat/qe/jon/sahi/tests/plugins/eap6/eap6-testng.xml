@@ -70,6 +70,8 @@
                 <include name="setup"/>
                 <include name="teardown"/>                                  
                 <include name="connector"/>
+                <include name="vhost"/>
+                <include name="configure"/>
             </run>
         </groups>
     </test>

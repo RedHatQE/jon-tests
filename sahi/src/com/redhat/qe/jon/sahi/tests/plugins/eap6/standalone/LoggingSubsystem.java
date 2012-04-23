@@ -22,7 +22,8 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	private Resource logging;
 	private Resource consoleHandler;
 	private Resource myConsoleHandler;
-	private Resource fileHandler;
+	private Resource prfDefaultHandler;
+	private Resource myPrfHandler;
 	private Resource defaultLogger;
 	private Resource myLogger;
 	
@@ -32,7 +33,8 @@ public class LoggingSubsystem extends AS7StandaloneTest {
         logging = server.child("logging");
         consoleHandler = logging.child("CONSOLE");
         myConsoleHandler = logging.child("MYCONSOLE");
-        fileHandler = logging.child("FILE");
+        prfDefaultHandler = logging.child("FILE");
+        myPrfHandler = logging.child("MYPRFHANDLER");
         defaultLogger = logging.child("jacorb");
         myLogger = logging.child("orgrhqlogger");
     }
@@ -63,14 +65,47 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		ce.setField("handler", consoleHandler.getName());
 		ce.OK();
 		ce = op.getEditor().newEntry(0);
-		ce.setField("handler", fileHandler.getName());
+		ce.setField("handler", prfDefaultHandler.getName());
 		ce.OK();
 		op.schedule();
 		operations.assertOperationResult(op, true);
 		mgmtClient.assertResourcePresence("/subsystem-logging", "root-logger", "ROOT", true);
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/root-logger=ROOT", "level").get("result").asString().equals("INFO"),"Root Logger level is INFO");
 	}
+	/* Periodic rotating file handler */
+
+	@Test()
+	public void periodicRotatingFileHandlerAdd() {
+		Inventory inventory = logging.inventory();
+		NewChildWizard op = inventory.childResources().newChild("Periodic Rotating File Handler");
+		op.getEditor().setText("resourceName", myPrfHandler.getName());
+		op.next();
+		op.getEditor().setText("path", "standalone/log/test.log");
+		op.finish();
+		inventory.childHistory().assertLastResourceChange(true);
+		mgmtClient.assertResourcePresence("/subsystem=logging", "periodic-rotating-file-handler", myPrfHandler.getName(),true);
+		myConsoleHandler.assertExists(true);
+	}
 	
+	@Test(dependsOnMethods="periodicRotatingFileHandlerAdd")
+	public void periodicRotatingFileHandlerConfigure() {
+		Configuration configuration = consoleHandler.configuration();
+		CurrentConfig current = configuration.current();
+		current.getEditor().selectCombo(0, "DEBUG");
+		current.save();
+		configuration.history().failOnFailure();
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/console-handler="+consoleHandler.getName(), "level").get("result").asString().equals("DEBUG"),"Console handler level was changed to DEBUG");
+	}
+	
+	@Test(dependsOnMethods="periodicRotatingFileHandlerConfigure")
+	public void periodicRotatingFileHandlerRemove() {
+		myConsoleHandler.delete();		
+		mgmtClient.assertResourcePresence("/subsystem=logging", "console-handler", myConsoleHandler.getName(),false);
+		myConsoleHandler.assertExists(false);
+	}
+	
+	
+	/* CONSOLE HANDLER */
 	
 	@Test
 	public void consoleHandlerConfigure() {
@@ -99,6 +134,9 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		mgmtClient.assertResourcePresence("/subsystem=logging", "console-handler", myConsoleHandler.getName(),false);
 		myConsoleHandler.assertExists(false);
 	}
+	
+	/* LOGGER */
+	
 	@Test
 	public void loggerAdd() {
 		Inventory inventory = logging.inventory();
@@ -136,21 +174,22 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	public void loggerAssignHandler() {
 		Operations operations = defaultLogger.operations();
 		Operation op = operations.newOperation("Assign Handler");
-		op.getEditor().setText("name", fileHandler.getName());
+		op.getEditor().setText("name", prfDefaultHandler.getName());
 		op.schedule();
 		operations.assertOperationResult(op, true);
-		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/logger="+defaultLogger.getName(), "handlers").get("result").asString().contains(fileHandler.getName()),"Logger configuration has ["+fileHandler.getName()+"] among hanlders");
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/logger="+defaultLogger.getName(), "handlers").get("result").asString().contains(prfDefaultHandler.getName()),"Logger configuration has ["+prfDefaultHandler.getName()+"] among hanlders");
 	}
 	
 	@Test(dependsOnMethods="loggerAssignHandler")
 	public void loggerUnassignHandler() {
 		Operations operations = defaultLogger.operations();
 		Operation op = operations.newOperation("Unassign Handler");
-		op.getEditor().setText("name", fileHandler.getName());
+		op.getEditor().setText("name", prfDefaultHandler.getName());
 		op.schedule();
 		operations.assertOperationResult(op, true);
-		Assert.assertFalse(mgmtClient.readAttribute("/subsystem=logging/logger="+defaultLogger.getName(), "handlers").get("result").asString().contains(fileHandler.getName()),"Logger configuration has ["+fileHandler.getName()+"] among hanlders");
+		Assert.assertFalse(mgmtClient.readAttribute("/subsystem=logging/logger="+defaultLogger.getName(), "handlers").get("result").asString().contains(prfDefaultHandler.getName()),"Logger configuration has ["+prfDefaultHandler.getName()+"] among hanlders");
 	}
 
+	
 
 }
