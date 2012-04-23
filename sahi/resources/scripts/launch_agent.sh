@@ -22,6 +22,8 @@ echo "INFO: JON/RHQ Agent home Location: $AGENT_HOME_LOCATION"
 
 #Change to JON/RHQ home location
 cd $AGENT_HOME_LOCATION
+# Try to stop the agent by normal way
+./rhq-agent/bin/rhq-agent-wrapper.sh stop
 
 AGENTPID=`ps -elf |grep $SERVICE | grep -v "grep" | awk '{print $4}' | tr '\n' ' '`
 echo "Date: `date`, INFO: [Service Name: $SERVICE], [Max No.of Attempt's: $ATTEMPT],[Agent PID: $AGENTPID]"
