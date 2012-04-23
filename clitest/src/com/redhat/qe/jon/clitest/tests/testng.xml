@@ -210,6 +210,7 @@
                 </class>
         </classes>
 </test>
+<!-- disabled for now: updateAllPlugins method probably cause that agent is not registred with server
 <test name="proxyExample">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -221,7 +222,7 @@
                 </class>
         </classes>
 </test>
-
+-->
 
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
