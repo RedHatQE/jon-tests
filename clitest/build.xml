@@ -55,9 +55,16 @@
 	</target>
 
 	<target name="run" description="run CLI JS test" depends="compile">
+		<property name="remote.debugging.jvmarg" value="-Dnodebug"/>		
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter">
-                        <xmlfileset dir="src/com/redhat/qe/jon/clitest/tests" includes="testng.xml"/>
+        	<xmlfileset dir="src/com/redhat/qe/jon/clitest/tests" includes="testng.xml"/>
+			<jvmarg value="-Denv=${env}"/>
+			<jvmarg value="${remote.debugging.jvmarg}"/>			
 		</testng>
+	</target>
+
+	<target name="remote-dbg" description="enable remote debugging">
+		<property name="remote.debugging.jvmarg" value="-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=4444"/>
 	</target>
 	
 	<target name="clean">

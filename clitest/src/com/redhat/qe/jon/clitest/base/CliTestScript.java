@@ -8,6 +8,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import com.redhat.qe.auto.testng.TestScript;
+import com.redhat.qe.jon.clitest.base.Configuration.PARAM;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tests.CliTest;
 
@@ -27,10 +28,14 @@ public abstract class CliTestScript extends TestScript{
 	@BeforeSuite
 	public void loadBeforeSuite() throws IOException{
 		_logger.log(Level.INFO, "Loading before Suite");
-		CliTasks.getCliTasks().getConnection(System.getenv().get("HOST_NAME"), System.getenv().get("HOST_USER"), System.getenv().get("HOST_PASSWORD"));
-		CliTest.cliShLocation = System.getenv().get("CLI_AGENT_BIN_SH");
-		CliTest.javaHome = System.getenv().get("JAVA_HOME").trim();
-		CliTest.rhqTarget = System.getenv().get("RHQ_TARGET").trim();
+		Configuration config = Configuration.load();
+		CliTasks.getCliTasks().getConnection(	config.get(PARAM.HOST_NAME), 
+												config.get(PARAM.HOST_USER),
+												config.get(PARAM.HOST_PASSWORD));
+		
+		CliTest.cliShLocation = config.get(PARAM.CLI_AGENT_BIN_SH);
+		CliTest.javaHome = config.get(PARAM.JAVA_HOME);
+		CliTest.rhqTarget = config.get(PARAM.RHQ_TARGET);
 		String jsFileLoc = System.getProperty("js.files.dir");
 		if(jsFileLoc == null){
 			jsFileLoc = "resources/js-files/"; //taking default location
