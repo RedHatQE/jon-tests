@@ -110,7 +110,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		op.getEditor().setText("resourceName", prfHandler.getName());
 		op.next();
 		op.getEditor().setText("path", "standalone/log/test.log");
-		op.getEditor().setText("suffix", "foo");
+		op.getEditor().setText("suffix", "HH");
 		op.finish();
 		inventory.childHistory().assertLastResourceChange(true);
 		mgmtClient.assertResourcePresence("/subsystem=logging", "periodic-rotating-file-handler", prfHandler.getName(),true);
