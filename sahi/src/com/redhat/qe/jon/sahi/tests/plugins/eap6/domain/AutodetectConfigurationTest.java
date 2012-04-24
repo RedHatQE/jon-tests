@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
@@ -27,6 +28,7 @@ public class AutodetectConfigurationTest extends AS7DomainTest {
     	as7SahiTasks.importResource(controller);
     	serverOne.assertExists(true);
     	controller.inventory();
+    	sahiTasks.waitFor(Timing.WAIT_TIME);
         String resourceTypeHTML = (sahiTasks.cell(serverOne.getName()).parentNode("TR")).fetch("innerHTML");
         if(resourceTypeHTML.indexOf("Managed") == -1) {
             Assert.fail("Could not verify that server \"" + serverOne.getName() + "\" in the domain was detected as of type Managed. HTML snippet: " + resourceTypeHTML);                        

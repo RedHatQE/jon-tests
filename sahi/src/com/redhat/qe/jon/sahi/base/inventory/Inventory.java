@@ -134,9 +134,14 @@ public class Inventory extends ResourceTab{
 			this.tasks = tasks;
 		}
 		private ElementStub getFirstRow() {
-			int tables = tasks.table("listTable").countSimilar();
-			log.fine("Tables :"+tables);
-			return tasks.row(0).in(tasks.table("listTable["+(tables-1)+"]"));
+			List<ElementStub> tables = tasks.table("listTable").collectSimilar();
+			log.fine("Tables :"+tables.size());
+			for (int i=tables.size()-1;i>=0;i--) {
+				if (tables.get(i).isVisible()) {
+					return tasks.row(0).in(tables.get(i));
+				}
+			}
+			return tasks.row(0).in(tasks.table("listTable["+(tables.size()-1)+"]"));
 		}
 		/**
 		 * gets status of last item in child history (first row in table) 
@@ -144,6 +149,7 @@ public class Inventory extends ResourceTab{
 		 */
 		public String getLastResourceChangeStatus() {
 			ElementStub row = getFirstRow();
+			log.fine("Fist row:"+row.fetch("innerHTML"));
 			return tasks.cell(4).in(row).getText();
 		}
 		/**
