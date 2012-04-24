@@ -128,7 +128,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 	public void removeConnector() {
 		myConnector.delete();
 		web.inventory().childHistory().assertLastResourceChange(true);
-		mgmtClient.assertResourcePresence("/subsytem=web", "connector", myConnector.getName(), false);
+		mgmtClient.assertResourcePresence("/subsystem=web", "connector", myConnector.getName(), false);
 		myConnector.assertExists(false);
 	}
 	

@@ -78,7 +78,7 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
 	@Test(groups={"configuration"},dependsOnMethods="serverGroupEditPropertyTest")
     public void serverGroupDeletePropertyTest() {
     	deleteProperty(mainServerGroup);
-    	mgmtClient.assertResourcePresence("/host="+mainServerGroup.getName()+"/", "system-property", addedPropName, false);
+    	mgmtClient.assertResourcePresence("/server-group=main-server-group/", "system-property", addedPropName, false);
     }
 	
 	

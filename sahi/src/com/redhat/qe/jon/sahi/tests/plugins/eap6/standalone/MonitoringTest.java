@@ -28,10 +28,6 @@ public class MonitoringTest extends AS7StandaloneTest {
     private boolean metricsCellVisible() {
     	int tables = sahiTasks.table("listTable").countSimilar();
     	log.fine("listTable count = "+tables);
-    	for (ElementStub table : sahiTasks.table("listTable").collectSimilar()) {
-    		log.fine(table.fetch("innerHTML"));
-    	}
-    	
     	for (ElementStub es : sahiTasks.cell("Maximum request time").in(sahiTasks.table("listTable["+(tables-1)+"]")).collectSimilar()) {
     		if (es.isVisible()) {
     			return true;
