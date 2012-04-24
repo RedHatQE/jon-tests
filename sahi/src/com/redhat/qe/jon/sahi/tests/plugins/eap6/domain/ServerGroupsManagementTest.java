@@ -80,6 +80,12 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         configuration.history().failOnFailure();
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName(), "profile").get("result").asString().equals("full-ha"),"Configuration changed");
     }
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup")
+    public void removeServerGroupJVM() {
+    	myGroupDefaultJVM.delete();
+    	mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", myGroupDefaultJVM.getName(), false);
+    	myServerGroup.assertExists(false);
+    }
     
     @Test(groups={"serverGroupsManagement"},dependsOnMethods="removeServerGroupJVM") 
     public void addServerGroupJVM() {
@@ -94,14 +100,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
 		myServerGroup.assertExists(true);      
     }
     
-    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup")
-    public void removeServerGroupJVM() {
-    	myGroupDefaultJVM.delete();
-    	mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", myGroupDefaultJVM.getName(), false);
-    	myServerGroup.assertExists(false);
-    }
-    
-    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup")     
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroupJVM")     
     public void configureServerGroupJVM() {
     	Configuration configuration = myGroupDefaultJVM.configuration();
         CurrentConfig current = configuration.current();
@@ -114,8 +113,12 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
     
     
     
+
+    
+    
+    
      
-    @Test(alwaysRun=true,groups={"serverGroupsManagement"},dependsOnMethods={"assignSocketBindingGroupToServerGroup","changeJvmParametersForServerGroup"})
+    @Test(alwaysRun=true,groups={"serverGroupsManagement"},dependsOnMethods={"configureServerGroupJVM","assignSocketBindingGroupToServerGroup","changeProfileToServerGroup"})
     public void removeServerGroup() {
     	myServerGroup.delete();
     	mgmtClient.assertResourcePresence("", "server-group", myServerGroup.getName(), false);
