@@ -7,6 +7,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.inventory.Configuration;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
@@ -37,11 +38,12 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
 	 * list of HTTPClients for checking managedServers availability via HTTP
 	 */
 	private HTTPClient[] managedServerClients;
-	
+	private Resource myGroupDefaultJVM;
     @BeforeClass(groups="serverGroupsManagement")
     protected void setupEapPlugin() {        
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         myServerGroup = controller.child("testing-server-group");
+        myGroupDefaultJVM = myServerGroup.child("default");
         mainServerGroup = controller.child("main-server-group");
         managedServers = new Resource[] {serverOne,serverTwo};
         managedServerClients = new HTTPClient[] {httpDomainOne,httpDomainTwo};
@@ -65,7 +67,6 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         CurrentConfig current = configuration.current();
         current.getEditor().checkRadio("ha-sockets");
         current.save();
-        configuration.history().failOnPending();
         configuration.history().failOnFailure();
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName(), "socket-binding-group").get("result").asString().equals("ha-sockets"),"Configuration changed");
     }
@@ -76,22 +77,43 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         CurrentConfig current = configuration.current();
         current.getEditor().checkRadio("full-ha");
         current.save();
-        configuration.history().failOnPending();
         configuration.history().failOnFailure();
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName(), "profile").get("result").asString().equals("full-ha"),"Configuration changed");
     }
     
-    @Test(groups={"serverGroupsManagement","blockedByBug-802561","blockedByBug-801849"},dependsOnMethods="addServerGroup")     
-    public void changeJvmParametersForServerGroup() {
-    	Configuration configuration = myServerGroup.configuration();
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="removeServerGroupJVM") 
+    public void addServerGroupJVM() {
+    	Inventory inventory = myServerGroup.inventory();
+        NewChildWizard newChild = inventory.childResources().newChild("JVM Definifion");
+        newChild.getEditor().setText("resourceName", myGroupDefaultJVM.getName());
+        newChild.next();
+        newChild.getEditor().checkRadio("baseDefinition"); 
+        newChild.finish();
+        inventory.childHistory().assertLastResourceChange(true);
+    	mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", myGroupDefaultJVM.getName(), true);
+		myServerGroup.assertExists(true);      
+    }
+    
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup")
+    public void removeServerGroupJVM() {
+    	myGroupDefaultJVM.delete();
+    	mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", myGroupDefaultJVM.getName(), false);
+    	myServerGroup.assertExists(false);
+    }
+    
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup")     
+    public void configureServerGroupJVM() {
+    	Configuration configuration = myGroupDefaultJVM.configuration();
         CurrentConfig current = configuration.current();
-        current.getEditor().checkBox(1, false);
-        current.getEditor().setText("jvm", "default");
+        current.getEditor().setText("heap-size", "1024m");
         current.save();
-    	configuration.history().failOnPending();
         configuration.history().failOnFailure();
         mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", "default", true);
+        Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName()+"/jvm="+myGroupDefaultJVM.getName(), "heap-size").get("result").asString().equals("1024m"),"JVM Configuration has changed");
     }
+    
+    
+    
      
     @Test(alwaysRun=true,groups={"serverGroupsManagement"},dependsOnMethods={"assignSocketBindingGroupToServerGroup","changeJvmParametersForServerGroup"})
     public void removeServerGroup() {

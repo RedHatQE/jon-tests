@@ -1,7 +1,5 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
-import static org.junit.Assert.fail;
-
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -30,7 +28,6 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
     	entry.setField("value", addedPropValue);
     	entry.OK();
         current.save();        
-        config.history().failOnPending();
         config.history().failOnFailure();
 	}
 	
@@ -47,7 +44,6 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
 		entry.setField("value", editedPropValue);
 		entry.OK();
 		current.save();		
-		config.history().failOnPending();
         config.history().failOnFailure();
         Assert.assertTrue(readPropertyValue(addedPropName).equals(editedPropValue),"System property has correct value");
 	}
@@ -57,7 +53,6 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
     	CurrentConfig current = config.current();
 		current.removeEntry(addedPropName);
 		current.save();		
-		config.history().failOnPending();
         config.history().failOnFailure();
 		mgmtClient.assertResourcePresence("/", "system-property", addedPropName, false);
 	}

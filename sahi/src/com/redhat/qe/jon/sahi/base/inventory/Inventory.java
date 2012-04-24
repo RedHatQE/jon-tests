@@ -133,14 +133,23 @@ public class Inventory extends ResourceTab{
 		private ChildHistory(SahiTasks tasks) {
 			this.tasks = tasks;
 		}
+		private ElementStub getFirstRow() {
+			List<ElementStub> tables = tasks.table("listTable").collectSimilar();
+			log.fine("Tables :"+tables.size());
+			for (int i=tables.size()-1;i>=0;i--) {
+				if (tables.get(i).isVisible()) {
+					return tasks.row(0).in(tables.get(i));
+				}
+			}
+			return tasks.row(0).in(tasks.table("listTable["+(tables.size()-1)+"]"));
+		}
 		/**
 		 * gets status of last item in child history (first row in table) 
 		 * @return
 		 */
 		public String getLastResourceChangeStatus() {
-			int tables = tasks.table("listTable").countSimilar();
-			log.fine("Tables :"+tables);
-			ElementStub row = tasks.row(0).in(tasks.table("listTable["+(tables-1)+"]"));
+			ElementStub row = getFirstRow();
+			log.fine("Fist row:"+row.fetch("innerHTML"));
 			return tasks.cell(4).in(row).getText();
 		}
 		/**
@@ -179,6 +188,15 @@ public class Inventory extends ResourceTab{
 	    			tasks.waitFor(waitTime);
 		    		continue;
 	    		} else {
+	    			if (success) {
+	    				// success wanted, let's find error message
+	    				tasks.xy(getFirstRow(),3,3).doubleClick();
+	    				if (tasks.textarea("errorMessage").isVisible()) {
+	    					message +="\n ERROR Message:\n" + tasks.textarea("errorMessage").getText();
+	    					int buttons = tasks.image("close.png").countSimilar();
+	    		    		tasks.xy(tasks.image("close.png["+(buttons-1)+"]"),3,3).click();
+	    				}
+	    			}
 	    			Assert.assertEquals(!success, success,message);
 	    		}
 	    		

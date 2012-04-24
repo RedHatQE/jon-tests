@@ -69,7 +69,6 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		current.getEditor().checkBox(0, false);
 		current.getEditor().setText("max-pool-size", "666");
 		current.save();
-		configuration.history().failOnPending();
 		configuration.history().failOnFailure();
 		assertAttributeValue(nonXA_def, "max-pool-size", "666");
 	}
@@ -138,7 +137,6 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		current.getEditor().checkBox(0, false);
 		current.getEditor().setText("max-pool-size", "666");
 		current.save();
-		configuration.history().failOnPending();
 		configuration.history().failOnFailure();
 		assertAttributeValue(XA_def, "max-pool-size", "666");
 	}

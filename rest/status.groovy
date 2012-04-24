@@ -26,7 +26,7 @@ class StatusTest extends RestClientTest {
 	@Test
 	void rhqVersion() {
 		client.get( path : 'status.json' ) { resp, json ->
-			def version = json.status.values['SERVER_VERSION']+ ' (' +json.status.values['BuildNumber']+')'
+			def version = json.values['SERVER_VERSION']+ ' (' +json.values['BuildNumber']+')'
 			println 'Detected version: '+version
 			System.setProperty('rhq.build.version',version)
 		}

@@ -94,11 +94,25 @@ public class Configuration extends ResourceTab {
 		}
 		/**
 		 * removes entry by name from table (first match)
+		 * use for tables, where remove button is part of a row
 		 * @param name
 		 */
 		public void removeEntry(String name) {
 			tasks.xy(tasks.image("remove.png").in(tasks.cell(name).parentNode("tr")),3,3).click();
 			tasks.xy(tasks.cell("OK"), 3, 3).click();
+		}
+		/**
+		 * removes entry from table, (first match)
+		 * use for tables, where remove button is separate under a table
+		 * @param name
+		 * @param index - index of remove table/button on page
+		 */
+		public void removeSimpleProperty(int index, String select, String option) {
+			tasks.select(select).choose(option);
+			tasks.image("remove.png[" + index + "]").focus();
+			tasks.execute("_sahi._keyPress(_sahi._image('remove.png[" + index
+					+ "]'), 32);");
+			tasks.xy(tasks.cell("Yes"),3,3).click();
 		}
 
 		/**
@@ -113,9 +127,13 @@ public class Configuration extends ResourceTab {
 
 	public static class ConfigEntry {
 		private final SahiTasks tasks;
-
+		private final Editor editor;
 		ConfigEntry(SahiTasks tasks) {
 			this.tasks = tasks;
+			this.editor = new Editor(tasks);
+		}
+		public Editor getEditor() {
+			return editor;
 		}
 
 		/**
@@ -137,7 +155,7 @@ public class Configuration extends ResourceTab {
 
 	public static class ConfigHistory {
 		private final SahiTasks tasks;
-
+		private final Logger log = Logger.getLogger(this.getClass().getName());
 		private ConfigHistory(SahiTasks tasks) {
 			this.tasks = tasks;
 		}
@@ -163,25 +181,35 @@ public class Configuration extends ResourceTab {
 			}
 			return false;
 		}
-		/*
-		 * waits reasonable amount of time whether any config change request is pending
-		 * if this time expires and there is still pending config change, Assert.fail is called
-		 */
-		public void failOnPending() {
-			if (!waitForPending()) {
-				Assert.fail("Configuraton change took too much time to process");
-			}			
-		}
+
 		public void failOnFailure() {
-			waitForPending();
-			Assert.assertFalse(hasFailure(),"Configuration change failed");
+			if (!waitForPending()) {
+				Assert.assertFalse(true,"Configuration change took too much time!");
+			}
+			String message = "Configuration change failed";
+			boolean failure = hasFailure();
+			if (failure) {
+				tasks.xy(tasks.image("Configure_failed_16.png").in(getFirstRow()),3,3).click();
+				if (tasks.preformatted("").exists()) {
+	    			message += "\n ERROR message:\n"+tasks.preformatted("").getText();
+	    		}
+	    		tasks.waitFor(Timing.WAIT_TIME);
+	    		int buttons = tasks.image("close.png").countSimilar();
+	    		tasks.xy(tasks.image("close.png["+(buttons-1)+"]"),3,3).click();				
+			}
+			Assert.assertFalse(failure,message);
+		}
+		private ElementStub getFirstRow() {
+			int tables = tasks.table("listTable").countSimilar();
+			log.fine("Tables :"+tables);
+			return tasks.row(0).in(tasks.table("listTable["+(tables-1)+"]"));
 		}
 		/**
 		 * 
 		 * @return true if any config change failed
 		 */
 		public boolean hasFailure() {
-			return tasks.image("Configure_failed_16.png").exists();
+			return tasks.image("Configure_failed_16.png").in(getFirstRow()).exists();
 		}
 		// public boolean isSuccessLastChange() {
 		// return

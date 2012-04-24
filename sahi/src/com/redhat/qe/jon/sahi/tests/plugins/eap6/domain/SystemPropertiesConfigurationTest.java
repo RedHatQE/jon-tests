@@ -1,6 +1,5 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6.domain;
 
-import static org.junit.Assert.fail;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -16,10 +15,12 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
 	private static final String addedPropName="prop";
 	private static final String addedPropValue="value";
 	private static final String editedPropValue="value2";
+	private Resource mainServerGroup;
 	
 	@BeforeClass(groups="configuration")
     protected void setupEapPlugin() {               
         as7SahiTasks.importResource(controller);
+        mainServerGroup = controller.child("main-server-group");
     }
 	
 	@Test(groups={"configuration"})
@@ -62,6 +63,27 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
 	
 	
 	
+	@Test(groups={"configuration"})
+    public void serverGroupAddPropertyTest() {
+    	addSystemProperty(mainServerGroup);
+        Assert.assertTrue(msgReadPropertyValue("prop").equals("value"),"System property has correct value");
+     }
+	
+	@Test(groups={"configuration"},dependsOnMethods="serverGroupAddPropertyTest")
+    public void serverGroupEditPropertyTest() {
+    	editSystemProperty(mainServerGroup);
+        Assert.assertTrue(msgReadPropertyValue(addedPropName).equals(editedPropValue),"System property has correct value");
+    }
+	
+	@Test(groups={"configuration"},dependsOnMethods="serverGroupEditPropertyTest")
+    public void serverGroupDeletePropertyTest() {
+    	deleteProperty(mainServerGroup);
+    	mgmtClient.assertResourcePresence("/server-group=main-server-group/", "system-property", addedPropName, false);
+    }
+	
+	
+	
+	
 	@Test(groups={"configuration","blockedByBug-708332"})
     public void managedServerAddPropertyTest() {
     	addSystemProperty(serverOne);
@@ -90,7 +112,6 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
     	entry.setField("value", addedPropValue);
     	entry.OK();
         current.save();
-        config.history().failOnPending();
         config.history().failOnFailure();
 	}
 	
@@ -101,7 +122,6 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
 		entry.setField("value", editedPropValue);
 		entry.OK();
 		current.save();		
-		config.history().failOnPending();
         config.history().failOnFailure();
 	}
 	
@@ -110,11 +130,13 @@ public class SystemPropertiesConfigurationTest extends AS7DomainTest {
     	CurrentConfig current = config.current();
 		current.removeEntry(addedPropName);
 		current.save();
-		config.history().failOnPending();
         config.history().failOnFailure();
 	}
 	
-	
+
+	private String msgReadPropertyValue(String name) {    	
+    	return mgmtClient.readAttribute("/server-group=main-server-group/system-property="+name, "value").get("result").asString();
+    }
 	
 	
 	private String dcReadPropertyValue(String name) {    	

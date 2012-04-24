@@ -56,6 +56,11 @@
         </groups>
     </test>
      -->
+     <test name="Standalone_Mail_Subsystem">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.MailSubsystemTest"/>                
+        </classes>
+    </test>
      <test name="Standalone_Logging_Subsystem">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.LoggingSubsystem"/>                
@@ -70,6 +75,8 @@
                 <include name="setup"/>
                 <include name="teardown"/>                                  
                 <include name="connector"/>
+                <include name="vhost"/>
+                <include name="configure"/>
             </run>
         </groups>
     </test>

@@ -23,7 +23,6 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 	private Resource defaultConnector;
 	private Resource myConnector;
 	private Resource myVHost;
-	private Resource defaultVhost;
 	private String virtualServer = "tld.example.org";
 	
 	@BeforeClass(groups = "setup")
@@ -33,8 +32,29 @@ public class WebSubsystemTest extends AS7StandaloneTest {
         defaultConnector = web.child("http");
         myConnector = web.child("myconnector");
         myVHost = web.child("my-host");
-        defaultVhost = web.child("default-host");
     }
+	
+	@Test(groups={"configure","blockedByBug-815288"})
+	public void updateConfiguration() {
+		String sendFile = "55555";
+		String checkInterval = "60";
+		String mappingName = "rhqmapping";
+		Configuration configuration = web.configuration();
+		CurrentConfig current = configuration.current();
+		current.getEditor().setText("sendfile", sendFile);
+		current.getEditor().setText("check-interval", checkInterval);
+		ConfigEntry ce = current.getEditor().newEntry(0);
+		ce.setField("name", mappingName);
+		ce.setField("value", "foo");
+		ce.OK();
+		current.save();
+		configuration.history().failOnFailure();
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=static-resources", "sendfile").get("result").asString().equals(sendFile)," Configuration update for static-resources was successfull");
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=jsp-configuration", "check-interval").get("result").asString().equals(checkInterval)," Configuration update for jsp-configuration was successfull");
+		// TODO validate mime-mapping
+		//Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=container", "mime-mapping").get("result").asList().get(0).asPropertyList().get(0).getName().equals(mappingName)," Configuration update for container was successfull");
+	}
+	
 	@Test(groups={"vhost"})
 	public void createVHost() {
 		Inventory inventory = web.inventory();
@@ -50,8 +70,21 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/virtual-server="+myVHost.getName(), "alias").get("result").asList().get(0).asString().equals(virtualServer),"New VHost has correctly set aliases");
 		myVHost.assertExists(true);
 	}
+
+	@Test(groups={"vhost"},dependsOnMethods="createVHost")
+	public void configureVHost() {
+		Configuration configuration = myVHost.configuration();
+		CurrentConfig config = configuration.current();
+		ConfigEntry ce = config.getEditor().newEntry(0);
+		ce.setField("alias", "test."+virtualServer);
+		ce.OK();
+		config.save();
+		ConfigHistory history = configuration.history();
+		history.failOnFailure();
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/virtual-server="+myVHost.getName(), "alias").get("result").asList().get(1).asString().equals("test."+virtualServer),"VHost configuration change was successfull");
+	}
 	
-	@Test(dependsOnMethods="createVHost",groups={"vhost"})
+	@Test(alwaysRun=true,dependsOnMethods="configureVHost",groups={"vhost"})
 	public void removeVHost() {
 		myVHost.delete();
 		web.inventory().childHistory().assertLastResourceChange(true);
@@ -59,19 +92,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		myVHost.assertExists(false);
 	}
 	
-	@Test(groups={"vhost"})
-	public void configureVHost() {
-		Configuration configuration = defaultVhost.configuration();
-		CurrentConfig config = configuration.current();
-		ConfigEntry ce = config.getEditor().newEntry(0);
-		ce.setField("alias", virtualServer);
-		ce.OK();
-		config.save();
-		ConfigHistory history = configuration.history();
-		history.failOnPending();
-		history.failOnFailure();
-		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/virtual-server="+defaultVhost.getName(), "alias").get("result").asList().get(0).asString().equals(virtualServer),"VHost configuration change was successfull");
-	}
+
 	
 	
 	@Test(groups={"connector"})
@@ -81,7 +102,6 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		config.getEditor().setText("max-save-post-size", "8192");
 		config.save();
 		ConfigHistory history = configuration.history();
-		history.failOnPending();
 		history.failOnFailure();
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/connector="+defaultConnector.getName(), "max-save-post-size").get("result").asString().equals("8192"),"Connector configuration change was successfull");
 	}
@@ -96,11 +116,11 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		sahiTasks.waitFor(Timing.WAIT_TIME);
 		nc.getEditor().checkRadio("http");
 		nc.getEditor().selectCombo(1,"remoting");
-		nc.finish();
-		sahiTasks.waitFor(Timing.WAIT_TIME);
-		
+		nc.getEditor().checkBox(0, false);
+		nc.getEditor().checkRadio("enabled[1]");
+		nc.finish();		
 		inventory.childHistory().assertLastResourceChange(true);
-		mgmtClient.assertResourcePresence("/subsytem=web", "connector", myConnector.getName(), true);
+		mgmtClient.assertResourcePresence("/subsystem=web", "connector", myConnector.getName(), true);
 		myConnector.assertExists(true);
 
 	}
@@ -108,7 +128,7 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 	public void removeConnector() {
 		myConnector.delete();
 		web.inventory().childHistory().assertLastResourceChange(true);
-		mgmtClient.assertResourcePresence("/subsytem=web", "connector", myConnector.getName(), false);
+		mgmtClient.assertResourcePresence("/subsystem=web", "connector", myConnector.getName(), false);
 		myConnector.assertExists(false);
 	}
 	

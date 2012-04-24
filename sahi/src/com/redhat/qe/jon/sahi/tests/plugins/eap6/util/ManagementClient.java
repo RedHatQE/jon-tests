@@ -35,7 +35,12 @@ public class ManagementClient {
 	private String password = "123456";
 	private final String host;
 	private final int port;
-	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	/**
 	 * gets the username that our client will pass to client API when requested
 	 * @return

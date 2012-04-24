@@ -25,23 +25,25 @@ public class SocketBindingGroupConfigurationTest extends AS7StandaloneTest {
 		Configuration configuration = sbGroup.configuration();
 		CurrentConfig current = configuration.current();
 		ConfigEntry entry = current.newEntry(0);
+		entry.getEditor().checkBox(1, false);
 		entry.setField("port:expr", port);
 		entry.setField("name", name);
 		entry.OK();
 		current.save();
-		configuration.history().failOnPending();
 		configuration.history().failOnFailure();
 		mgmtClient.assertResourcePresence("/socket-binding-group="+sbGroup.getName(), "socket-binding", name, true);
+		String hasPort = mgmtClient.readAttribute("/socket-binding-group="+sbGroup.getName()+"/socket-binding="+name, "port").get("result").asString();
+		Assert.assertTrue(hasPort.equals(port), "Attribute [port] was successfully updated");
 	}
 	@Test(groups="socketBindingGroup",dependsOnMethods="addPort")
 	public void editPort() {
 		Configuration configuration = sbGroup.configuration();
 		CurrentConfig current = configuration.current();
 		ConfigEntry entry = current.getEntry(name);
+		entry.getEditor().checkBox(1, false);
 		entry.setField("port:expr", port2);
 		entry.OK();
 		current.save();
-		configuration.history().failOnPending();
 		configuration.history().failOnFailure();
 		String hasPort = mgmtClient.readAttribute("/socket-binding-group="+sbGroup.getName()+"/socket-binding="+name, "port").get("result").asString();
 		Assert.assertTrue(hasPort.equals(port2), "Attribute [port] was successfully updated");
@@ -52,7 +54,6 @@ public class SocketBindingGroupConfigurationTest extends AS7StandaloneTest {
     	CurrentConfig current = configuration.current();
 		current.removeEntry(name);
 		current.save();
-		configuration.history().failOnPending();
 		configuration.history().failOnFailure();
 		mgmtClient.assertResourcePresence("/socket-binding-group="+sbGroup.getName(), "socket-binding", name, false);
 	}
