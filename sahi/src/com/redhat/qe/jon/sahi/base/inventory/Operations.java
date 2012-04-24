@@ -127,6 +127,7 @@ public class Operations extends ResourceTab {
 		 */
 		public void schedule() {
 			tasks.cell("Schedule").click();
+			tasks.waitFor(Timing.WAIT_TIME);
 		}
 	}
 
