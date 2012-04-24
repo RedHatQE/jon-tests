@@ -425,7 +425,18 @@ public class Resource {
 	 * deletes this resource from inventory, do not use for deleting platforms
 	 */
 	public void delete() {
-		parent().inventory().childResources().deleteChild(getName());
+		Inventory inventory = parent().inventory();
+		inventory.childResources().deleteChild(getName());
+		inventory.childHistory().assertLastResourceChange(true);
+	}
+	/**
+	 * deletes this resource from inventory, do not use for deleting platforms
+	 * @param mustExist - if set to true this method will fail if this resource does not exist
+	 */
+	public void delete(boolean mustExist) {
+		if (mustExist && exists()) {
+			delete();
+		}
 	}
 
     /**

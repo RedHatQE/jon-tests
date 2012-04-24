@@ -94,11 +94,25 @@ public class Configuration extends ResourceTab {
 		}
 		/**
 		 * removes entry by name from table (first match)
+		 * use for tables, where remove button is part of a row
 		 * @param name
 		 */
 		public void removeEntry(String name) {
 			tasks.xy(tasks.image("remove.png").in(tasks.cell(name).parentNode("tr")),3,3).click();
 			tasks.xy(tasks.cell("OK"), 3, 3).click();
+		}
+		/**
+		 * removes entry from table, (first match)
+		 * use for tables, where remove button is separate under a table
+		 * @param name
+		 * @param index - index of remove table/button on page
+		 */
+		public void removeSimpleProperty(int index, String select, String option) {
+			tasks.select(select).choose(option);
+			tasks.image("remove.png[" + index + "]").focus();
+			tasks.execute("_sahi._keyPress(_sahi._image('remove.png[" + index
+					+ "]'), 32);");
+			tasks.xy(tasks.cell("Yes"),3,3).click();
 		}
 
 		/**
