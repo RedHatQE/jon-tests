@@ -114,7 +114,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		op.finish();
 		inventory.childHistory().assertLastResourceChange(true);
 		mgmtClient.assertResourcePresence("/subsystem=logging", "periodic-rotating-file-handler", prfHandler.getName(),true);
-		consoleHandler.assertExists(true);
+		prfHandler.assertExists(true);
 	}
 	
 	@Test(dependsOnMethods="periodicRotatingFileHandlerAdd")

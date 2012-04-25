@@ -398,6 +398,9 @@ public class Resource {
 	 * @return true if this resource exists
 	 */
 	public boolean exists() {
+		// because UI (tree) caches things and we keep refreshing same page
+		// we need to force it to reload .. so we navigate somewhere else
+		tasks.link("Dashboard").click();
 		return parent().inventory().childResources().existsChild(getName());
 	}
 	/**
@@ -423,6 +426,7 @@ public class Resource {
 	}
 	/**
 	 * deletes this resource from inventory, do not use for deleting platforms
+	 * resource MUST exist .. otherwise this fails
 	 */
 	public void delete() {
 		Inventory inventory = parent().inventory();
