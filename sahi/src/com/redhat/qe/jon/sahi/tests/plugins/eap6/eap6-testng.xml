@@ -117,7 +117,7 @@
             </run>
         </groups>
     </test>
-	<test name="Standalne_JMSDestinations">
+	<test name="Standalone_JMSDestinations">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.JMSDestinationsTest"/>
         </classes>
@@ -129,7 +129,7 @@
             </run>
         </groups>
     </test>
-    <test name="Standalne_SocketBindingGroups">
+    <test name="Standalone_SocketBindingGroups">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.SocketBindingGroupConfigurationTest"/>
         </classes>
@@ -182,14 +182,6 @@
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ResourceConfigurationTest"/>                
         </classes>
-        <groups>
-            <run>
-                <include name="setup"/>
-                <include name="teardown"/>                                  
-                <include name="inventoryTest"/>
-                <include name="configuration"/>
-            </run>
-        </groups>
     </test>
     
     <test name="Domain_AutodetectConfiguration">
