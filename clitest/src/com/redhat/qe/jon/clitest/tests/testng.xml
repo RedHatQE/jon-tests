@@ -239,7 +239,7 @@
 <test name="OperationManager">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="viewProcessList"/>
+                        <parameter name="js.file"  value="viewProcessList.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
                         <methods>
                                 <include name="runJSfile"></include>
