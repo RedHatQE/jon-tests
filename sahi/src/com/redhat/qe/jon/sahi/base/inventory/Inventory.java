@@ -228,7 +228,8 @@ public class Inventory extends ResourceTab{
 		 * @return true if child resource with given name exists
 		 */
 		public boolean existsChild(String name) {
-			return tasks.cell(name).exists();
+			int count = tasks.table("listTable").countSimilar();
+			return tasks.cell(name).in(tasks.table("listTable["+(count-1)+"]")).exists();
 		}
 		public void refresh() {
 			tasks.cell("Refresh").click();
