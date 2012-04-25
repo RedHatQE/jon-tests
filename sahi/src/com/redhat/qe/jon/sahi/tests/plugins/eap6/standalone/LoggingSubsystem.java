@@ -183,6 +183,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	public void loggerConfigure() {
 		Configuration configuration = logger.configuration();
 		CurrentConfig config = configuration.current();
+		config.getEditor().checkBox(0, false);
 		config.getEditor().selectCombo(0, "INFO");
 		ConfigEntry ce = config.newEntry(0);
 		ce.setField("handlers", defaultConsoleHandler.getName());
