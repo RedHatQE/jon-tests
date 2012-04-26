@@ -42,6 +42,12 @@ public class Editor {
 		 ElementStub picker = tasks.image("comboBoxPicker.png["+index+"]");
 		 tasks.xy(picker.parentNode(),3,3).click();
 		 int rows = tasks.row(selection).countSimilar();
+		 if (rows == 0 && tasks.image("comboBoxPicker_Over.png").exists()) {
+			 log.fine("Combo did not pop up? Trying one more click...");
+			 // when combo is focused single click does NOT work - wtf!
+			 tasks.xy(tasks.image("comboBoxPicker_Over.png"),3,3).click();
+			 rows = tasks.row(selection).countSimilar();
+		 }
 		 if (rows==1) {
 			 index = 0;
 		 }
