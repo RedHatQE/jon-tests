@@ -80,14 +80,8 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         configuration.history().failOnFailure();
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName(), "profile").get("result").asString().equals("full-ha"),"Configuration changed");
     }
-    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup")
-    public void removeServerGroupJVM() {
-    	myGroupDefaultJVM.delete();
-    	mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", myGroupDefaultJVM.getName(), false);
-    	myServerGroup.assertExists(false);
-    }
     
-    @Test(groups={"serverGroupsManagement"},dependsOnMethods="removeServerGroupJVM") 
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup") 
     public void addServerGroupJVM() {
     	Inventory inventory = myServerGroup.inventory();
         NewChildWizard newChild = inventory.childResources().newChild("JVM Definifion");
@@ -110,6 +104,15 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", "default", true);
         Assert.assertTrue(mgmtClient.readAttribute("/server-group="+myServerGroup.getName()+"/jvm="+myGroupDefaultJVM.getName(), "heap-size").get("result").asString().equals("1024m"),"JVM Configuration has changed");
     }
+    
+    @Test(groups={"serverGroupsManagement"},dependsOnMethods="configureServerGroupJVM")
+    public void removeServerGroupJVM() {
+    	myGroupDefaultJVM.delete();
+    	mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", myGroupDefaultJVM.getName(), false);
+    	myServerGroup.assertExists(false);
+    }
+    
+
     
     
     
