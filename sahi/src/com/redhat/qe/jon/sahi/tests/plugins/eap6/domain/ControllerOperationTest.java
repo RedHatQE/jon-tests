@@ -60,7 +60,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 		Date startupDate = sshClient.getStartupTime("domain/log/process-controller.log");
 		
 		Operations operations = controller.operations();
-		Operation op = operations.newOperation("Restart");
+		Operation op = operations.newOperation("Restart this host controller");
 		op.schedule();
 		operations.assertOperationResult(op,true);
 
