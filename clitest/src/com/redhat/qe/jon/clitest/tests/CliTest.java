@@ -3,6 +3,8 @@ package com.redhat.qe.jon.clitest.tests;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
@@ -21,9 +23,11 @@ public class CliTest extends CliTestScript{
 	private String cliPassword;
 	private CliTasks cliTasks;
 	
+	private String jsFileName;
+	private static String remoteFileLocation = "/tmp/";
+	
 	public static boolean isVersionSet = false;
 		
-	
 	
 	
 	
@@ -42,11 +46,14 @@ public class CliTest extends CliTestScript{
 	public void runJSfile(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure) throws IOException, CliTasksException{
 		loadSetup(rhqTarget, cliUsername, cliPassword, makeFilure);
 		cliTasks = CliTasks.getCliTasks();
+		// upload JS file to remote host first
+		cliTasks.copyFile(jsFileLocation+jsFile, remoteFileLocation);
+		jsFileName = jsFile;
 		String consoleOutput = null;
 		if(cliArgs != null){
-			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+jsFileLocation+jsFile+" "+cliArgs);
+			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFile+" "+cliArgs);
 		}else{
-			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+jsFileLocation+jsFile);
+			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFile);
 		}
 		
 		if(!isVersionSet){
@@ -64,5 +71,14 @@ public class CliTest extends CliTestScript{
 		}
 		
 	}	
+	
+	@AfterTest
+	public void deleteJSFile(){
+		try {
+			CliTasks.getCliTasks().runCommnad("rm -rf '"+remoteFileLocation+jsFileName+"'", 1000*60*3);
+		} catch (CliTasksException ex) {
+			_logger.log(Level.WARNING, "Exception on remote File deletion!, ", ex);
+		}
+	}
 	
 }

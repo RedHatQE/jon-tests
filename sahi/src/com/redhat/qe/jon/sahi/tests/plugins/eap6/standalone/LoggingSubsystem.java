@@ -21,20 +21,20 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	private Resource defaultConsoleHandler;
 	private Resource consoleHandler;
 	private Resource prfHandler;
-	private Resource defaultLogger;
 	private Resource logger;
 	private Resource asyncHandler;
+	private Resource fileHandler;
 	
 	@BeforeClass()
 	protected void setupAS7Plugin() {
 		as7SahiTasks.importResource(server);
         logging = server.child("logging");
         defaultConsoleHandler = logging.child("CONSOLE");
-        consoleHandler = logging.child("MYCONSOLE");
-        prfHandler = logging.child("MYPRFHANDLER");
-        defaultLogger = logging.child("jacorb");
-        logger = logging.child("orgrhqlogger");
-        asyncHandler = logging.child("MYASYNCHANDLER");
+        consoleHandler = logging.child("MYCONSO");
+        prfHandler = logging.child("MYPRFHAN");
+        logger = logging.child("MYLOGGERRHQ");
+        asyncHandler = logging.child("MYASYNCHAND");
+        fileHandler = logging.child("MYFILEHAND");
     }
 	
 	/* ROOT Logger */
@@ -101,6 +101,36 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		asyncHandler.assertExists(false);
 	}
 	
+	/* File handler */
+	
+	@Test
+	public void fileHandlerAdd() {
+		Inventory inventory = logging.inventory();
+		NewChildWizard op = inventory.childResources().newChild("File Handler");
+		op.getEditor().setText("resourceName", fileHandler.getName());
+		op.next();
+		op.getEditor().setText("path", "standalone/log/test.log");
+		op.finish();
+		inventory.childHistory().assertLastResourceChange(true);
+		mgmtClient.assertResourcePresence("/subsystem=logging", "file-handler", fileHandler.getName(),true);		
+		fileHandler.assertExists(true);
+	}
+	@Test(dependsOnMethods="fileHandlerAdd")
+	public void fileHandlerConfigure() {
+		Configuration configuration = fileHandler.configuration();
+		CurrentConfig current = configuration.current();
+		current.getEditor().checkRadio("append[1]");
+		current.save();
+		configuration.history().failOnFailure();
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/file-handler="+fileHandler.getName(), "append").get("result").asString().equals("false"),"File handler has correct config - append=false");
+	}
+	@Test(dependsOnMethods="fileHandlerConfigure")
+	public void fileHandlerRemove() {		
+		fileHandler.delete();
+		mgmtClient.assertResourcePresence("/subsystem=logging", "file-handler", fileHandler.getName(),false);
+		fileHandler.assertExists(false);
+	}
+	
 	/* Periodic rotating file handler */
 
 	@Test()
@@ -121,6 +151,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	public void periodicRotatingFileHandlerConfigure() {
 		Configuration configuration = prfHandler.configuration();
 		CurrentConfig current = configuration.current();
+		current.getEditor().checkBox(1, false);
 		current.getEditor().selectCombo(0, "DEBUG");
 		current.save();
 		configuration.history().failOnFailure();
@@ -137,7 +168,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	
 	/* CONSOLE HANDLER */
 	
-	@Test
+	//@Test
 	public void consoleHandlerConfigure() {
 		Configuration configuration = defaultConsoleHandler.configuration();
 		CurrentConfig current = configuration.current();
@@ -172,10 +203,14 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		Inventory inventory = logging.inventory();
 		NewChildWizard op = inventory.childResources().newChild("Logger");
 		op.getEditor().setText("resourceName", logger.getName());
-		op.next();
+		op.next();		
+		ConfigEntry ce = op.getEditor().newEntry(0);
+		ce.setField("handlers", defaultConsoleHandler.getName());
+		ce.OK();
 		op.finish();
 		inventory.childHistory().assertLastResourceChange(true);
 		mgmtClient.assertResourcePresence("/subsystem=logging", "logger", logger.getName(),true);
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/logger="+logger.getName(), "handlers").get("result").asString().contains(defaultConsoleHandler.getName()),"Logger configuration has ["+defaultConsoleHandler.getName()+"] among hanlders");
 		logger.assertExists(true);
 	}
 	
@@ -183,19 +218,18 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 	public void loggerConfigure() {
 		Configuration configuration = logger.configuration();
 		CurrentConfig config = configuration.current();
+		config.removeSimpleProperty(0, "handlers", defaultConsoleHandler.getName());
 		config.getEditor().checkBox(0, false);
-		config.getEditor().selectCombo(0, "INFO");
-		ConfigEntry ce = config.newEntry(0);
-		ce.setField("handlers", defaultConsoleHandler.getName());
-		ce.OK();
+		config.getEditor().selectCombo(0, "INFO");		
 		config.save();
 		configuration.history().failOnFailure();
-		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/logger="+defaultLogger.getName(), "level").get("result").asString().equals("INFO"),"Logger level was changed to INFO");
-		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/logger="+defaultLogger.getName(), "handlers").get("result").asString().contains(defaultConsoleHandler.getName()),"Logger configuration has ["+defaultConsoleHandler.getName()+"] among hanlders");
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/logger="+logger.getName(), "level").get("result").asString().equals("INFO"),"Logger level was changed to INFO");
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/logger="+logger.getName(), "handlers").get("result").asList().isEmpty(),"Logger configuration has no hanlders");
 	}
 	
 	@Test(dependsOnMethods="loggerConfigure")
 	public void loggerRemove() {
+		mgmtClient.reload();
 		logger.delete();
 		mgmtClient.assertResourcePresence("/subsystem=logging", "logger", logger.getName(),false);
 		logger.assertExists(false);

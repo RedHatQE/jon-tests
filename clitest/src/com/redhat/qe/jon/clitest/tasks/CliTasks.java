@@ -3,8 +3,10 @@ package com.redhat.qe.jon.clitest.tasks;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import com.redhat.qe.tools.SSHCommandRunner;
 import com.trilead.ssh2.Connection;
+import com.trilead.ssh2.SCPClient;
 
 /**
  * @author jkandasa (Jeeva Kandasamy)
@@ -14,6 +16,7 @@ public class CliTasks {
 	private static Logger _logger = Logger.getLogger(CliTasks.class.getName());
 	protected SSHCommandRunner sshCommandRunner = null;
 	protected Connection connection = null;
+	protected SCPClient scpClient = null;
 	protected long COMMAND_TIMEOUT = 1000*60*10; //Timeout for commands
 	private static CliTasks cliTasks;
 	
@@ -34,7 +37,18 @@ public class CliTasks {
 			connection.connect();
 			connection.authenticateWithPassword(userName, passWord);
 			sshCommandRunner = new SSHCommandRunner(connection, null);
+			scpClient = new SCPClient(connection);
 		}
+	}
+	/**
+	 * copies file to remote host
+	 * @param src source file
+	 * @param dest remote dir
+	 * @throws IOException
+	 */
+	public void copyFile(String src, String dest) throws IOException {
+		scpClient.put(src, dest);
+		_logger.fine("File ["+src+"] copied to "+connection.getHostname()+":"+dest);
 	}
 	
 	public void closeConnection(){

@@ -91,16 +91,16 @@ public class DeploymentTest extends AS7DomainTest {
 		serverGroup.child(war).assertExists(false);
 		Assert.assertTrue(!httpDomainOne.isDeploymentAvailable(war),"Deployment is no longer reachable on "+httpDomainOne.getServerAddress());
 		Assert.assertTrue(!httpDomainTwo.isDeploymentAvailable(war),"Deployment is no longer reachable on "+httpDomainTwo.getServerAddress());
-		serverOne.child(war).assertExists(false);
-		serverTwo.child(war).assertExists(false);
+		//serverOne.child(war).assertExists(false);
+		//serverTwo.child(war).assertExists(false);
 	}
 	@Test(groups = "deployment", dependsOnMethods="undeployFromServerGroup")
 	public void removeDomainDeployment() {
 		controller.inventory().childResources().deleteChild(war);
 		mgmtDomain.assertResourcePresence("", "deployment", war, false);
 		controller.child(war).assertExists(false);
-		serverOne.child(war).assertExists(false);
-		serverTwo.child(war).assertExists(false);
+		//serverOne.child(war).assertExists(false);
+		//serverTwo.child(war).assertExists(false);
 	}
 	
 	@Test(groups = {"deployment","blockedByBug-815965"}, dependsOnMethods="undeployFromServerGroup")
@@ -123,15 +123,15 @@ public class DeploymentTest extends AS7DomainTest {
 		httpDomainTwo.assertDeploymentContent(war, "Original", "Check whether original version of WAR has been deployed to "+httpDomainTwo.getServerAddress());
 		
 	}
-	@Test(groups = {"deployment","blockedByBug-816146"}, dependsOnMethods="createWARChildOnServerGroup")
+	@Test(groups = {"deployment"}, dependsOnMethods="createWARChildOnServerGroup")
 	public void removeWARChildFromServerGroup() {
 		serverGroup.inventory().childResources().deleteChild(war);
 		mgmtClient.assertResourcePresence("/server-group="+serverGroup.getName(), "deployment", war, false);
 		serverGroup.child(war).assertExists(false);
 		Assert.assertTrue(!httpDomainOne.isDeploymentAvailable(war),"Deployment is no longer reachable on "+httpDomainOne.getServerAddress());
 		Assert.assertTrue(!httpDomainTwo.isDeploymentAvailable(war),"Deployment is no longer reachable on "+httpDomainTwo.getServerAddress());
-		serverOne.child(war).assertExists(false);
-		serverTwo.child(war).assertExists(false);
+		//serverOne.child(war).assertExists(false);
+		//serverTwo.child(war).assertExists(false);
 	}
 
 	/**
