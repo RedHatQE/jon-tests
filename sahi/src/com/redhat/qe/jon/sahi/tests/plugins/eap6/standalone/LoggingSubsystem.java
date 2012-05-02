@@ -155,7 +155,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		current.getEditor().selectCombo(0, "DEBUG");
 		current.save();
 		configuration.history().failOnFailure();
-		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/console-handler="+defaultConsoleHandler.getName(), "level").get("result").asString().equals("DEBUG"),"Console handler level was changed to DEBUG");
+		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=logging/periodic-rotating-file-handler="+prfHandler.getName(), "level").get("result").asString().equals("DEBUG"),"Periodic-file-rotating handler level was changed to DEBUG");
 	}
 	
 	@Test(dependsOnMethods="periodicRotatingFileHandlerConfigure")
