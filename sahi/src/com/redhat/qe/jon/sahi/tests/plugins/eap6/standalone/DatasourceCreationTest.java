@@ -50,7 +50,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 			log.info("manual discovery done");
 		}
 		Inventory inventory = datasources.inventory();
-		NewChildWizard add = inventory.childResources().newChild("DataSource");
+		NewChildWizard add = inventory.childResources().newChild("DataSource (Standalone)");
 		add.getEditor().setText("resourceName", datasource_nonXA);
 		add.next();
 		add.getEditor().setText("connection-url","jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1");
@@ -111,7 +111,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 			log.info("manual discovery done");
 		}
 		Inventory inventory = datasources.inventory();
-		NewChildWizard add = inventory.childResources().newChild("XADataSource");
+		NewChildWizard add = inventory.childResources().newChild("XADataSource (Standalone)");
 		add.getEditor().setText("resourceName",datasource_XA);
 		add.next();
 		add.getEditor().setText("xa-datasource-class","org.h2.jdbcx.JdbcDataSource");
