@@ -1,4 +1,4 @@
-package com.redhat.qe.jon.sahi.tests.plugins.eap6.util;
+package com.redhat.qe.jon.common.util;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -18,15 +18,14 @@ import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 
 import com.redhat.qe.auto.testng.Assert;
-import com.redhat.qe.jon.sahi.tasks.Timing;
 /**
  * AS 7 DMR Management client
  * @author lzoubek
  *
  */
-public class ManagementClient {
+public class AS7DMRClient {
 
-	protected static final Logger log = Logger.getLogger(ManagementClient.class
+	protected static final Logger log = Logger.getLogger(AS7DMRClient.class
 			.getName());
 
 	private final ModelControllerClient client;
@@ -56,7 +55,7 @@ public class ManagementClient {
 		return password;
 	}
 	
-	public ManagementClient(String host, int port) {
+	public AS7DMRClient(String host, int port) {
 		log.fine("Creating AS7 DMR Client that will conect to ["+host+":"+port+"]");
 		this.host=host;
 		this.port=port;
@@ -241,7 +240,7 @@ public class ManagementClient {
 			return op;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			log.throwing(ManagementClient.class.getCanonicalName(),
+			log.throwing(AS7DMRClient.class.getCanonicalName(),
 					" readAttribute", e);
 			e.printStackTrace();
 			Assert.fail();
@@ -267,7 +266,7 @@ public class ManagementClient {
 			log.fine("Resource does not exist");
 			return false;
 		} catch (IOException e) {
-			log.throwing(ManagementClient.class.getCanonicalName(),
+			log.throwing(AS7DMRClient.class.getCanonicalName(),
 					"existsResource", e);
 			e.printStackTrace();
 			return false;
@@ -279,8 +278,8 @@ public class ManagementClient {
 	public void reload() {
 		executeOperationVoid("/", "reload", new String[]{});
 		try {
-			log.fine("Waiting "+Timing.toString(Timing.TIME_30S)+" for server to reload");
-			Thread.currentThread().join(Timing.TIME_30S);
+			log.fine("Waiting 30s for server to reload");
+			Thread.currentThread().join(30*1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

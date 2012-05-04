@@ -1,4 +1,5 @@
-package com.redhat.qe.jon.sahi.tasks;
+package com.redhat.qe.jon.common.util;
+
 
 import java.io.IOException;
 import java.util.logging.Logger;

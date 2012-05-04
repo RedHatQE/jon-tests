@@ -2,6 +2,7 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
 import java.util.Date;
 
+
 import org.jboss.dmr.ModelNode;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -105,16 +106,22 @@ public class OperationTest extends AS7StandaloneTest {
 		Assert.assertTrue(ok,"EAP server is online after server was restarted");
 	}
 	
-	@Test(groups={"operation","blockedByBug-789292"})
+	//@Test(groups={"operation","blockedByBug-789292"})
+	@Test
 	public void installRHQUser() {
 		Operations operations = server.operations();
 		Operation op = operations.newOperation("Install RHQ user");	
-		String user = "u"+new Date().getTime();
-		sahiTasks.textbox("user").setValue(user);
-		sahiTasks.waitFor(Timing.WAIT_TIME);
+		//String user = "u"+new Date().getTime();
+		//sahiTasks.textbox("user").setValue(user);		
+		String user = "rhqadmin";
 		op.schedule();
 		operations.assertOperationResult(op,true);				
 		String command = "grep '"+user+"' "+sshClient.getAsHome() + "/standalone/configuration/mgmt-users.properties";
 		Assert.assertTrue(sshClient.runAndWait(command).getStdout().contains(user), "New user was found on EAP machine in mgmt-users.properties");
-	}
+		mgmtClient.setUsername("rhqadmin");
+		mgmtClient.setPassword("rhqadmin");
+		server.performManualAutodiscovery();
+		log.fine("Waiting "+Timing.toString(10*Timing.TIME_1M)+" for server to get discovered...");
+        sahiTasks.waitFor(10*Timing.TIME_1M);
+		}
 }

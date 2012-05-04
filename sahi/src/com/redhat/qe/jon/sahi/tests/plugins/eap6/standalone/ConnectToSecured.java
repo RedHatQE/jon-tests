@@ -10,7 +10,6 @@ import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.ConnectionSettings;
 import com.redhat.qe.jon.sahi.tasks.Timing;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 public class ConnectToSecured extends AS7StandaloneTest {
 

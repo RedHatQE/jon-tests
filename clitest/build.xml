@@ -7,6 +7,7 @@
 	<property name="test.output.dir" location="test-output" />
 	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
 	<property name="env.js_files_dir" value="resources/js-files/"/>
+	<property name="common.dir" value="../common" />
 	<condition property="webui-framework.dir" value="../../../webui-framework">
 		<not>
 			<isset property="webui-framework.dir"/>
@@ -17,31 +18,26 @@
 		<fileset dir="${webui-framework.dir}/lib">
 			<include name="*.jar" />
 		</fileset>
-		<fileset dir="../sahi/lib">
-			<include name="cajo.jar" />
-			<include name="ReportEngineClient.jar" />
+		<fileset dir="${common.dir}/lib">
+			<include name="*.jar" />
 		</fileset>
 	</path>
 
 	<path id="tests.cp">
 		<pathelement location="${test.build.dir}"/>
 		<pathelement location="${webui-framework.dir}/bin" />
+		<pathelement location="${common.dir}/bin" />
 		<path refid="utils.cp" />
 	</path>
 
     <taskdef name="testng" classpathref="utils.cp" classname="org.testng.TestNGAntTask" />
 
     <target name="deps">
-		<echo message="Compiling dependencies in ${webui-framework.dir}" />
+		<ant inheritAll="false" antfile="${common.dir}/build.xml" />
+    </target>
 
-		<ant antfile="${webui-framework.dir}/build.xml">
-			<property name="basedir" value="${webui-framework.dir}" />
-		</ant>
-	</target>
-
-	<target name="compile" depends="">
-		<echo message="Compiling testsuite in ${basedir}" />
-		<antcall target="deps" />
+	<target name="compile" depends="deps">
+		<echo message="Compiling [${ant.project.name}] in ${basedir}" />
 		<mkdir dir="${test.build.dir}" />
 
 		<javac srcdir="${test.src.dir}" destdir="${test.build.dir}" classpathref="tests.cp" debug="on">

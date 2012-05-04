@@ -1,10 +1,10 @@
-package com.redhat.qe.jon.sahi.tests.plugins.eap6.util;
+package com.redhat.qe.jon.common.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.redhat.qe.jon.sahi.tasks.SSHClient;
+
 
 public class AS7SSHClient extends SSHClient {
 
@@ -12,6 +12,10 @@ public class AS7SSHClient extends SSHClient {
 	private static final SimpleDateFormat sdfServerLog = new SimpleDateFormat("HH:mm:ss");
 	public AS7SSHClient(String asHome) {
 		super();
+		this.asHome = asHome;
+	}
+	public AS7SSHClient(String asHome, String user,String host, String pass) {
+		super(user,host,pass);
 		this.asHome = asHome;
 	}
 	/**

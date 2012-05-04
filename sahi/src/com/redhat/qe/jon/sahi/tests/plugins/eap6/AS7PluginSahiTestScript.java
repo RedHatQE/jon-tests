@@ -8,10 +8,10 @@ import java.util.logging.Logger;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import com.redhat.qe.jon.common.util.AS7DMRClient;
+import com.redhat.qe.jon.common.util.AS7SSHClient;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.AS7SSHClient;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
-import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.ManagementClient;
 import com.redhat.qe.tools.remotelog.CheckRemoteLog;
 import com.redhat.qe.tools.remotelog.RemoteLog;
 import com.redhat.qe.tools.remotelog.RemoteLogAccess;
@@ -43,15 +43,15 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     /**
      * AS7 management API client for standalone instance
      */
-    protected static ManagementClient mgmtStandalone;
+    protected static AS7DMRClient mgmtStandalone;
     /**
      * AS7 management API client for standalone instance  (2nd instance)
      */
-    protected static ManagementClient mgmtStandalone2;
+    protected static AS7DMRClient mgmtStandalone2;
     /**
      * AS7 management API client for domain instance
      */
-    protected static ManagementClient mgmtDomain;
+    protected static AS7DMRClient mgmtDomain;
 
     /**
      * SSH Client to to some stuff on machine where runs standalone AS7
@@ -113,9 +113,9 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         MGMT_PORT_DOMAIN = Integer.parseInt(System.getProperty("as7.domain.port", "9999"));
         MGMT_HOST_DOMAIN = System.getProperty("as7.domain.hostname", "localhost");
 
-        mgmtStandalone = new ManagementClient(MGMT_HOST_STANDALONE, MGMT_PORT_STANDALONE);
-        mgmtStandalone2 = new ManagementClient(MGMT_HOST_STANDALONE2, MGMT_PORT_STANDALONE2);
-        mgmtDomain = new ManagementClient(MGMT_HOST_DOMAIN, MGMT_PORT_DOMAIN);
+        mgmtStandalone = new AS7DMRClient(MGMT_HOST_STANDALONE, MGMT_PORT_STANDALONE);
+        mgmtStandalone2 = new AS7DMRClient(MGMT_HOST_STANDALONE2, MGMT_PORT_STANDALONE2);
+        mgmtDomain = new AS7DMRClient(MGMT_HOST_DOMAIN, MGMT_PORT_DOMAIN);
 
         sshStandalone = new AS7SSHClient(
         		System.getProperty("as7.standalone1.home"));

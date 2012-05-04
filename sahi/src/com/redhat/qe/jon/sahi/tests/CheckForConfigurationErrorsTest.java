@@ -44,13 +44,15 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 		Assert.assertNull(errorText, "Resource " + resource.toString()
 				+ " has error on Configuration TAB : " + errorText);
 		ElementStub es =  sahiTasks.byXPath("//td[@class='InfoBlock'][2]");
+		boolean hasConfig = true;
 		if (es.exists()) {
 			String text = es.getText();
 			if (text!=null) {
 				if (text.contains("failed to load the configuration")) {
-					Assert.fail("No configuration was retrieved!");
+					hasConfig=false;
 				}
 			}
 		}
+		Assert.assertTrue(hasConfig, "Some configuration was retrieved");
 	}
 }
