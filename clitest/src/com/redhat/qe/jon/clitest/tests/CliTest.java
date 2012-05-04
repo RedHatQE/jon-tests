@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.clitest.tests;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,12 +49,12 @@ public class CliTest extends CliTestScript{
 		cliTasks = CliTasks.getCliTasks();
 		// upload JS file to remote host first
 		cliTasks.copyFile(jsFileLocation+jsFile, remoteFileLocation);
-		jsFileName = jsFile;
+		jsFileName = new File(jsFile).getName();
 		String consoleOutput = null;
 		if(cliArgs != null){
-			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFile+" "+cliArgs);
+			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName+" "+cliArgs);
 		}else{
-			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFile);
+			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName);
 		}
 		
 		if(!isVersionSet){
