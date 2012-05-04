@@ -81,7 +81,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     protected static HTTPClient httpDomainTwo;
     protected static HTTPClient httpDomainThree;
 
-
+    private RemoteLogAccess remoteLogAccess;
     public AS7PluginSahiTestScript() {
         super();
     }
@@ -132,8 +132,8 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
         try {
-			RemoteLogAccess rla = new RemoteLogAccess(System.getenv("HOST_USER"), System.getenv("HOST_NAME"), System.getenv("HOST_PASSWORD"), "rhq-agent/logs/agent.log");
-			rla.startRedirectingLog();
+        	remoteLogAccess = new RemoteLogAccess(System.getenv("HOST_USER"), System.getenv("HOST_NAME"), System.getenv("HOST_PASSWORD"), "rhq-agent/logs/agent.log");
+        	remoteLogAccess.startRedirectingLog();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -158,6 +158,14 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     	if (sshDomain!=null)
     		sshDomain.disconnect();
     	if (sshStandalone!=null)
-    		sshStandalone.disconnect();    	
+    		sshStandalone.disconnect();
+    	if (remoteLogAccess!=null) {
+    		try {
+				remoteLogAccess.stopRedirectingLog();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
     } 
 }
