@@ -6,7 +6,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="con" path="GROOVY_SUPPORT"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
-	<classpathentry kind="lib" path="/common/lib/cajo.jar"/>
-	<classpathentry kind="lib" path="/common/lib/ReportEngineClient.jar"/>
+	<classpathentry kind="lib" path="../common/lib/cajo.jar"/>
+	<classpathentry kind="lib" path="../common/lib/ReportEngineClient.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

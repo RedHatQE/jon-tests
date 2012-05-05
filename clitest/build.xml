@@ -34,6 +34,9 @@
 
     <target name="deps">
 		<ant inheritAll="false" antfile="${common.dir}/build.xml" />
+		<copy todir="${test.build.dir}">
+		    <fileset dir="${common.dir}/bin"/>
+		  </copy>
     </target>
 
 	<target name="compile" depends="deps">
