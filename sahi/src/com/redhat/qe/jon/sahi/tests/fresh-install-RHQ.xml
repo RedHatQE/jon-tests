@@ -1,4 +1,4 @@
-<suite name="Fresh Installation of JON">
+<suite name="Fresh Installation of RHQ">
 
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->
