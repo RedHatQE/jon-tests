@@ -16,10 +16,18 @@ var op = OperationManager.scheduleResourceOperation(
 					"Test view process list"
 );
 
+sleep(10000);
+
+Assert.assertNotNull(op);
 pretty.print(op);
 
-var histories = server.getOperationHistories();
+var jobId = op.getJobId();
+//
+var historyCriteria = new ResourceOperationHistoryCriteria();
+historyCriteria.fetchResults(true);
+historyCriteria.addFilterJobId(jobId);    
+var histories = OperationManager.findResourceOperationHistoriesByCriteria(historyCriteria);
 
-pretty.print(histories);
+Assert.assertTrue(histories.getTotalSize()>0, "Server resource has no histories");
 
-Assert.assertTrue(histories.size()>0, "Server resource has no histories")
+pretty.print(histories.get(0).getResults());
