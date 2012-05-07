@@ -22,7 +22,7 @@ Assert.assertNotNull(op);
 pretty.print(op);
 
 var jobId = op.getJobId();
-//
+
 var historyCriteria = new ResourceOperationHistoryCriteria();
 historyCriteria.fetchResults(true);
 historyCriteria.addFilterJobId(jobId);    
@@ -30,4 +30,7 @@ var histories = OperationManager.findResourceOperationHistoriesByCriteria(histor
 
 Assert.assertTrue(histories.getTotalSize()>0, "Server resource has no histories");
 
+Assert.assertNotNull(histories.get(0).getResults(), "Process list expected");
+
 pretty.print(histories.get(0).getResults());
+
