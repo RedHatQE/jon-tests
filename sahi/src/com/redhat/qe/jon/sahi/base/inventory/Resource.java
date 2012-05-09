@@ -191,7 +191,7 @@ public class Resource {
 			WebResource res = rc.getWebResource(url, "rhqadmin", "rhqadmin");		
 			String platformId = findPlatformId(rc, res);
 			if (platformId==null) {
-						return;
+				throw new RuntimeException("Unable to find platform ID for resource "+this.toString());
 			}
 			try {
 				this.id = findResourceId(rc, res, platformId);
