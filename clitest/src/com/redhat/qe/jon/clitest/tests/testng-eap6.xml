@@ -1,0 +1,55 @@
+<suite name="RHQ CLI JS/JAVA AS7 Test">
+
+  	<listeners>
+  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
+  	</listeners>
+
+
+<parameter name="cli.username"  value="rhqadmin"/>
+<parameter name="cli.password"  value="rhqadmin"/>
+<!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
+<parameter name="make.failure"  value="Login failed:,No such file or directory"/>
+
+<!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test
+<test name="Uninventory-Platforms">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="UninventoryResources.js"/>
+			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+-->
+<test name="ServerStartupPamaretersTest">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartupParametersTest">	
+			<parameter name="js.file"  value="ImportResourcers.js"/>
+			<parameter name="expected.result"  value="Login successful,Resources are impoerted successfully"/>
+			<methods>
+				<include name="serverStartupTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+
+<!--  This case SHOULD BE LAST ONE -->
+
+<test name="Uninventory-Platforms">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="UninventoryResources.js"/>
+			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+</suite>
