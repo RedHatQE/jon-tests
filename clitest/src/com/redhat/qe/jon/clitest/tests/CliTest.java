@@ -22,7 +22,7 @@ public class CliTest extends CliTestScript{
 	public static String rhqTarget;
 	private String cliUsername;
 	private String cliPassword;
-	private CliTasks cliTasks;
+	protected CliTasks cliTasks;
 	
 	private String jsFileName;
 	private static String remoteFileLocation = "/tmp/";
