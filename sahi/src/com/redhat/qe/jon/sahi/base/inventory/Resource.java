@@ -2,6 +2,7 @@ package com.redhat.qe.jon.sahi.base.inventory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -482,6 +483,7 @@ public class Resource {
      */
     public void assertExists(boolean shouldExist) {
     	log.fine("Asserting resource "+toString()+" exists");
+    	long time0 = Calendar.getInstance().getTimeInMillis();
     	int waitTime=Timing.TIME_30S;
     	int count=Timing.REPEAT;
     	
@@ -491,11 +493,14 @@ public class Resource {
     	boolean exists=false;
     	for (int i = 0;i<count;i++) {
     		exists=children.existsChild(resourceName);
+    		long time1 = (Calendar.getInstance().getTimeInMillis()-time0)/1000;
     		if (shouldExist && exists) {
+    			log.info("Resource appeared after "+time1+"s");
     			Assert.assertTrue(exists, "Resource ["+resourceName+"] exists.");
     			return;
     		}
     		if (!shouldExist && !exists) {
+    			log.info("Resource disappeared after "+time1+"s");
     			Assert.assertFalse(false, "Resource ["+resourceName+"] exists.");
     			return;
     		}
