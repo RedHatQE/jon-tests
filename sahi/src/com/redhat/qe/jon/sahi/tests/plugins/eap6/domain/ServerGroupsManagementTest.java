@@ -84,7 +84,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
     @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroup") 
     public void addServerGroupJVM() {
     	Inventory inventory = myServerGroup.inventory();
-        NewChildWizard newChild = inventory.childResources().newChild("JVM Definifion");
+        NewChildWizard newChild = inventory.childResources().newChild("JVM Definition");
         newChild.getEditor().setText("resourceName", myGroupDefaultJVM.getName());
         newChild.next();
         newChild.getEditor().checkRadio("baseDefinition"); 

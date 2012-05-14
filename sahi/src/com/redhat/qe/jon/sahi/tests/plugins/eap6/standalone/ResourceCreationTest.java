@@ -28,17 +28,13 @@ public class ResourceCreationTest extends AS7StandaloneTest {
     public void checkPersistenceOfChanges() {        
         server.inventory().connectionSettings();
 
-        ElementStub configuration_element = sahiTasks.textbox("config");
         ElementStub startScript_element = sahiTasks.textbox("startScript");
         
-        String old_configuration = configuration_element.getText();
         String old_startScript = startScript_element.getText();
 
         // set new values
-        log.info("old configuration = " + old_configuration + ", will try to set to \"adfadjfadsf.xml\"");
         log.info("old start script = " + old_startScript + ", will try to set to \"abccbcblsd.sh\"");
         try {
-            configuration_element.setValue("adfadjfadsf.xml");
             startScript_element.setValue("abccbcblsd.sh");
             sahiTasks.cell("Save").click();
         } finally {
@@ -46,22 +42,16 @@ public class ResourceCreationTest extends AS7StandaloneTest {
         	server.inventory().connectionSettings();
 
             // check that the changes are persistent
-            configuration_element = sahiTasks.textbox("config");
             startScript_element = sahiTasks.textbox("startScript");
-            String celm = configuration_element.getValue();
             String selm = startScript_element.getValue();
             
-            log.fine("text in \"Configuration\" after refreshing the page:" + celm);
             log.fine("text in \"Start script\" after refreshing the page:" + selm);
 
             // return the values back
-            ElementStub configuration_element2 = sahiTasks.textbox("config");
             ElementStub startScript_element2 = sahiTasks.textbox("startScript");
-            configuration_element2.setValue(old_configuration);
             startScript_element2.setValue(old_startScript);
             sahiTasks.cell("Save").click();
 
-            Assert.assertEquals(celm, "adfadjfadsf.xml", "Testing if changes to connection settings are persistent");
             Assert.assertEquals(selm, "abccbcblsd.sh", "Testing if changes to connection settings are persistent");
         }
     }

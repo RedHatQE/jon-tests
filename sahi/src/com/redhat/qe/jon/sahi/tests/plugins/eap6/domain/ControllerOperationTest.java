@@ -55,7 +55,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 		controller.assertAvailable(true, "EAP server is online when server was started");
 	}
 	
-	@Test(groups={"operation","blockedByBug-813409"})
+	@Test(groups={"operation","blockedByBug-813409"},dependsOnMethods="start")
 	public void restart() {
 		Date startupDate = sshClient.getStartupTime("domain/log/process-controller.log");
 		

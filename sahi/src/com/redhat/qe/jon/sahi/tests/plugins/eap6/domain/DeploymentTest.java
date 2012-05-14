@@ -103,7 +103,7 @@ public class DeploymentTest extends AS7DomainTest {
 		//serverTwo.child(war).assertExists(false);
 	}
 	
-	@Test(groups = {"deployment","blockedByBug-815965"}, dependsOnMethods="undeployFromServerGroup")
+	@Test(groups = {"deployment","blockedByBug-815965"}, dependsOnMethods="removeDomainDeployment")
 	public void createWARChildOnServerGroup() {
 		Inventory inventory = serverGroup.inventory();
 		ChildResources childResources = inventory.childResources();
