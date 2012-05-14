@@ -50,7 +50,12 @@ public class AS7SSHClient extends SSHClient {
 	 * stops server by killing it
 	 */
 	public void stop() {
-		run("kill -9 $(ps ax | grep "+asHome+" | grep java | awk '{print $1}')");
+		String pids = runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash | awk '{print $1}'").getStdout();
+		if (pids!=null && pids.length()>0) {
+			for (String pid : pids.split("\n")) {
+				runAndWait("kill -9 "+pid);
+			}
+		}
 	}
 	/**
 	 * check whether EAP server is running
