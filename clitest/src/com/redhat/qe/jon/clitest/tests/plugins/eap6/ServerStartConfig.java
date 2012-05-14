@@ -3,44 +3,50 @@ package com.redhat.qe.jon.clitest.tests.plugins.eap6;
 public class ServerStartConfig {
 
 	
-	private final String params;
+	private final String startCmd;
 	private final String expectedMessage;
 	private final ConfigFile[] configs;
-	private final String command;
+	private final String preStartCmd;
 	
-	public ServerStartConfig(String params, String expectedMessage) {
-		this(params,expectedMessage,null,null);
+	public ServerStartConfig(String startCmd, String expectedMessage) {
+		this(startCmd,expectedMessage,null,null);
 	}
 	
-	public ServerStartConfig(String params, String expectedMessage,String command) {
-		this(params,expectedMessage,command,null);
+	public ServerStartConfig(String startCmd, String expectedMessage,String preStartCmd) {
+		this(startCmd,expectedMessage,preStartCmd,null);
 	}
 	
-	public ServerStartConfig(String params, String expectedMessage,String command,ConfigFile configs[]) {
-		this.params = params;
+	public ServerStartConfig(String startCmd, String expectedMessage,String preStartCmd,ConfigFile configs[]) {
+		this.startCmd = startCmd;
 		this.expectedMessage = expectedMessage;
 		this.configs = configs;
-		this.command = command;
+		this.preStartCmd = preStartCmd;
 	}
 	/**
 	 * gets command to be executed before AS7 is started in working directory of AS7 HOME
 	 * @return
 	 */
-	public String getCommand() {
-		return command;
+	public String getPreStartCmd() {
+		return preStartCmd;
 	}
 	public ConfigFile[] getConfigs() {
 		return configs;
 	}
-	public String getParams() {
-		return params;
+	public String getStartCmd() {
+		return startCmd;
 	}
 	public String getExpectedMessage() {
 		return expectedMessage;
 	}
 	@Override
 	public String toString() {
-		return params;
+		String ret = "cmd:["+startCmd+"] expected:["+expectedMessage+"]";
+		if (configs!=null) {
+			for (ConfigFile cf : configs) {
+				ret+=" config:["+cf.toString()+"]";
+			}
+		}
+		return ret;
 	}
 	
 	public static class ConfigFile {
@@ -65,7 +71,7 @@ public class ServerStartConfig {
 		}
 		@Override
 		public String toString() {
-			return "file:"+remotePath+" param:"+startupParam;
+			return "file:["+remotePath+"] param:["+startupParam+"]";
 		}
 	}
 }

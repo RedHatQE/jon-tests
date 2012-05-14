@@ -9,9 +9,11 @@ import com.redhat.qe.jon.clitest.tests.CliTest;
 
 public class AS7CliTest extends CliTest {
 
-	protected String agentName;
-	protected String standalone1Home;
-	protected String standalone1HostName;
+	protected static String agentName;
+	protected static String standalone1Home;
+	protected static String standalone1HostName;
+	protected static String domainHome;
+	protected static String domainHostName;
 
 	@BeforeSuite
 	public void loadProperties() {
@@ -32,6 +34,8 @@ public class AS7CliTest extends CliTest {
 		agentName = System.getProperty("agent.name");
 		standalone1Home = System.getProperty("as7.standalone1.home");
 		standalone1HostName = System.getProperty("as7.standalone1.hostname");
+		domainHome = System.getProperty("as7.domain.home");
+		domainHostName = System.getProperty("as7.domain.hostname");
 	}
 	public void waitFor(int ms) {
 		waitFor(ms, "Waiting");

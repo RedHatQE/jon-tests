@@ -23,12 +23,22 @@
 		</class>
 	</classes>
 </test>
+
+
+
 -->
-<test name="ServerStartupPamaretersTest">
+<test name="Standalone_Discovery_StartCommand_Parameters">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartupParametersTest">	
-			<parameter name="js.file"  value="ImportResourcers.js"/>
-			<parameter name="expected.result"  value="Login successful,Resources are impoerted successfully"/>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.standalone.DiscoveryTest">	
+			<methods>
+				<include name="serverStartupTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+<test name="Domain_Discovery_StartCommand_Parameters">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.domain.DiscoveryTest">	
 			<methods>
 				<include name="serverStartupTest"></include>		
 			</methods>

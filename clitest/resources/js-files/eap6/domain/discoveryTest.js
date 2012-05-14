@@ -7,14 +7,14 @@
  * Scenario:
  * this script accepts 1 required named param
  *  * agent - name of agent/platform
- *  it is assumed there is AS7 Standalone server in Discovery Queue when test runs
+ *  it is assumed there is AS7 Domain server in Discovery Queue when test runs
  * 1 - all platforms & resources are uninventorized  
  * 2 - imports platform/agent (input param)
- * 3 - imports AS7 standalone server on new platform
+ * 3 - imports AS7 Domain server on new platform
  * 4 - prints it's plugin configuration (Connection Settings)
  */ 
 
-var JBossTypeName = "JBossAS7 Standalone Server";
+var JBossTypeName = "JBossAS7 Host Controller";
 
 // bind INPUT parameters
 var platform = agent;
@@ -50,6 +50,7 @@ function checkEAPConfiguration(resources){
 		pcv("homeDir");
 		pcv("baseDir");
 		pcv("configDir");
+		pcv("hostConfigFile");
 		pcv("hostXmlFileName");
 		pcv("hostname");
 		pcv("port");
