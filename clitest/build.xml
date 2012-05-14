@@ -60,6 +60,7 @@
         	<xmlfileset dir="src/com/redhat/qe/jon/clitest/tests" includes="${testng.suite}"/>
 			<jvmarg value="-Denv=${env}"/>
 			<jvmarg value="${remote.debugging.jvmarg}"/>			
+			<sysproperty key="eap6plugin.configfile" value="${eap6plugin.configfile}" />
 		</testng>
 	</target>
 
