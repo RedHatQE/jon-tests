@@ -98,6 +98,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
     public void configureServerGroupJVM() {
     	Configuration configuration = myGroupDefaultJVM.configuration();
         CurrentConfig current = configuration.current();
+        current.getEditor().checkBox(3, false);
         current.getEditor().setText("heap-size", "1024m");
         current.save();
         configuration.history().failOnFailure();
@@ -112,16 +113,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
     	myServerGroup.assertExists(false);
     }
     
-
-    
-    
-    
-
-    
-    
-    
-     
-    @Test(alwaysRun=true,groups={"serverGroupsManagement"},dependsOnMethods={"configureServerGroupJVM","assignSocketBindingGroupToServerGroup","changeProfileToServerGroup"})
+    @Test(alwaysRun=true,groups={"serverGroupsManagement"},dependsOnMethods={"removeServerGroupJVM","assignSocketBindingGroupToServerGroup","changeProfileToServerGroup"})
     public void removeServerGroup() {
     	myServerGroup.delete();
     	mgmtClient.assertResourcePresence("", "server-group", myServerGroup.getName(), false);
