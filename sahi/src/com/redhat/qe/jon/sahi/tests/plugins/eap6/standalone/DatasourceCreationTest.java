@@ -10,9 +10,13 @@ import com.redhat.qe.jon.sahi.base.inventory.Configuration;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
+import com.redhat.qe.jon.sahi.base.inventory.Monitoring;
+import com.redhat.qe.jon.sahi.base.inventory.Monitoring.Schedules;
+import com.redhat.qe.jon.sahi.base.inventory.Monitoring.Tables;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 
 /**
  * @author Libor Zoubek (lzoubek@redhat.com)
@@ -73,7 +77,12 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		assertAttributeValue(nonXA_def, "max-pool-size", "666");
 	}
 	
-	@Test(groups = "datasource", dependsOnMethods="addDatasource")
+	@Test(groups="datasource",dependsOnMethods="configureDatasource")
+	public void checkMaxPoolSizeMetric() {
+		checkMaxPoolSizeMetric(nonXA_def);		
+	}
+	
+	@Test(groups = "datasource", dependsOnMethods="checkMaxPoolSizeMetric")
 	public void disableDatasource() {
 		disableDS(nonXA_def,true);
 	}
@@ -87,11 +96,9 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	@Test(groups = "datasource", dependsOnMethods="enableDatasource")
 	public void enableEnabledDatasource() {
 		enableDS(nonXA_def,false);
-	}
+	}	
 	
-	
-	
-	@Test(groups = "datasource", dependsOnMethods={"addDatasource","enableEnabledDatasource"})
+	@Test(groups = "datasource", dependsOnMethods={"addDatasource","enableEnabledDatasource","checkMaxPoolSizeMetric"})
 	public void uninventoryDatasource() {
 		uninventoryDS(nonXA_def);
 	}
@@ -140,8 +147,13 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		configuration.history().failOnFailure();
 		assertAttributeValue(XA_def, "max-pool-size", "666");
 	}
+	
+	@Test(groups="XAdatasource",dependsOnMethods="configureXADatasource")
+	public void checkMaxPoolSizeMetricXA() {
+		checkMaxPoolSizeMetric(XA_def);		
+	}
 
-	@Test(groups = "XAdatasource", dependsOnMethods="addXADatasource")
+	@Test(groups = "XAdatasource", dependsOnMethods="checkMaxPoolSizeMetricXA")
 	public void disableXADatasource() {
 		disableDS(XA_def,true);
 	}
@@ -155,7 +167,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		enableDS(XA_def,false);
 	}
 		
-	@Test(groups = "XAdatasource",dependsOnMethods={"addXADatasource","enableEnabledXADatasource"})
+	@Test(groups = "XAdatasource",dependsOnMethods={"addXADatasource","enableEnabledXADatasource","checkMaxPoolSizeMetricXA"})
 	public void uninventoryXADatasource() {
 		uninventoryDS(XA_def);
 	}
@@ -165,8 +177,18 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	public void deleteXADatasource() {		
 		deleteDS(XA_def);
 	}
+	
+	private void checkMaxPoolSizeMetric(String[] ds_def) {
+		Monitoring monitoring = datasources.child(ds_def[0]).monitoring();
+		Schedules schedules = monitoring.schedules();
+		schedules.setInterval("Max Pool Size setting", "2");
+		log.fine("Waiting "+Timing.toString(Timing.TIME_1M*3)+" for metric to be collected");
+		sahiTasks.waitFor(Timing.TIME_1M*3);
+		Tables tables = monitoring.tables();
+		Assert.assertTrue(tables.containsMetricRowValue("Max Pool Size setting", "666"), "Max Pool Size metric was collected according to max-pool-size configuration");		
+	}
+	
 	private void disableDS(String[] ds_def,boolean expectSuccess) {
-		mgmtClient.reload();
 		Operations operations = datasources.child(ds_def[0]).operations();
 		Operation add = operations.newOperation("Disable");
 		add.schedule();
@@ -177,7 +199,6 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	}
 	
 	private void enableDS(String[] ds_def, boolean expectSuccess) {
-		mgmtClient.reload();
 		Operations operations = datasources.child(ds_def[0]).operations();
 		Operation add = operations.newOperation("Enable");
 		add.schedule();

@@ -110,7 +110,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
     public void removeServerGroupJVM() {
     	myGroupDefaultJVM.delete();
     	mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", myGroupDefaultJVM.getName(), false);
-    	myServerGroup.assertExists(false);
+    	myGroupDefaultJVM.assertExists(false);
     }
     
     @Test(alwaysRun=true,groups={"serverGroupsManagement"},dependsOnMethods={"removeServerGroupJVM","assignSocketBindingGroupToServerGroup","changeProfileToServerGroup"})
