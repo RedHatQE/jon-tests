@@ -113,6 +113,9 @@ public class AS7PluginSahiTasks {
 		NewChildWizard child = childResources.newChild("JMS Queue");		
 		child.getEditor().setText("resourceName", queue.getName());		
 		child.next();
+		child.getEditor().checkRadio("paused[0]");
+		child.getEditor().setText("queue-address", queue.getName());
+		child.getEditor().checkRadio("temporary[1]");
 		ConfigEntry ce = child.getEditor().newEntry(0);
 		ce.setField("entry", queue.getName());
 		ce.OK();
