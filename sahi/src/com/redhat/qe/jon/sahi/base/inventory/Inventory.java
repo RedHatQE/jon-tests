@@ -245,6 +245,17 @@ public class Inventory extends ResourceTab{
 			return new NewChildWizard(tasks);
 		}
 		/**
+		 * creates new child resource of given type (ie. Deployment) and returns helper object
+		 * @param type
+		 * @return
+		 */
+		public NewChildWizard importResource(String type) {
+			tasks.xy(tasks.cell("Import"),3,3).click();
+			tasks.waitFor(Timing.WAIT_TIME);
+			tasks.xy(tasks.cell(type).in(tasks.table("menuTable")),3,3).click();
+			return new NewChildWizard(tasks);
+		}
+		/**
 		 * removes child by given name from repository
 		 * @param name
 		 */

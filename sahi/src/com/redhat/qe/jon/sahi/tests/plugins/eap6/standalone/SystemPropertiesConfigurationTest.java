@@ -15,7 +15,7 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
 	private static final String addedPropValue="value";
 	private static final String editedPropValue="value2";
 	
-	@BeforeClass(groups="configuration")
+	@BeforeClass()
     protected void setupEapPlugin() {               
         as7SahiTasks.importResource(server);
     }
@@ -31,12 +31,12 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
         config.history().failOnFailure();
 	}
 	
-	@Test(groups={"configuration"})
+	@Test()
     public void addPropertyTest() {
     	addSystemProperty(server);
         Assert.assertTrue(readPropertyValue(addedPropName).equals(addedPropValue),"System property has correct value");
     }
-	@Test(groups={"configuration","blockedByBug-708332"},dependsOnMethods="addPropertyTest")
+	@Test(groups={"blockedByBug-708332"},dependsOnMethods="addPropertyTest")
 	public void editPropertyTest() {
 		Configuration config = server.configuration();
     	CurrentConfig current = config.current();
@@ -47,7 +47,7 @@ public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
         config.history().failOnFailure();
         Assert.assertTrue(readPropertyValue(addedPropName).equals(editedPropValue),"System property has correct value");
 	}
-	@Test(groups={"configuration"},dependsOnMethods="editPropertyTest")
+	@Test(dependsOnMethods="editPropertyTest")
 	public void deletePropertyTest() {
 		Configuration config = server.configuration();
     	CurrentConfig current = config.current();

@@ -10,20 +10,20 @@ public class JMSDestinationsTest extends AS7StandaloneTest {
 	private Resource hornetq; 
 	private Resource queue;
 	private Resource topic;
-	@BeforeClass(groups = "setup")
+	@BeforeClass()
 	protected void setupAS7Plugin() {
 		as7SahiTasks.importResource(server);
         hornetq = server.child("messaging").child("default");
         queue = hornetq.child("test-queue");
         topic = hornetq.child("test-topic");
     }
-	@Test(groups="jms")	
+	@Test()	
 	public void addQueue() {
 		as7SahiTasks.addJMSQueue(hornetq, queue);
 		mgmtClient.assertResourcePresence("/subsystem=messaging/hornetq-server=default", "jms-queue", queue.getName(), true);		
 		queue.assertExists(true);
 	}
-	@Test(groups="jms",dependsOnMethods="addQueue")
+	@Test(dependsOnMethods="addQueue")
 	public void removeQueue() 
 	{
 		queue.delete();
@@ -31,13 +31,13 @@ public class JMSDestinationsTest extends AS7StandaloneTest {
 		queue.assertExists(false);
 	}
 	
-	@Test(groups="jms")	
+	@Test()	
 	public void addTopic() {
 		as7SahiTasks.addJMSTopic(hornetq, topic);
 		mgmtClient.assertResourcePresence("/subsystem=messaging/hornetq-server=default", "jms-topic", topic.getName(), true);		
 		topic.assertExists(true);
 	}
-	@Test(groups="jms",dependsOnMethods="addTopic")
+	@Test(dependsOnMethods="addTopic")
 	public void removeTopic() 
 	{
 		topic.delete();

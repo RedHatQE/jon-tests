@@ -19,13 +19,13 @@ public class DeploymentTest extends AS7StandaloneTest {
 
 	private static final String war = "hello.war";
 	private Resource warResource;
-	@BeforeClass(groups = "deployment")
+	@BeforeClass()
     protected void setupAS7Plugin() {
 		as7SahiTasks.importResource(server);
 		warResource = server.child(war);
     }
 
-	@Test(groups = "deployment")
+	@Test()
 	public void deployWAR() {
 		if (mgmtClient.existsResource("", "deployment", war)) {
 			removeDeployment(war);
@@ -64,7 +64,7 @@ public class DeploymentTest extends AS7StandaloneTest {
 		httpStandalone.assertDeploymentContent(war,"Modified","Check whether modified version of WAR has been deployed");
 	}
 
-	@Test(groups = "deployment", dependsOnMethods="deployWAR")
+	@Test(dependsOnMethods="deployWAR")
 	public void undeployWAR() {
 		warResource.delete();
 		assertDeploymentDoesNotExist(war);
