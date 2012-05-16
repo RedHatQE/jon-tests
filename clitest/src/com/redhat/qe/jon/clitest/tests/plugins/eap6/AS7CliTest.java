@@ -2,10 +2,15 @@ package com.redhat.qe.jon.clitest.tests.plugins.eap6;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import org.testng.annotations.BeforeSuite;
 
+import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartConfig.ConfigFile;
+import com.redhat.qe.jon.common.util.AS7SSHClient;
 
 public class AS7CliTest extends CliTest {
 
@@ -14,7 +19,7 @@ public class AS7CliTest extends CliTest {
 	protected static String standalone1HostName;
 	protected static String domainHome;
 	protected static String domainHostName;
-
+	protected AS7SSHClient sshClient;
 	@BeforeSuite
 	public void loadProperties() {
 		try {
@@ -51,5 +56,23 @@ public class AS7CliTest extends CliTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	protected void serverStartup(ServerStartConfig start, String jsFile) throws IOException, CliTasksException {
+		String params = start.getStartCmd();
+		if (start.getConfigs()!=null) {
+			for (ConfigFile cf : start.getConfigs()) {
+				cliTasks.copyFile(this.getClass().getResource(cf.getLocalPath()).getFile(), cf.getRemotePath());
+				params+=" "+cf.getStartupParam();
+			}
+		}
+		if (start.getPreStartCmd()!=null) {
+			sshClient.runAndWait("cd "+sshClient.getAsHome()+" && "+start.getPreStartCmd());
+		}
+		sshClient.restart(params);
+		waitFor(30*1000,"Waiting until EAP starts up");
+		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
+		sshClient.runAndWait("netstat -pltn | grep java");
+		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, "--args-style=named agent="+agentName, start.getExpectedMessage(), null);
 	}
 }

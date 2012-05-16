@@ -9,11 +9,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartConfig;
-import com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartConfig.ConfigFile;
 import com.redhat.qe.jon.common.util.AS7SSHClient;
 
 /**
@@ -24,8 +22,6 @@ import com.redhat.qe.jon.common.util.AS7SSHClient;
  */
 public class DiscoveryTest extends AS7CliTest {
 
-	
-	AS7SSHClient sshClient;
 
 	@BeforeClass()
 	public void beforeClass() {
@@ -44,6 +40,9 @@ public class DiscoveryTest extends AS7CliTest {
 				"cp domain/configuration/host.xml domain/configuration/host2.xml")
 		);
 		
+		configs.add(new ServerStartConfig("domain.sh -bmanagement localhost", "hostname=localhost"));
+		configs.add(new ServerStartConfig("domain.sh -Djboss.management.http.port=19998", "port=19998"));
+		
 		Object[][] output = new Object[configs.size()][];
 		for (int i=0;i<configs.size();i++) {
 			output[i] = new Object[] {configs.get(i)};
@@ -56,21 +55,7 @@ public class DiscoveryTest extends AS7CliTest {
 		description="This test starts up AS7 in Domain mode with particular configuration and runs eap6/domain/discoveryTest.js to detect and import it"
 	)
 	public void serverStartupTest(ServerStartConfig start) throws IOException, CliTasksException {
-		String params = start.getStartCmd();
-		if (start.getConfigs()!=null) {
-			for (ConfigFile cf : start.getConfigs()) {
-				cliTasks.copyFile(this.getClass().getResource(cf.getLocalPath()).getFile(), cf.getRemotePath());
-				params+=" "+cf.getStartupParam();
-			}
-		}
-		if (start.getPreStartCmd()!=null) {
-			sshClient.runAndWait("cd "+sshClient.getAsHome()+" && "+start.getPreStartCmd());
-		}
-		sshClient.restart(params);
-		waitFor(30*1000,"Waiting until EAP starts up");
-		Assert.assertTrue(sshClient.isRunning(), "Server process is running");
-		sshClient.runAndWait("netstat -pltn | grep java");
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/domain/discoveryTest.js", "--args-style=named agent="+agentName, start.getExpectedMessage(), null);
+		serverStartup(start,"eap6/domain/discoveryTest.js");
 	}
 	@AfterClass
 	public void teardown() {
