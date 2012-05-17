@@ -80,8 +80,8 @@ getBuildVersion(){
 cd $1
 unzip -o *.jar META-INF/MANIFEST.MF
 dos2unix META-INF/MANIFEST.MF
-TEMP_BUILD=`grep 'Specification-Version' META-INF/MANIFEST.MF | awk '{print $2}'`
-TEMP_VERSION=`grep 'Build-Number' META-INF/MANIFEST.MF | awk '{print $2}'`
+TEMP_BUILD=`grep 'Specification-Version' META-INF/MANIFEST.MF | awk '{print $2}'| tr -d ' '`
+TEMP_VERSION=`grep 'Build-Number' META-INF/MANIFEST.MF | awk '{print $2}'| tr -d ' '`
 TEMP_BUILD_VERSION="$TEMP_BUILD[$TEMP_VERSION]"
 cd -
 }
