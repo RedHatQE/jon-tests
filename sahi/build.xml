@@ -136,7 +136,7 @@
 		<delete dir="${test.output.dir}"/>
 	</target>
 
-	<target name="javadoc">
+	<target name="javadoc" depends="compile">
 		<javadoc
 		   classpathref="tests.cp"
       	 	    destdir="javadoc"
