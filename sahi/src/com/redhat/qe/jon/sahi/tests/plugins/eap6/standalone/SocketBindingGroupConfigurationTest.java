@@ -8,7 +8,11 @@ import com.redhat.qe.jon.sahi.base.inventory.Configuration;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
-
+/**
+ * tests socket-binding-groups (add/edit/remove port)
+ * @author lzoubek
+ *
+ */
 public class SocketBindingGroupConfigurationTest extends AS7StandaloneTest {
 
 	private Resource sbGroup;

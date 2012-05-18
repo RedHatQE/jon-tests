@@ -12,7 +12,11 @@ import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
-
+/**
+ * this class covers Operations tab on AS7 resource
+ * @author lzoubek
+ *
+ */
 public class OperationTest extends AS7StandaloneTest {
 	
 

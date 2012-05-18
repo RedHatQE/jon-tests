@@ -8,7 +8,11 @@ import com.redhat.qe.jon.sahi.base.inventory.Configuration;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
-
+/**
+ * system properties of AS7 resource - add/edit/delete 
+ * @author lzoubek
+ *
+ */
 public class SystemPropertiesConfigurationTest extends AS7StandaloneTest {
 	
 	private static final String addedPropName="prop";

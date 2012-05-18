@@ -11,7 +11,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
 /**
- *
+ * tests whether some predefined metrics exist on AS7 resource, also adds/confiures/removes deployment scanner
  * @author Jan Martiska (jmartisk@redhat.com)
  * @see TCMS test case 96428, 96429
  * @since 7 September 2011

@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
- *
+ * tests monitoring on AS7 server resrouce (enabling/disabling metric, setting interval)
  * @author jmartisk, lzoubek
  */
 public class MonitoringTest extends AS7StandaloneTest {

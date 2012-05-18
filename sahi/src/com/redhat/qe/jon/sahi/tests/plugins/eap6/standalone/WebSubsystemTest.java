@@ -14,7 +14,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
 /**
- * 
+ * create/configure/remove vhosts and connectors
  * @author lzoubek
  *
  */

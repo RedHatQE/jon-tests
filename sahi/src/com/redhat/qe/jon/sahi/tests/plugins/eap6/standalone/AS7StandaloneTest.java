@@ -10,7 +10,11 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTestScript;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 
-
+/**
+ * base class for all AS7 Standalone tests
+ * @author lzoubek
+ *
+ */
 public class AS7StandaloneTest extends AS7PluginSahiTestScript {
 
 	 protected AS7SSHClient sshClient;

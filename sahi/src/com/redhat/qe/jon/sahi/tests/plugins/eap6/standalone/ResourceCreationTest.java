@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
- *
+ * check persiscence of connection settings on AS7 resource
  * @author jmartisk@redhat.com
  * @see TCMS testcase 96430
  */

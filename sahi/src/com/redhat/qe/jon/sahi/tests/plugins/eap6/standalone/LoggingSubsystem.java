@@ -11,7 +11,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 /**
- * tests for logging subsystem
+ * tests for logging subsystem (add/remove/configure logger handlers and loggers, configure logging subsystem)
  * @author lzoubek&#64;redhat.com
  *
  */

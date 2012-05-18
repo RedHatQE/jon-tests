@@ -4,7 +4,11 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
-
+/**
+ * JMS Subsystem - adding/configuring/removing JMS Topic and JMS Queue
+ * @author lzoubek
+ *
+ */
 public class JMSDestinationsTest extends AS7StandaloneTest {
 	
 	private Resource hornetq; 

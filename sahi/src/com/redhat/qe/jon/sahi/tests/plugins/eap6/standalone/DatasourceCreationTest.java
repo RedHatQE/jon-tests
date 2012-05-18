@@ -19,6 +19,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
 /**
+ * tests for creating, configuring, enabling, disabling, checking metric, uninventorying and deleting datasources
  * @author Libor Zoubek (lzoubek@redhat.com)
  * @since 25.11.2011
  * @see TCMS cases 108958 108951 108957 108953

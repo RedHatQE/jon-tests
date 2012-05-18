@@ -8,7 +8,11 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
-
+/**
+ * Unimports autodetected AS7 and imports it manually 
+ * @author lzoubek
+ *
+ */
 public class ManualImportTest extends AS7StandaloneTest {
 	
 	@BeforeTest()
@@ -42,5 +46,6 @@ public class ManualImportTest extends AS7StandaloneTest {
 		// restore original as7.standalone1.name system property
 		System.setProperty("as7.standalone1.name",System.getProperty("as7.standalone1.name.original"));
 		log.info("System property : [as7.standalone1.name] has now value ["+System.getProperty("as7.standalone1.name")+"]");
+		server.uninventory(false);
 	}
 }
