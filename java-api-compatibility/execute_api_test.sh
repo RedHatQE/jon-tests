@@ -105,6 +105,6 @@ NEW_BUILD_VERSION=$TEMP_BUILD_VERSION
 echo "New Build Version: $NEW_BUILD_VERSION"
 
 #Execute JAVA API Source compatibility report
-./japi-compliance-checker -l "$LIB_NAME" -old $REF_BASE_LOCATION/version.xml -new $NEW_BASE_LOCATION/version.xml -source -v1 $REF_BUILD_VERSION -v2 $NEW_BUILD_VERSION -report-path report/$REPORT_NAME
+./japi-compliance-checker -l "$LIB_NAME" -old $REF_BASE_LOCATION/version.xml -new $NEW_BASE_LOCATION/version.xml -source -v1 $REF_BUILD_VERSION -v2 $NEW_BUILD_VERSION -report-path report/$REPORT_NAME -classes-list classList.log 
 
-#lastCommandStatus "japi-compliance-checker"
+lastCommandStatus "japi-compliance-checker"
