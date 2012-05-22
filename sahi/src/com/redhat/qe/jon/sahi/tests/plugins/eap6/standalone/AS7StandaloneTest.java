@@ -2,7 +2,6 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone;
 
 import org.testng.annotations.BeforeClass;
 
-
 import com.redhat.qe.jon.common.util.AS7DMRClient;
 import com.redhat.qe.jon.common.util.AS7SSHClient;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
@@ -36,5 +35,8 @@ public class AS7StandaloneTest extends AS7PluginSahiTestScript {
 		 httpClient = httpStandalone;
 		 server = new Resource(sahiTasks, System.getProperty("agent.name"), System.getProperty("as7.standalone1.name"));
 		 server2 = new Resource(sahiTasks, System.getProperty("agent.name"), System.getProperty("as7.standalone2.name"));
+		 as7SahiTasks.installRHQUser(server,sshClient,mgmtClient,"/standalone/configuration/mgmt-users.properties");
 	 }
+	 
+
 }

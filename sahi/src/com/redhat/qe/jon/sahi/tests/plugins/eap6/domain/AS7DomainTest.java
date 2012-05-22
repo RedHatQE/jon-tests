@@ -47,6 +47,6 @@ public class AS7DomainTest extends AS7PluginSahiTestScript {
 		 serverOne = controller.child(System.getProperty("as7.domain.host.server-one.name"));
 		 serverTwo = controller.child(System.getProperty("as7.domain.host.server-two.name"));
 		 serverThree = controller.child(System.getProperty("as7.domain.host.server-three.name"));
-		 
+		 as7SahiTasks.installRHQUser(controller,sshClient,mgmtClient,"/domain/configuration/mgmt-users.properties");		 
 	 }
 }

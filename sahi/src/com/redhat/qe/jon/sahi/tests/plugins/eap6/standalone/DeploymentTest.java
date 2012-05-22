@@ -19,11 +19,13 @@ public class DeploymentTest extends AS7StandaloneTest {
 	private static final long waitTime = Timing.WAIT_TIME;
 
 	private static final String war = "hello.war";
+	private Resource wsResource;
 	private Resource warResource;
 	@BeforeClass()
     protected void setupAS7Plugin() {
 		as7SahiTasks.importResource(server);
 		warResource = server.child(war);
+		wsResource = server.child("ws.war");
     }
 
 	@Test()
@@ -46,6 +48,21 @@ public class DeploymentTest extends AS7StandaloneTest {
 		assertDeploymentExists(war);
 		warResource.assertExists(true);
 		httpClient.assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
+	}
+	
+	@Test
+	public void deployWebService() {
+		Inventory inventory = server.inventory();
+		ChildResources childResources = inventory.childResources();
+		NewChildWizard newChild = childResources.newChild("Deployment");
+		newChild.next();
+		newChild.upload("deploy/"+wsResource.getName());
+		//wait for upload to finish
+		sahiTasks.waitFor(2*waitTime);
+		newChild.next();
+		newChild.finish();
+		assertDeploymentExists(war);
+		wsResource.assertExists(true);
 	}
 	
 	// TODO re-deployment must be done using Content subsystem

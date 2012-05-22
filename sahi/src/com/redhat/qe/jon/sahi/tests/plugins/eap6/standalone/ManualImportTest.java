@@ -36,6 +36,10 @@ public class ManualImportTest extends AS7StandaloneTest {
 		NewChildWizard child = inventory.childResources().importResource("JBossAS7 Standalone Server");
 		child.getEditor().setText("hostname", "localhost");
 		child.getEditor().setText("port", "9990");
+		child.getEditor().checkBox(0, false);
+		child.getEditor().setText("user", "rhqadmin");
+		child.getEditor().checkBox(0, false);
+		child.getEditor().setText("password", "rhqadmin");
 		child.finish();
 		server.assertExists(true);
 		server.assertAvailable(true, "Manually imported server MUST be available");

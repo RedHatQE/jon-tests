@@ -1,11 +1,16 @@
 package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.jboss.sasl.util.UsernamePasswordHashUtil;
+
 import net.sf.sahi.client.ElementStub;
 
+import com.redhat.qe.jon.common.util.AS7DMRClient;
+import com.redhat.qe.jon.common.util.AS7SSHClient;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
@@ -22,15 +27,6 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQu
  *        How to add new testcases: Use this class instead of SahiTasks. Instantiating this class will also load eap6plugin.properties file
  */
 public class AS7PluginSahiTasks {
-
-    public enum Navigate {
-        AUTODISCOVERY_QUEUE,
-        AGENT_INVENTORY,
-        AGENT_MONITORING,
-        AS_INVENTORY,
-        RESOURCE_MONITORING,
-        AS_SUMMARY
-    }
 
     protected static final Logger log = Logger.getLogger(AS7PluginSahiTasks.class.getName());
     protected final SahiTasks tasks;
@@ -137,8 +133,52 @@ public class AS7PluginSahiTasks {
 		ce.setField("entry", topic.getName());
 		ce.OK();
 		child.finish();
-		inventory.childHistory().assertLastResourceChange(true);
-		
+		inventory.childHistory().assertLastResourceChange(true);	
 	}
-
+	/**
+	 * installs default RHQ user for given server
+	 * if 'server' param exists in RHQ UI, 10min waiting is started  
+	 * @param server JON resource
+	 * @param sshClient AS7SSHClient that can work with 'server' resource
+	 * @param mgmtClient Management client that can manage 'server' resource
+	 * @param credFile relative path within {@link AS7SSHClient#getAsHome()} to save user name + hashed pass
+	 */
+	 public void installRHQUser(Resource server, AS7SSHClient sshClient, AS7DMRClient mgmtClient, String credFile) {	
+		String user = "rhqadmin";
+		String checkCmd = "grep '"+user+"' "+sshClient.getAsHome() + credFile;
+		if (sshClient.runAndWait(checkCmd).getStdout().contains(user)) {
+			log.info("rhqadmin already exists");
+			return;
+		}
+		String pass = "rhqadmin";
+		String hash = null;
+		// we also add default user admin:admin
+		String defaultUser = "admin";
+		String defaultHash = null;
+		// let's generate hash for pass and store it into mgmt-users.properties
+		try {
+			hash = new UsernamePasswordHashUtil().generateHashedHexURP(user,"ManagementRealm", pass.toCharArray());
+			defaultHash = new UsernamePasswordHashUtil().generateHashedHexURP(defaultUser,"ManagementRealm", "admin".toCharArray());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(
+					"Unable to generate password hash to setup EAP", e);
+		}
+		
+		StringBuilder command = new StringBuilder("echo " + defaultUser + "=" + defaultHash + " > ");
+		command.append(sshClient.getAsHome() + credFile);
+		sshClient.runAndWait(command.toString());
+		log.info("Created default user:pass "+defaultUser+":admin");
+		
+		command = new StringBuilder("echo " + user + "=" + hash + " >> ");
+		command.append(sshClient.getAsHome() + credFile);
+		sshClient.runAndWait(command.toString());
+		log.info("Created testing user:pass "+user+":"+pass);	
+			
+		mgmtClient.setUsername("rhqadmin");
+		mgmtClient.setPassword("rhqadmin");
+		if (server.exists()) {
+			log.fine("Waiting "+Timing.toString(10*Timing.TIME_1M)+" for server child resources to get discovered...");
+			tasks.waitFor(10*Timing.TIME_1M);
+		}
+	}
 }
