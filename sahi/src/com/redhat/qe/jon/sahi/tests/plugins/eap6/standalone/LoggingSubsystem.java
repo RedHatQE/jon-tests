@@ -87,7 +87,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		CurrentConfig current = configuration.current();
 		current.getEditor().setText("queue-length", "2048");
 		ConfigEntry ce = current.newEntry(0);
-		ce.setField("subhandlers", defaultConsoleHandler.getName());
+		ce.setField("subhandler", defaultConsoleHandler.getName());
 		ce.OK();
 		current.save();
 		configuration.history().failOnFailure();
@@ -205,7 +205,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		op.getEditor().setText("resourceName", logger.getName());
 		op.next();		
 		ConfigEntry ce = op.getEditor().newEntry(0);
-		ce.setField("handlers", defaultConsoleHandler.getName());
+		ce.setField("handler", defaultConsoleHandler.getName());
 		ce.OK();
 		op.finish();
 		inventory.childHistory().assertLastResourceChange(true);

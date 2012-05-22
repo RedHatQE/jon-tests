@@ -92,7 +92,7 @@ public class ControllerOperationTest extends AS7DomainTest {
 	@Test(groups={"operation","blockedByBug-789292"})
 	public void installRHQUser() {
 		Operations operations = controller.operations();
-		Operation op = operations.newOperation("Install RHQ user");	
+		Operation op = operations.newOperation("Install a management user");	
 		String user = "u"+new Date().getTime();
 		op.getEditor().setText("user", user);
 		op.schedule();

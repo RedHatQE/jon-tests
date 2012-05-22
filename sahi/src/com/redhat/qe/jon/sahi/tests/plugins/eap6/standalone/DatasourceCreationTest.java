@@ -200,6 +200,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	}
 	
 	private void enableDS(String[] ds_def, boolean expectSuccess) {
+		mgmtClient.reload();
 		Operations operations = datasources.child(ds_def[0]).operations();
 		Operation add = operations.newOperation("Enable");
 		add.schedule();
