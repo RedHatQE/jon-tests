@@ -71,6 +71,11 @@
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.NamingTest"/>                
         </classes>
     </test>
+    <test name="Standalone_InfinispanSubsystem">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.InfinispanTest"/>                
+        </classes>
+    </test>
      <test name="Standalone_Web_Subsystem">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.WebSubsystemTest"/>                
