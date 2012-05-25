@@ -63,6 +63,8 @@ public class DeploymentTest extends AS7StandaloneTest {
 		newChild.finish();
 		assertDeploymentExists(war);
 		wsResource.assertExists(true);
+		wsResource.child("webservices").assertExists(true);
+		wsResource.child("webservices").child("ws%3AHelloWorld").assertExists(true);
 	}
 	
 	// TODO re-deployment must be done using Content subsystem

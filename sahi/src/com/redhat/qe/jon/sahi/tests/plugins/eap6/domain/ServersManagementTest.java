@@ -22,11 +22,12 @@ public class ServersManagementTest extends AS7DomainTest {
 	private static final String managed_server_portoffset="300";
 	
 	private Resource managedServer;
-    
+    private Resource managedServerJVM;
 	@BeforeClass(groups = "serversManagement")
 	protected void setupAS7Plugin() {
 		as7SahiTasks.importResource(controller);
 		managedServer = controller.child(managed_server_name);
+		managedServerJVM = managedServer.child("jvm");
     }
 	
 	//@Test(groups = {"serversManagement"})
@@ -53,8 +54,20 @@ public class ServersManagementTest extends AS7DomainTest {
 		controller.performManualAutodiscovery();
 		managedServer.assertExists(true);		
 	}
+    @Test(groups={"serversManagement"},dependsOnMethods="addManagedServer") 
+    public void addManagedServerJVM() {
+    	Inventory inventory = managedServer.inventory();
+        NewChildWizard newChild = inventory.childResources().newChild("JVM Definition");
+        newChild.getEditor().setText("resourceName", managedServerJVM.getName());
+        newChild.next();
+        newChild.getEditor().checkRadio("baseDefinition"); 
+        newChild.finish();
+        inventory.childHistory().assertLastResourceChange(true);
+    	mgmtClient.assertResourcePresence("/host="+hostController.getName()+"/server-config="+managed_server, "jvm", managedServerJVM.getName(), true);
+		managedServerJVM.assertExists(true);      
+    }
 	
-	@Test(groups="serversManagement",dependsOnMethods="addManagedServer")
+	@Test(groups="serversManagement",dependsOnMethods={"addManagedServer","addManagedServerJVM"})
 	public void removeManagedServer() {
 		managedServer.delete();	
 		mgmtDomain.assertResourcePresence("/host="+hostController.getName(), "server-config", managed_server, false);

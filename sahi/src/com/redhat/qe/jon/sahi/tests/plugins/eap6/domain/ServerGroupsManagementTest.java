@@ -91,7 +91,7 @@ public class ServerGroupsManagementTest extends AS7DomainTest {
         newChild.finish();
         inventory.childHistory().assertLastResourceChange(true);
     	mgmtClient.assertResourcePresence("/server-group="+myServerGroup.getName(), "jvm", myGroupDefaultJVM.getName(), true);
-		myServerGroup.assertExists(true);      
+    	myGroupDefaultJVM.assertExists(true);      
     }
     
     @Test(groups={"serverGroupsManagement"},dependsOnMethods="addServerGroupJVM")     
