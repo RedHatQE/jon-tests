@@ -40,9 +40,9 @@ public class DiscoveryTest extends AS7CliTest {
 				"hostXmlFileName=standalone-full.xml")
 		);
 		// listen on IPv6 all localhost
-		//configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -b management ::1", "hostname=::1"));
+		configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -b management ::1", "hostname=::1"));
 		// listen on IPv6 all interfaces
-		//configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -b management ::", "hostname=::"));
+		configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -b management ::", "hostname=::"));
 		// listen on particular port
 		configs.add(new ServerStartConfig("standalone.sh -Djboss.management.http.port=29990","port=29990"));
 		// start with port offset we assume default http management port is 9990
