@@ -30,8 +30,8 @@ public class AS7DMRClient {
 
 	private final ModelControllerClient client;
 	private CredentialsCallbackHandler authHandler = new CredentialsCallbackHandler(); 
-	private String username = "admin"+new Date().getTime();
-	private String password = "123456";
+	private String username = "rhqadmin";
+	private String password = "rhqadmin";
 	private final String host;
 	private final int port;
 	public void setPassword(String password) {
