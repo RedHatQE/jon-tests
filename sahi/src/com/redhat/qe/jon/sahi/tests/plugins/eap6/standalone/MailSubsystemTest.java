@@ -25,7 +25,7 @@ public class MailSubsystemTest extends AS7StandaloneTest {
 	private Resource pop3Server;
 	private Resource smtpServer;
 	private String sessionJNDIName="java:jboss/mail/RHQDefault"+new Date().getTime();
-	private final String outboundSocketBindingRef="mail";
+	private final String outboundSocketBindingRef="mail-smtp";
 	
 	@BeforeClass()
 	protected void setupAS7Plugin() {
@@ -142,7 +142,8 @@ public class MailSubsystemTest extends AS7StandaloneTest {
 		Configuration configuration = server.configuration();
 		CurrentConfig config = configuration.current();
 		config.getEditor().checkBox(0, false);
-		config.getEditor().setText("outbound-socket-binding-ref", outboundSocketBindingRef);
+		config.getEditor().checkRadio("outbound-socket-binding-ref");
+		//config.getEditor().setText("outbound-socket-binding-ref", outboundSocketBindingRef);
 		config.save();
 		configuration.history().failOnFailure();
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=mail/mail-session="+session.getName()+"/server="+server.getName(), "outbound-socket-binding-ref").get("result").asString().equals(outboundSocketBindingRef),"Mail server["+server.getName()+"] was correctly configured");

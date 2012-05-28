@@ -75,11 +75,7 @@ public class Configuration extends ResourceTab {
 		 * @return
 		 */
 		public ConfigEntry newEntry(int index) {
-			int imgindex = index = 1;
-			tasks.image("add.png[" + imgindex + "]").focus();
-			tasks.execute("_sahi._keyPress(_sahi._image('add.png[" + imgindex
-					+ "]'), 32);");
-			return new ConfigEntry(tasks);
+			return getEditor().newEntry(index);
 		}
 		/**
 		 * retrieves entry from table and returns helper object

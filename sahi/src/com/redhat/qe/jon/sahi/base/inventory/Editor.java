@@ -81,6 +81,11 @@ public class Editor {
 	 */
 	public ConfigEntry newEntry(int index) {
 		int imgindex = index = 1;
+		int buttons = tasks.image("add.png").countSimilar();
+		log.fine("Found buttons "+buttons);
+		if (buttons<imgindex-1) {			
+			imgindex=0;
+		}
 		tasks.image("add.png[" + imgindex + "]").focus();
 		tasks.execute("_sahi._keyPress(_sahi._image('add.png[" + imgindex
 				+ "]'), 32);");
