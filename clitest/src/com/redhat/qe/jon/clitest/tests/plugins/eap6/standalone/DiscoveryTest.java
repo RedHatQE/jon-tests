@@ -41,6 +41,12 @@ public class DiscoveryTest extends AS7CliTest {
 		);
 		// listen on IPv6 all localhost
 		configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -b management ::1", "hostname=::1"));
+		// BZ 820570
+		configs.add(new ServerStartConfig(
+			"standalone.sh -P file://${HOME}/"+sshClient.getAsHome()+"/bin/props.properties",
+			"port=29990",
+			"echo \"jboss.management.http.port=29990\" > bin/props.properties")
+		);		
 		// listen on IPv6 all interfaces
 		configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -b management ::", "hostname=::"));
 		// listen on particular port
@@ -51,11 +57,23 @@ public class DiscoveryTest extends AS7CliTest {
 				"standalone.sh --server-config=standalone-full.xml",
 				"hostXmlFileName=standalone-full.xml")
 		);
+		// BZ 820570
+		configs.add(new ServerStartConfig(
+				"standalone.sh --properties file://${HOME}/"+sshClient.getAsHome()+"/props.properties",
+			"port=10990",
+			"echo \"jboss.socket.binding.port-offset=1000\" > props.properties")
+		);		
 		// override config dir
 		configs.add(new ServerStartConfig(
 				"standalone.sh -Djboss.server.config.dir=${HOME}/"+sshClient.getAsHome()+"/standalone/configuration2",
 				"configuration2",
 				"cp -a standalone/configuration standalone/configuration2")
+		);
+		// BZ 820570 using relative path
+		configs.add(new ServerStartConfig(
+			"standalone.sh -P=props.properties",
+			"port=10990",
+			"echo \"jboss.socket.binding.port-offset=1000\" > bin/props.properties")
 		);
 		configs.add(new ServerStartConfig(
 				"standalone.sh -Djboss.server.default.config=standalone-full.xml",
