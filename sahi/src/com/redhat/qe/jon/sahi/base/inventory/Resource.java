@@ -49,17 +49,14 @@ public class Resource {
 	public static final boolean HAVE_REST_API;
 	
 	static {
-		//HTTPClient client = new HTTPClient(System.getProperty("jon.server.url")+"/rest/1"); 		
-		//HAVE_REST_API = client.isRunning();
-		//if (HAVE_REST_API) {
-		//	log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured with REST API, resource navigation will be fast as hell");
-		//}
-		//else {
-		//	log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured without REST API, resource navigation will be slower");
-		//}
-		
-		//log.info("REST API Support temporarily disabled");
-		HAVE_REST_API = false;
+		HTTPClient client = new HTTPClient(System.getProperty("jon.server.url")+"/rest/1"); 		
+		HAVE_REST_API = client.isRunning();
+		if (HAVE_REST_API) {
+			log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured with REST API, resource navigation will be fast as hell");
+		}
+		else {
+			log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured without REST API, resource navigation will be slower");
+		}
 	}
 
 	public Resource(SahiTasks tasks, String... path) {
