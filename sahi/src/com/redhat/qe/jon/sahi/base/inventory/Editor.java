@@ -80,7 +80,7 @@ public class Editor {
 	 * @return
 	 */
 	public ConfigEntry newEntry(int index) {
-		int imgindex = index = 1;
+		int imgindex = index;
 		int buttons = tasks.image("add.png").countSimilar();
 		log.fine("Found buttons "+buttons);
 		if (buttons<imgindex-1) {			
