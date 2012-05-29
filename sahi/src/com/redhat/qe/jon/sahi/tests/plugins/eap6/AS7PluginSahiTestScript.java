@@ -131,13 +131,13 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         httpDomainThree = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-three.http.port")));
         
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-        try {
-        	remoteLogAccess = new RemoteLogAccess(System.getenv("HOST_USER"), System.getenv("HOST_NAME"), System.getenv("HOST_PASSWORD"), "rhq-agent/logs/agent.log");
-        	remoteLogAccess.startRedirectingLog();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//        try {
+//        	remoteLogAccess = new RemoteLogAccess(System.getenv("HOST_USER"), System.getenv("HOST_NAME"), System.getenv("HOST_PASSWORD"), "rhq-agent/logs/agent.log");
+//        	remoteLogAccess.startRedirectingLog();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
         // should we include this or not? it uninventorizes all EAP-instance resources from the agent before the testing starts..
     /*    as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
         as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
@@ -159,13 +159,13 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
     		sshDomain.disconnect();
     	if (sshStandalone!=null)
     		sshStandalone.disconnect();
-    	if (remoteLogAccess!=null) {
-    		try {
-				remoteLogAccess.stopRedirectingLog();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
+//    	if (remoteLogAccess!=null) {
+//    		try {
+//				remoteLogAccess.stopRedirectingLog();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//    	}
     } 
 }
