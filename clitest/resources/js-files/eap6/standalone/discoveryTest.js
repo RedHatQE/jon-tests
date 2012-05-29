@@ -43,6 +43,7 @@ function checkEAPConfiguration(resources){
     var committedRes = ResourceManager.findResourcesByCriteria(criteria);    
     var i = 0;
     for(i = 0; i < committedRes.size(); i++){
+    	println("availability="+committedRes.get(i).getCurrentAvailability().getAvailabilityType())
 		var config = committedRes.get(i).getPluginConfiguration().getAllProperties();
 		pcv = function printConfigValue(value) {
 			println(value+"="+config.get(value).getStringValue());

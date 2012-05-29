@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartConfig;
-import com.redhat.qe.jon.common.util.AS7SSHClient;
 
 /**
  * this test starts up AS7 in standalone mode with different configurations (standalone.sh parameters)
@@ -25,7 +24,7 @@ public class DiscoveryTest extends AS7CliTest {
 
 	@BeforeClass()
 	public void beforeClass() {
-		sshClient = new AS7SSHClient(domainHome,"hudson",domainHostName,"hudson");
+		sshClient = sshDomain;
 	}
 		
 	@DataProvider

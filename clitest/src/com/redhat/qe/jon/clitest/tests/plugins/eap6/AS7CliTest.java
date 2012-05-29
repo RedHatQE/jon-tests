@@ -22,7 +22,9 @@ public class AS7CliTest extends CliTest {
 	protected static String standalone1HostName;
 	protected static String domainHome;
 	protected static String domainHostName;
-	protected AS7SSHClient sshClient;
+	protected static AS7SSHClient sshClient;
+	protected static AS7SSHClient sshDomain;
+	protected static AS7SSHClient sshStandalone;
 	@BeforeSuite
 	public void loadProperties() {
 		try {
@@ -44,6 +46,10 @@ public class AS7CliTest extends CliTest {
 		standalone1HostName = System.getProperty("as7.standalone1.hostname");
 		domainHome = System.getProperty("as7.domain.home");
 		domainHostName = System.getProperty("as7.domain.hostname");
+		sshDomain = new AS7SSHClient(domainHome,"hudson",domainHostName,"hudson");
+		sshStandalone = new AS7SSHClient(standalone1Home,"hudson",standalone1HostName,"hudson");
+		installRHQUser(sshDomain,null,"/domain/configuration/mgmt-users.properties");
+		installRHQUser(sshStandalone,null,"/standalone/configuration/mgmt-users.properties");
 	}
 	
 	/**
@@ -127,6 +133,6 @@ public class AS7CliTest extends CliTest {
 		}
 		Assert.assertTrue(running, "Server process is running");
 		sshClient.runAndWait("netstat -pltn | grep java");
-		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, "--args-style=named agent="+agentName, start.getExpectedMessage(), null);
+		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, "--args-style=named agent="+agentName, start.getExpectedMessage()+",availability=UP", null);
 	}
 }
