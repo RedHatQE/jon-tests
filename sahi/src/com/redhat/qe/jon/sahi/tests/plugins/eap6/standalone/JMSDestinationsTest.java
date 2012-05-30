@@ -23,7 +23,7 @@ public class JMSDestinationsTest extends AS7StandaloneTest {
     }
 	@Test()	
 	public void addQueue() {
-		as7SahiTasks.addJMSQueue(hornetq, queue);
+		as7SahiTasks.addJMSQueue(hornetq, queue,"JMS Queue");
 		mgmtClient.assertResourcePresence("/subsystem=messaging/hornetq-server=default", "jms-queue", queue.getName(), true);		
 		queue.assertExists(true);
 	}
@@ -37,7 +37,7 @@ public class JMSDestinationsTest extends AS7StandaloneTest {
 	
 	@Test()	
 	public void addTopic() {
-		as7SahiTasks.addJMSTopic(hornetq, topic);
+		as7SahiTasks.addJMSTopic(hornetq, topic,"JMS Topic");
 		mgmtClient.assertResourcePresence("/subsystem=messaging/hornetq-server=default", "jms-topic", topic.getName(), true);		
 		topic.assertExists(true);
 	}

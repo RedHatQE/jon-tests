@@ -53,21 +53,31 @@ public class DeploymentTest extends AS7StandaloneTest {
 		sahiTasks.waitFor(2*waitTime);
 		newChild.next();
 		newChild.finish();
+		inventory.childHistory().assertLastResourceChange(true);
 		assertDeploymentExists(war.getName());
 		war.assertExists(true);
 	}
 	@Test
 	public void deployWebService() {
 		deployWARFile(wsResource, "deploy/"+wsResource.getName());
-		wsResource.child("webservices").assertExists(true);
-		wsResource.child("webservices").child("ws%3AHelloWorld").assertExists(true);
+		log.fine("Waiting "+Timing.toString(Timing.TIME_1M)+" for deployment child subsystems to be discovered");
+		sahiTasks.waitFor(Timing.TIME_1M);
+		wsResource.assertChildExists("webservices",true);
+		wsResource.child("webservices").assertChildExists("ws%3AHelloWorld",true);
 	}
+	@Test(alwaysRun=true)
+	public void undeployWS() {
+		undeploy(wsResource);
+	}
+	
 	@Test
 	public void deployMessageDrivenBean() {
-		deployWARFile(wsResource, "deploy/"+mdbResource.getName());
-		mdbResource.child("messaging").assertExists(true);
-		mdbResource.child("messaging").child("default").assertExists(true);
-		mdbResource.child("messaging").child("default").child("HELLOWORLDMDBQueue").assertExists(true);
+		deployWARFile(mdbResource, "deploy/"+mdbResource.getName());
+		log.fine("Waiting "+Timing.toString(Timing.TIME_1M)+" for deployment child subsystems to be discovered");
+		sahiTasks.waitFor(Timing.TIME_1M);
+		mdbResource.assertChildExists("messaging",true);
+		mdbResource.child("messaging").assertChildExists("default",true);
+		mdbResource.child("messaging").child("default").assertChildExists("HELLOWORLDMDBQueue",true);
 	}
 	
 	@DataProvider
@@ -77,7 +87,8 @@ public class DeploymentTest extends AS7StandaloneTest {
 		defs.add(new OpDef("List Producers Info as JSON"));
 		defs.add(new OpDef("List Connections as JSON"));
 		defs.add(new OpDef("List Heuristic Committed Transactions"));
-		defs.add(new OpDef("List Prepared Transaction JMS Details as JSON"));
+		defs.add(new OpDef("List Prepared Transaction JMS Details as HTML"));
+		defs.add(new OpDef("List Prepared Transaction JMS details as JSON"));
 		Object[][] output = new Object[defs.size()][];
 		
 		for (int i=0;i<defs.size();i++) {
@@ -122,6 +133,10 @@ public class DeploymentTest extends AS7StandaloneTest {
 		op.schedule();
 		operations.assertOperationResult(op, true);
 	}
+	@Test(alwaysRun=true,dependsOnMethods={"deployedJMSQueueOperations"})
+	public void undeployMDB() {
+		undeploy(mdbResource);
+	}
 	
 	
 	// TODO re-deployment must be done using Content subsystem
@@ -141,11 +156,16 @@ public class DeploymentTest extends AS7StandaloneTest {
 		httpStandalone.assertDeploymentContent(war,"Modified","Check whether modified version of WAR has been deployed");
 	}
 
-	@Test(dependsOnMethods="deployWAR")
+	@Test(alwaysRun=true,dependsOnMethods="deployWAR")
 	public void undeployWAR() {
+		undeploy(warResource);
 		warResource.delete();
-		assertDeploymentDoesNotExist(war);
-		warResource.assertExists(false);
+	}
+	
+	private void undeploy(Resource deployment) {
+		deployment.delete();
+		assertDeploymentDoesNotExist(deployment.getName());
+		deployment.assertExists(false);
 	}
 
 	private void assertDeploymentExists(String name) {

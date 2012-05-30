@@ -482,13 +482,21 @@ public class Resource {
      * @param shouldExist - true for asserting resource existence, false for checking resource non-existence
      */
     public void assertExists(boolean shouldExist) {
-    	log.fine("Asserting resource "+toString()+" exists");
+    	assertChildExists(this.getName(), shouldExist);
+    }
+    
+    /**
+     * asserts resource existence
+     * @param shouldExist - true for asserting resource existence, false for checking resource non-existence
+     */
+    public void assertChildExists(String child, boolean shouldExist) {
+    	log.fine("Asserting resource ["+child+"] parent="+toString()+" exists");
     	long time0 = Calendar.getInstance().getTimeInMillis();
     	int waitTime=Timing.TIME_30S;
     	int count=Timing.REPEAT;
     	
-    	String resourceName = getName();
-    	Inventory inventory = parent().inventory();
+    	String resourceName = child;
+    	Inventory inventory = inventory();
     	ChildResources children = inventory.childResources();
     	boolean exists=false;
     	for (int i = 0;i<count;i++) {
@@ -505,13 +513,13 @@ public class Resource {
     			return;
     		}
     		if (i % 4 == 0) {
-    			inventory = parent().inventory();
+    			inventory = inventory();
     		}
     		log.fine("Waiting for resource, refreshing ..");
     		tasks.waitFor(waitTime);
     		children.refresh();
     	}
-    	log.fine("Checking resurce (un)existence timed out");
+    	log.warning("Checking resurce (un)existence timed out");
     	Assert.assertEquals(!shouldExist,shouldExist, "Resource ["+resourceName+"] exists.");
     }
 	

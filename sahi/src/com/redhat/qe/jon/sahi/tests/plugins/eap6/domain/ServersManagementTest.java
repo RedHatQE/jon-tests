@@ -48,11 +48,15 @@ public class ServersManagementTest extends AS7DomainTest {
 		newChild.getEditor().checkRadio(hostController.getName());
 		newChild.getEditor().checkRadio("main-server-group");
 		newChild.getEditor().setText("socket-binding-port-offset", managed_server_portoffset);
+		newChild.getEditor().checkRadio("auto-start[0]");
 		newChild.getEditor().assertRequiredInputs();
 		newChild.finish();
 		mgmtDomain.assertResourcePresence("/host="+hostController.getName(), "server-config", managed_server, true);
 		controller.performManualAutodiscovery();
-		managedServer.assertExists(true);		
+		managedServer.assertExists(true);
+		// we start the server
+		managedServerOperation(managedServer, "Start");
+		managedServer.assertAvailable(true, "Managed server MUST be available, because it was just started");
 	}
     @Test(groups={"serversManagement"},dependsOnMethods="addManagedServer") 
     public void addManagedServerJVM() {
@@ -69,42 +73,36 @@ public class ServersManagementTest extends AS7DomainTest {
 	
 	@Test(groups="serversManagement",dependsOnMethods={"addManagedServer","addManagedServerJVM"})
 	public void removeManagedServer() {
+		managedServerOperation(managedServer, "Stop");
 		managedServer.delete();	
 		mgmtDomain.assertResourcePresence("/host="+hostController.getName(), "server-config", managed_server, false);
-		controller.performManualAutodiscovery();
 		controller.child(managed_server_name).assertExists(false);
 	}
     
+	private void managedServerOperation(Resource server, String op) {
+		Operations operations = server.operations();
+        Operation o = operations.newOperation(op);
+        o.getEditor().checkRadio("blocking[0]");
+        o.schedule();
+        operations.assertOperationResult(o, true);
+        log.info("Waiting "+Timing.toString(Timing.TIME_30S)+ " for managed server to start/stop");
+        sahiTasks.waitFor(Timing.TIME_30S);
+	}
     
     @Test(groups = {"serversManagement"},dependsOnMethods="stopManagedServer")
     public void startManagedServer() {
-    	Operations operations = serverOne.operations();
-        Operation o = operations.newOperation("Start");
-        o.schedule();
-        operations.assertOperationResult(o, true);
-        log.info("Waiting "+Timing.toString(Timing.TIME_30S)+ " for managed server to start");
-        sahiTasks.waitFor(Timing.TIME_30S);
+        managedServerOperation(serverOne, "Start");
         Assert.assertTrue(httpDomainOne.isRunning(),"Server One is reachable via HTTP");
     }
 
     @Test(groups = {"serversManagement","blockedByBug-800885"})
     public void stopManagedServer() {
-    	Operations operations = serverOne.operations();
-        Operation o = operations.newOperation("Stop");
-        o.schedule();
-        operations.assertOperationResult(o, true);
-        log.info("Waiting "+Timing.toString(Timing.TIME_30S)+ " for managed server to stop");
-        sahiTasks.waitFor(Timing.TIME_30S);
+    	managedServerOperation(serverOne, "Start");
         Assert.assertTrue(!httpDomainOne.isRunning(),"Server One is NOT reachable via HTTP");
     }
     @Test(groups = {"serversManagement","blockedByBug-800885"})
     public void restartManagedServer() {
-    	Operations operations = serverOne.operations();
-        Operation o = operations.newOperation("Restart");
-        o.schedule();
-        operations.assertOperationResult(o, true);
-        log.info("Waiting "+Timing.toString(Timing.TIME_30S)+ " for managed server to restart");
-        sahiTasks.waitFor(Timing.TIME_30S);
+        managedServerOperation(serverOne, "Restart");
         Assert.assertTrue(httpDomainOne.isRunning(),"Server One is reachable via HTTP");
     }
     

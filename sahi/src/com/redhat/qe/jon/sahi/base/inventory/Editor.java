@@ -32,6 +32,10 @@ public class Editor {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.textbox(name).setValue(value);
 	}
+	public void setPassword(String name, String value) {
+		tasks.waitFor(Timing.WAIT_TIME);
+		tasks.password(name).setValue(value);
+	}
 	public void checkRadio(String selection) {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.radio(selection).check();

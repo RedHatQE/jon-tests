@@ -149,7 +149,6 @@ public class Inventory extends ResourceTab{
 		 */
 		public String getLastResourceChangeStatus() {
 			ElementStub row = getFirstRow();
-			log.fine("Fist row:"+row.fetch("innerHTML"));
 			return tasks.cell(4).in(row).getText();
 		}
 		/**
@@ -228,7 +227,7 @@ public class Inventory extends ResourceTab{
 		 * @return true if child resource with given name exists
 		 */
 		public boolean existsChild(String name) {
-			return tasks.cell(name).exists();
+			return tasks.cell(name).isVisible();
 		}
 		public void refresh() {
 			tasks.cell("Refresh").click();
@@ -268,6 +267,9 @@ public class Inventory extends ResourceTab{
 		private void selectChild(String name) {
 			int children = tasks.cell(name).countSimilar();
 			log.fine("Matched cells "+children);
+			if (children==0) {
+				throw new RuntimeException("Unable to select resource ["+name+"], NOT FOUND!");
+			}
 			tasks.xy(tasks.cell(name+"["+(children-1)+"]"), 3, 3).click();
 		}
 		/**

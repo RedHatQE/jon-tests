@@ -89,8 +89,8 @@ public class AS7PluginSahiTasks {
 	        if (elm.exists()) {
 	            elm.check();
 	            tasks.cell("Import").click();
-	            log.fine("Waiting "+Timing.toString(10*Timing.TIME_1M)+" for resource to import...");
-	            tasks.waitFor(10*Timing.TIME_1M);
+	            log.fine("Waiting "+Timing.toString(15*Timing.TIME_1M)+" for resource to import...");
+	            tasks.waitFor(15*Timing.TIME_1M);
 	        } else {
 	            log.fine("Resource \"" + resourceName + "\" of agent \"" + agentName + "\" not found in Autodiscovery queue, it might have been already inventorized");
 	        }
@@ -103,10 +103,10 @@ public class AS7PluginSahiTasks {
      * @param hornetq resource representing hornetq
      * @param queue resource representing queue (should be child of hornetq)
      */
-	public void addJMSQueue(Resource hornetq, Resource queue) {
+	public void addJMSQueue(Resource hornetq, Resource queue, String type) {
 		Inventory inventory = hornetq.inventory();
 		ChildResources childResources = inventory.childResources();
-		NewChildWizard child = childResources.newChild("JMS Queue");		
+		NewChildWizard child = childResources.newChild(type);		
 		child.getEditor().setText("resourceName", queue.getName());		
 		child.next();
 		//child.getEditor().checkRadio("paused[0]");
@@ -123,10 +123,10 @@ public class AS7PluginSahiTasks {
      * @param hornetq resource representing hornetq
      * @param topic resource representing topic (should be child of hornetq)
      */
-	public void addJMSTopic(Resource hornetq, Resource topic) {
+	public void addJMSTopic(Resource hornetq, Resource topic, String type) {
 		Inventory inventory = hornetq.inventory();
 		ChildResources childResources = inventory.childResources();
-		NewChildWizard child = childResources.newChild("JMS Topic");		
+		NewChildWizard child = childResources.newChild(type);		
 		child.getEditor().setText("resourceName", topic.getName());		
 		child.next();
 		ConfigEntry ce = child.getEditor().newEntry(0);

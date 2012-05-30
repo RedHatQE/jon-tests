@@ -56,6 +56,18 @@
         </groups>
     </test>
      -->
+    <test name="Standalone_SocketBindingGroups">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.SocketBindingGroupConfigurationTest"/>
+        </classes>
+        <groups>
+            <run>				
+                <include name="setup"/>           
+                <include name="teardown"/>                                    
+                <include name="socketBindingGroup"/>                                
+            </run>
+        </groups>
+    </test>
      <test name="Standalone_Mail_Subsystem">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.MailSubsystemTest"/>                
@@ -125,18 +137,6 @@
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.JMSDestinationsTest"/>
         </classes>
     </test>
-    <test name="Standalone_SocketBindingGroups">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.SocketBindingGroupConfigurationTest"/>
-        </classes>
-        <groups>
-            <run>				
-                <include name="setup"/>           
-                <include name="teardown"/>                                    
-                <include name="socketBindingGroup"/>                                
-            </run>
-        </groups>
-    </test>
 	<test name="Standalone_Datasources">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.DatasourceCreationTest"/>
@@ -174,12 +174,10 @@
     </test>
  	<test name="Standalone_ManualImport">
         <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ManualImportTest"/>            
-            <!-- uncomment this when 788487 is fixed
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.ManualImportTest"/>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.DeploymentTest"/>            
 			<class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.JMSDestinationsTest"/>
 			<class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.SystemPropertiesConfigurationTest"/>
-             -->
         </classes>
     </test>   
     <test name="Domain_AutodetectConfiguration">
