@@ -38,11 +38,7 @@ public class DeploymentTest extends AS7StandaloneTest {
 		mdbResource = server.child("mdb.war");
     }
 
-	@Test()
-	public void deployWAR() {		
-		deployWARFile(warResource, "deploy/original/"+warResource.getName());
-		httpClient.assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
-	}
+
 	private void deployWARFile(Resource war, String srcPath) {
 		Inventory inventory = server.inventory();
 		ChildResources childResources = inventory.childResources();
@@ -65,8 +61,8 @@ public class DeploymentTest extends AS7StandaloneTest {
 		wsResource.assertChildExists("webservices",true);
 		wsResource.child("webservices").assertChildExists("ws%3AHelloWorld",true);
 	}
-	@Test(alwaysRun=true)
-	public void undeployWS() {
+	@Test(dependsOnMethods="deployWebService")
+	public void undeployWebService() {
 		undeploy(wsResource);
 	}
 	
@@ -138,6 +134,11 @@ public class DeploymentTest extends AS7StandaloneTest {
 		undeploy(mdbResource);
 	}
 	
+	@Test()
+	public void deployWAR() {		
+		deployWARFile(warResource, "deploy/original/"+warResource.getName());
+		httpClient.assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
+	}
 	
 	// TODO re-deployment must be done using Content subsystem
 	//@Test(groups = {"deployment","blockedByBug-767974"}, dependsOnMethods="deployWAR")
@@ -159,7 +160,6 @@ public class DeploymentTest extends AS7StandaloneTest {
 	@Test(alwaysRun=true,dependsOnMethods="deployWAR")
 	public void undeployWAR() {
 		undeploy(warResource);
-		warResource.delete();
 	}
 	
 	private void undeploy(Resource deployment) {

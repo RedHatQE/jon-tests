@@ -78,9 +78,19 @@
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.LoggingSubsystem"/>                
         </classes>
     </test>
-         <test name="Standalone_Naming_Subsystem">
+     <test name="Standalone_SecuritySubsystem">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.SecuritySubsystemTest"/>                
+        </classes>
+    </test>
+    <test name="Standalone_Naming_Subsystem">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.NamingTest"/>                
+        </classes>
+    </test>
+    <test name="Standalone_SignalServerReload">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.SignalServerReloadTest"/>                
         </classes>
     </test>
     <test name="Standalone_InfinispanSubsystem">
