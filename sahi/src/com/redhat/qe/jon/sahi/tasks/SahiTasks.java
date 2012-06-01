@@ -1848,8 +1848,9 @@ public class SahiTasks extends ExtendedSahi {
     		//return false;
     		//Adding manual wait due to issue with sahi proxy server 
     		//Bug: https://bugzilla.redhat.com/show_bug.cgi?id=765670
-    		_logger.log(Level.WARNING, "[Starting up, please wait...] not found, hence will wait here 180 seconds");
-    		this.waitFor(1000*180);
+    		//JBOSS AS7 Plug-in's are taking long minutes...
+    		_logger.log(Level.WARNING, "[Starting up, please wait...] not found, hence will wait here 7 minutes");
+    		this.waitFor(1000*60*7);
     	}
 
     	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", 1000*60*2)){
