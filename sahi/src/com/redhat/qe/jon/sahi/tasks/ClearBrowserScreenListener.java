@@ -108,7 +108,11 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	@Override
 	public void onTestFailure(ITestResult result) {
 		takeScreenShot();
-		cleanPopUpOnScreen();
+		try {		
+			cleanPopUpOnScreen();
+		} catch (Exception ex) {
+			_logger.log(Level.SEVERE, "Failed to clean pop-ups on screen!!", ex);
+		}
 	}
 
 	@Override
