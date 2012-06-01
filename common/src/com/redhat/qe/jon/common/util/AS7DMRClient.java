@@ -2,7 +2,6 @@ package com.redhat.qe.jon.common.util;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -148,11 +147,28 @@ public class AS7DMRClient {
 		ModelNode op = new ModelNode();
 		String[] pathSegments = address.split("/");
 		ModelNode list = op.get("address").setEmptyList();
+		boolean haveQuoted = false;
+		String seg = "";
 		for (String segment : pathSegments) {
-			String[] elements = segment.split("=");
+			if (segment.endsWith("\\")) {
+				haveQuoted=true;
+				seg+=segment.replaceAll("\\\\", "/");
+				continue;
+			}
+			else if (haveQuoted) {
+				seg+=segment; // append last element of quoted name
+				haveQuoted=false;
+			}
+			else {
+				seg = segment;
+			}
+			String[] elements = seg.split("=");
 			if (elements.length == 2) {
 				list.add(elements[0], elements[1]);
 			}
+			seg="";
+			haveQuoted=false;
+
 		}
 		op.get("operation").set(operation);
 		if (params!=null) {
