@@ -1843,8 +1843,9 @@ public class SahiTasks extends ExtendedSahi {
     	
     	this.submit("Install Server!").click();
     	//Starting up, please wait...
-
-    	if(!this.waitForElementExists(this, this.span("Starting up, please wait..."), "Span: Starting up, please wait...", 1000*30)){
+    	
+    	//Modified "Starting up, please wait..." to "Starting up, please wait... (this may take several minutes)" from 03-June-2012 build.
+    	if(!this.waitForElementExists(this, this.span("Starting up, please wait... (this may take several minutes)"), "Span: Starting up, please wait... (this may take several minutes)", 1000*30)){
     		//return false;
     		//Adding manual wait due to issue with sahi proxy server 
     		//Bug: https://bugzilla.redhat.com/show_bug.cgi?id=765670
@@ -1853,7 +1854,7 @@ public class SahiTasks extends ExtendedSahi {
     		this.waitFor(1000*60*10);
     	}
 
-    	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", 1000*60*2)){
+    	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", 1000*60*15)){
     		return false;
     	}
 
