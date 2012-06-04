@@ -19,6 +19,16 @@
 		</classes>
   	</test>
   	
+  	<test name="Version Information">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.BuildVersionInfoTest">
+			<methods>
+				 <include name="getBuildInfo"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
   	<test name="GImportResourcesTest">
   	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.ImportResources">
