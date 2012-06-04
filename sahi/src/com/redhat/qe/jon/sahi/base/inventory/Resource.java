@@ -482,7 +482,7 @@ public class Resource {
      * @param shouldExist - true for asserting resource existence, false for checking resource non-existence
      */
     public void assertExists(boolean shouldExist) {
-    	assertChildExists(this.getName(), shouldExist);
+    	parent().assertChildExists(this.getName(), shouldExist);
     }
     
     /**
