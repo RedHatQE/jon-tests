@@ -1855,7 +1855,7 @@ public class SahiTasks extends ExtendedSahi {
     		this.waitFor(maximunWaitTime);
     	}
 
-    	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", maximunWaitTime)){
+    	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", maximunWaitTime - (1000*60*4))){
     		this.navigateTo("/installer/start.jsf", true);
     		if(this.heading1("The Server Is Installed!").exists()){
     			if(this.link("Click here to get started!").exists()){
