@@ -1781,6 +1781,7 @@ public class SahiTasks extends ExtendedSahi {
     //* GUI installation - RHQ/JON
     //*************************************************************************************
     public boolean guiInstallationRHQ(String dataBaseType, String databaseDetails, String databasePassword, String databaseMaintanceType, String registeredServerSelection, String serverDetails, String embeddedAgentEnabled){
+    	long maximunWaitTime = 1000*60*10;
     	//Check the installation status, return true if already installed
     	if(this.heading1("The Server Is Installed!").exists()){
     		if(this.link("Click here to get started!").exists()){
@@ -1850,11 +1851,18 @@ public class SahiTasks extends ExtendedSahi {
     		//Adding manual wait due to issue with sahi proxy server 
     		//Bug: https://bugzilla.redhat.com/show_bug.cgi?id=765670
     		//JBOSS AS7 Plug-in's are taking long minutes...
-    		_logger.log(Level.WARNING, "[Starting up, please wait...] not found, hence will wait here 10 minutes");
-    		this.waitFor(1000*60*10);
+    		_logger.log(Level.WARNING, "[Starting up, please wait...] not found, hence will wait here "+(maximunWaitTime/1000)+" Second(s)");
+    		this.waitFor(maximunWaitTime);
     	}
 
-    	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", 1000*60*15)){
+    	if(!this.waitForElementExists(this, this.link("Done! Click here to get started!"), "Link: Done! Click here to get started!", maximunWaitTime)){
+    		this.navigateTo("/installer/start.jsf", true);
+    		if(this.heading1("The Server Is Installed!").exists()){
+    			if(this.link("Click here to get started!").exists()){
+    				this.link("Click here to get started!").click();
+    				return true;
+    			}
+    		}
     		return false;
     	}
 
