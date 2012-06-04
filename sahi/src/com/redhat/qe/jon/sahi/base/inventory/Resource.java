@@ -486,7 +486,8 @@ public class Resource {
     }
     
     /**
-     * asserts resource existence
+     * asserts child resource existence
+     * @param child name of child resource
      * @param shouldExist - true for asserting resource existence, false for checking resource non-existence
      */
     public void assertChildExists(String child, boolean shouldExist) {

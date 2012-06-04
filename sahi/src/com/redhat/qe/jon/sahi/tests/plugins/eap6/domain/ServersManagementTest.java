@@ -98,7 +98,7 @@ public class ServersManagementTest extends AS7DomainTest {
     @Test(groups = {"serversManagement","blockedByBug-800885"})
     public void stopManagedServer() {
     	managedServerOperation(serverOne, "Start");
-        Assert.assertTrue(!httpDomainOne.isRunning(),"Server One is NOT reachable via HTTP");
+        Assert.assertFalse(httpDomainOne.isRunning(),"Server One is reachable via HTTP");
     }
     @Test(groups = {"serversManagement","blockedByBug-800885"})
     public void restartManagedServer() {
