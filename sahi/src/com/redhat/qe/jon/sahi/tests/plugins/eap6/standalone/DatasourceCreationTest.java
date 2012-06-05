@@ -195,6 +195,7 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 	}
 	
 	private void disableDS(String[] ds_def,boolean expectSuccess) {
+		mgmtClient.reload();
 		Operations operations = datasources.child(ds_def[0]).operations();
 		Operation add = operations.newOperation("Disable");
 		add.schedule();
