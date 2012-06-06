@@ -227,20 +227,10 @@ public class Inventory extends ResourceTab{
 		 * @return true if child resource with given name exists
 		 */
 		public boolean existsChild(String name) {
-			if (tasks.cell("No items to show.").exists()) {
+			if (tasks.cell("No items to show.").isVisible()) {
 				return false;
 			}
-			int count = tasks.table("listTable").countSimilar();
-			if (count>1) {
-				for (ElementStub row : tasks.byXPath("//tr[@role='listitem']").in(tasks.table("listTable["+(count-1)+"]")).collectSimilar()) {
-					String child = tasks.cell(1).in(row).getText();
-					if (child.equals(name) && row.isVisible()) {
-						return true;
-					}
-				}
-			}
-			return false;
-			//return tasks.cell(name).isVisible();
+			return tasks.cell(name).isVisible();
 		}
 		public void refresh() {
 			tasks.cell("Refresh").click();
