@@ -50,6 +50,17 @@ public class CliTasks {
 		scpClient.put(src, dest);
 		_logger.fine("File ["+src+"] copied to "+connection.getHostname()+":"+dest);
 	}
+	/**
+	 * copies file to remote host when you can specify destination file name within 'destFileName' param
+	 * @param srcPath source file
+	 * @param destDir remote dir
+	 * @param destFileName remote fileName
+	 * @throws IOException
+	 */
+	public void copyFile(String srcPath, String destDir, String destFileName) throws IOException {
+		scpClient.put(srcPath, destFileName, destDir, "0600");
+		_logger.fine("File ["+srcPath+"] copied to "+connection.getHostname()+":"+destDir+"/"+destFileName);
+	}
 	
 	public void closeConnection(){
 		if(connection != null){
