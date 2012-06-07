@@ -11,22 +11,9 @@
 <!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
-<!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test
-<test name="Uninventory-Platforms">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="UninventoryResources.js"/>
-			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
 
 
-
--->
+ 
 <test name="Standalone_Discovery_StartCommand_Parameters">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.standalone.DiscoveryTest">	
@@ -45,6 +32,31 @@
 		</class>
 	</classes>
 </test>
+<!-- right after discovery tests we import our resources and the show can begin -->
+<test name="Import_Resources">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="ImportResourcers.js"/>
+			<parameter name="expected.result"  value="Login successful,Resources are impoerted successfully"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+<test name="Standalone_Deployment">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.standalone.DeploymentTest">
+			<methods>
+				<include name=".*deploy.*"></include>			
+			</methods>
+		</class>		
+	</classes>
+</test>
+
+<!-- -->
+
 
 
 

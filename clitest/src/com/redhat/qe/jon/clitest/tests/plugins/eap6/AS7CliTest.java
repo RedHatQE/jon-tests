@@ -25,16 +25,20 @@ public class AS7CliTest extends CliTest {
 	protected static AS7SSHClient sshClient;
 	protected static AS7SSHClient sshDomain;
 	protected static AS7SSHClient sshStandalone;
+	
 	@BeforeSuite
 	public void loadProperties() {
 		try {
             System.getProperties().load(new FileInputStream(new File(System.getProperty("eap6plugin.configfile"))));
+            log.fine("eap6plugin.properties loaded");
         } catch (Exception e) {
             try {
                 System.getProperties().load(new FileInputStream(new File("config/eap6plugin.properties")));
+                log.fine("eap6plugin.properties loaded");
             } catch (Exception ex) {
                 try {
                     System.getProperties().load(new FileInputStream(new File("automatjon/jon/sahi/config/eap6plugin.properties")));
+                    log.fine("eap6plugin.properties loaded");
                 } catch (Exception exc) {
                     log.severe("Could not load properties file for EAP6plugin testing: " + exc.getMessage() + " please provide the full path in system property \"eap6plugin.configfile\".");
                 }
