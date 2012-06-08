@@ -33,8 +33,9 @@ public class DeploymentTest extends AS7CliTest {
 	}
 	
 	private void createDeployment(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		String deploymentsDir = System.getProperty("user.dir")+"/resources/deployments/";
-		CliTasks.getCliTasks().copyFile(deploymentsDir+srcWar, "/tmp/",destWar);
+		String warFilePath = AS7CliTest.class.getResource("/resources/deployments/"+srcWar).getPath();
+		CliTasks.getCliTasks().copyFile(warFilePath, "/tmp/",destWar);
+
 		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named agent="+agentName+" serverType=\"JBossAS7 Standalone Server\" pluginName=JBossAS7 depFile=/tmp/"+destWar+" depType=Deployment", expected, null);
 		
 	}
