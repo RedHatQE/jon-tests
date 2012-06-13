@@ -14,7 +14,7 @@
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
 <!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test-->
-<test name="Uninventory-Platforms">
+<test name="Uninventory-Platforms-Start">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
@@ -262,7 +262,7 @@
 
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
-<test name="Uninventory-Platforms">
+<test name="Uninventory-Platforms-End">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
