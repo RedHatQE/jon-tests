@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang.StringUtils;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -18,7 +19,7 @@ public class CliTest extends CliTestScript{
 	private static Logger _logger = Logger.getLogger(CliTest.class.getName());
 	public static String cliShLocation;
 	public static String jsFileLocation;
-	public static String javaHome;
+	public static String rhqCliJavaHome;
 	public static String rhqTarget;
 	private String cliUsername;
 	private String cliPassword;
@@ -50,11 +51,17 @@ public class CliTest extends CliTestScript{
 		// upload JS file to remote host first
 		cliTasks.copyFile(jsFileLocation+jsFile, remoteFileLocation);
 		jsFileName = new File(jsFile).getName();
+		// autodetect RHQ_CLI_JAVA_HOME if not defined
+
+		if (StringUtils.trimToNull(rhqCliJavaHome)==null) {
+			rhqCliJavaHome = cliTasks.runCommnad("echo $JAVA_HOME").trim();
+			_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
+		}
 		String consoleOutput = null;
 		if(cliArgs != null){
-			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName+" "+cliArgs);
+			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName+" "+cliArgs);
 		}else{
-			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+javaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName);
+			consoleOutput = cliTasks.runCommnad("export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName);
 		}
 		
 		if(!isVersionSet){

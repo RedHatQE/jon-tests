@@ -34,7 +34,7 @@ public abstract class CliTestScript extends TestScript{
 												config.get(PARAM.HOST_PASSWORD));
 		
 		CliTest.cliShLocation = config.get(PARAM.CLI_AGENT_BIN_SH);
-		CliTest.javaHome = config.get(PARAM.JAVA_HOME);
+		CliTest.rhqCliJavaHome = config.get(PARAM.RHQ_CLI_JAVA_HOME);
 		CliTest.rhqTarget = config.get(PARAM.RHQ_TARGET);
 		String jsFileLoc = System.getProperty("js.files.dir");
 		if(jsFileLoc == null){
