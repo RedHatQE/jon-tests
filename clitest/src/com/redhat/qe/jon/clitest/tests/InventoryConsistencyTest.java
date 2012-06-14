@@ -36,7 +36,11 @@ public class InventoryConsistencyTest extends CliTest {
 		return output;
 	}
 	
-	@Test(dataProvider="attempts",description="this test imports everything, waits and immediatelly unimports everything")
+	@Test(
+		dataProvider="attempts",
+		description="this test imports everything, waits and immediatelly unimports everything",
+		groups={"blockedByBug-830158"}
+	)
 	public void importAndUninventory(int attempt) throws IOException, CliTasksException {
 		runJSfile(null, "rhqadmin", "rhqadmin", "bug830158.js", null,null, null);
 	}
