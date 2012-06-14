@@ -1,0 +1,20 @@
+<suite name="RHQ CLI JS/JAVA AS7 Test">
+
+  	<listeners>
+  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
+  	</listeners>
+
+<test name="Standalone_Deployment">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.standalone.DeploymentTest">
+			<methods>
+				<include name=".*deploy.*"></include>			
+			</methods>
+		</class>		
+	</classes>
+</test>
+
+
+
+</suite>
