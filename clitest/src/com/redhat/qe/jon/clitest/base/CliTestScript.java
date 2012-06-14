@@ -39,7 +39,7 @@ public abstract class CliTestScript extends TestScript{
 		String jsFileLoc = System.getProperty("js.files.dir");
 		if(jsFileLoc == null){
 			jsFileLoc = "resources/js-files/"; //taking default location
-			_logger.info("JS file location is not specified.. Taking defailt location..."+jsFileLoc);
+			_logger.info("JS file location is not specified.. Taking default location..."+jsFileLoc);
 		}
 		CliTest.jsFileLocation = System.getProperty("user.dir")+"/"+jsFileLoc;
 		if(!CliTest.jsFileLocation.endsWith("/")){
