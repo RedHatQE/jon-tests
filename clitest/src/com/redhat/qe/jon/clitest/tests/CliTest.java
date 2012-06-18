@@ -43,14 +43,40 @@ public class CliTest extends CliTestScript{
 			this.cliPassword = cliPassword;
 	}
 	
-	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure"})
+	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure","js.depends"})
 	@Test
-	public void runJSfile(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure) throws IOException, CliTasksException{
+	/**
+	 * 
+	 * @param rhqTarget
+	 * @param cliUsername
+	 * @param cliPassword
+	 * @param jsFile to be executed
+	 * @param cliArgs arguments passed
+	 * @param expectedResult comma-separated list of messages that are expected as output
+	 * @param makeFilure
+	 * @param js.depends comma-separated list of other JS files that are required/imported by <b>jsFile</b>
+	 * @throws IOException
+	 * @throws CliTasksException
+	 */
+	public void runJSfile(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure,@Optional String jsDepends) throws IOException, CliTasksException{
 		loadSetup(rhqTarget, cliUsername, cliPassword, makeFilure);
 		cliTasks = CliTasks.getCliTasks();
 		// upload JS file to remote host first
 		cliTasks.copyFile(jsFileLocation+jsFile, remoteFileLocation);
 		jsFileName = new File(jsFile).getName();
+		if (jsDepends!=null) {
+			_logger.info("Preparing JS file depenencies ... "+jsDepends);
+			for (String dependency : jsDepends.split(",")) {
+				cliTasks.copyFile(jsFileLocation+dependency, remoteFileLocation, "_tmp.js");
+				// as CLI does not support including, we must merge the files manually
+				cliTasks.runCommnad("cat "+remoteFileLocation+"_tmp.js >> "+remoteFileLocation+"_deps.js");
+			}
+			cliTasks.runCommnad("rm "+remoteFileLocation+"_tmp.js");
+			// finally merge main jsFile
+			cliTasks.runCommnad("cat "+remoteFileLocation+jsFileName+" >> "+remoteFileLocation+"_deps.js && mv "+remoteFileLocation+"_deps.js "+remoteFileLocation+jsFileName);			
+			_logger.info("JS file depenencies ready");
+		}
+		
 		// autodetect RHQ_CLI_JAVA_HOME if not defined
 
 		if (StringUtils.trimToNull(rhqCliJavaHome)==null) {
