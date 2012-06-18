@@ -149,7 +149,9 @@ public class RestClient {
 		    		keyValue.append(key).append("=").append(map.get(key)).append("\n");	
 		    	}
 	    	}catch(Exception ex){
-	    		if(ex.getMessage().contains("cannot be cast to org.json.simple.JSONArray")){
+	    		if(ex.getMessage() == null){
+	    			_logger.log(Level.WARNING, "Exception --> "+ex.getMessage(), ex);
+	    		}else if(ex.getMessage().contains("cannot be cast to org.json.simple.JSONArray")){
 	    			keyValue.append(key).append("=").append(map.get(key)).append("\n");
 	    		}else{
 	    			_logger.log(Level.SEVERE, "Exception --> "+ex.getMessage(), ex);
