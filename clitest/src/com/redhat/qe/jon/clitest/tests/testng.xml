@@ -259,7 +259,17 @@
                 </class>
         </classes>
 </test>
-
+<test name="commonmodule_test">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="commonmodule_test.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
 <test name="Uninventory-Platforms-End">
