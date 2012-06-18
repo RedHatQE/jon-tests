@@ -33,7 +33,8 @@ var servers = findResources(null,platform,JBossTypeName,null,null);
 assertTrue(servers.size() > 0, "No resource with type of ["+JBossTypeName+"] under ["+platform+"] platform found!!");
 server = servers.get(0);
 deployFile(server,deployment,deploymentType,plugin);
-checkDeployment(server,deployment,deploymentType)
+checkDeployment(server,deployment,deploymentType);
+
 
 /*
  * ***********************************************************************
@@ -66,9 +67,9 @@ function deployFile(server,deployment,deploymentType,plugin){
 
         var appType = ResourceTypeManager.getResourceTypeByNameAndPlugin(deploymentType, plugin);
     	    	
-	    ResourceFactoryManager.createResource(server.id, appType.id, fileName, null,deployConfig, null);
+	    //ResourceFactoryManager.createResource(server.id, appType.id, fileName, null,deployConfig, null);
 	
-		println("Deploying " + file + " ...");
+		println("Creating new deployment resource " + file + " ...");
 		ResourceFactoryManager.createPackageBackedResource(
 				server.id, 
 				appType.id,
@@ -110,7 +111,7 @@ function checkDeployment(server,deployment,deploymentType){
     assertTrue(found,"Timeout reached - deployment didn't appear COMMITTED and UP in inventory");
     sleepNSec(10);
     var res = ProxyFactory.getResource(resources.get(0).id);
-    var tmpFile = '/var/retrieved.deployment';
+    var tmpFile = '/tmp/retrieved.deployment';
     res.retrieveBackingContent(tmpFile);
     var originalSize = new java.io.File(deployment).length();
     var retrievedSize = new java.io.File(tmpFile).length();
