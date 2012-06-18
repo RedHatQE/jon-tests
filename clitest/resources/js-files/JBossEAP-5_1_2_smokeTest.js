@@ -132,7 +132,7 @@ function checkChildResources(childResources){
     var childResTypes = new Array("Tx ConnectionFactory","JBoss Messaging","JBoss Web","Script","Web Application (WAR)","Resource Adapter Archive (RAR)"); 
     var i = 0;
     var status = false;
-    for each (var childResType in childResTypes){
+    for (var childResType in childResTypes){
 	for(i = 0;i < childResources.size();i++){
 	    //println("Child resource type: " + childResources.get(i).getResourceType().getName());
 	    if(childResType == childResources.get(i).getResourceType().getName()){
@@ -175,7 +175,7 @@ function importResources(resTypeName, resVersion, resCategory){
 function checkImportedResources(resources){
     var criteria = new ResourceCriteria();
     criteria.addFilterIds(getResIdsArrayFromPageList(resources));
-    criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED) //Add a filter to get Commited resources
+    criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED); //Add a filter to get Commited resources
     var committedRes = ResourceManager.findResourcesByCriteria(criteria);
     
     var j = 0;
@@ -251,7 +251,7 @@ function deleteResource(parentResId,resId,timeoutSec){
 function deployNewWar(){
     //TODO parametrize this
     var fileName = "helloworld.war";
-    var archiveDir = "/home/testuser/"
+    var archiveDir = "/home/testuser/";
     var appTypeName = "Web Application (WAR)";
     var pluginName = "JBossAS5";
     var deployDir = "/home/testuser/jboss-eap-5.1/jboss-as/server/default/deploy/";

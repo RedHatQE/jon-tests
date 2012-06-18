@@ -18,7 +18,7 @@ public class Configuration {
 		HOST_USER, 
 		HOST_PASSWORD,
 		CLI_AGENT_BIN_SH,
-		JAVA_HOME
+		RHQ_CLI_JAVA_HOME
 	};
 	
 	protected final Properties props;
@@ -51,8 +51,19 @@ public class Configuration {
 
 		Configuration config = new Configuration(props);
 		config.refreshWithEnvironmentVariables();
-
+		config.populateAsSystemProperties();
 		return config;
+	}
+	/**
+	 * populates all values as global system properties
+	 */
+	private void populateAsSystemProperties() {
+		for(PARAM item : PARAM.values()) {
+			String val = get(item);
+			if (StringUtils.trimToNull(val) != null) {
+				System.setProperty(item.toString(), get(item));
+			}
+		}
 	}
 	
 	/**

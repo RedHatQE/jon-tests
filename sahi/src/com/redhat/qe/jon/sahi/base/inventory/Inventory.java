@@ -227,7 +227,7 @@ public class Inventory extends ResourceTab{
 		 * @return true if child resource with given name exists
 		 */
 		public boolean existsChild(String name) {
-			if (tasks.cell("No items to show.").isVisible()) {
+			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
 			return tasks.cell(name).isVisible();

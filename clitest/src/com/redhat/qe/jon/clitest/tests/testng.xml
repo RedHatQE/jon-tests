@@ -3,6 +3,8 @@
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
+  	  	<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found -->
+  		<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
   	</listeners>
 
 
@@ -12,7 +14,7 @@
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
 <!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test-->
-<test name="Uninventory-Platforms">
+<test name="Uninventory-Platforms-Start">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
@@ -24,11 +26,11 @@
 	</classes>
 </test>
 
-<test name="Impoert-Resources">
+<test name="Import-Resources">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="ImportResourcers.js"/>
-			<parameter name="expected.result"  value="Login successful,Resources are impoerted successfully"/>
+			<parameter name="js.file"  value="ImportResources.js"/>
+			<parameter name="expected.result"  value="Login successful,Resources are imported successfully"/>
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -248,9 +250,19 @@
         </classes>
 </test>
 
+<test name="InventoryConsistency">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.InventoryConsistencyTest">
+                        <methods>
+                                <include name="importAndUninventory"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
-<test name="Uninventory-Platforms">
+<test name="Uninventory-Platforms-End">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
