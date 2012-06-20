@@ -2,6 +2,14 @@
  * commonmodule.js implemented using module pattern
  */
 
+// this is nice construct
+Array.prototype.each = function(callback){
+    for (var i =  0; i < this.length; i++){
+        callback(this[i]);
+    }
+};
+
+
 /**
  * this common module is instantiated by most of modules as private var
  */
@@ -22,13 +30,17 @@ var _common = function() {
 			return str.substring(0,str.length-1);
 		},
 		pageListToArray : function(pageList) {
-			var resourcesArray = new Array();
+			var resourcesArray = [];
 		    var i = 0;
 		    for(i = 0;i < pageList.size(); i++){
 		    	resourcesArray[i] = pageList.get(i);
 		    }
 		    return resourcesArray;
 		},
+		/**
+		 * @param conditionFunc - predicate
+		 * waits until conditionFunc does return any defined value except for false 
+		 */
 		waitFor : function(conditionFunc) {
 			var time = 0;
 			var timeout = 3;
@@ -200,7 +212,7 @@ var Resource = function (param) {
 	var find = function() {
 		var criteria = Inventory.createCriteria({id:_id});
 		var resources = ResourceManager.findResourcesByCriteria(criteria);
-		common.info("Resource.find: "+resources);
+		common.debug("Resource.find: "+resources);
 		return resources;
 	};
 	var _isAvailable = function() {
@@ -214,12 +226,24 @@ var Resource = function (param) {
 	var _exists = function() {
 		return find().size() == 1;
 	};
+	var _parent = function() {
+		var criteria = Inventory.createCriteria({id:_id});
+		criteria.fetchParentResource(true);
+		var resources = ResourceManager.findResourcesByCriteria(criteria);
+		if (resources.size()==1) {
+			return new Resource(resources.get(0).parentResource.id);
+		}
+	};
 	return {
 		getId : function() {return _id;},
 		toString : function() {return _res.toString();},
 		getProxy : function() {
 			common.trace("Resource("+_id+").getProxy()");
 			return ProxyFactory.getResource(_id);
+		},
+		parent : function() {
+			common.trace("Resource("+_id+").parent()");
+			return _parent();
 		},
 		/**
 		 * removes/deletes this resource from inventory. 
@@ -231,13 +255,37 @@ var Resource = function (param) {
 				common.debug("Resource does not exists, nothing to remove");
 				return false;
 			}
+			var parent = _parent();
+			if (!parent) {
+				throw "Resource cannot be deleted without having parent"; 
+			}
+			var startTime = new Date().getTime();
+			var parentId = parent.getId();
 			try {
-				ResourceFactoryManager.deleteResource(_id);
-			} catch (exc) {
-				common.info("Cannot delete resource: "+exc);
+				var history = ResourceFactoryManager.deleteResource(_id);
+			}
+			catch (exc) {
+				common.info("Resource was not deleted :"+exc);
 				return false;
 			}
-			return !common.waitFor(_exists);
+			var pageControl = new PageControl(0,1);
+			var pred = function() {
+				var histories = ResourceFactoryManager.findDeleteChildResourceHistory(parentId,startTime,new Date().getTime(),pageControl);
+				var current;
+				common.pageListToArray(histories).each(
+						function (x) {
+							if (x.id==history.id && x.status != DeleteResourceStatus.IN_PROGRESS) {
+								current = x;
+							}
+						}
+				);
+				return current;
+			};
+			var result = common.waitFor(pred);
+			if (result && result.status == DeleteResourceStatus.SUCCESS) {
+				return true;
+			}
+			return false;
 		},
 		/**
 		 * 
@@ -264,7 +312,98 @@ var Resource = function (param) {
 				return children[0];
 			}
 		},
-		createChild : function() {
+		/**
+		 * creates a new child resource
+		 * @param params
+		 * @returns true if the resource was successfully created and discovered
+		 */
+		createChild : function(params) {
+			common.trace("Resource("+_id+").createChild("+common.objToString(params)+")");
+			params = params || {};
+			if (!params.name && !params.content) {
+				throw "Either [name] or [content] parameters must be defined";
+			}
+			if (!params.type) {
+				throw "[type] parameter MUST be specified, how could I guess what type of resource are you creating?";
+			}
+			// TODO check for existing resource!
+			var name=params.name;
+			if (!params.name) {
+				name = new java.io.File(params.content).getName();
+			}
+			// bind input params
+			var type = params.type;
+			var config = params.config;
+			var version = params.version;
+			// these 2 are used for querying resource history
+			var startTime = new Date().getTime();
+			var pageControl = new PageControl(0,1);
+			// we need to obtain resourceTypeId, to get it, we need plugin, where the resource type
+			// is defined .. we'll get this plugin from parent (this) resource
+			var resType = ResourceTypeManager.getResourceTypeByNameAndPlugin(type, find().get(0).resourceType.plugin);
+			if (!resType) {
+				throw "Invalid resource type [type="+type+"]";
+			}
+
+			common.debug("Creating new ["+type+"] resource called [" + name+"]");
+			if (params.content) {
+				// we're creating a resource with backing content
+				common.debug("Reading " + content + " ...");
+				var file = new java.io.File(params.content);
+			    var inputStream = new java.io.FileInputStream(file);
+			    var fileLength = file.length();
+			    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
+			    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+				    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); 	
+			    }
+				var history = ResourceFactoryManager.createPackageBackedResource(
+					_id, 
+					resType.id,
+					name, // new resource name
+					null, // pluginConfiguration
+					name, 
+					version, // packageVersion
+					null, // architectureId
+					config, fileBytes, null // timeout
+				);
+			}
+			else {
+				// TODO retrieve default configuration for this resource type (using ConfigurationTemplate)
+				var history = ResourceFactoryManager.createResource(
+					_id, 
+					resType.id,
+					name, // new resource name
+					null, // pluginConfiguration
+					null, // resourceConfiguration
+					null  // timeout
+				);
+			}
+			var pred = function() {
+				var histories = ResourceFactoryManager.findCreateChildResourceHistory(_id,startTime,new Date().getTime(),pageControl);
+				var current;
+				common.pageListToArray(histories).each(
+						function (x) {
+							if (history && x.id==history.id && x.status != CreateResourceStatus.IN_PROGRESS) {
+								current = x;
+							}
+						}
+				);
+				return current;
+			};
+			common.debug("Waiting for resrouce creation operation...")
+			var result = common.waitFor(pred);
+			common.debug("Child resource creation status : " + result.status);
+			if (result && result.status == CreateResourceStatus.SUCCESS) {
+				common.debug("Waiting for resource to be autodiscovered");
+				// we assume there can be exactly one resource of one type having unique name
+				var discovered = common.waitFor(function() {Inventory.find({parentResourceId:_id,resourceTypeId:resType.id,name:name}).length==1;});
+				if (!discovered) {
+					common.info("Resource child was successfully created, but it's autodiscovery timed out!");
+					return false;
+				}
+				return true;
+			}
+			return false;
 			
 		},
 		operations : function() {
@@ -284,7 +423,7 @@ var Resource = function (param) {
 				if (histories.size() > 0 && histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
 					return history.get(0);
 				}
-			}
+			};
 			var history = common.waitFor(pred);
 			return history;
 		},
