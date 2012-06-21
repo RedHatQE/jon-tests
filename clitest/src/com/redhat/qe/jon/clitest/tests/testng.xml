@@ -3,6 +3,8 @@
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
+  	  	<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found -->
+  		<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
   	</listeners>
 
 
@@ -12,7 +14,7 @@
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
 <!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test-->
-<test name="Uninventory-Platforms">
+<test name="Uninventory-Platforms-Start">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
@@ -24,11 +26,11 @@
 	</classes>
 </test>
 
-<test name="Impoert-Resources">
+<test name="Import-Resources">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="ImportResourcers.js"/>
-			<parameter name="expected.result"  value="Login successful,Resources are impoerted successfully"/>
+			<parameter name="js.file"  value="ImportResources.js"/>
+			<parameter name="expected.result"  value="Login successful,Resources are imported successfully"/>
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -210,9 +212,39 @@
         </classes>
 </test>
 
+<test name="InventoryConsistency">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.InventoryConsistencyTest">
+                        <methods>
+                                <include name="importAndUninventory"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="commonmodule_test">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="commonmodule_test.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<!-- 
+			we require 2 files,
+			
+			/resources/deployments/hello1.war is taken as resource from clitest project classpath will appear in /tmp/deployments/hello.war
+			(/tmp/ is default location if destination path is relative)
+			
+			http://lzoubek-builds.brq.redhat.com/eap6/host.xml is downloaded from to /tmp/host.xml123 (absolute path)
+			 -->
+			<parameter name="res.src" value="/resources/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
+			<parameter name="res.dst" value="hello.war,/tmp/foo" />
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
-<test name="Uninventory-Platforms">
+<test name="Uninventory-Platforms-End">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>

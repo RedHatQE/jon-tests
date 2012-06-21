@@ -137,6 +137,6 @@ public class AS7CliTest extends CliTest {
 		}
 		Assert.assertTrue(running, "Server process is running");
 		sshClient.runAndWait("netstat -pltn | grep java");
-		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, "--args-style=named agent="+agentName, start.getExpectedMessage()+",availability=UP", null);
+		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, "--args-style=named agent="+agentName, start.getExpectedMessage()+",availability=UP", null,null,null,null);
 	}
 }

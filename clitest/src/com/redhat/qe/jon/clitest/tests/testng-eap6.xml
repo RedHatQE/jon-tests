@@ -36,7 +36,7 @@
 <test name="Import_Resources">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="ImportResourcers.js"/>
+			<parameter name="js.file"  value="ImportResources.js"/>
 			<parameter name="expected.result"  value="Login successful,Resources are impoerted successfully"/>
 			<methods>
 				<include name="runJSfile"></include>		

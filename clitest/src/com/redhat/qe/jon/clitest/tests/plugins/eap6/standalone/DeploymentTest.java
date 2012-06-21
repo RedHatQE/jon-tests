@@ -18,7 +18,7 @@ public class DeploymentTest extends AS7CliTest {
 	
 	@Test
 	public void deployWAR() throws IOException, CliTasksException {		
-		createDeployment("hello1.war", "hello.war",null);
+		createDeployment("hello1.war", "hello.war","Creating new deployment resource");
 		// TODO validate deployment on EAP server
 	}
 	@Test(dependsOnMethods={"deployWAR"})
@@ -36,7 +36,7 @@ public class DeploymentTest extends AS7CliTest {
 		String warFilePath = AS7CliTest.class.getResource("/resources/deployments/"+srcWar).getPath();
 		CliTasks.getCliTasks().copyFile(warFilePath, "/tmp/",destWar);
 
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named agent="+agentName+" serverType=\"JBossAS7 Standalone Server\" pluginName=JBossAS7 depFile=/tmp/"+destWar+" depType=Deployment", expected, null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named agent="+agentName+" serverType=\"JBossAS7 Standalone Server\" pluginName=JBossAS7 depFile=/tmp/"+destWar+" depType=Deployment", expected, null,null,null,null);
 		
 	}
 }
