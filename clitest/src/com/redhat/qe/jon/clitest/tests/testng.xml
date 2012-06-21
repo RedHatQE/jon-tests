@@ -264,6 +264,16 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="commonmodule_test.js"/>
 			<parameter name="js.depends" value="commonmodule.js" />
+			<!-- 
+			we require 2 files,
+			
+			/resources/deployments/hello1.war is taken as resource from clitest project classpath will appear in /tmp/deployments/hello.war
+			(/tmp/ is default location if destination path is relative)
+			
+			http://lzoubek-builds.brq.redhat.com/eap6/host.xml is downloaded from to /tmp/host.xml123 (absolute path)
+			 -->
+			<parameter name="res.src" value="/resources/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
+			<parameter name="res.dst" value="hello.war,/tmp/foo" />
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
