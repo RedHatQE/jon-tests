@@ -30,7 +30,7 @@ var _common = function() {
 			return str.substring(0,str.length-1);
 		},
 		pageListToArray : function(pageList) {
-			var resourcesArray = [];
+			var resourcesArray = new Array();
 		    var i = 0;
 		    for(i = 0;i < pageList.size(); i++){
 		    	resourcesArray[i] = pageList.get(i);
@@ -44,11 +44,13 @@ var _common = function() {
 		waitFor : function(conditionFunc) {
 			var time = 0;
 			var timeout = 3;
-			while (time<timeout && !conditionFunc()) {
+			var result = conditionFunc();
+			while (time<timeout && !result) {
 				sleep(10*1000);
 				time++;
+				result = conditionFunc();
 			}
-			return conditionFunc();
+			return result;
 		},
 		info : function(message) {
 			if (typeof verbose == "number" && verbose<=0) {
@@ -315,7 +317,7 @@ var Resource = function (param) {
 		/**
 		 * creates a new child resource
 		 * @param params
-		 * @returns true if the resource was successfully created and discovered
+		 * @returns new resource if it was successfully created and discovered, false otherwise
 		 */
 		createChild : function(params) {
 			common.trace("Resource("+_id+").createChild("+common.objToString(params)+")");
@@ -334,29 +336,37 @@ var Resource = function (param) {
 			// bind input params
 			var type = params.type;
 			var config = params.config;
-			var version = params.version;
+			var version = params.version || null;
+			var content = params.content;
 			// these 2 are used for querying resource history
 			var startTime = new Date().getTime();
 			var pageControl = new PageControl(0,1);
 			// we need to obtain resourceTypeId, to get it, we need plugin, where the resource type
 			// is defined .. we'll get this plugin from parent (this) resource
-			var resType = ResourceTypeManager.getResourceTypeByNameAndPlugin(type, find().get(0).resourceType.plugin);
+			var resType = ResourceTypeManager.getResourceTypeByNameAndPlugin(type, find().get(0).resourceType.plugin); 
 			if (!resType) {
 				throw "Invalid resource type [type="+type+"]";
 			}
-
+			// we need to re-request resource type so it contains configuration definition too
+			var criteria = new ResourceTypeCriteria();
+			criteria.addFilterId(resType.id);
+			criteria.fetchResourceConfigurationDefinition(true);
+			criteria.fetchPluginConfigurationDefinition(true); 
+			resType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
+			
 			common.debug("Creating new ["+type+"] resource called [" + name+"]");
-			if (params.content) {
+			if (content) {
 				// we're creating a resource with backing content
-				common.debug("Reading " + content + " ...");
-				var file = new java.io.File(params.content);
+				common.debug("Reading file " + content + " ...");
+				var file = new java.io.File(content);
 			    var inputStream = new java.io.FileInputStream(file);
 			    var fileLength = file.length();
-			    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
+			    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);			    
 			    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
 				    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); 	
 			    }
-				var history = ResourceFactoryManager.createPackageBackedResource(
+			    var configuration = config || new Configuration();
+				history = ResourceFactoryManager.createPackageBackedResource(
 					_id, 
 					resType.id,
 					name, // new resource name
@@ -364,17 +374,29 @@ var Resource = function (param) {
 					name, 
 					version, // packageVersion
 					null, // architectureId
-					config, fileBytes, null // timeout
+					configuration, // resourceConfiguration 
+					fileBytes, // content
+					null // timeout
 				);
 			}
 			else {
-				// TODO retrieve default configuration for this resource type (using ConfigurationTemplate)
+				var configuration = new Configuration();
+				var template = resType.resourceConfigurationDefinition.defaultTemplate;
+				if (template) {
+					configuration = template.createConfiguration();
+				}
+				
+				var plugConfiguration = new Configuration();
+				var pluginTemplate = resType.pluginConfigurationDefinition.defaultTemplate;
+				if (pluginTemplate) {
+					plugConfiguration = template.configuration;
+				}
 				var history = ResourceFactoryManager.createResource(
 					_id, 
 					resType.id,
 					name, // new resource name
-					null, // pluginConfiguration
-					null, // resourceConfiguration
+					plugConfiguration, // pluginConfiguration
+					configuration, // resourceConfiguration
 					null  // timeout
 				);
 			}
@@ -390,19 +412,20 @@ var Resource = function (param) {
 				);
 				return current;
 			};
-			common.debug("Waiting for resrouce creation operation...")
+			common.debug("Waiting for resrouce creation operation...");
 			var result = common.waitFor(pred);
 			common.debug("Child resource creation status : " + result.status);
 			if (result && result.status == CreateResourceStatus.SUCCESS) {
-				common.debug("Waiting for resource to be autodiscovered");
+				common.debug("Waiting for resource to be auto-discovered");
 				// we assume there can be exactly one resource of one type having unique name
-				var discovered = common.waitFor(function() {Inventory.find({parentResourceId:_id,resourceTypeId:resType.id,name:name}).length==1;});
+				var discovered = common.waitFor(function() {return Inventory.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey}).length==1;});
 				if (!discovered) {
 					common.info("Resource child was successfully created, but it's autodiscovery timed out!");
 					return false;
 				}
-				return true;
+				return Inventory.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey})[0];
 			}
+			common.debug("Resource creation failed, reason : "+result.errorMessage);
 			return false;
 			
 		},
@@ -422,7 +445,7 @@ var Resource = function (param) {
 				var histories = OperationManager.findResourceOperationHistoriesByCriteria(opHistCriteria);
 				if (histories.size() > 0 && histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
 					return history.get(0);
-				}
+				};
 			};
 			var history = common.waitFor(pred);
 			return history;

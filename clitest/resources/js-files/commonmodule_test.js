@@ -26,7 +26,21 @@ if (platforms.length>0) {
 		println("Waiting few minutes 'till EAP6 is imported");
 		//sleep(1000*60*5);
 		// let's create a resource
-		eap6.createChild({name:"testinterface",type:"Network Interface"});
+		var iface = eap6.createChild({name:"testinterface",type:"Network Interface"});
+		if (iface) {
+			println("Interface removed : "+iface.remove());
+		}
+		else {
+			println("Network Interface was not created!!");
+		}
+		// let's create deployment
+		var deployment = eap6.createChild({content:"/tmp/hello.war",type:"Deployment"});
+		if (deployment) {
+			println("Deployment removed : "+deployment.remove());
+		}
+		else {
+			println("Deployment was not created!!");
+		}
 	}
 	//println(Inventory.platforms());
 	//println("Delete child "+platform.children()[0].remove());
