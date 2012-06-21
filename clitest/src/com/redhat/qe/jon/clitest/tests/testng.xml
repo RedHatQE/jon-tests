@@ -149,17 +149,6 @@
         </classes>
 </test>
 
-<test name="criteriaSearchingExample">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="criteriaSearchingExample.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
 <!-- blocked by https://bugzilla.redhat.com/show_bug.cgi?id=814579 
 <test name="Bug814579">
         <classes>
@@ -197,7 +186,6 @@
         </classes>
 </test>
 -->
-
 <test name="userRoles">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
