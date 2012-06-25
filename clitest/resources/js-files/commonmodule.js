@@ -2,13 +2,18 @@
  * commonmodule.js implemented using module pattern
  */
 
-// this is nice construct
-Array.prototype.each = function(callback){
-    for (var i =  0; i < this.length; i++){
-        callback(this[i]);
-    }
-};
 
+/**
+ * print function that recognizes arrays and prints each item on new line
+ */
+var p = function(object) {
+	if (object instanceof Array) {
+		object.forEach(function(x){println(x);});
+	}
+	else {
+		println(object);
+	}
+};
 
 /**
  * this common module is instantiated by most of modules as private var
@@ -22,7 +27,22 @@ var _common = function() {
 			println(object);
 		}
 	};
+	var _debug = function(message) {
+		if (typeof verbose == "number" && verbose>=1) {
+			_println("[DEBUG] "+message);
+		}
+	};
+	var _trace = function(message) {
+		if (typeof verbose == "number" && verbose>=2) {
+			_println("[TRACE] "+message);
+		}
+	};
 	
+	var _info = function(message) {
+		if (typeof verbose == "number" && verbose<=0) {
+			_println("[INFO] "+message);
+		}
+	};
 	return {
 		objToString : function(obj) {
 			var str=""; 
@@ -36,37 +56,31 @@ var _common = function() {
 		    	resourcesArray[i] = pageList.get(i);
 		    }
 		    return resourcesArray;
-		},
+		},		
 		/**
 		 * @param conditionFunc - predicate
 		 * waits until conditionFunc does return any defined value except for false 
 		 */
 		waitFor : function(conditionFunc) {
 			var time = 0;
-			var timeout = 3;
+			var timeout = timeout || 30;
+			var delay = delay || 5;
+			trace("common.waitFor(func,delay="+delay+"timeout="+timeout+")");
 			var result = conditionFunc();
 			while (time<timeout && !result) {
-				sleep(10*1000);
-				time++;
+				_debug("Waiting "+delay+"s");
+				sleep(delay * 1000);
+				time+=delay;
 				result = conditionFunc();
+			}
+			if (time>=timeout) {
+				common.debug("Timeout "+timeout+" was reached!!");
 			}
 			return result;
 		},
-		info : function(message) {
-			if (typeof verbose == "number" && verbose<=0) {
-				_println("[INFO] "+message);
-			}
-		},
-		debug : function(message) {
-			if (typeof verbose == "number" && verbose>=1) {
-				_println("[DEBUG] "+message);
-			}
-		},
-		trace : function(message) {
-			if (typeof verbose == "number" && verbose>=2) {
-				_println("[TRACE] "+message);
-			}
-		}
+		info : _info,
+		debug : _debug,
+		trace : _trace
 	};
 };
 
@@ -81,15 +95,15 @@ var Inventory = (function () {
 			    // use hasOwnProperty to filter out keys from the Object.prototype
 			    if (params.hasOwnProperty(k)) {
 			    	if (k=="status") {
-			    		 eval("criteria.addFilterInventoryStatus(InventoryStatus."+params[k]+")");
+			    		 eval("criteria.addFilterInventoryStatus(InventoryStatus."+params[k].toUpperCase()+")");
 			    		 continue;
 			    	}
 			    	if (k=="category") {
-			    		eval("criteria.addFilterResourceCategories(ResourceCategory."+params[k]+")");
+			    		eval("criteria.addFilterResourceCategories(ResourceCategory."+params[k].toUpperCase()+")");
 			    		 continue;
 			    	}
 			    	if (k=="availability") {
-			    		eval("criteria.addFilterCurrentAvailability(AvailabilityType."+params[k]+")");
+			    		eval("criteria.addFilterCurrentAvailability(AvailabilityType."+params[k].toUpperCase()+")");
 			    		continue;
 			    	}
 			        var key = k[0].toUpperCase()+k.substring(1);        
@@ -98,7 +112,14 @@ var Inventory = (function () {
 			        	func.call(criteria,params[k]);
 			        }
 			        else {
-			        	throw "Parameter ["+k+"] is not valid filter parameter";
+			        	var names = "";
+			        	criteria.getClass().getMethods().forEach( function (m) {
+			        		if (m.getName().startsWith("addFilter")) {
+			        		 var name = m.getName().substring(9);
+			        		 names+=name.substring(0,1).toLowerCase()+name.substring(1)+", ";
+			        		}
+			        	});
+			        	throw "Parameter ["+k+"] is not valid filter parameter, valid filter parameters are : "+names;
 			        }
 			    }
 			}
@@ -111,7 +132,8 @@ var Inventory = (function () {
 		 * @param params
 		 * @returns array of resources
 		 */
-		find : function(params) {    
+		find : function(params) {
+			params = params || {};
 			common.trace("Inventory.find("+common.objToString(params)+")");
 			params.status="COMMITTED";
 			var criteria = Inventory.createCriteria(params);
@@ -190,6 +212,8 @@ Inventory.discoveryQueue = (function () {
 			if (children) {
 				_importResources({parentResourceId:resources[0].getId()});
 			}
+			common.debug("Waiting 15 seconds, 'till inventory syncrhonizes with agent");
+			sleep(15*1000);
 			return resources[0];
 		},
 		importResource : function(resource) {
@@ -232,7 +256,7 @@ var Resource = function (param) {
 		var criteria = Inventory.createCriteria({id:_id});
 		criteria.fetchParentResource(true);
 		var resources = ResourceManager.findResourcesByCriteria(criteria);
-		if (resources.size()==1) {
+		if (resources.size()==1 && resources.get(0).parentResource) {
 			return new Resource(resources.get(0).parentResource.id);
 		}
 	};
@@ -274,7 +298,7 @@ var Resource = function (param) {
 			var pred = function() {
 				var histories = ResourceFactoryManager.findDeleteChildResourceHistory(parentId,startTime,new Date().getTime(),pageControl);
 				var current;
-				common.pageListToArray(histories).each(
+				common.pageListToArray(histories).forEach(
 						function (x) {
 							if (x.id==history.id && x.status != DeleteResourceStatus.IN_PROGRESS) {
 								current = x;
@@ -403,7 +427,7 @@ var Resource = function (param) {
 			var pred = function() {
 				var histories = ResourceFactoryManager.findCreateChildResourceHistory(_id,startTime,new Date().getTime(),pageControl);
 				var current;
-				common.pageListToArray(histories).each(
+				common.pageListToArray(histories).forEach(
 						function (x) {
 							if (history && x.id==history.id && x.status != CreateResourceStatus.IN_PROGRESS) {
 								current = x;
@@ -433,8 +457,9 @@ var Resource = function (param) {
 			
 		},
 		invokeOperation : function(name,params) {
-			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
+			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");			
 			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,null,null);
+			common.debug("Operation scheduled..");
 			var opHistCriteria = new ResourceOperationHistoryCriteria();
 			opHistCriteria.addFilterJobId(resOpShedule.getJobId());
 			opHistCriteria.addFilterResourceIds(_id);
@@ -444,10 +469,12 @@ var Resource = function (param) {
 			var pred = function() {
 				var histories = OperationManager.findResourceOperationHistoriesByCriteria(opHistCriteria);
 				if (histories.size() > 0 && histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
-					return history.get(0);
+					return histories.get(0);
 				};
 			};
+			common.debug("Waiting for result..");
 			var history = common.waitFor(pred);
+			common.debug("Operation finished with status : "+history.status);
 			return history;
 		},
 		/**
@@ -478,7 +505,9 @@ var Resource = function (param) {
 		}
 	};
 };
-
-
+// default verbosity,timeouts
+var verbose = 3;
+var delay = 5; //seconds
+var timeout = 120; //seconds
 // END of commonmodule.js 
 
