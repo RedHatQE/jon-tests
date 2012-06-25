@@ -212,15 +212,6 @@
         </classes>
 </test>
 
-<test name="InventoryConsistency">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.InventoryConsistencyTest">
-                        <methods>
-                                <include name="importAndUninventory"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
 <test name="commonmodule_test">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
@@ -242,6 +233,19 @@
 		</class>
 	</classes>
 </test>
+
+<!--  This case SHOULD BE LAST ONE or before the one-->
+<!--  Doing inventory and Uninventory for N number times-->
+<test name="InventoryConsistency">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.InventoryConsistencyTest">
+                        <methods>
+                                <include name="importAndUninventory"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
 <test name="Uninventory-Platforms-End">

@@ -28,7 +28,7 @@ public class InventoryConsistencyTest extends CliTest {
 	
 	@DataProvider
 	public Object[][] attempts() {
-		int count = 10;
+		int count = 3;
 		Object[][] output = new Object[count][];
 		for (int i=0;i<count;i++) {
 			output[i] = new Object[] {i};
@@ -42,6 +42,7 @@ public class InventoryConsistencyTest extends CliTest {
 		groups={"blockedByBug-830158"}
 	)
 	public void importAndUninventory(int attempt) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "bug830158.js", null,null, null,null,null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "ImportResources.js", null,null, null,null,null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "UninventoryResources.js", null,null, null,null,null,null);
 	}
 }
