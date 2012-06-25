@@ -63,18 +63,28 @@ var _common = function() {
 		 */
 		waitFor : function(conditionFunc) {
 			var time = 0;
-			var timeout = timeout || 30;
-			var delay = delay || 5;
-			trace("common.waitFor(func,delay="+delay+"timeout="+timeout+")");
+			if (typeof timeout == "number") {
+				var tout = timeout;
+			}
+			else {
+				tout = 20;
+			}
+			if (typeof delay == "number") {
+				var dlay = delay;
+			}
+			else {
+				dlay = 5;
+			}
+			_info("common.waitFor(func,delay="+dlay+",timeout="+tout+")");
 			var result = conditionFunc();
-			while (time<timeout && !result) {
-				_debug("Waiting "+delay+"s");
-				sleep(delay * 1000);
-				time+=delay;
+			while (time<tout && !result) {
+				_debug("Waiting "+dlay+"s");
+				sleep(dlay * 1000);
+				time+=dlay;
 				result = conditionFunc();
 			}
-			if (time>=timeout) {
-				common.debug("Timeout "+timeout+" was reached!!");
+			if (time>=tout) {
+				_debug("Timeout "+tout+"s was reached!!");
 			}
 			return result;
 		},
@@ -158,8 +168,8 @@ Inventory.discoveryQueue = (function () {
 	
 	var _waitForResources = function(criteria) {
 		var resources = ResourceManager.findResourcesByCriteria(criteria);
-	    time = 0;
-	    timeout = 3;
+	    var time = 0;
+	    var timeout = 3;
 	    while (time<timeout && resources.size() == 0) {
 	    	resources = ResourceManager.findResourcesByCriteria(criteria);
 	    	sleep(10*1000);
@@ -168,18 +178,18 @@ Inventory.discoveryQueue = (function () {
 	    return resources;
 	};
 	
-	var _importResources = function (json){
-		common.trace("discoveryQueue._importResources("+common.objToString(criteria)+")");
-		json.status="NEW";
-		var criteria = Inventory.createCriteria(json);	    
+	var _importResources = function (params){
+		common.trace("discoveryQueue._importResources("+common.objToString(params)+")");
+		params.status="NEW";
+		var criteria = Inventory.createCriteria(params);	    
 	    common.info("Waiting until desired resources become NEW");
 	    var resources = _waitForResources(criteria);
 	    common.debug("Found "+resources.size()+" NEW resources");	    
 	    var resourcesArray = common.pageListToArray(resources);
 	    assertTrue(resources.size()>0, "At least one resrouce was found");
 	    DiscoveryBoss.importResources(resourcesArray.map(function(x){return x.id;}));
-	    json.status="COMMITTED";
-	    criteria = Inventory.createCriteria(json);	   
+	    params.status="COMMITTED";
+	    criteria = Inventory.createCriteria(params);	   
 	    common.info("Waiting until resources become COMMITTED");
 	    var committed = _waitForResources(criteria);	    
 	    assertTrue(committed.size() > 0, "COMMITED resources size > 0");   
@@ -191,13 +201,13 @@ Inventory.discoveryQueue = (function () {
 			common.trace("discoveryQueue.list()");
 			var criteria = Inventory.createCriteria({status:"NEW"});
 			var resources = ResourceManager.findResourcesByCriteria(criteria);
-			return common.pageListToArray(resources);
+			return common.pageListToArray(resources).map(function(x){return new Resource(x);});
 		},
 		listPlatforms : function listPlatforms() {
 			common.trace("discoveryQueue.listPlatforms()");
 			var criteria = Inventory.createCriteria({status:"NEW",category:"PLATFORM"});
 			var resources = ResourceManager.findResourcesByCriteria(criteria);
-			return common.pageListToArray(resources);
+			return common.pageListToArray(resources).map(function(x){return new Resource(x);});
 		},
 		importPlatform: function(name,children) {
 			common.trace("discoveryQueue.importPlatform(name="+name+" children[default=true]="+children+")");
@@ -205,6 +215,7 @@ Inventory.discoveryQueue = (function () {
 			// first lookup whether platform is already imported
 			var resources = Inventory.find({name:name,category:"PLATFORM"});
 			if (resources.length == 1) {
+				common.debug("Platform "+name+" is already in inventory, not importing");
 				return resources[0];
 			}
 			resources = _importResources({name:name,category:"PLATFORM"});
@@ -216,12 +227,19 @@ Inventory.discoveryQueue = (function () {
 			sleep(15*1000);
 			return resources[0];
 		},
-		importResource : function(resource) {
+		importResource : function(resource,children) {
+			common.trace("discoveryQueue.importResource(resource="+resource+" children[default=true]="+children+")");
+			children = children || true;
 			if (!resource.exists()) {
 				DiscoveryBoss.importResources([resource.getId()]);
-				waitFor(resource.exists);
+				common.waitFor(resource.exists);
 			}
-		}
+			if (children) {
+				_importResources({parentResourceId:resource.getId()});
+			}
+			return resource;
+		},
+		importResources : _importResources,
 	};
 }) ();
 
@@ -506,7 +524,7 @@ var Resource = function (param) {
 	};
 };
 // default verbosity,timeouts
-var verbose = 3;
+var verbose = 0;
 var delay = 5; //seconds
 var timeout = 120; //seconds
 // END of commonmodule.js 
