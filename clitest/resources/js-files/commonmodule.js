@@ -278,6 +278,25 @@ var Resource = function (param) {
 			return new Resource(resources.get(0).parentResource.id);
 		}
 	};
+	var _waitForOperationResult = function(resourceId, resOpShedule){
+		var opHistCriteria = new ResourceOperationHistoryCriteria();
+		if(resOpShedule)
+			opHistCriteria.addFilterJobId(resOpShedule.getJobId());
+		opHistCriteria.addFilterResourceIds(resourceId);
+		opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent at top of results
+		opHistCriteria.setPaging(0, 1); // only return one result, in effect the latest
+		opHistCriteria.fetchResults(true);
+		var pred = function() {
+			var histories = OperationManager.findResourceOperationHistoriesByCriteria(opHistCriteria);
+			if (histories.size() > 0 && histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
+				return histories.get(0);
+			};
+		};
+		common.debug("Waiting for result..");
+		var history = common.waitFor(pred);
+		common.debug("Operation finished with status : "+history.status);
+		return history;
+	};
 	return {
 		getId : function() {return _id;},
 		toString : function() {return _res.toString();},
@@ -478,23 +497,15 @@ var Resource = function (param) {
 			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");			
 			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,null,null);
 			common.debug("Operation scheduled..");
-			var opHistCriteria = new ResourceOperationHistoryCriteria();
-			opHistCriteria.addFilterJobId(resOpShedule.getJobId());
-			opHistCriteria.addFilterResourceIds(_id);
-			opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent at top of results
-			opHistCriteria.setPaging(0, 1); // only return one result, in effect the latest
-			opHistCriteria.fetchResults(true);
-			var pred = function() {
-				var histories = OperationManager.findResourceOperationHistoriesByCriteria(opHistCriteria);
-				if (histories.size() > 0 && histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
-					return histories.get(0);
-				};
-			};
-			common.debug("Waiting for result..");
-			var history = common.waitFor(pred);
-			common.debug("Operation finished with status : "+history.status);
-			return history;
+			return _waitForOperationResult(_id,resOpShedule);		
 		},
+		/**
+		 * Waits until operation is finished or timeout is reached. 
+		 * @param resourceId
+		 * @param resOpShedule may be null, than the most recent job for given resourceId is picked
+		 * @returns operation history
+		 */
+		waitForOperationResult : _waitForOperationResult,
 		/**
 		 * checks whether resource exists in inventory
 		 * @returns bool
