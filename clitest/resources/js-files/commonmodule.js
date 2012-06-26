@@ -99,6 +99,7 @@ var Inventory = (function () {
 	var common = new _common();
 	return {
 		createCriteria : function(params) {
+			params = params || {};
 			common.trace("Inventory.createCriteria("+common.objToString(params) +")");
 			var criteria = new ResourceCriteria();	
 			for (var k in params) {
@@ -179,6 +180,7 @@ Inventory.discoveryQueue = (function () {
 	};
 	
 	var _importResources = function (params){
+		params = params || {};
 		common.trace("discoveryQueue._importResources("+common.objToString(params)+")");
 		params.status="NEW";
 		var criteria = Inventory.createCriteria(params);	    
@@ -246,6 +248,9 @@ Inventory.discoveryQueue = (function () {
 var Resource = function (param) {
 	var common = new _common();
 	common.trace("new Resource("+param+")");
+	if (!param) {
+		throw "either number or rhq.domain.Resource parameter is required";
+	}
 	if ("number" == typeof param) {		
 		param = ProxyFactory.getResource(param);
 	}
@@ -420,6 +425,9 @@ var Resource = function (param) {
 				// we're creating a resource with backing content
 				common.debug("Reading file " + content + " ...");
 				var file = new java.io.File(content);
+				if (!file.exists()) {
+					throw "content parameter file does not exist!";
+				}
 			    var inputStream = new java.io.FileInputStream(file);
 			    var fileLength = file.length();
 			    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);			    
