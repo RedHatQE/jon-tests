@@ -5,6 +5,10 @@
  * Apr 20, 2012     
  **/
 
+var verbose = 0; // logging level to INFO
+var common = new _common(); // object with common methods
+
+
 var resCriPlat = new ResourceCriteria();
 resCriPlat.addFilterResourceCategories(ResourceCategory.PLATFORM);
 var platforms = ResourceManager.findResourcesByCriteria(resCriPlat);
@@ -16,7 +20,6 @@ resCriAgent.addFilterResourceTypeName("RHQ Agent");
 var agents = ResourceManager.findResourcesByCriteria(resCriAgent);
 
 assertTrue(agents.size() > 0, "There is no RHQ Agent in inventory!!");
-
 
 //proxy
 var rhelServerOne = ProxyFactory.getResource(platforms.get(0).getId());//get platform
@@ -34,12 +37,15 @@ assertNotNull(processlist);
 pretty.print(processlist);
 
 agent.updateAllPlugins();
-println("Waiting 20 sec to sync...");
-sleep(1000 * 20);
-// TODO find better soulution than hardcoded waiting
-// TODO check result of operation, currently not possible via Proxy but OperationManager must be used
 
-// TODO jbossas.restart();
+var res = new Resource(agent.id);
+var history = res.waitForOperationResult(agent.id);
+common.info("Update all plugins operation result: " + history.status);
+assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + history.status + " but success was expected!!");
+
+
+// tested in startingArray.js
+// jbossas.restart(); 
 
 
 // Configurations
