@@ -4,16 +4,19 @@
  * June 12, 2012        
  **/
 
-var verbose = 1; // logging level to INFO
+var verbose = 0; // logging level to INFO
 var common = new _common(); // object with common methods
 
 // update this
-var fullPathName = '/home/jon/MiscBeans-3.2.7.ear'
+var fullPathName = deployment; // this script required named parameter called deployment which is a path to sample deployment file
+ 
 
 // define a custom function to parse the filename and path info
 function PackageParser(pathName) {
     var file = new java.io.File(pathName);
-		
+
+    common.debug("Parsing " + pathName);
+        
     var fileName = file.getName();
     var packageType = fileName.substring(fileName.lastIndexOf('.')+1);
     var tmp = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -63,7 +66,7 @@ for( c in children ) {
         installedPackage = ContentManager.getBackingPackageForResource(child.id);
         assertNotNull(installedPackage, "No package for given resource found!!");
         var version = installedPackage.getPackageVersion().getDisplayVersion(); 
-        assertTrue( version  == '3.2.7', "Installed package version is " +version + " but 3.2.7 was expected!!");
+        assertTrue( version  == '3.2.5', "Installed package version is " +version + " but 3.2.5 was expected!!");
     }
 }
 assertTrue(found, "Content with package name: " + packageName + " not found!!");

@@ -18,7 +18,7 @@ if(res.length > 0 ){
 }
 
 // fill this information in before running the script
-var pathName = '/home/jon/MiscBeans-3.2.2.ear'
+var pathName = deployment; // this script required named parameter called deployment which is a path to sample deployment file
 
 var resTypeName = 'JBossAS Server'
 var pluginName = "JBossAS5"

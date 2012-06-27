@@ -101,6 +101,9 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="docExample/jon/short/creatingContentBackedRes.js"/>
 			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="res.src" value="/resources/deployments/MiscBeans-3.2.2.ear" />
+			<parameter name="res.dst" value="/tmp/MiscBeans-3.2.2.ear" />
+			<parameter name="cli.args" value="--args-style=named deployment=/tmp/MiscBeans-3.2.2.ear"/>
 			<parameter name="expected.result"  value="Login successful"/>
 			<methods>
 				<include name="runJSfile"></include>		
@@ -114,6 +117,9 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="docExample/jon/short/updatingContentBackedRes.js"/>
 			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="res.src" value="/resources/deployments/MiscBeans-3.2.5.ear" />
+			<parameter name="res.dst" value="/tmp/MiscBeans-3.2.5.ear" />
+			<parameter name="cli.args" value="--args-style=named deployment=/tmp/MiscBeans-3.2.5.ear"/>
 			<parameter name="expected.result"  value="Login successful"/>
 			<methods>
 				<include name="runJSfile"></include>		
@@ -582,27 +588,6 @@
         </classes>
 </test>
 
-<test name="commonmodule_test">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="commonmodule_test.js"/>
-			<parameter name="js.depends" value="commonmodule.js" />
-			<!-- 
-			we require 2 files,
-			
-			/resources/deployments/hello1.war is taken as resource from clitest project classpath will appear in /tmp/deployments/hello.war
-			(/tmp/ is default location if destination path is relative)
-			
-			http://lzoubek-builds.brq.redhat.com/eap6/host.xml is downloaded from to /tmp/host.xml123 (absolute path)
-			 -->
-			<parameter name="res.src" value="/resources/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
-			<parameter name="res.dst" value="hello.war,/tmp/foo" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
 
 <!--  This case SHOULD BE LAST ONE or before the one -->
 <!--  Doing inventory and Uninventory for N number times -->
@@ -615,8 +600,6 @@
                 </class>
         </classes>
 </test>
-
-
 
 
 <!--  This case SHOULD BE LAST ONE -->
