@@ -43,6 +43,180 @@ var _common = function() {
 			_println("[INFO] "+message);
 		}
 	};
+	
+	// taken from CLI samples/utils.js
+	/**
+	 * A convenience function to convert javascript hashes into RHQ's configuration
+	 * objects.
+	 * <p>
+	 * The conversion of individual keys in the hash follows these rules:
+	 * <ol>
+	 * <li> if a value of a key is a javascript array, it is interpreted as PropertyList
+	 * <li> if a value is a hash, it is interpreted as a PropertyMap
+	 * <li> otherwise it is interpreted as a PropertySimple
+	 * <li> a null or undefined value is ignored
+	 * </ol>
+	 * <p>
+	 * Note that the conversion isn't perfect, because the hash does not contain enough
+	 * information to restore the names of the list members.
+	 * <p>
+	 * Example: <br/>
+	 * <pre><code>
+	 * {
+	 *   simple : "value",
+	 *   list : [ "value1", "value2"],
+	 *   listOfMaps : [ { k1 : "value", k2 : "value" }, { k1 : "value2", k2 : "value2" } ]
+	 * }
+	 * </code></pre>
+	 * gets converted to a configuration object:
+	 * Configuration:
+	 * <ul>
+	 * <li> PropertySimple(name = "simple", value = "value")
+	 * <li> PropertyList(name = "list")
+	 *      <ol>
+	 *      <li>PropertySimple(name = "list", value = "value1")
+	 *      <li>PropertySimple(name = "list", value = "value2")
+	 *      </ol>
+	 * <li> PropertyList(name = "listOfMaps")
+	 *      <ol>
+	 *      <li> PropertyMap(name = "listOfMaps")
+	 *           <ul>
+	 *           <li>PropertySimple(name = "k1", value = "value")
+	 *           <li>PropertySimple(name = "k2", value = "value")
+	 *           </ul>
+	 *      <li> PropertyMap(name = "listOfMaps")
+	 *           <ul>
+	 *           <li>PropertySimple(name = "k1", value = "value2")
+	 *           <li>PropertySimple(name = "k2", value = "value2")
+	 *           </ul>
+	 *      </ol>
+	 * </ul>
+	 * Notice that the members of the list have the same name as the list itself
+	 * which generally is not the case.
+	 */
+	var _asConfiguration = function(hash) {
+
+		config = new Configuration;
+
+		for(key in hash) {
+			value = hash[key];
+
+			if (value == null) {
+				continue;
+			}
+
+			(function(parent, key, value) {
+				function isArray(obj) {
+					return typeof(obj) == 'object' && (obj instanceof Array);
+				}
+
+				function isHash(obj) {
+					return typeof(obj) == 'object' && !(obj instanceof Array);
+				}
+
+				function isPrimitive(obj) {
+					return typeof(obj) != 'object';
+				}
+
+				//this is an anonymous function, so the only way it can call itself
+				//is by getting its reference via argument.callee. Let's just assign
+				//a shorter name for it.
+				var me = arguments.callee;
+
+				var prop = null;
+
+				if (isPrimitive(value)) {
+					prop = new PropertySimple(key, new java.lang.String(value));
+				} else if (isArray(value)) {
+					prop = new PropertyList(key);
+					for(var i = 0; i < value.length; ++i) {
+						var v = value[i];
+						if (v != null) {
+							me(prop, key, v);
+						}
+					}
+				} else if (isHash(value)) {
+					prop = new PropertyMap(key);
+					for(var i in value) {
+						var v = value[i];
+						if (value != null) {
+							me(prop, i, v);
+						}
+					}
+				}
+
+				if (parent instanceof PropertyList) {
+					parent.add(prop);
+				} else {
+					parent.put(prop);
+				}
+			})(config, key, value);
+		}
+
+		return config;
+	};
+	
+	// taken from CLI samples/utils.js
+	/**
+	 * Opposite of <code>asConfiguration</code>. Converts an RHQ's configuration object
+	 * into a javascript hash.
+	 *
+	 * @param configuration
+	 */
+	var _asHash = function(configuration) {
+		ret = {};
+
+		iterator = configuration.getMap().values().iterator();
+		while(iterator.hasNext()) {
+			prop = iterator.next();
+
+			(function(parent, prop) {
+				function isArray(obj) {
+					return typeof(obj) == 'object' && (obj instanceof Array);
+				}
+
+				function isHash(obj) {
+					return typeof(obj) == 'object' && !(obj instanceof Array);
+				}
+
+				var me = arguments.callee;
+
+				var representation = null;
+
+				if (prop instanceof PropertySimple) {
+					representation = prop.stringValue;
+				} else if (prop instanceof PropertyList) {
+					representation = [];
+
+					for(var i = 0; i < prop.list.size(); ++i) {
+						var child = prop.list.get(i);
+						me(representation, child);
+					}
+				} else if (prop instanceof PropertyMap) {
+					representation = {};
+
+					var childIterator = prop.getMap().values().iterator();
+					while(childIterator.hasNext()) {
+						var child = childIterator.next();
+
+						me(representation, child);
+					}
+				}
+
+				if (isArray(parent)) {
+					parent.push(representation);
+				} else if (isHash(parent)) {
+					parent[prop.name] = representation;
+				}
+			})(ret, prop);
+		}
+		(function(parent) {
+
+		})(configuration);
+
+		return ret;
+	};
+	
 	return {
 		objToString : function(obj) {
 			var str=""; 
@@ -90,7 +264,9 @@ var _common = function() {
 		},
 		info : _info,
 		debug : _debug,
-		trace : _trace
+		trace : _trace,
+		configurationAsHash : _asHash,
+		hashAsConfiguration : _asConfiguration,
 	};
 };
 
@@ -283,6 +459,7 @@ var Resource = function (param) {
 			return new Resource(resources.get(0).parentResource.id);
 		}
 	};
+
 	var _waitForOperationResult = function(resourceId, resOpShedule){
 		var opHistCriteria = new ResourceOperationHistoryCriteria();
 		if(resOpShedule)
@@ -382,8 +559,8 @@ var Resource = function (param) {
 		},
 		/**
 		 * creates a new child resource
-		 * @param params
-		 * @returns new resource if it was successfully created and discovered, false otherwise
+		 * @param params hashmap of params
+		 * @returns new resource if it was successfully created and discovered, null otherwise
 		 */
 		createChild : function(params) {
 			common.trace("Resource("+_id+").createChild("+common.objToString(params)+")");
@@ -419,7 +596,17 @@ var Resource = function (param) {
 			criteria.fetchResourceConfigurationDefinition(true);
 			criteria.fetchPluginConfigurationDefinition(true); 
 			resType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
-			
+			var configuration =  new Configuration();
+		    if (config) {
+		    	configuration = common.hashAsConfiguration(config);
+		    }
+		    else {
+		    	// we should obtain default/empty configuration
+		    	var template = resType.resourceConfigurationDefinition.defaultTemplate;
+				if (template) {
+					configuration = template.createConfiguration();
+				}
+		    }
 			common.debug("Creating new ["+type+"] resource called [" + name+"]");
 			if (content) {
 				// we're creating a resource with backing content
@@ -434,7 +621,7 @@ var Resource = function (param) {
 			    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
 				    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); 	
 			    }
-			    var configuration = config || new Configuration();
+			    			    
 				history = ResourceFactoryManager.createPackageBackedResource(
 					_id, 
 					resType.id,
@@ -448,17 +635,11 @@ var Resource = function (param) {
 					null // timeout
 				);
 			}
-			else {
-				var configuration = new Configuration();
-				var template = resType.resourceConfigurationDefinition.defaultTemplate;
-				if (template) {
-					configuration = template.createConfiguration();
-				}
-				
+			else {				
 				var plugConfiguration = new Configuration();
 				var pluginTemplate = resType.pluginConfigurationDefinition.defaultTemplate;
 				if (pluginTemplate) {
-					plugConfiguration = template.configuration;
+					plugConfiguration = pluginTemplate.configuration;
 				}
 				var history = ResourceFactoryManager.createResource(
 					_id, 
@@ -490,12 +671,12 @@ var Resource = function (param) {
 				var discovered = common.waitFor(function() {return Inventory.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey}).length==1;});
 				if (!discovered) {
 					common.info("Resource child was successfully created, but it's autodiscovery timed out!");
-					return false;
+					return;
 				}
 				return Inventory.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey})[0];
 			}
 			common.debug("Resource creation failed, reason : "+result.errorMessage);
-			return false;
+			return;
 			
 		},
 		operations : function() {
