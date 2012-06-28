@@ -49,12 +49,17 @@ function PackageParser(pathName) {
 	this.version     = version;
 	this.realName    = realName;
     this.fileName    = fileName;
+    common.debug("Parsed, packageType: " +this.packageType+ ", package name: " +this.packageName + ", version: " + this.version + ", real name: " + this.realName + ", filename: " + this.filename);
 }
 
 criteria = new ResourceCriteria();
 criteria.addFilterResourceTypeName(resTypeName);
 criteria.addFilterPluginName(pluginName);
 var resources = ResourceManager.findResourcesByCriteria(criteria);
+
+
+assertTrue(resources.size() > 0, "No JBossAS 5 found!!");
+
 
 // create the config options for the new EAR 
 var deployConfig = new Configuration();
@@ -115,7 +120,7 @@ if( resources != null ) {
 
         var result = common.waitFor(pred);
         common.debug("Child resource creation status : " + result.status);
-        assertTrue(result && result.status == CreateResourceStatus.SUCCESS," Creating the new EAR resource failed!!");
+        assertTrue(result && result.status == CreateResourceStatus.SUCCESS," Creating the new EAR resource failed!!Status: " +result.status +" Error message: " + result.getErrorMessage());
 
         // wait for discovery
         var discovered = common.waitFor(function() {return Inventory.find({name:"MiscBeans.ear"}).length == 1;});

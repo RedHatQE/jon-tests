@@ -4,7 +4,7 @@
  * June 12, 2012        
  **/
 
-var verbose = 0; // logging level to INFO
+var verbose = 10; // logging level to INFO
 var common = new _common(); // object with common methods
 
 // update this
@@ -36,6 +36,7 @@ function PackageParser(pathName) {
     this.version     = version;
     this.realName    = realName;
     this.fileName    = fileName;
+    common.debug("Parsed, packageType: " +this.packageType+ ", package name: " +this.packageName + ", version: " + this.version + ", real name: " + this.realName + ", filename: " + this.filename);
 }
 
 // parse the filename and path info
@@ -58,7 +59,8 @@ var found = false;
 for( c in children ) {
     var child = children[c];
     if( child.name == packageName ) {
-        common.debug("Updating to " + fullPathName + " ...");
+        common.debug("Updating to " + fullPathName + ", version: "+version+ " ...");
+        common.debug("Resource: " + child);
         child.updateBackingContent(fullPathName,version);
         sleep(2000); // just to be sure
         found = true;
