@@ -41,7 +41,7 @@ public abstract class CliTestScript extends TestScript{
 			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was not defined, auto-installing CLI and auto-detecting");
 			// auto-install and setup cli executable
 			// download from target server
-			CliTasks.getCliTasks().runCommnad("wget -nv http://"+CliTest.rhqTarget+":7080/client/downloaad -O rhq-cli.zip  2>&1");
+			CliTasks.getCliTasks().runCommnad("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
 			// detect CLI_HOME from zip content
 			String cliHome = CliTasks.getCliTasks().runCommnad("zip -sf rhq-cli.zip | head -n2 | grep cli").trim();
 			CliTest.cliShLocation = cliHome+"bin/rhq-cli.sh";
