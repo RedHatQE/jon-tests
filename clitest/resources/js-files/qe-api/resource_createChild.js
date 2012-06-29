@@ -56,57 +56,17 @@ assertFalse(deployed.exists(),"Deployment exists in inventory");
 delete deployed;
 
 println("Create child resource without passing required parameters");
-var exception;
-try {
-	eap.createChild();
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild));
 
 println("Create child resource without passing required parameters");
-var exception;
-try {
-	eap.createChild({name:"test"});
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild,[{name:"test"}]));
 
 println("Create child resource without passing required parameters");
-var exception;
-try {
-	eap.createChild({type:"test"});
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild,[{type:"test"}]));
 
 println("Create child resource without passing non-existing content param");
-var exception;
-try {
-	eap.createChild({content:"/tmp/1/2/3/4/5",type:"Deployment"});
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild,[{content:"/tmp/1/2/3/4/5",type:"Deployment"}]));
 
 println("Create child resource without passing invalid type");
-var exception;
-try {
-	eap.createChild({name:"test",type:"DeploymentX"});
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild,[{name:"test",type:"DeploymentX"}]));
 

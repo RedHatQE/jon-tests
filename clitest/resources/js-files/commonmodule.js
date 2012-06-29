@@ -97,7 +97,9 @@ var _common = function() {
 	var _asConfiguration = function(hash) {
 
 		config = new Configuration;
-
+		if (!hash) {
+			return config;
+		}
 		for(key in hash) {
 			value = hash[key];
 
@@ -165,7 +167,9 @@ var _common = function() {
 	 */
 	var _asHash = function(configuration) {
 		ret = {};
-
+		if (!configuration) {
+			return ret;
+		}
 		iterator = configuration.getMap().values().iterator();
 		while(iterator.hasNext()) {
 			prop = iterator.next();
@@ -479,6 +483,21 @@ var Resource = function (param) {
 		common.debug("Operation finished with status : "+history.status);
 		return history;
 	};
+	var _checkRequiredConfigurationParams = function(configDef,params) {
+		if (!configDef) {
+			return;
+		}
+		params = params || {};
+		// check whether required params are defined
+		var iter = configDef.getPropertyDefinitions().values().iterator();
+		while(iter.hasNext()) {
+			var propDef = iter.next();
+			if (propDef.isRequired() && !params[propDef.name]) {
+				throw "Property ["+propDef.name+"] is required";
+			}
+		}
+	};
+
 	return {
 		getId : function() {return _id;},
 		toString : function() {return _res.toString();},
@@ -527,9 +546,13 @@ var Resource = function (param) {
 				return current;
 			};
 			var result = common.waitFor(pred);
+			if (result) {
+				common.debug("Resource deletion finished with status : "+result.status);
+			}
 			if (result && result.status == DeleteResourceStatus.SUCCESS) {
 				return true;
 			}
+			common.debug("Resource creation failed, reason : "+result.errorMessage);
 			return false;
 		},
 		/**
@@ -683,10 +706,41 @@ var Resource = function (param) {
 			
 		},
 		invokeOperation : function(name,params) {
-			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");			
-			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,null,null);
-			common.debug("Operation scheduled..");
-			return _waitForOperationResult(_id,resOpShedule);		
+			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
+			// let's obtain operation definitions, so we can check operation name and required params
+			var criteria = new ResourceTypeCriteria();
+			criteria.addFilterId(find().get(0).resourceType.id);
+			criteria.fetchOperationDefinitions(true);
+			var resType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
+			var iter = resType.operationDefinitions.iterator();
+			// we put op names here in case invalid name is called
+			var ops="";
+			while(iter.hasNext()) {
+				var op = iter.next();
+				ops+=op.name+", ";
+				if (name==op.name) {
+					var configuration = null;
+					if (params || params == {}) {
+						configuration = common.hashAsConfiguration(params);
+					}
+					else if (op.parametersConfigurationDefinition){
+						var template = op.parametersConfigurationDefinition.defaultTemplate;
+						if (template) {
+							configuration = template.createConfiguration();
+						}
+					}
+					//if (configuration)
+					//	pretty.print(configuration);
+					// 	println(common.objToString(common.configurationAsHash(configuration)));
+					
+					_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,common.configurationAsHash(configuration));
+					
+					var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,configuration,null);
+					common.debug("Operation scheduled..");
+					return _waitForOperationResult(_id,resOpShedule);
+				}
+			}
+			throw "Operation name ["+name+"] is invalid for this resource, valid operation names are : " + ops;
 		},
 		/**
 		 * Waits until operation is finished or timeout is reached. 
