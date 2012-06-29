@@ -14,14 +14,13 @@ else {
 	// we import all resources from discoqueue and wait 'till AS7 becomes available	
 	Inventory.discoveryQueue.importResources().forEach(function(r) {
 		if (r.getProxy().resourceType.name=="JBossAS7 Standalone Server") {
-			r.waitForAvailable();
 			eap = r;
 		}
 	});
-
 }
 assertTrue(eap!=null,"EAP6 or AS7 standalone server is required for this test!");
-assertTrue(eap.isAvailable(),"AS7 Standalone server was imported, but it's not available!");
+eap.waitForAvaiable();
+assertTrue(eap.isAvailable(),"AS7 Standalone server was imported, and is available!");
 
 println("Create [Network Interface] child - new resource without backed content");
 var netiface = eap.createChild({name:"testinterface",type:"Network Interface"});

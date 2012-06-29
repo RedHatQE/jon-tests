@@ -480,6 +480,16 @@ var Resource = function (param) {
 		};
 		common.debug("Waiting for result..");
 		var history = common.waitFor(pred);
+		if (!history) {
+			// timed out
+			var histories = OperationManager.findResourceOperationHistoriesByCriteria(opHistCriteria);
+			if (histories.size() > 0) {
+				history = histories.get(0);
+			}
+			else {
+				throw "ERROR Cannot get operation history result remote API ERROR?";
+			}
+		}
 		common.debug("Operation finished with status : "+history.status);
 		return history;
 	};
