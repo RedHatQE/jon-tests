@@ -19,7 +19,7 @@ else {
 	});
 }
 assertTrue(eap!=null,"EAP6 or AS7 standalone server is required for this test!");
-eap.waitForAvaiable();
+eap.waitForAvailable();
 assertTrue(eap.isAvailable(),"AS7 Standalone server was imported, and is available!");
 
 println("Create [Network Interface] child - new resource without backed content");
