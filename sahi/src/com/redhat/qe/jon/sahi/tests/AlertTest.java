@@ -73,8 +73,9 @@ public class AlertTest extends SahiTestScript{
 		HashMap<String, String> map = new HashMap<String, String>();
 		
 		//Default drop down values
-		String defaultConditionType = "Availability Change";
-		String defaultMetricType	= "Number Of Active Commands Being Sent";
+		String defaultConditionType 	= "Availability Change";
+		String defaultMetricType		= "Metric :|Number Of Active Commands Being Sent";
+		
 		
 		map.put(RESOURCE_NAME, "Servers=RHQ Agent");
 		map.put(ALERT_NAME, "RHQ Agent-Server Clock Difference");

@@ -887,25 +887,52 @@ public class SahiTasks extends ExtendedSahi {
 		this.textbox(fileInputIdent).setValue(fullPath);
     }
     
-    
-    
-    public void selectComboBoxes(String options) {
+    public void selectComboBoxes(String options, String nearElement, String optionElementType){
         if (options != null) {
             if (options.trim().length() > 0) {
                 String[] optionArray = this.getCommaToArray(options);
                 for (String option : optionArray) {
                     String[] optionTmp = option.split("-->");
+                    if(optionTmp[0].contains("|")){
+                    	String[] nearDrop = optionTmp[0].split("|");
+                    	nearElement = nearDrop[0];
+                    	optionTmp[0] = nearDrop[1];
+                    }
                     if (this.div(optionTmp[0].trim() + "[1]").exists()) {
                         _logger.info("\"" + optionTmp[0].trim() + "[1]\" is available to select");
-                        this.selectComboBoxDivRow(this, optionTmp[0].trim() + "[1]", optionTmp[1].trim());
-                    } else {
-                        this.selectComboBoxDivRow(this, optionTmp[0].trim(), optionTmp[1].trim());
+                        optionTmp[0] = optionTmp[0].trim()+"[1]";
+                        //this.selectComboBoxDivRow(this, optionTmp[0].trim() + "[1]", optionTmp[1].trim());
+                    }
+                    if(optionElementType == null){
+                    	optionElementType = "row";
+                    }
+                    optionElementType = optionElementType.toLowerCase();
+                    if(optionElementType.equals("row")){
+                    	if(nearElement != null){
+                    		this.selectComboBoxByNearCellOptionByRow(this, optionTmp[0].trim(), nearElement, optionTmp[1].trim());
+                    	}else{
+                    		this.selectComboBoxDivRow(this, optionTmp[0].trim(), optionTmp[1].trim());
+                    	}                    	
+                    }else if(optionElementType.equals("div")){
+                    	if(nearElement != null){
+                    		this.selectComboBoxByNearCellOptionByDiv(this, optionTmp[0].trim(), nearElement, optionTmp[1].trim());
+                    	}else{
+                    		this.selectComboBoxDivDiv(this, optionTmp[0].trim(), optionTmp[1].trim());
+                    	}     
                     }
                 }
             }
         }
     }
+    
+    public void selectComboBoxes(String options) {
+    	selectComboBoxes(options, null, null);
+    }
 
+    public void selectComboBoxes(String options, String nearElement) {
+    	selectComboBoxes(options, nearElement, null);
+    }
+    
     private void updateSystemUserNotification(String users) {
         String[] usersArray = this.getCommaToArray(users);
         for (String user : usersArray) {
@@ -981,7 +1008,8 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Conditions").click();
         this.cell("Add").click();
 
-        selectComboBoxes(conditionsDropDown);
+        //selectComboBoxes(conditionsDropDown); //Disabled, not stable with this
+        selectComboBoxes(conditionsDropDown, "div");
         updateTextBoxValues(conditionTextBox);
 
 
