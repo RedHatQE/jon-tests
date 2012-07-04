@@ -74,7 +74,7 @@ public class AlertTest extends SahiTestScript{
 		
 		//Default drop down values
 		String defaultConditionType 	= "Availability Change";
-		String defaultMetricType		= "Metric :|Number Of Active Commands Being Sent";
+		String defaultMetricType		= "Metric :|selectItemText";
 		
 		
 		map.put(RESOURCE_NAME, "Servers=RHQ Agent");
