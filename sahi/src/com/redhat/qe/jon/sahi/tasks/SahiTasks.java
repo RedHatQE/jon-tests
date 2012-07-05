@@ -1028,8 +1028,9 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Notifications").click();
         this.cell("Add[1]").click();
         //Select Notification type
-        if (notificationType.equalsIgnoreCase("System Users")) {
-            updateSystemUserNotification(notificationData);
+        selectComboBoxes(notificationType, "row");
+        if (notificationType.contains("System Users")) {
+        	updateSystemUserNotification(notificationData);
         } else {
             _logger.log(Level.WARNING, "Undefined notification type: " + notificationType);
         }
