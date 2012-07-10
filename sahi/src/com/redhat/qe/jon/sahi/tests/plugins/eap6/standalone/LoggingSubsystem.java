@@ -204,7 +204,7 @@ public class LoggingSubsystem extends AS7StandaloneTest {
 		NewChildWizard op = inventory.childResources().newChild("Logger");
 		op.getEditor().setText("resourceName", logger.getName());
 		op.next();		
-		ConfigEntry ce = op.getEditor().newEntry(1);
+		ConfigEntry ce = op.getEditor().newEntry(0);
 		ce.setField("handler", defaultConsoleHandler.getName());
 		ce.OK();
 		op.finish();

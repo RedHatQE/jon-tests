@@ -44,15 +44,12 @@ public class WebSubsystemTest extends AS7StandaloneTest {
 		current.getEditor().setText("sendfile", sendFile);
 		current.getEditor().setText("check-interval", checkInterval);
 		ConfigEntry ce = current.getEditor().newEntry(0);
-		ce.setField("name", mappingName);
-		ce.setField("value", "foo");
+		ce.setField("welcome-file", "index.html");
 		ce.OK();
 		current.save();
 		configuration.history().failOnFailure();
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=static-resources", "sendfile").get("result").asString().equals(sendFile)," Configuration update for static-resources was successfull");
 		Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=jsp-configuration", "check-interval").get("result").asString().equals(checkInterval)," Configuration update for jsp-configuration was successfull");
-		// TODO validate mime-mapping
-		//Assert.assertTrue(mgmtClient.readAttribute("/subsystem=web/configuraton=container", "mime-mapping").get("result").asList().get(0).asPropertyList().get(0).getName().equals(mappingName)," Configuration update for container was successfull");
 	}
 	
 	@Test(groups={"vhost"})

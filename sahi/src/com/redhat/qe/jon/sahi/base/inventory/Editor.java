@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.sf.sahi.client.ElementStub;
@@ -77,24 +78,29 @@ public class Editor {
 			tasks.xy(tasks.image("checked.png["+index+"]").parentNode(),3,3).click();
 		}
 	}
-	
 	/**
 	 * creates new config entry, click the <b>+</b> buttton and returns helper object
 	 * @param index of button on page
 	 * @return
 	 */
 	public ConfigEntry newEntry(int index) {
-		int imgindex = index;
-		int buttons = tasks.image("add.png").countSimilar();
-		log.fine("Found buttons "+buttons);
-		if (buttons<imgindex-1) {			
-			imgindex=0;
+		List<ElementStub> buttons = tasks.image("add.png").collectSimilar();
+		log.fine("Found images "+buttons);
+		int i = 0;
+		for (ElementStub es : buttons) {
+			ElementStub cell = es.parentNode().parentNode();
+			if (cell.fetch("innerHTML").contains("class=\"buttonTitle") && cell.isVisible()) {
+				log.fine(cell.fetch("innerHTML"));
+				if (i == index) {
+					tasks.xy(cell,3,3).click();
+					tasks.waitFor(Timing.WAIT_TIME);
+					return new ConfigEntry(tasks);
+				}
+				else {
+					i++;
+				}
+			}
 		}
-		tasks.image("add.png[" + imgindex + "]").focus();
-		tasks.execute("_sahi._keyPress(_sahi._image('add.png[" + imgindex
-				+ "]'), 32);");
-		tasks.waitFor(Timing.WAIT_TIME);
-		return new ConfigEntry(tasks);
+		throw new RuntimeException("Unable to click to new entry (add.png) button");
 	}
-	
 }

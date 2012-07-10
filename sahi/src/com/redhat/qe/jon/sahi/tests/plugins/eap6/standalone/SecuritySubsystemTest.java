@@ -42,7 +42,7 @@ public class SecuritySubsystemTest extends AS7StandaloneTest {
 		mgmtClient.assertResourcePresence("/subsystem=security", "security-domain", securityDomain.getName(), true);
 		securityDomain.assertExists(true);
 	}
-	@Test(dependsOnMethods={"addSecurityDomain"})
+	@Test(dependsOnMethods={"addSecurityDomain"},groups={"blockedByBug-839552"})
 	public void configureSecurityDomain() {
 		Configuration config = securityDomain.configuration();
 		CurrentConfig current = config.current();
