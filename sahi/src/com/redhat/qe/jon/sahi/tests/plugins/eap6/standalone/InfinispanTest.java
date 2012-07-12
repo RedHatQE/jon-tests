@@ -51,9 +51,11 @@ public class InfinispanTest extends AS7StandaloneTest {
 	}
 	@DataProvider
 	public Object[][] cacheTypeDataProvider() {
-		CacheType[] types = new CacheType[] {new CacheType("Distributed Cache","distributed-cache"),
-				new CacheType("Invalidation Cache","invalidation-cache"),
-				new CacheType("Replicated Cache","replicated-cache")
+		CacheType[] types = new CacheType[] {
+				new CacheType("default","distributed-cache","defaultcache"),
+				new CacheType("Distributed Cache","distributed-cache","distcache"),
+				new CacheType("Invalidation Cache","invalidation-cache","invalidcache"),
+				new CacheType("Replicated Cache","replicated-cache","replcache")
 		};
 		Object[][] output = new Object[types.length][];
 		for (int i=0;i<types.length;i++) {
@@ -66,25 +68,36 @@ public class InfinispanTest extends AS7StandaloneTest {
 	public void addCache(CacheType cacheType) {
 		Inventory inventory = cacheContainer.inventory();
 		NewChildWizard child = inventory.childResources().newChild("Cache");
-		child.getEditor().setText("resourceName",cacheType.type);
+		child.getEditor().setText("resourceName",cacheType.resourceName);
+		child.getEditor().selectCombo(0, cacheType.name);
 		child.next();
 		// required until https://bugzilla.redhat.com/show_bug.cgi?id=839320 is fixed
 		child.getEditor().checkRadio("mode[0]");
+		if (cacheType.name=="default") {
+			// for default config template we have to select cache type
+			child.getEditor().checkRadio(cacheType.type);
+		}
 		child.finish();
 		inventory.childHistory().assertLastResourceChange(true);
-		mgmtClient.assertResourcePresence("/subsystem=infinispan/cache-container="+cacheContainer.getName(), cacheType.type, cacheType.type,true);
-		cacheContainer.child(cacheType.type).assertExists(true);
+		mgmtClient.assertResourcePresence("/subsystem=infinispan/cache-container="+cacheContainer.getName(), cacheType.type, cacheType.resourceName,true);
+		cacheContainer.child(cacheType.resourceName).assertExists(true);
 	}
-	@Test(dependsOnMethods="addCache")
-	public void configureCache() {
-		
+	@Test(dataProvider="cacheTypeDataProvider",dependsOnMethods="addCache")
+	public void configureCache(CacheType cacheType) {
+		Configuration configuration  = cacheContainer.child(cacheType.resourceName).configuration();
+		CurrentConfig config = configuration.current();
+		config.getEditor().checkRadio("mode[1]");
+		config.save();
+		configuration.history().failOnFailure();
+		String mode = mgmtClient.readAttribute("/subsystem=infinispan/cache-container="+cacheContainer.getName()+"/"+cacheType.type+"="+cacheType.resourceName, "mode").get("result").asString();
+		Assert.assertTrue("ASYNC".equals(mode), "Cache configuration has been updated");
 	}
 	
 	@Test(dataProvider="cacheTypeDataProvider",dependsOnMethods="configureCache")
 	public void removeCache(CacheType cacheType) {
-		cacheContainer.child(cacheType.type).delete();
-		mgmtClient.assertResourcePresence("/subsystem=infinispan/cache-container="+cacheContainer.getName(), cacheType.type, cacheType.type,false);
-		cacheContainer.child(cacheType.type).assertExists(false);
+		cacheContainer.child(cacheType.resourceName).delete();
+		mgmtClient.assertResourcePresence("/subsystem=infinispan/cache-container="+cacheContainer.getName(), cacheType.type, cacheType.resourceName,false);
+		cacheContainer.child(cacheType.resourceName).assertExists(false);
 	}
 	
 	@Test(dependsOnMethods={"configureCacheContainer","removeCache"})
@@ -94,10 +107,15 @@ public class InfinispanTest extends AS7StandaloneTest {
 		cacheContainer.assertExists(false);
 	}
 	public static class CacheType{
-		final String name,type;
-		public CacheType(String name, String type) {
+		final String name,type,resourceName;
+		public CacheType(String name, String type, String resourceName) {
 			this.name = name;
 			this.type=type;
+			this.resourceName = resourceName;
+		}
+		@Override
+		public String toString() {
+			return "name="+name+" type="+type;
 		}
 	}
 }

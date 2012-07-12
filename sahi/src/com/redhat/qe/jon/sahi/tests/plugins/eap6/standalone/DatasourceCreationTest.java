@@ -145,10 +145,6 @@ public class DatasourceCreationTest extends AS7StandaloneTest {
 		CurrentConfig current = configuration.current();
 		current.getEditor().checkBox(0, false);
 		current.getEditor().setText("max-pool-size", "666");
-		ConfigEntry entry = current.getEditor().newEntry(0);
-		entry.setField("key", "ServerName");
-		entry.setField("value", "localhost");
-		entry.OK();
 		current.save();
 		configuration.history().failOnFailure();
 		assertAttributeValue(XA_def, "max-pool-size", "666");
