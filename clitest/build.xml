@@ -6,7 +6,7 @@
 	<property name="test.resources.dir" location="resources" />
 	<property name="test.output.dir" location="test-output" />
 	<property name="report.dir" value="test-output/Hudson_Test_Suite"/>
-	<property name="env.js_files_dir" value="resources/js-files/"/>
+	<property name="js.files.dir" value="resources/js-files/"/>
 	<property name="common.dir" value="../common" />
 	<condition property="webui-framework.dir" value="../../../webui-framework">
 		<not>
@@ -55,12 +55,14 @@
 
 	<target name="run" description="run CLI JS test" depends="compile">
 		<property name="remote.debugging.jvmarg" value="-Dnodebug"/>		
+        	<property name="testng.suites.dir" value="src/com/redhat/qe/jon/clitest/tests" />
 		<property name="testng.suite" value="testng.xml" />
 		<testng haltonfailure="false" classpathref="tests.cp" reporter="org.testng.reporters.JUnitXMLReporter" outputdir="${test.output.dir}" listeners="com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter">
-        	<xmlfileset dir="src/com/redhat/qe/jon/clitest/tests" includes="${testng.suite}"/>
+        	<xmlfileset dir="${testng.suites.dir}" includes="${testng.suite}"/>
 			<jvmarg value="-Denv=${env}"/>
 			<jvmarg value="${remote.debugging.jvmarg}"/>			
 			<sysproperty key="eap6plugin.configfile" value="${eap6plugin.configfile}" />
+			<sysproperty key="js.files.dir" value="${js.files.dir}" />
 		</testng>
 	</target>
 

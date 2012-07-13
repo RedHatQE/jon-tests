@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.clitest.base;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +57,7 @@ public abstract class CliTestScript extends TestScript{
 			jsFileLoc = "resources/js-files/"; //taking default location
 			_logger.info("JS file location is not specified.. Taking default location..."+jsFileLoc);
 		}
-		CliTest.jsFileLocation = System.getProperty("user.dir")+"/"+jsFileLoc;
+		CliTest.jsFileLocation = new File(jsFileLoc).getAbsolutePath();
 		if(!CliTest.jsFileLocation.endsWith("/")){
 			CliTest.jsFileLocation += "/";
 		}
