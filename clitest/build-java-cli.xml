@@ -1,0 +1,27 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="hello-ivy" default="run">
+    <ivy:settings file="ivysettings.xml" />
+    
+    <property name="output.dir" value="classes-java-cli"/>
+    
+    <target name="resolve" description="--> retrieve dependencies with ivy">
+        <ivy:retrieve />
+    </target>
+    
+    
+    <target name="clean">
+    	<delete dir="lib"/>
+    	<delete dir="$output.dir"/>
+    </target>
+    
+	<target name="init">
+		<mkdir dir="$output.dir"/>
+	</target>
+	    
+    <target name="compile" depends="init, resolve">
+	    <javac destdir="${output.dir}">
+	      <src path="src"/>
+	      
+	      <classpath refid="class.path"/>
+	    </javac>
+    </target>
+</project>
