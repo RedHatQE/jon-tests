@@ -13,7 +13,7 @@
 <!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
-<!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test-->
+<!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test -->
 <test name="Uninventory-Platforms-Start">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
@@ -37,6 +37,433 @@
 		</class>
 	</classes>
 </test>
+
+
+<!-- 	***********************************************************************************************
+		<start> Examples from jon documentation, chapter Short Examples 
+		http://docs.redhat.com/docs/en-US/JBoss_Operations_Network/3.1/html/Dev_Writing_JON_Command-Line_Scripts/building-blocks.html
+		***********************************************************************************************
+-->
+
+<test name="serchExamples">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/searchExamples.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="gettingIdForObject">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/gettingIdForObject.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="gettingDataForSingleAndMultipleRes">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/gettingDataForSingleAndMultipleRes.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="settingMethodVariableToString">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/settingMethodVariableToString.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="creatingContentBackedRes">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/creatingContentBackedRes.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="res.src" value="/resources/deployments/MiscBeans-3.2.2.ear" />
+			<parameter name="res.dst" value="/tmp/MiscBeans-3.2.2.ear" />
+			<parameter name="cli.args" value="--args-style=named deployment=/tmp/MiscBeans-3.2.2.ear"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="updatingContentBackedRes">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/updatingContentBackedRes.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="res.src" value="/resources/deployments/MiscBeans-3.2.5.ear" />
+			<parameter name="res.dst" value="/tmp/MiscBeans-3.2.5.ear" />
+			<parameter name="cli.args" value="--args-style=named deployment=/tmp/MiscBeans-3.2.5.ear"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="deletingContentBackedRes">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/deletingContentBackedRes.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="creatingResGroupsAndAddingMembers">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/creatingResGroupsAndAddingMembers.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="viewingPluginConfForResType">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/viewingPluginConfForResType.js"/>
+			<parameter name="expected.result"  value="Login successful,ConfigurationDefinition,name: Linux"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="viewingConfPropFroResType">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/viewingConfPropFroResType.js"/>
+			<parameter name="expected.result"  value="Login successful,ConfigurationDefinition:,name: RHQ Agent"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="viewingResConfSettings">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/viewingResConfSettings.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful,rhq.agent.server.bind-port = 7080"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="changingSimpleProperty">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/changingSimpleProperty.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<!-- this functionality is covered in gettingDataForSingleAndMultipleRes.js 
+<test name="simpleStart">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/simpleStart.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+-->
+
+<test name="startingArray">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/startingArray.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="immediateOperation">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/immediateOperation.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful,Invoking operation executeAvailabilityScan"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="scheduledOperation">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/scheduledOperation.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="viewingOpHistory">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/viewingOpHistory.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="currentAvailability">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/currentAvailability.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="gettingSpecificMetrics">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/gettingSpecificMetrics.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="exportingAllMetricsDefForLinux">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/exportingAllMetricsDefForLinux.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<!-- TODO baselines are collected by default each 3 days, data must be prepared
+<test name="gettingBaselineCalculations">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/gettingBaselineCalculations.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+-->
+
+<!-- TODO prepare alarm definitions
+<test name="ackAlertsForPlatform">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/ackAlertsForPlatform.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+-->
+
+<!-- TODO prepare alarm definitions
+<test name="disablingAlertsBasedOnPriority">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/disablingAlertsBasedOnPriority.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+-->
+
+<test name="newRole">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/newRole.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<test name="creatingUserAndRoles">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="docExample/jon/short/creatingUserAndRoles.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+
+
+<!-- 	***********************************************************************************************
+		<end> Examples from jon documentation, chapter Short Examples 
+		http://docs.redhat.com/docs/en-US/JBoss_Operations_Network/3.1/html/Dev_Writing_JON_Command-Line_Scripts/building-blocks.html
+		***********************************************************************************************
+-->
+
+
+
+
+
+<!-- 	
+		***********************************************************************************************
+		<start> CLI scripts for bug reproduction
+		***********************************************************************************************
+-->
+
+
+<!-- blocked by https://bugzilla.redhat.com/show_bug.cgi?id=814579--> 
+<test name="Bug814579">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="bugs/bug814579.js"/>
+                        <parameter name="expected.result"  value="Login successful,ResourceManagerBean"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
+<!-- 	
+		***********************************************************************************************
+		<stop> CLI scripts for bug reproduction
+		***********************************************************************************************
+-->
+
+
+
+<!-- 	
+		***********************************************************************************************
+		<start> Examples from rhq documentation, Running the RHQ CLI 
+		https://docs.jboss.org/author/display/RHQ/Running+the+RHQ+CLI
+		***********************************************************************************************
+-->
+
+<test name="displayingOutputExample">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="docExample/rhq/displayingOutputExample.js"/>
+                        <parameter name="expected.result"  value="Login successful,name=Memory Subsystem,name: Memory Subsystem"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="echo_args">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="docExample/rhq/echo_args.js"/>
+                        <parameter name="cli.args" value="--args-style=named x=1 y=2"/>
+                        <parameter name="expected.result"  value="Login successful, named args...,x = 1,y = 2"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
+<test name="proxyExample">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="docExample/rhq/proxyExample.js"/>
+                        <parameter name="js.depends" value="commonmodule.js" />
+                        <parameter name="expected.result"  value="Login successful,OSName:,Invoking operation viewProcessList,Invoking operation updateAllPlugins,rhq.agent.plugins.directory ="/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
+<!-- 	
+		***********************************************************************************************
+		<end> Examples from rhq documentation, Running the RHQ CLI 
+		https://docs.jboss.org/author/display/RHQ/Running+the+RHQ+CLI
+		***********************************************************************************************
+-->
 
 <test name="roles">
   	<classes>
@@ -138,56 +565,7 @@
 		</class>
 	</classes>
 </test>
-<test name="echo_args">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="echo_args.js"/>
-                        <parameter name="cli.args" value="--args-style=named x=1 y=2"/>
-                        <parameter name="expected.result"  value="Login successful, named args...,x = 1,y = 2"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
 
-<!-- blocked by https://bugzilla.redhat.com/show_bug.cgi?id=814579 
-<test name="Bug814579">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="bug814579.js"/>
-                        <parameter name="expected.result"  value="Login successful,ResourceManagerBean"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
--->
-<test name="displayingOutputExample">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="displayingOutputExample.js"/>
-                        <parameter name="expected.result"  value="Login successful,name=Memory Subsystem,name: Memory Subsystem"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
-<!-- disabled for now: updateAllPlugins method probably cause that agent is not registred with server
-<test name="proxyExample">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="proxyExample.js"/>
-                        <parameter name="expected.result"  value="Login successful,OSName:,Invoking operation viewProcessList,Invoking operation updateAllPlugins,rhq.agent.plugins.directory ="/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
--->
 <test name="userRoles">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -212,30 +590,9 @@
         </classes>
 </test>
 
-<test name="commonmodule_test">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="commonmodule_test.js"/>
-			<parameter name="js.depends" value="commonmodule.js" />
-			<!-- 
-			we require 2 files,
-			
-			/resources/deployments/hello1.war is taken as resource from clitest project classpath will appear in /tmp/deployments/hello.war
-			(/tmp/ is default location if destination path is relative)
-			
-			http://lzoubek-builds.brq.redhat.com/eap6/host.xml is downloaded from to /tmp/host.xml123 (absolute path)
-			 -->
-			<parameter name="res.src" value="/resources/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
-			<parameter name="res.dst" value="hello.war,/tmp/foo" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
 
-<!--  This case SHOULD BE LAST ONE or before the one-->
-<!--  Doing inventory and Uninventory for N number times-->
+<!--  This case SHOULD BE LAST ONE or before the one -->
+<!--  Doing inventory and Uninventory for N number times -->
 <test name="InventoryConsistency">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.InventoryConsistencyTest">
@@ -246,8 +603,9 @@
         </classes>
 </test>
 
-<!--  This case SHOULD BE LAST ONE-->
-<!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
+
+<!--  This case SHOULD BE LAST ONE -->
+<!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation -->
 <test name="Uninventory-Platforms-End">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	

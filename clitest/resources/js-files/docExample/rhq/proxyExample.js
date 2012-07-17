@@ -5,6 +5,10 @@
  * Apr 20, 2012     
  **/
 
+var verbose = 10; // logging level 
+var common = new _common(); // object with common methods
+
+
 var resCriPlat = new ResourceCriteria();
 resCriPlat.addFilterResourceCategories(ResourceCategory.PLATFORM);
 var platforms = ResourceManager.findResourcesByCriteria(resCriPlat);
@@ -13,10 +17,11 @@ assertTrue(platforms.size() > 0, "There is no committed platform in inventory!!"
 
 var resCriAgent = new ResourceCriteria();
 resCriAgent.addFilterResourceTypeName("RHQ Agent");
+resCriAgent.fetchResourceConfiguration(true); 
+
 var agents = ResourceManager.findResourcesByCriteria(resCriAgent);
 
 assertTrue(agents.size() > 0, "There is no RHQ Agent in inventory!!");
-
 
 //proxy
 var rhelServerOne = ProxyFactory.getResource(platforms.get(0).getId());//get platform
@@ -34,18 +39,27 @@ assertNotNull(processlist);
 pretty.print(processlist);
 
 agent.updateAllPlugins();
-println("Waiting 20 sec to sync...");
-sleep(1000 * 20);
-// TODO find better soulution than hardcoded waiting
-// TODO check result of operation, currently not possible via Proxy but OperationManager must be used
 
-// TODO jbossas.restart();
+var res = new Resource(agent.id);
+var history = res.waitForOperationResult(agent.id);
+common.info("Update all plugins operation result: " + history.status);
+assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + history.status + " but success was expected!!");
+
+
+// tested in startingArray.js
+// jbossas.restart(); 
 
 
 // Configurations
-var agentConf = agent.getResourceConfiguration();
+//var agentConf = agent.getResourceConfiguration();
+// NOTE - this example is changed to work even after fresh installation, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899
+
+var agentConf = agents.get(0).getResourceConfiguration();
 
 assertNotNull(agentConf);
+
+common.debug("Number of all direct found properties: #" + agentConf.getProperties().size());
+
 pretty.print(agentConf);
 
 // this is just for interactive mode
