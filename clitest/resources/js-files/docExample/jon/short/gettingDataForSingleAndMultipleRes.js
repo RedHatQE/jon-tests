@@ -66,7 +66,7 @@ for( a in jbossServers ) {
     var history = res.waitForOperationResult(jbossServers[a].id);
     assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + history.status + " but success was expected!!");
 
-    sleep(10 * 1000); // jBoss is not started completely, wait to be sure
+    sleep(20 * 1000); // jBoss is not started completely, wait to be sure
 }
 
 

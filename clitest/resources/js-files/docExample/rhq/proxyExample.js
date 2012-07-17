@@ -5,7 +5,7 @@
  * Apr 20, 2012     
  **/
 
-var verbose = 0; // logging level to INFO
+var verbose = 10; // logging level 
 var common = new _common(); // object with common methods
 
 
@@ -17,6 +17,8 @@ assertTrue(platforms.size() > 0, "There is no committed platform in inventory!!"
 
 var resCriAgent = new ResourceCriteria();
 resCriAgent.addFilterResourceTypeName("RHQ Agent");
+resCriAgent.fetchResourceConfiguration(true); 
+
 var agents = ResourceManager.findResourcesByCriteria(resCriAgent);
 
 assertTrue(agents.size() > 0, "There is no RHQ Agent in inventory!!");
@@ -49,9 +51,15 @@ assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status i
 
 
 // Configurations
-var agentConf = agent.getResourceConfiguration();
+//var agentConf = agent.getResourceConfiguration();
+// NOTE - this example is changed to work even after fresh installation, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899
+
+var agentConf = agents.get(0).getResourceConfiguration();
 
 assertNotNull(agentConf);
+
+common.debug("Number of all direct found properties: #" + agentConf.getProperties().size());
+
 pretty.print(agentConf);
 
 // this is just for interactive mode

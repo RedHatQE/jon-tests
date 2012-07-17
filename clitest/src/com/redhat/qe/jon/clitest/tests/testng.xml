@@ -181,6 +181,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="docExample/jon/short/viewingResConfSettings.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
 			<parameter name="expected.result"  value="Login successful,rhq.agent.server.bind-port = 7080"/>
 			<methods>
 				<include name="runJSfile"></include>		
@@ -214,6 +215,7 @@
 	</classes>
 </test>
 -->
+
 <test name="startingArray">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
