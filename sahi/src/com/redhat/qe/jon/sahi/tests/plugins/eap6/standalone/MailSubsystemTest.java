@@ -11,6 +11,8 @@ import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 
 /**
  * covers mail subsystem (add/configure/remove mail-session, add/configure/remove mail {IMAP,POP3,SMTP} mail server
@@ -102,11 +104,12 @@ public class MailSubsystemTest extends AS7StandaloneTest {
 	@Test(dependsOnMethods="smtpServerConfigure")
 	public void checkServerIsSingleton() {
 		Inventory inventory = session.inventory();
-		NewChildWizard nc = inventory.childResources().newChild("SMTP Mail Server");
-		nc.getEditor().setText("resourceName", smtpServer.getName()+"2");
-		nc.next();
-		nc.finish();
-		inventory.childHistory().assertLastResourceChange(false);
+		SahiTasks tasks = sahiTasks;
+		tasks.xy(tasks.cell("Create Child"),3,3).click();
+		tasks.waitFor(Timing.WAIT_TIME);
+		boolean visible = tasks.xy(tasks.cell("SMTP Mail Server").in(tasks.table("menuTable")),3,3).isVisible();
+		Assert.assertFalse(visible,"New resource type [SMTP Mail Server] is visible in New Child menu");
+		
 	}
 	@Test(dependsOnMethods={"smtpServerConfigure","checkServerIsSingleton"})
 	public void smtpServerRemove() {

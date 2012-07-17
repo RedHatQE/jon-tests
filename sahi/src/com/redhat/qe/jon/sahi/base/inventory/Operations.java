@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.sf.sahi.client.ElementStub;
@@ -99,19 +100,21 @@ public class Operations extends ResourceTab {
 			selectOperation(this.name);
 		}
 		public void selectOperation(String op) {
-			 int pickers = tasks.image("comboBoxPicker.png").countSimilar();
-			 log.fine("Found "+pickers+" comboboxes");			 
-			 ElementStub picker = tasks.image("comboBoxPicker.png["+(pickers-2)+"]");
-				 tasks.xy(picker.parentNode(),3,3).click();
-				 ElementStub operation = tasks.row(op);
-				 if (operation.exists()) {
-					 tasks.xy(operation, 3, 3).click();
-					 log.fine("Selected operation ["+op+"].");
-					 return;
-				 }
-			 
-			 throw new RuntimeException("Unable to select operation ["+op+"] clicked on each combo, but operation did NOT pop up");
-		     
+			List<ElementStub> pickers = tasks.image("comboBoxPicker.png").collectSimilar();
+			log.fine("Found " + pickers.size() + " comboboxes");
+			for (ElementStub picker : pickers) {
+				if (picker.isVisible()) {
+					log.fine("Clicking on "+picker.parentNode().fetch("innerHTML"));
+					tasks.xy(picker.parentNode(), 3, 3).click();
+					ElementStub operation = tasks.row(op);
+					if (operation.exists()) {
+						tasks.xy(operation, 3, 3).click();
+						log.fine("Selected operation [" + op + "].");
+						return;
+					}
+				}
+			}
+			throw new RuntimeException("Unable to select operation ["+op+"] clicked on each visible combo, but operation did NOT pop up");
 		}
 		/**
 		 * asserts all required input fields have been filled

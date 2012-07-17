@@ -149,7 +149,12 @@ public class Inventory extends ResourceTab{
 		 */
 		public String getLastResourceChangeStatus() {
 			ElementStub row = getFirstRow();
-			return tasks.cell(4).in(row).getText();
+			try {
+				return tasks.cell(4).in(row).getText();
+			} catch (Exception ex) {
+				log.fine("Unable to get last change status, returning [In Progress], exception : "+ex.getMessage());
+				return "In Progress";
+			}
 		}
 		/**
 		 * asserts whether resource addition/removal was successfull or not (success param)

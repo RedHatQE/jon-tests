@@ -887,25 +887,61 @@ public class SahiTasks extends ExtendedSahi {
 		this.textbox(fileInputIdent).setValue(fullPath);
     }
     
-    
-    
-    public void selectComboBoxes(String options) {
+    public void selectComboBoxes(String options, String nearElement, String optionElementType){
         if (options != null) {
             if (options.trim().length() > 0) {
                 String[] optionArray = this.getCommaToArray(options);
                 for (String option : optionArray) {
                     String[] optionTmp = option.split("-->");
-                    if (this.div(optionTmp[0].trim() + "[1]").exists()) {
-                        _logger.info("\"" + optionTmp[0].trim() + "[1]\" is available to select");
-                        this.selectComboBoxDivRow(this, optionTmp[0].trim() + "[1]", optionTmp[1].trim());
-                    } else {
-                        this.selectComboBoxDivRow(this, optionTmp[0].trim(), optionTmp[1].trim());
+                    if(optionTmp[0].contains("|")){
+                    	String[] nearDrop = optionTmp[0].split("\\|");
+                    	nearElement = nearDrop[0];
+                    	optionTmp[0] = nearDrop[1];
+                    }
+                    if(nearElement == null){
+                    	 if (this.div(optionTmp[0].trim() + "[1]").exists()) {
+                             _logger.info("\"" + optionTmp[0].trim() + "[1]\" is available to select");
+                             optionTmp[0] = optionTmp[0].trim()+"[1]";
+                             //this.selectComboBoxDivRow(this, optionTmp[0].trim() + "[1]", optionTmp[1].trim());
+                         }
+                    }
+                    
+                    //int maxCount = 1;
+                   
+                    if(optionElementType == null){
+                    	optionElementType = "row";
+                    }
+                    optionElementType = optionElementType.toLowerCase();
+                    if(optionElementType.equals("row")){
+                    	//maxCount = this.row(optionTmp[1].trim()).countSimilar();
+                    	//optionTmp[1] = optionTmp[1].trim()+"["+(maxCount-1)+"]";
+                    	if(nearElement != null){
+                    		this.selectComboBoxByNearCellOptionByRow(this, optionTmp[0].trim(), nearElement, optionTmp[1].trim());
+                    	}else{
+                    		this.selectComboBoxDivRow(this, optionTmp[0].trim(), optionTmp[1].trim());
+                    	}                    	
+                    }else if(optionElementType.equals("div")){
+                    	//maxCount = this.div(optionTmp[1].trim()).countSimilar();
+                    	//optionTmp[1] = optionTmp[1].trim()+"["+(maxCount-1)+"]";
+                    	if(nearElement != null){
+                    		this.selectComboBoxByNearCellOptionByDiv(this, optionTmp[0].trim(), nearElement, optionTmp[1].trim());
+                    	}else{
+                    		this.selectComboBoxDivDiv(this, optionTmp[0].trim(), optionTmp[1].trim());
+                    	}     
                     }
                 }
             }
         }
     }
+    
+    public void selectComboBoxes(String options) {
+    	selectComboBoxes(options, null, null);
+    }
 
+    public void selectComboBoxes(String options, String nearElement) {
+    	selectComboBoxes(options, null, nearElement);
+    }
+    
     private void updateSystemUserNotification(String users) {
         String[] usersArray = this.getCommaToArray(users);
         for (String user : usersArray) {
@@ -981,7 +1017,8 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Conditions").click();
         this.cell("Add").click();
 
-        selectComboBoxes(conditionsDropDown);
+        //selectComboBoxes(conditionsDropDown); //Disabled, not stable with this
+        selectComboBoxes(conditionsDropDown, "row");
         updateTextBoxValues(conditionTextBox);
 
 
@@ -991,8 +1028,9 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Notifications").click();
         this.cell("Add[1]").click();
         //Select Notification type
-        if (notificationType.equalsIgnoreCase("System Users")) {
-            updateSystemUserNotification(notificationData);
+        selectComboBoxes(notificationType, "row");
+        if (notificationType.contains("System Users")) {
+        	updateSystemUserNotification(notificationData);
         } else {
             _logger.log(Level.WARNING, "Undefined notification type: " + notificationType);
         }

@@ -14,13 +14,29 @@ else {
 	// we import all resources from discoqueue and wait 'till AS7 becomes available	
 	Inventory.discoveryQueue.importResources().forEach(function(r) {
 		if (r.getProxy().resourceType.name=="JBossAS7 Standalone Server") {
-			r.waitForAvailable();
 			eap = r;
 		}
 	});
-
 }
 assertTrue(eap!=null,"EAP6 or AS7 standalone server is required for this test!");
+eap.waitForAvailable();
+assertTrue(eap.isAvailable(),"AS7 Standalone server was imported, and is available!");
+
+println("Create [Network Interface] child - new resource without backed content");
+var netiface = eap.createChild({name:"testinterface",type:"Network Interface"});
+assertTrue(netiface!=null,"New resource was returned by createChild method = > successfull creation");
+assertTrue(netiface.exists(),"New resource exists in inventory");
+netiface.remove();
+assertFalse(netiface.exists(),"Network interface exists in inventory");
+delete netiface;
+
+println("Create [Network Interface] child with extra configuration - new resource without backed content");
+var netiface = eap.createChild({name:"testinterface2",type:"Network Interface",config:{"inet-address":"127.0.0.1","any-address":false}});
+assertTrue(netiface!=null,"New resource was returned by createChild method = > successfull creation");
+assertTrue(netiface.exists(),"New resource exists in inventory");
+netiface.remove();
+assertFalse(netiface.exists(),"Network interface exists in inventory");
+
 
 println("Create Deployment without specifying name - name is derived from content parameter (file name)");
 var deployed = eap.createChild({content:deployment,type:"Deployment"});
@@ -39,57 +55,17 @@ assertFalse(deployed.exists(),"Deployment exists in inventory");
 delete deployed;
 
 println("Create child resource without passing required parameters");
-var exception;
-try {
-	eap.createChild();
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild));
 
 println("Create child resource without passing required parameters");
-var exception;
-try {
-	eap.createChild({name:"test"});
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild,[{name:"test"}]));
 
 println("Create child resource without passing required parameters");
-var exception;
-try {
-	eap.createChild({type:"test"});
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild,[{type:"test"}]));
 
 println("Create child resource without passing non-existing content param");
-var exception;
-try {
-	eap.createChild({content:"/tmp/1/2/3/4/5",type:"Deployment"});
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild,[{content:"/tmp/1/2/3/4/5",type:"Deployment"}]));
 
 println("Create child resource without passing invalid type");
-var exception;
-try {
-	eap.createChild({name:"test",type:"DeploymentX"});
-} catch(exc) {
-	println(exc);
-	exception = exc;
-}
-assertTrue(exception!=null,"Exception was raised when createChild was called with invalid parameters");
-delete exception;
+println(expectException(eap.createChild,[{name:"test",type:"DeploymentX"}]));
 
