@@ -578,6 +578,43 @@
         </classes>
 </test>
 
+<test name="draft_testPermissions-ManageInventory">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="draft_testPermissions-ManageInventory.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="draft_testPermissions-ManageSecurity">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="draft_testPermissions-ManageSecurity.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="draft_testPermissions-ViewUsers">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="draft_testPermissions-ViewUsers.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
 <test name="OperationManager">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
