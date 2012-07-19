@@ -55,6 +55,45 @@
 	</classes>
 </test>
 
+<test name="Standalone_NetworkInterfaces">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
+			<parameter name="js.file"  value="eap6/networkInterfacesTest.js"/>
+			<parameter name="js.depends" value="commonmodule.js,eap6/standalone/server.js" />
+			<parameter name="cli.args" value="--args-style=named flag=SS" />
+			<methods>
+				<include name="runJSfile"></include>			
+			</methods>
+		</class>		
+	</classes>
+</test>
+
+
+<test name="Domain_NetworkInterfaces">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
+			<parameter name="js.file"  value="eap6/networkInterfacesTest.js"/>
+			<parameter name="js.depends" value="commonmodule.js,eap6/domain/server.js" />
+			<parameter name="cli.args" value="--args-style=named flag=DC" />
+			<methods>
+				<include name="runJSfile"></include>			
+			</methods>
+		</class>		
+	</classes>
+</test>
+<test name="Domain_Host_NetworkInterfaces">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
+			<parameter name="js.file"  value="eap6/networkInterfacesTest.js"/>
+			<parameter name="js.depends" value="commonmodule.js,eap6/domain/server.js" />
+			<parameter name="cli.args" value="--args-style=named flag=HC" />
+			<methods>
+				<include name="runJSfile"></include>			
+			</methods>
+		</class>		
+	</classes>
+</test>
+
 <!-- -->
 
 
