@@ -7,6 +7,18 @@
 var verbose = 3; // logging level
 var common = new _common(); // object with common methods
 
+var platforms = findPlatforms();
+if(platforms.length == 0){
+    common.info("No imported platforms found, importing a new one...");
+    var platforms = Inventory.discoveryQueue.listPlatforms();
+    assertTrue(platforms.length>0,"There is at least one platform in discovery queue");
+    // using importPlatform, we import it without children resources
+    var imported = Inventory.discoveryQueue.importPlatform(platforms[0].getProxy().getName(),false);
+    assertTrue(imported.exists(),"Imported platform exists in inventory");
+    // let's wait until our platform becomes available
+    imported.waitForAvailable();
+}
+
 var agents = findAgents();
 if(agents.length == 0){
     common.info("No agent imported, importing new agent..");
@@ -28,4 +40,11 @@ function findAgents(){
     common.debug(agents.length + " imported agent(s) found");
     
     return agents;
+}
+
+function findPlatforms(){
+    var platforms = Inventory.find({resourceCategories:ResourceCategory.PLATFORM});
+    common.debug(platforms.length + " imported platform(s) found");
+
+    return platforms;
 }
