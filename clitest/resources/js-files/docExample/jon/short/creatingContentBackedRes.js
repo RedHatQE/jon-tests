@@ -123,13 +123,28 @@ if( resources != null ) {
         assertTrue(result && result.status == CreateResourceStatus.SUCCESS," Creating the new EAR resource failed!!Status: " +result.status +" Error message: " + result.getErrorMessage());
 
         // wait for discovery
-        var discovered = common.waitFor(function() {return Inventory.find({name:"MiscBeans.ear"}).length == 1;});
+        var discovered = common.waitFor(function() {return Inventory.find({name:packageName}).length == 1;});
         assertTrue(discovered, "Resource child was successfully created, but wasn't autodiscovery during timeout!");
             
         // check that new resource is available
-        res = Inventory.find({name:"MiscBeans.ear"}); 
-        assertTrue(res.length > 0, "MiscBeans.ear resource not found!!");
+        res = Inventory.find({name:packageName}); 
+        assertTrue(res.length > 0, packageName + " resource not found!!");
         assertTrue(res[0].waitForAvailable(), "MiscBeans.ear not available!!");
+        common.waitFor(function () {return findResChild(resources.get(0).id,packageName);});
+
     }
 }
+function findResChild(resId, childName){
+    var resProxy = ProxyFactory.getResource(resId);
+    var children = resProxy.children;
+    common.debug(children.length + " children found for resource with id: " + resId);
+    var found = false;
+    for(i in children){
+        common.trace("Checking " + children[i]);
+        if(children[i].name == childName){
+            return children[i];
+        }
+    }
 
+    return found;
+}

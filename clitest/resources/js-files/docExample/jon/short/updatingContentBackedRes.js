@@ -55,11 +55,11 @@ var jboss = ProxyFactory.getResource(res.get(0).id);
 
 var children = jboss.children;
 common.debug(children.length + " jboss's children found");
-common.trace("Jboss's children: " + children);
 var found = false;
 
 for( c in children ) {
     var child = children[c];
+    common.trace("Found jboss's child: " + child);
     if( child.name == packageName ) {
         common.debug("Updating to " + fullPathName + ", version: "+version+ " ...");
         common.debug("Resource: " + child);
