@@ -96,16 +96,15 @@ var _common = function() {
 	 */
 	var _asConfiguration = function(hash) {
 
-		config = new Configuration;
+		config = new Configuration();
 		if (!hash) {
 			return config;
 		}
 		for(key in hash) {
-			value = hash[key];
-
-			if (value == null) {
+			if (!hash.hasOwnProperty(key)) {
 				continue;
 			}
+			value = hash[key];
 
 			(function(parent, key, value) {
 				function isArray(obj) {
@@ -117,9 +116,8 @@ var _common = function() {
 				}
 
 				function isPrimitive(obj) {
-					return typeof(obj) != 'object';
+					return typeof(obj) != 'object' || obj == null || (obj instanceof Boolean  || obj instanceof Number || obj instanceof String);
 				}
-
 				//this is an anonymous function, so the only way it can call itself
 				//is by getting its reference via argument.callee. Let's just assign
 				//a shorter name for it.
@@ -128,13 +126,24 @@ var _common = function() {
 				var prop = null;
 
 				if (isPrimitive(value)) {
-					prop = new PropertySimple(key, new java.lang.String(value));
+					if (value==null) {
+						prop = new PropertySimple(key, null);
+					}
+					else if (value instanceof Boolean) {
+						prop = new PropertySimple(key, new java.lang.Boolean(value));
+					}
+					else if (value instanceof Number) {
+						prop = new PropertySimple(key, new java.lang.Number(value));
+					}
+					else {
+						prop = new PropertySimple(key, new java.lang.String(value));
+					}
 				} else if (isArray(value)) {
 					prop = new PropertyList(key);
 					for(var i = 0; i < value.length; ++i) {
 						var v = value[i];
 						if (v != null) {
-							me(prop, key, v);
+							//me(prop, key, v);
 						}
 					}
 				} else if (isHash(value)) {
@@ -142,9 +151,15 @@ var _common = function() {
 					for(var i in value) {
 						var v = value[i];
 						if (value != null) {
-							me(prop, i, v);
+							//me(prop, i, v);
 						}
 					}
+				}
+				else {
+					println("it is unkonwn");
+					println(typeof value);
+					println(value);
+					return;
 				}
 
 				if (parent instanceof PropertyList) {
@@ -164,8 +179,9 @@ var _common = function() {
 	 * into a javascript hash.
 	 *
 	 * @param configuration
+	 * @param configuration definition - optional
 	 */
-	var _asHash = function(configuration) {
+	var _asHash = function(configuration,configDef) {
 		ret = {};
 		if (!configuration) {
 			return ret;
@@ -173,7 +189,15 @@ var _common = function() {
 		iterator = configuration.getMap().values().iterator();
 		while(iterator.hasNext()) {
 			prop = iterator.next();
-
+			var propDef;
+			if (configDef) {
+				if (configDef instanceof ConfigurationDefinition) {
+					propDef = configDef.getPropertyDefinitions().get(prop.name);
+				}
+				else if (configDef instanceof PropertyDefinitionMap) {
+					propDef = configDef.get(prop.name);
+				}
+			}
 			(function(parent, prop) {
 				function isArray(obj) {
 					return typeof(obj) == 'object' && (obj instanceof Array);
@@ -188,7 +212,18 @@ var _common = function() {
 				var representation = null;
 
 				if (prop instanceof PropertySimple) {
-					representation = prop.stringValue;
+					if (propDef && propDef instanceof PropertyDefinitionSimple) {
+						// TODO implement all propertySimple types .. 
+						if (propDef.getType() == PropertySimpleType.BOOLEAN) {
+							representation = new Boolean(prop.booleanValue);
+						}
+						if (propDef.getType() == PropertySimpleType.DOUBLE) {
+							representation = new Number(prop.doubleValue);
+						}
+					}
+					else {
+						representation = new String(prop.stringValue);
+					}
 				} else if (prop instanceof PropertyList) {
 					representation = [];
 
@@ -209,7 +244,7 @@ var _common = function() {
 
 				if (isArray(parent)) {
 					parent.push(representation);
-				} else if (isHash(parent)) {
+				} else if (isHash(parent) && !prop.name.startsWith("__")) {
 					parent[prop.name] = representation;
 				}
 			})(ret, prop);
@@ -515,6 +550,21 @@ var Resource = function (param) {
 			}
 		}
 	};
+	
+	/**
+	 * applies map of values to given configuration, currently supports applying only on level 1 (no recursion)
+	 * @param original - Configuration instance
+	 * @param values - map of values to be applied to configuration
+	 */
+	var _applyConfig = function(original,values) {
+		values = values || {};
+		for (var k in values) {
+			if (values.hasOwnProperty(k) && original.getMap().containsKey(k)) {
+				original.put(new PropertySimple(k, new java.lang.String(values[k])));
+			}
+		}
+		return original;
+	};
 
 	return {
 		getId : function() {return _id;},
@@ -598,6 +648,42 @@ var Resource = function (param) {
 				return children[0];
 			}
 		},
+		updateConfiguration : function(params) {
+			common.trace("Resource("+_id+").updateConfiguration("+common.objToString(params)+")");
+			params = params || {};
+			common.debug("Retrieving configuration and configuration definition");
+			var config = ConfigurationManager.getLiveResourceConfiguration(_id,false);
+			common.debug("Got configuration : "+config);
+			var applied = _applyConfig(config,params);
+			common.debug("Will apply this configuration: "+applied);
+			
+			var update = ConfigurationManager.updateResourceConfiguration(_id,applied);
+			if (update.status == ConfigurationUpdateStatus.INPROGRESS) {
+				var pred = function() {
+					var up = ConfigurationManager.getLatestResourceConfigurationUpdate(_id);
+					if (up) {
+						return up.status != ConfigurationUpdateStatus.INPROGRESS;
+					}
+				};
+				common.debug("Waiting for configuration to be updated...");
+				var result = common.waitFor(pred);
+				if (!result) {
+					throw "Resource configuration update timed out!";
+				}
+				update = ConfigurationManager.getLatestResourceConfigurationUpdate(_id);
+			}					
+			common.debug("Configuration update finished with status : "+update.status);
+			if (update.status == ConfigurationUpdateStatus.FAILURE) {
+				common.info("Resource configuration update failed : "+update.errorMessage);
+			}
+		},
+		getConfiguration : function() {
+			common.trace("Resource("+_id+").getConfiguration()");
+			var self = ProxyFactory.getResource(_id);
+			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(self.resourceType.id);
+			return common.configurationAsHash(ConfigurationManager.getLiveResourceConfiguration(_id,false),configDef);
+		},
+		
 		/**
 		 * creates a new child resource
 		 * @param params hashmap of params
@@ -705,7 +791,13 @@ var Resource = function (param) {
 			};
 			common.debug("Waiting for resrouce creation operation...");
 			var result = common.waitFor(pred);
-			common.debug("Child resource creation status : " + result.status);
+			if (result) {
+				common.debug("Child resource creation status : " + result.status);
+			}
+			else {
+				common.info("Child resource creation timed out!!");
+				return;
+			}
 			if (result && result.status == CreateResourceStatus.SUCCESS) {
 				common.debug("Waiting for resource to be auto-discovered");
 				// we assume there can be exactly one resource of one type having unique name
@@ -798,6 +890,7 @@ var Resource = function (param) {
 		}
 	};
 };
+
 // default verbosity,timeouts
 var verbose = 0;
 var delay = 5; //seconds
