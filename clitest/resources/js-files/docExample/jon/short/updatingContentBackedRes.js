@@ -4,7 +4,7 @@
  * June 12, 2012        
  **/
 
-var verbose = 10; // logging level to INFO
+var verbose = 3; // logging level to 
 var common = new _common(); // object with common methods
 
 // update this
@@ -54,10 +54,12 @@ assertTrue(res.size() > 0, "No JBossAS 5 found!!");
 var jboss = ProxyFactory.getResource(res.get(0).id);
 
 var children = jboss.children;
+common.debug(children.length + " jboss's children found");
 var found = false;
 
 for( c in children ) {
     var child = children[c];
+    common.trace("Found jboss's child: " + child);
     if( child.name == packageName ) {
         common.debug("Updating to " + fullPathName + ", version: "+version+ " ...");
         common.debug("Resource: " + child);

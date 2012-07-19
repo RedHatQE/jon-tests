@@ -39,7 +39,7 @@ var _common = function() {
 	};
 	
 	var _info = function(message) {
-		if (typeof verbose == "number" && verbose<=0) {
+		if (typeof verbose == "number" && verbose>=0) {
 			_println("[INFO] "+message);
 		}
 	};
@@ -393,7 +393,10 @@ Inventory.discoveryQueue = (function () {
 		},
 		importPlatform: function(name,children) {
 			common.trace("discoveryQueue.importPlatform(name="+name+" children[default=true]="+children+")");
-			children = children || true;
+			
+			// default is true (when null is passed)
+			if(children != false){children = true;}
+			
 			// first lookup whether platform is already imported
 			var resources = Inventory.find({name:name,category:"PLATFORM"});
 			if (resources.length == 1) {
@@ -403,6 +406,7 @@ Inventory.discoveryQueue = (function () {
 			resources = _importResources({name:name,category:"PLATFORM"});
 			assertTrue(resources.length == 1, "Plaform was not imported");
 			if (children) {
+				common.debug("Importing platform's children");
 				_importResources({parentResourceId:resources[0].getId()});
 			}
 			common.debug("Waiting 15 seconds, 'till inventory syncrhonizes with agent");
@@ -411,12 +415,16 @@ Inventory.discoveryQueue = (function () {
 		},
 		importResource : function(resource,children) {
 			common.trace("discoveryQueue.importResource(resource="+resource+" children[default=true]="+children+")");
-			children = children || true;
+			
+			// default is true (when null is passed)
+			if(children != false){children = true;}
+			
 			if (!resource.exists()) {
 				DiscoveryBoss.importResources([resource.getId()]);
 				common.waitFor(resource.exists);
 			}
 			if (children) {
+				common.debug("Importing resources's children");
 				_importResources({parentResourceId:resource.getId()});
 			}
 			return resource;
@@ -735,6 +743,7 @@ var Resource = function (param) {
 					}
 					else if (op.parametersConfigurationDefinition){
 						var template = op.parametersConfigurationDefinition.defaultTemplate;
+						common.trace("Default template for parameters configuration definition" + template);
 						if (template) {
 							configuration = template.createConfiguration();
 						}

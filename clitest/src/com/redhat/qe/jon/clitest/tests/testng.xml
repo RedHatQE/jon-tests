@@ -13,6 +13,20 @@
 <!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
+
+<test name="discoveryScan">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="discoveryScan.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
 <!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test -->
 <test name="Uninventory-Platforms-Start">
   	<classes>
@@ -577,6 +591,43 @@
                 </class>
         </classes>
 </test>
+
+<test name="draft_testPermissions-ManageInventory">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="draft_testPermissions-ManageInventory.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="draft_testPermissions-ManageSecurity">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="draft_testPermissions-ManageSecurity.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="draft_testPermissions-ViewUsers">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="draft_testPermissions-ViewUsers.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
 
 <test name="OperationManager">
         <classes>

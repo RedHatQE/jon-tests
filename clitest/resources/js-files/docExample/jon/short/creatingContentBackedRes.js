@@ -6,7 +6,7 @@
 
 
 
-var verbose = 0; // logging level to INFO
+var verbose = 3; // logging level
 var common = new _common(); // object with common methods
 
 
@@ -26,28 +26,28 @@ var appTypeName = "Enterprise Application (EAR)";
 
 // define a custom function to parse the filename and path info
 function PackageParser(pathName) {
-	var file = new java.io.File(pathName);
+    var file = new java.io.File(pathName);
 	
     common.debug("Parsing " + pathName);
 
-	var fileName = file.getName();
-	var packageType = fileName.substring(fileName.lastIndexOf('.')+1);
-	var tmp = fileName.substring(0, fileName.lastIndexOf('.'));
+    var fileName = file.getName();
+    var packageType = fileName.substring(fileName.lastIndexOf('.')+1);
+    var tmp = fileName.substring(0, fileName.lastIndexOf('.'));
     var version = 1;
     var realName = tmp;
     var packageName = fileName;
     
     // parse the package version, only if version is included   
     if(tmp.indexOf('-') != -1){
-	    realName = tmp.substring(0, tmp.lastIndexOf('-'));
-	    version = tmp.substring(tmp.lastIndexOf('-') + 1);			
+        realName = tmp.substring(0, tmp.lastIndexOf('-'));
+        version = tmp.substring(tmp.lastIndexOf('-') + 1);			
         packageName = realName + "." + packageType;
     }	
 	
     this.packageType = packageType.toLowerCase();
-	this.packageName = packageName;
-	this.version     = version;
-	this.realName    = realName;
+    this.packageName = packageName;
+    this.version     = version;
+    this.realName    = realName;
     this.fileName    = fileName;
     common.debug("Parsed, packageType: " +this.packageType+ ", package name: " +this.packageName + ", version: " + this.version + ", real name: " + this.realName + ", filename: " + this.filename);
 }
@@ -85,13 +85,13 @@ var appType = ResourceTypeManager.getResourceTypeByNameAndPlugin(appTypeName, pl
 
 // create the new EAR resource on each discovered app server
 if( resources != null ) {
-  for( i =0; i < resources.size(); ++i) {
-       var res = resources.get(i);
-       var startTime = new Date().getTime();
-       var pageControl = new PageControl(0,1);
-       
-       common.info("Creating the new EAR resource...");
-       var history = ResourceFactoryManager.createPackageBackedResource(
+    for( i =0; i < resources.size(); ++i) {
+        var res = resources.get(i);
+        var startTime = new Date().getTime();
+        var pageControl = new PageControl(0,1);
+
+        common.info("Creating the new EAR resource...");
+        var history = ResourceFactoryManager.createPackageBackedResource(
            res.id,
            appType.id,
            packageName,
@@ -102,8 +102,8 @@ if( resources != null ) {
            deployConfig,
            fileBytes,
            null // timeout
-       );
-      
+        );
+
         // check result 
         var pred = function() {
             var histories = ResourceFactoryManager.findCreateChildResourceHistory(res.id,startTime,new Date().getTime(),pageControl);
@@ -123,13 +123,28 @@ if( resources != null ) {
         assertTrue(result && result.status == CreateResourceStatus.SUCCESS," Creating the new EAR resource failed!!Status: " +result.status +" Error message: " + result.getErrorMessage());
 
         // wait for discovery
-        var discovered = common.waitFor(function() {return Inventory.find({name:"MiscBeans.ear"}).length == 1;});
-        assertTrue(discovered, "Resource child was successfully created, but it's autodiscovery timed out!");
-        
+        var discovered = common.waitFor(function() {return Inventory.find({name:packageName}).length == 1;});
+        assertTrue(discovered, "Resource child was successfully created, but wasn't autodiscovery during timeout!");
+            
         // check that new resource is available
-        res = Inventory.find({name:"MiscBeans.ear"}); 
-        assertTrue(res.length > 0, "MiscBeans.ear resource not found!!");
+        res = Inventory.find({name:packageName}); 
+        assertTrue(res.length > 0, packageName + " resource not found!!");
         assertTrue(res[0].waitForAvailable(), "MiscBeans.ear not available!!");
+        common.waitFor(function () {return findResChild(resources.get(0).id,packageName);});
+
     }
 }
+function findResChild(resId, childName){
+    var resProxy = ProxyFactory.getResource(resId);
+    var children = resProxy.children;
+    common.debug(children.length + " children found for resource with id: " + resId);
+    var found = false;
+    for(i in children){
+        common.trace("Checking " + children[i]);
+        if(children[i].name == childName){
+            return children[i];
+        }
+    }
 
+    return found;
+}

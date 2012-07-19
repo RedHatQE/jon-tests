@@ -27,10 +27,11 @@ function importPlatformWithoutChildren() {
 	assertTrue(platforms.length>0,"There is at least one platform in discovery queue");
 	// using importPlatform, we import it without children resources
 	var imported = Inventory.discoveryQueue.importPlatform(platforms[0].getProxy().getName(),false);
-	assertTrue(imported.exists(),"Imported platform exists in inventory");
+        assertTrue(imported.exists(),"Imported platform exists in inventory");
 	// let's wait until our platform becomes available
 	imported.waitForAvailable();
 	assertTrue(imported.isAvailable(),"Imported platform is available");
+        assertTrue(imported.children().length==0,"No platform's children were imported");
 	// let's uninventory this platform
 	imported.uninventory();
 	assertFalse(imported.exists(),"Imported platform exists in inventory");

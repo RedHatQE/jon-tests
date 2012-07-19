@@ -290,7 +290,11 @@ public class Inventory extends ResourceTab{
 			log.fine("Found Delete buttons :"+buttons);
 			tasks.byXPath("//td[@class='buttonTitle' and .='Delete']").click();
 			//tasks.cell("Delete").near(tasks.cell("Uninventory")).click();
-			tasks.cell("Yes").click();
+			for (ElementStub es : tasks.cell("Yes").collectSimilar()) {
+				if (es.isVisible()) {
+					tasks.xy(es,3,3).click();
+				}
+			}
 		}
 		/**
 		 * lists children resrource names
