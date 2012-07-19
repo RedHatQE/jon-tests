@@ -1,0 +1,7 @@
+<suite name="cli-java-api" verbose="1" >
+  <test name="Unit" >
+	<packages>
+      <package name="com.redhat.qe.jon.javacli" />
+   </packages>
+ </test>
+</suite>

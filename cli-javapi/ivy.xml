@@ -16,6 +16,10 @@
         <dependency org="net.sf.opencsv" name="opencsv" rev="1.8"/>
         <dependency org="javax.persistence" name="persistence-api" rev="1.0"/>
         
+        <!-- Non-JON cli -->
         <dependency org="org.testng" name="testng" rev="6.5.2"/>
+		<dependency org="commons-configuration" name="commons-configuration" rev="1.8"/>
+		<dependency org="org.apache.commons" name="commons-lang3" rev="3.0"/>     
+		<dependency org="com.google.inject" name="guice" rev="3.0-rc3"/>
     </dependencies>
 </ivy-module>
