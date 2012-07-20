@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.sasl.util.UsernamePasswordHashUtil;
 import org.testng.annotations.BeforeSuite;
 
@@ -114,6 +115,22 @@ public class AS7CliTest extends CliTest {
 			e.printStackTrace();
 		}
 	}
+	@Override
+	public void runJSfile(String rhqTarget, String cliUsername,
+			String cliPassword, String jsFile, String cliArgs,
+			String expectedResult, String makeFilure, String jsDepends,
+			String resSrc, String resDst) throws IOException, CliTasksException {
+		
+		if (StringUtils.trimToNull(cliArgs)==null) {
+			cliArgs = "--args-style=named agent="+agentName;
+		}
+		else {
+			cliArgs+= " agent="+agentName;
+		}
+		
+		super.runJSfile(rhqTarget, cliUsername, cliPassword, jsFile, cliArgs,
+				expectedResult, makeFilure, jsDepends, resSrc, resDst);
+	}
 	
 	protected void serverStartup(ServerStartConfig start, String jsFile) throws IOException, CliTasksException {
 		String params = start.getStartCmd();
@@ -137,6 +154,6 @@ public class AS7CliTest extends CliTest {
 		}
 		Assert.assertTrue(running, "Server process is running");
 		sshClient.runAndWait("netstat -pltn | grep java");
-		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, "--args-style=named agent="+agentName, start.getExpectedMessage()+",availability=UP", null,null,null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, null, start.getExpectedMessage()+",availability=UP", null,null,null,null);
 	}
 }

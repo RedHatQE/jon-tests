@@ -1,8 +1,12 @@
 package com.redhat.qe.jon.clitest.tests;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,52 +71,14 @@ public class CliTest extends CliTestScript{
 
 		// process additional resource files
 		if (resSrc!=null && resDst!=null) {
-			_logger.info("Processing additional resources...");
-			String[] sources = resSrc.split(",");
-			String[] dests = resDst.split(",");
-			if (sources.length!=dests.length) {
-				throw new CliTasksException("res.src parameter must be same length as res.dst, please update your testng configuration!");
-			}
-			for (int i=0;i<sources.length;i++) {
-				String src = sources[i];
-				File dst = new File(dests[i]);
-				String destDir = dst.getParent();
-				
-				if (destDir==null) {
-					destDir="/tmp";
-				}
-				else if (!dst.isAbsolute()) {
-					destDir="/tmp/"+destDir;
-				}
-								
-				cliTasks.runCommnad("mkdir -p "+destDir);
-				if (src.startsWith("http")) {
-					cliTasks.runCommnad("wget -nv "+src+" -O "+destDir+"/"+dst.getName()+" 2>&1");
-				}
-				else {
-					URL resource = CliTest.class.getResource(src);
-					if (resource==null) {
-						throw new CliTasksException("Resource file "+src+" does not exist!");
-					}
-					cliTasks.copyFile(resource.getPath(), destDir,dst.getName());
-				}
-			}
+			prepareResources(resSrc, resDst);
 		}		
 		
 		// upload JS file to remote host first
 		cliTasks.copyFile(jsFileLocation+jsFile, remoteFileLocation);
 		jsFileName = new File(jsFile).getName();
 		if (jsDepends!=null) {
-			_logger.info("Preparing JS file depenencies ... "+jsDepends);
-			for (String dependency : jsDepends.split(",")) {
-				cliTasks.copyFile(jsFileLocation+dependency, remoteFileLocation, "_tmp.js");
-				// as CLI does not support including, we must merge the files manually
-				cliTasks.runCommnad("cat "+remoteFileLocation+"_tmp.js >> "+remoteFileLocation+"_deps.js");
-			}
-			cliTasks.runCommnad("rm "+remoteFileLocation+"_tmp.js");
-			// finally merge main jsFile
-			cliTasks.runCommnad("cat "+remoteFileLocation+jsFileName+" >> "+remoteFileLocation+"_deps.js && mv "+remoteFileLocation+"_deps.js "+remoteFileLocation+jsFileName);			
-			_logger.info("JS file depenencies ready");
+			prepareDependencies(jsFile, jsDepends);
 		}
 		
 		// autodetect RHQ_CLI_JAVA_HOME if not defined
@@ -141,6 +107,72 @@ public class CliTest extends CliTestScript{
 			cliTasks.validateExpectedResultString(consoleOutput , expectedResult);
 		}
 		
+	}
+
+	private void prepareResources(String resSrc, String resDst)
+			throws CliTasksException, IOException {
+		_logger.info("Processing additional resources...");
+		String[] sources = resSrc.split(",");
+		String[] dests = resDst.split(",");
+		if (sources.length!=dests.length) {
+			throw new CliTasksException("res.src parameter must be same length as res.dst, please update your testng configuration!");
+		}
+		for (int i=0;i<sources.length;i++) {
+			String src = sources[i];
+			File dst = new File(dests[i]);
+			String destDir = dst.getParent();
+			
+			if (destDir==null) {
+				destDir="/tmp";
+			}
+			else if (!dst.isAbsolute()) {
+				destDir="/tmp/"+destDir;
+			}
+							
+			cliTasks.runCommnad("mkdir -p "+destDir);
+			if (src.startsWith("http")) {
+				cliTasks.runCommnad("wget -nv "+src+" -O "+destDir+"/"+dst.getName()+" 2>&1");
+			}
+			else {
+				URL resource = CliTest.class.getResource(src);
+				if (resource==null) {
+					throw new CliTasksException("Resource file "+src+" does not exist!");
+				}
+				cliTasks.copyFile(resource.getPath(), destDir,dst.getName());
+			}
+		}
+	}
+
+	private void prepareDependencies(String jsFile, String jsDepends)
+			throws IOException, CliTasksException {
+		int longestDepNameLength=0;
+		Map<String,Integer> lines = new LinkedHashMap<String, Integer>(); 
+		_logger.info("Preparing JS file depenencies ... "+jsDepends);
+		for (String dependency : jsDepends.split(",")) {
+			if (dependency.length()>longestDepNameLength) {
+				longestDepNameLength = dependency.length();
+			}
+			lines.put(dependency, getFileLineCount(jsFileLocation+dependency));
+			cliTasks.copyFile(jsFileLocation+dependency, remoteFileLocation, "_tmp.js");
+			// as CLI does not support including, we must merge the files manually
+			cliTasks.runCommnad("cat "+remoteFileLocation+"_tmp.js >> "+remoteFileLocation+"_deps.js");
+		}
+		cliTasks.runCommnad("rm "+remoteFileLocation+"_tmp.js");
+		// finally merge main jsFile
+		cliTasks.runCommnad("cat "+remoteFileLocation+jsFileName+" >> "+remoteFileLocation+"_deps.js && mv "+remoteFileLocation+"_deps.js "+remoteFileLocation+jsFileName);			
+		_logger.info("JS file depenencies ready");
+		_logger.info("Output file has been merged from JS files as follows:");
+		int current = 0;
+		lines.put(jsFile, getFileLineCount(jsFileLocation+jsFile));
+		if (jsFile.length()>longestDepNameLength) {
+			longestDepNameLength = jsFile.length();
+		}
+		_logger.info("===========================");
+		for (String dep : lines.keySet()) {
+			_logger.info("JS File: "+dep+createSpaces(longestDepNameLength-dep.length())+" lines: "+current+" - "+(current+lines.get(dep)));
+			current+=lines.get(dep)+1;
+		}
+		_logger.info("===========================");
 	}	
 	
 	@AfterTest
@@ -150,6 +182,32 @@ public class CliTest extends CliTestScript{
 		} catch (CliTasksException ex) {
 			_logger.log(Level.WARNING, "Exception on remote File deletion!, ", ex);
 		}
+	}
+	private String createSpaces(int length) {
+		StringBuilder sb = new StringBuilder();
+		while (length>0) {
+			sb.append(" ");
+			length--;
+		}
+		return sb.toString();
+	}
+	private int getFileLineCount(String path) {
+		BufferedReader reader = null;
+		int lines = 0;
+		try {
+			reader = new BufferedReader(new FileReader(path));
+			while (reader.readLine() != null) lines++;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			reader.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return lines;
 	}
 	
 }

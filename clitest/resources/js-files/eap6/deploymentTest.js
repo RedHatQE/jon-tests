@@ -2,6 +2,7 @@
  * this script tests deployment of WAR file
  * @author lzoubek@redhat.com (Libor Zoubek)
  * Jun 06, 2012
+ * requires commonmodulejs, eap6/{standalone|domain}/server.js
  */
 
 /**
@@ -21,23 +22,8 @@
 var platform = agent;
 var content = deployment;
 
-var eap;
-var eaps = Inventory.find({resourceTypeName:"JBossAS7 Standalone Server",parentResourceName:platform});
-if (eaps.length>0) {
-	// EAP found in inventory
-	eap = eaps[0];
-}
-else {
-	// we import all resources from discoqueue and wait 'till AS7 becomes available	
-	Inventory.discoveryQueue.importResources().forEach(function(r) {
-		if (r.getProxy().resourceType.name=="JBossAS7 Standalone Server") {
-			eap = r;
-		}
-	});
-}
-assertTrue(eap!=null,"EAP6 or AS7 standalone server is required for this test!");
-eap.waitForAvailable();
-assertTrue(eap.isAvailable(),"AS7 Standalone server was imported, and is available!");
+
+var eap = getEAP(platform);
 
 // check whether deployment already exists
 name = content.replace(/.*\//,'');

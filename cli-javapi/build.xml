@@ -1,25 +1,33 @@
-<project xmlns:ivy="antlib:org.apache.ivy.ant" name="hello-ivy" default="run">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="cli-javapi" default="compile">
     <ivy:settings file="ivysettings.xml" />
     
-    <property name="output.dir" value="classes-java-cli"/>
+    <property name="output.dir" value="bin"/>
+	<property name="test.report.dir" value="test-output"/>
+	<property name="env" value=""/>
     
     
     <path id="project.classpath">
-    	<path refid="jon.cli.dep.jars"/>
+    	<path refid="default.classpath"/>
 		<fileset dir="lib-jon">
         	<include name="**/*.jar"/>
       	</fileset>    
     </path>
+	
+	<path id="runtime.classpath">
+		<pathelement location="${output.dir}"/>
+		<path refid="project.classpath"/>
+	</path>
     
     <target name="resolve" description="--> retrieve dependencies with ivy">
         <ivy:retrieve />
-        <ivy:cachepath pathId="jon.cli.dep.jars"/>
+        <ivy:cachepath pathId="default.classpath"/>
     </target>
     
     
     <target name="clean">
+    	<delete dir="${output.dir}"/>
+    	<delete dir="${test.report.dir}"/>
     	<delete dir="lib"/>
-    	<delete dir="$output.dir"/>
     </target>
     
 	<target name="init">
@@ -30,8 +38,20 @@
     	
 		<javac destdir="${output.dir}" includeantruntime="false">
 			<src path="src"/>
-			<include name="com/redhat/qe/jon/clitest/tests/javaapi/**"/>
 		    <classpath refid="project.classpath"/>
 	    </javac>
     </target>
+	
+	
+	
+	<target name="test" depends="compile">
+		<taskdef resource="testngtasks" classpath="lib/testng-6.5.2.jar"  />
+
+		<testng classpathref="runtime.classpath" verbose="0">
+			<jvmarg value="-Denv=${env}"/>
+			<xmlfileset dir="resources" includes="testng.xml"/>
+		</testng>
+	</target>
+	
+	
 </project>
