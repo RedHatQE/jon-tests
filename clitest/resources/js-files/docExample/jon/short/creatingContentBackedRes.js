@@ -140,8 +140,8 @@ function findResChild(resId, childName){
     common.debug(children.length + " children found for resource with id: " + resId);
     var found = false;
     for(i in children){
-        common.trace("Comparing: '" + children[i].name + "' with '" + childName + "' size: " + children[i].name.length() + ", " + childName.length);
-        if(children[i].name == childName){
+        common.trace("Comparing: '" + children[i].name + "' with '" + childName + "' type: " + typeof children[i].name + ", " + typeof childName);
+        if(new String(children[i].name).valueOf() == new String(childName).valueOf()){
             return children[i];
         }
     }

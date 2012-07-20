@@ -60,7 +60,7 @@ var found = false;
 for( c in children ) {
     var child = children[c];
     common.trace("Found jboss's child: " + child);
-    if( child.name == packageName ) {
+    if( new String(child.name).valueOf() == new String(packageName).valueOf() ) {
         common.debug("Updating to " + fullPathName + ", version: "+version+ " ...");
         common.debug("Resource: " + child);
         child.updateBackingContent(fullPathName,version);
