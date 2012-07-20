@@ -140,7 +140,7 @@ function findResChild(resId, childName){
     common.debug(children.length + " children found for resource with id: " + resId);
     var found = false;
     for(i in children){
-        common.trace("Checking " + children[i]);
+        common.trace("Comparing: '" + children[i].name + "' with '" + childName + "' size: " + children[i].name.length() + ", " + childName.length);
         if(children[i].name == childName){
             return children[i];
         }
