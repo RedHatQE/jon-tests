@@ -843,7 +843,8 @@ public class SahiTasks extends ExtendedSahi {
     	//String searchCategory = null;
         String[] resourceType = resourceName.split("=");
         if (resourceType.length > 1) {
-        	selectPage("Inventory-->"+resourceType[0], this.textbox("SearchPatternField"), 1000*5, 3);
+        	//selectPage("Inventory-->"+resourceType[0], this.textbox("SearchPatternField"), 1000*5, 3);
+        	selectPage("Inventory-->"+resourceType[0], this.textbox("search"), 1000*5, 3);
             /*
             if(resourceType[0].equalsIgnoreCase("Platforms")){
             	searchCategory = "category=platform ";
@@ -860,10 +861,12 @@ public class SahiTasks extends ExtendedSahi {
         	//Changed the search field name from the version : 4.5.0-SNAPSHOT, Build Number: 1704544. Still we have the field in JBOSS ON, Hence dealing with both search fields
         	if(this.textbox("SearchPatternField").exists()){
         		this.textbox("SearchPatternField").setValue(resourceType[1].trim());
+        		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
         	}else{
         		this.textbox("search").setValue(resourceType[1].trim());
+        		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
         	}        	
-            this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key            
+                        
         } else {
             _logger.log(Level.WARNING, "Invalid parameter passed --> "+resourceName);
             //throw new SahiTasksException("Invalid parameter passed --> "+resourceName);
