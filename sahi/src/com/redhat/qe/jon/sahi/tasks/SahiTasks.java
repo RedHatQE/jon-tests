@@ -856,7 +856,13 @@ public class SahiTasks extends ExtendedSahi {
             }
             this.textbox("SearchPatternField").setValue(searchCategory+resourceType[1].trim());
             */
-            this.textbox("SearchPatternField").setValue(resourceType[1].trim());
+            
+        	//Changed the search field name from the version : 4.5.0-SNAPSHOT, Build Number: 1704544. Still we have the field in JBOSS ON, Hence dealing with both search fields
+        	if(this.textbox("SearchPatternField").exists()){
+        		this.textbox("SearchPatternField").setValue(resourceType[1].trim());
+        	}else{
+        		this.textbox("search").setValue(resourceType[1].trim());
+        	}        	
             this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key            
         } else {
             _logger.log(Level.WARNING, "Invalid parameter passed --> "+resourceName);
