@@ -71,6 +71,7 @@ public class SahiTasks extends ExtendedSahi {
     		if(this.textbox("search["+i+"]").exists()){
     			this.textbox("search["+i+"]").setValue(resourceName);
     			_logger.log(Level.INFO, "Clciked on the element:  search["+i+"]");
+    			break;
     		}   			
     	}  
     	this.waitFor(5*1000);
