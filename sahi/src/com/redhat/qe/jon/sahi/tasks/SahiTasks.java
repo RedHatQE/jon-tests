@@ -66,6 +66,17 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Finish").click();
     }
 
+    private void selectResourceOnGroup(String resourceName, int maxIndex){
+    	for(int i=maxIndex; i>=0; i--){
+    		if(this.textbox("search["+i+"]").exists()){
+    			this.textbox("search["+i+"]").setValue(resourceName);
+    			_logger.log(Level.INFO, "Clciked on the element:  search["+i+"]");
+    		}   			
+    	}  
+    	this.waitFor(5*1000);
+        this.xy(this.byText(resourceName, "nobr"), 3,3).doubleClick();
+        this.waitFor(2*1000);
+    }
     public void createGroup(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList) {
         this.link("Inventory").click();
         this.waitFor(5000);
@@ -75,16 +86,7 @@ public class SahiTasks extends ExtendedSahi {
         this.textarea("description").setValue(groupDesc);
         this.cell("Next").click();
         for (String resource : resourceList) {
-            this.textbox("search").setValue(resource);
-            this.waitFor(5000);
-            this.xy(this.byText(resource.trim(), "nobr"), 3,3).doubleClick();
-            this.waitFor(1000*2);
-            //this.div(resource).doubleClick();
-            //this.waitFor(1000);
-            //this.image("right.png").click();
-            // TODO: Verification of item actually being added, if not wrap ^
-            // in a loop until it's added.
-            // i.e. System.out.println(this.div(resource).parentNode("sectionStack").style("position"));
+        	selectResourceOnGroup(resource.trim(), 2);
         }
         this.cell("Finish").click();
     }
@@ -384,17 +386,25 @@ public class SahiTasks extends ExtendedSahi {
         this.link("Inventory").click();
 
     }
+    
+    private void checkSearchBox(){
+    	if(this.textbox("SearchPatternField").exists()){
+    		_logger.log(Level.FINE, "'SearchPatternField' is avaialble");
+    	}else{
+    		org.testng.Assert.assertTrue(this.textbox("search").exists());
+    	}
+    }
 
     public void checkSearchTextBoxInEachResourceBrowserGroup() {
         this.link("Inventory").click();
         this.cell("All Groups").click();
-        org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+        checkSearchBox();
         this.cell("Compatible Groups").click();
-        org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+        checkSearchBox();
         this.cell("Mixed Groups").click();
-        org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+        checkSearchBox();
         this.cell("Problem Groups").click();
-        org.testng.Assert.assertTrue(this.textbox("SearchPatternField").exists());
+        checkSearchBox();
         this.link("Inventory").click();
     }
 
@@ -1960,17 +1970,29 @@ public class SahiTasks extends ExtendedSahi {
     //***************************************************************************************************
     // TEXT search for Groups
     public boolean searchComaptibilityGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
-    	selectPage("Inventory-->"+groupPanelName, this.textbox("SearchPatternField"), 1000*5, 3);
-    	this.textbox("SearchPatternField").setValue(groupName);
-        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key    
+    	//'SearchPatternField' is on JBOSS ON and 'search' is on RHQ 4.5 and above
+    	selectPage("Inventory-->"+groupPanelName, this.textbox("search"), 1000*5, 3);
+    	if(this.textbox("search").exists()){
+    		this.textbox("search").setValue(groupName);
+    		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key 
+    	}else{
+    		this.textbox("SearchPatternField").setValue(groupName);
+    		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key 
+    	}    	
+           
         if(!this.link(groupName.trim()).exists()){
         	_logger.log(Level.INFO, "Group ["+groupName+"] unavailable, Creating new one...");
         	createGroup(groupPanelName, groupName, groupDesc, resourceList);
         }else{
         	return true;
         }
-        this.textbox("SearchPatternField").setValue(groupName);
-        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key   
+        if(this.textbox("search").exists()){
+    		this.textbox("search").setValue(groupName);
+    		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key 
+    	}else{
+    		this.textbox("SearchPatternField").setValue(groupName);
+    		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key 
+    	}   
         return this.link(groupName.trim()).exists();
     }
 
