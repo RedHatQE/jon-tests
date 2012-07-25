@@ -1482,17 +1482,20 @@ public class SahiTasks extends ExtendedSahi {
         this.xy(cell("Current"),3,3).click();
     }
     
-    public void editAndSaveConfiguration(){
+    public boolean editAndSaveConfiguration(){
     	this.link("Inventory").click();
-        this.waitFor(5000);
-        this.cell("Servers").click();
-        this.link("RHQ Agent").click();
-        this.cell("Configuration").click();
-        String defaultDelay = this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").getValue();
-        this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").setValue(defaultDelay + "1");
-        this.cell("Save").click();
-                	
-        }
+    	this.waitFor(5000);
+    	this.cell("Servers").click();
+    	this.link("RHQ Agent").click();
+    	this.cell("Configuration").click();
+    	if(!this.waitForElementExists(this, this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs"), "rhq.agent.plugins.availability-scan.initial-delay-secs", 1000*5)){
+    		return false;
+    	}
+    	String defaultDelay = this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").getValue();
+    	this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").setValue(defaultDelay + "1");
+    	this.cell("Save").click();
+    	return true;
+    }
     public void settingToOriginalValues(String defaultValue){
     	this.link("Inventory").click();
         this.waitFor(5000);
