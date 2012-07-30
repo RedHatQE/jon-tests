@@ -1714,6 +1714,7 @@ public class SahiTasks extends ExtendedSahi {
     	this.xy(cell("Current"),3,3).click();
     }
     public void editAndSaveGroupConfiguration(){
+    	this.waitForElementExists(this, this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs"), "rhq.agent.plugins.availability-scan.initial-delay-secs", 1000*5);
     	String defaultDelay = this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").getValue();
         this.textbox("rhq.agent.plugins.availability-scan.initial-delay-secs").setValue(defaultDelay + "1");
         this.cell("Save").click();
