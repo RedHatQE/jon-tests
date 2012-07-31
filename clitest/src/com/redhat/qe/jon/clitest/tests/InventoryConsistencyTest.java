@@ -6,8 +6,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.tools.remotelog.CheckRemoteLog;
-import com.redhat.qe.tools.remotelog.RemoteLog;
+//import com.redhat.qe.tools.remotelog.CheckRemoteLog;
+//import com.redhat.qe.tools.remotelog.RemoteLog;
 
 /**
  * this test checks whether inventory is consistent. This test runs UninventoryResources.js and ImportResources.js and checks server log
@@ -15,15 +15,15 @@ import com.redhat.qe.tools.remotelog.RemoteLog;
  * @author lzoubek
  *
  */
-@CheckRemoteLog(
-		logs=@RemoteLog(
-			host="${HOST_NAME}",
-			user="${HOST_USER}",
-			pass="${HOST_PASSWORD}",
-			logFile="${rhq.server.home}/logs/rhq-server-log4j.log",
-			failExpression="JDBCExceptionReporter"
-			)
-		)
+//@CheckRemoteLog(
+//		logs=@RemoteLog(
+//			host="${HOST_NAME}",
+//			user="${HOST_USER}",
+//			pass="${HOST_PASSWORD}",
+//			logFile="${rhq.server.home}/logs/rhq-server-log4j.log",
+//			failExpression="JDBCExceptionReporter"
+//			)
+//		)
 public class InventoryConsistencyTest extends CliTest {
 	
 	@DataProvider
