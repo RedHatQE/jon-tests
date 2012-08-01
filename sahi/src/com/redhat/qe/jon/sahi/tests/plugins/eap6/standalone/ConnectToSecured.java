@@ -6,7 +6,7 @@ import org.jboss.sasl.util.UsernamePasswordHashUtil;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.ConnectionSettings;
 import com.redhat.qe.jon.sahi.tasks.Timing;

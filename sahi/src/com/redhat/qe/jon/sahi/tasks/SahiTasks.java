@@ -1,7 +1,7 @@
 package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.auto.sahi.ExtendedSahi;
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -933,10 +933,12 @@ public class SahiTasks extends ExtendedSahi {
                     }
                     optionElementType = optionElementType.toLowerCase();
                     if(optionElementType.equals("row")){
+                    	if (true)
+                    		throw new RuntimeException("Extended sahi upstream project must be fixed!!");
                     	//maxCount = this.row(optionTmp[1].trim()).countSimilar();
                     	//optionTmp[1] = optionTmp[1].trim()+"["+(maxCount-1)+"]";
                     	if(nearElement != null){
-                    		this.selectComboBoxByNearCellOptionByRow(this, optionTmp[0].trim(), nearElement, optionTmp[1].trim());
+               // FIX IN UPSTRESTREAM     		this.selectComboBoxByNearCellOptionByRow(this, optionTmp[0].trim(), nearElement, optionTmp[1].trim());
                     	}else{
                     		this.selectComboBoxDivRow(this, optionTmp[0].trim(), optionTmp[1].trim());
                     	}                    	
@@ -944,9 +946,9 @@ public class SahiTasks extends ExtendedSahi {
                     	//maxCount = this.div(optionTmp[1].trim()).countSimilar();
                     	//optionTmp[1] = optionTmp[1].trim()+"["+(maxCount-1)+"]";
                     	if(nearElement != null){
-                    		this.selectComboBoxByNearCellOptionByDiv(this, optionTmp[0].trim(), nearElement, optionTmp[1].trim());
+                    		// FIX IN UPSTRESTREAM     		this.selectComboBoxByNearCellOptionByDiv(this, optionTmp[0].trim(), nearElement, optionTmp[1].trim());
                     	}else{
-                    		this.selectComboBoxDivDiv(this, optionTmp[0].trim(), optionTmp[1].trim());
+                    		// FIX IN UPSTRESTREAM	this.selectComboBoxDivDiv(this, optionTmp[0].trim(), optionTmp[1].trim());
                     	}     
                     }
                 }

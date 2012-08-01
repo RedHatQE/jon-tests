@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import net.sf.sahi.client.ElementStub;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 

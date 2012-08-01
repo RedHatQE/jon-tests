@@ -10,7 +10,7 @@ import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.auto.testng.TestNGUtils;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 

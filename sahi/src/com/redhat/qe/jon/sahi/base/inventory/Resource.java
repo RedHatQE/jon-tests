@@ -14,10 +14,10 @@ import net.sf.sahi.client.ElementStub;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.testng.Assert;
+import com.redhat.qe.Assert;
 
-import com.redhat.qe.jon.rest.tasks.RestClient;
-import com.redhat.qe.jon.rest.tasks.RestClient.URIs;
+import com.redhat.qe.jon.common.util.RestClient;
+import com.redhat.qe.jon.common.util.RestClient.URIs;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
@@ -252,7 +252,7 @@ public class Resource {
 	 * @param res
 	 * @return
 	 */
-	private String findPlatformId(RestClient rc, WebResource res) {
+	private String findPlatformId(com.redhat.qe.jon.common.util.RestClient rc, WebResource res) {
 		HashMap<String, Object> result = rc.getReponse(res, URIs.PLATFORMS.getUri()+".json");
 		
 		JSONArray jsonArray = null;
