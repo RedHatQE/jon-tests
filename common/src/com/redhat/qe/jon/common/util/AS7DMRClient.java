@@ -16,7 +16,7 @@ import javax.security.sasl.RealmCallback;
 import org.jboss.as.controller.client.ModelControllerClient;
 import org.jboss.dmr.ModelNode;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 /**
  * AS 7 DMR Management client
  * @author lzoubek
