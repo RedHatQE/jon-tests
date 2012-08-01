@@ -1,0 +1,76 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+allprojects {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+group = 'com.redhat.qe.jon'
+version = '1.0.0-SNAPSHOT'
+
+sourceSets {
+    main {
+        java {
+            srcDirs "src"
+        }
+    }
+	test {
+		java {
+			srcDirs "src"
+		}
+		resources {
+			srcDirs "resources"
+		} 
+	}
+}
+
+eclipse {
+    classpath {
+        defaultOutputDir = file('build')
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    [
+        'https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads',
+        'http://clojars.org/repo',
+        'http://download.java.net/maven/2/',
+        'http://repository.codehaus.org',
+        'http://snapshots.repository.codehaus.org'
+    ].each { repo ->  
+        maven {
+            url repo
+        }
+    }
+}
+
+dependencies {
+    compile "com.redhat.qe.jon:common:1.0.0-SNAPSHOT",
+	"com.redhat.qe:logging-testscript:1.0.2",
+	"org.apache.commons:commons-lang3:3.1"
+    testCompile  "com.redhat.qe.jon:common:1.0.0-SNAPSHOT",
+	"com.redhat.qe:logging-testscript:1.0.2",
+	"org.apache.commons:commons-lang3:3.1"
+}
+
+jar {
+}
+
+test {
+	useTestNG()
+	systemProperties = System.properties
+	options.suites("src/com/redhat/qe/jon/clitest/tests/testng.xml")
+	if ( systemProperties["testng.suite"] ) {
+	    options.suites(systemProperties["testng.suite"])
+        }
+//	options {
+//		listeners << "org.uncommons.reportng.HTMLReporter"
+//	}
+
+	scanForTestClasses = false;
+	workingDir = "build"
+}
