@@ -214,14 +214,20 @@ var _common = function() {
 					if (propDef && propDef instanceof PropertyDefinitionSimple) {
 						// TODO implement all propertySimple types .. 
 						if (propDef.getType() == PropertySimpleType.BOOLEAN) {
-							representation = new Boolean(prop.booleanValue);
+							representation = Boolean(prop.booleanValue);
 						}
-						if (propDef.getType() == PropertySimpleType.DOUBLE) {
-							representation = new Number(prop.doubleValue);
+						else if (propDef.getType() == PropertySimpleType.DOUBLE
+								|| propDef.getType() == PropertySimpleType.INTEGER
+								|| propDef.getType() == PropertySimpleType.LONG
+								|| propDef.getType() == PropertySimpleType.FLOAT								
+								) {
+							representation = Number(prop.doubleValue);
+						} else {
+							representation = String(prop.stringValue);
 						}
 					}
 					else {
-						representation = new String(prop.stringValue);
+						representation = String(prop.stringValue);
 					}
 				} else if (prop instanceof PropertyList) {
 					representation = [];
@@ -567,7 +573,10 @@ var Resource = function (param) {
 		values = values || {};
 		for (var k in values) {
 			if (values.hasOwnProperty(k) && original.getMap().containsKey(k)) {
-				original.put(new PropertySimple(k, new java.lang.String(values[k])));
+				if (values[k]!=null) {
+					// TODO support arrays and maps!!!
+					original.put(new PropertySimple(k, new java.lang.String(values[k])));
+				}
 			}
 		}
 		return original;
@@ -669,6 +678,10 @@ var Resource = function (param) {
 			common.debug("Will apply this configuration: "+applied);
 			
 			var update = ConfigurationManager.updateResourceConfiguration(_id,applied);
+			if (!update) {
+				common.debug("Configuration has not been changed");
+				return;
+			}
 			if (update.status == ConfigurationUpdateStatus.INPROGRESS) {
 				var pred = function() {
 					var up = ConfigurationManager.getLatestResourceConfigurationUpdate(_id);
