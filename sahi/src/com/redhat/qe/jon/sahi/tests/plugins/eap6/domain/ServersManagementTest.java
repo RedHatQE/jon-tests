@@ -4,6 +4,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.redhat.qe.jon.sahi.base.inventory.Configuration;
+import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
@@ -58,6 +60,7 @@ public class ServersManagementTest extends AS7DomainTest {
 		managedServerOperation(managedServer, "Start");
 		managedServer.assertAvailable(true, "Managed server MUST be available, because it was just started");
 	}
+	
     @Test(groups={"serversManagement"},dependsOnMethods="addManagedServer") 
     public void addManagedServerJVM() {
     	Inventory inventory = managedServer.inventory();
@@ -70,8 +73,20 @@ public class ServersManagementTest extends AS7DomainTest {
     	mgmtClient.assertResourcePresence("/host="+hostController.getName()+"/server-config="+managed_server, "jvm", managedServerJVM.getName(), true);
 		managedServerJVM.assertExists(true);      
     }
+    
+    @Test(groups="serversManagement",dependsOnMethods={"addManagedServerJVM"})
+    public void configureManagedServer() {
+    	Configuration configuration = managedServer.configuration();
+    	CurrentConfig current = configuration.current();
+    	current.getEditor().checkRadio("other-server-group");
+    	current.getEditor().checkRadio("standard-sockets");
+    	current.save();
+    	configuration.history().failOnFailure();
+    	String group = mgmtDomain.readAttribute("/host="+hostController.getName()+"/server-config="+managed_server, "group").get("result").asString();
+    	Assert.assertTrue("other-server-group".equals(group), "Managed server configuration (server-group) has been updated");
+    }
 	
-	@Test(groups="serversManagement",dependsOnMethods={"addManagedServer","addManagedServerJVM"})
+	@Test(groups="serversManagement",dependsOnMethods={"configureManagedServer"})
 	public void removeManagedServer() {
 		managedServerOperation(managedServer, "Stop");
 		managedServer.delete();	
