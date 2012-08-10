@@ -105,6 +105,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
 			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
 			<methods>
 				<include name="runJSfile"></include>		
