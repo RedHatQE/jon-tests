@@ -131,8 +131,17 @@ public class AS7CliTest extends CliTest {
 		super.runJSfile(rhqTarget, cliUsername, cliPassword, jsFile, cliArgs,
 				expectedResult, makeFilure, jsDepends, resSrc, resDst);
 	}
-	
-	protected void serverStartup(ServerStartConfig start, String jsFile) throws IOException, CliTasksException {
+	/**
+	 * 
+	 * @param start
+	 * @param serverType either "standalone" or "domain" string
+	 * @throws IOException
+	 * @throws CliTasksException
+	 */
+	protected void serverStartup(ServerStartConfig start, String serverType) throws IOException, CliTasksException {
+		if (!("standalone".equals(serverType)||"domain".equals(serverType))) {
+			throw new RuntimeException("serverType parameter must be either [standalone] or [domain] value!");
+		}
 		String params = start.getStartCmd();
 		if (start.getConfigs()!=null) {
 			for (ConfigFile cf : start.getConfigs()) {
@@ -154,6 +163,7 @@ public class AS7CliTest extends CliTest {
 		}
 		Assert.assertTrue(running, "Server process is running");
 		sshClient.runAndWait("netstat -pltn | grep java");
-		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, null, start.getExpectedMessage()+",availability=UP", null,null,null,null);
+		// do we run Domain or Standalone? we switch it by  by including eap6/{domain|standalone}/server.js
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/discoveryTest.js", null, start.getExpectedMessage()+",availability=UP", null,"commonmodule.js,eap6/"+serverType+"/server.js",null,null);
 	}
 }

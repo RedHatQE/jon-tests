@@ -100,10 +100,10 @@ public class DiscoveryTest extends AS7CliTest {
 
 	@Test(
 		dataProvider="createStartupConfigurations",
-		description="This test starts up AS7 in standalone mode with particular configuration and runs eap6/standalone/discoveryTest.js to detect and import it"
+		description="This test starts up AS7 in standalone mode with particular configuration and runs eap6/discoveryTest.js to detect and import it"
 	)
 	public void serverStartupTest(ServerStartConfig start) throws IOException, CliTasksException {
-		serverStartup(start,"eap6/standalone/discoveryTest.js");
+		serverStartup(start,"standalone");
 	}
 	
 	@AfterClass

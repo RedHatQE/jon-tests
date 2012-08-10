@@ -51,10 +51,10 @@ public class DiscoveryTest extends AS7CliTest {
 
 	@Test(
 		dataProvider="createStartupConfigurations",
-		description="This test starts up AS7 in Domain mode with particular configuration and runs eap6/domain/discoveryTest.js to detect and import it"
+		description="This test starts up AS7 in Domain mode with particular configuration and runs eap6/discoveryTest.js to detect and import it"
 	)
 	public void serverStartupTest(ServerStartConfig start) throws IOException, CliTasksException {
-		serverStartup(start,"eap6/domain/discoveryTest.js");
+		serverStartup(start,"domain");
 	}
 	@AfterClass
 	public void teardown() {
