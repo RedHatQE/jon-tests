@@ -27,20 +27,25 @@ var _common = function() {
 			println(object);
 		}
 	};
+	var _time = function() {
+		var now = new Date();
+		var zeros = function(number) {if (number<10) { number = "0"+number;} return number;};
+		return zeros(now.getHours())+ ":"+zeros(now.getMinutes())+":"+zeros(now.getSeconds());
+	};
 	var _debug = function(message) {
 		if (typeof verbose == "number" && verbose>=1) {
-			_println("[DEBUG] "+message);
+			_println(_time()+" [DEBUG] "+message);
 		}
 	};
 	var _trace = function(message) {
 		if (typeof verbose == "number" && verbose>=2) {
-			_println("[TRACE] "+message);
+			_println(_time()+" [TRACE] "+message);
 		}
 	};
 	
 	var _info = function(message) {
 		if (typeof verbose == "number" && verbose>=0) {
-			_println("[INFO] "+message);
+			_println(_time()+" [INFO] "+message);
 		}
 	};
 	// taken from CLI samples/utils.js
@@ -377,9 +382,11 @@ var Inventory = (function () {
 		 * 
 		 * @returns array of platforms in inventory
 		 */
-		platforms : function() {
-			common.trace("Inventory.platforms()");
-			return Inventory.find({category:"PLATFORM"});
+		platforms : function(params) {
+			params = params || {};			
+			common.trace("Inventory.platforms("+common.objToString(params) +"))");
+			params['category'] = "PLATFORM";
+			return Inventory.find(params);
 		}
 	};
 }) ();
@@ -389,15 +396,16 @@ Inventory.discoveryQueue = (function () {
 	var common = new _common();
 	
 	var _waitForResources = function(criteria) {
-		var resources = ResourceManager.findResourcesByCriteria(criteria);
-	    var time = 0;
-	    var timeout = 3;
-	    while (time<timeout && resources.size() == 0) {
-	    	resources = ResourceManager.findResourcesByCriteria(criteria);
-	    	sleep(10*1000);
-	    	time++;
-	    }
-	    return resources;
+		var resources = common.waitFor(function() {
+			var resources = ResourceManager.findResourcesByCriteria(criteria);
+			if (resources.size()>0) {
+				return resources;
+			}
+		});
+		if (resources==null) {
+			return new java.util.ArrayList();
+		}
+		return resources;
 	};
 	
 	var _importResources = function (params){
@@ -707,7 +715,12 @@ var Resource = function (param) {
 			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(self.resourceType.id);
 			return common.configurationAsHash(ConfigurationManager.getLiveResourceConfiguration(_id,false),configDef);
 		},
-		
+		getPluginConfiguration : function() {
+			common.trace("Resource("+_id+").getPluginConfiguration()");
+			var self = ProxyFactory.getResource(_id);
+			var configDef = ConfigurationManager.getPluginConfigurationDefinitionForResourceType(self.resourceType.id);
+			return common.configurationAsHash(ConfigurationManager.getPluginConfiguration(_id),configDef);
+		},
 		/**
 		 * creates a new child resource
 		 * @param params hashmap of params
