@@ -43,7 +43,6 @@ var _common = function() {
 			_println("[INFO] "+message);
 		}
 	};
-	
 	// taken from CLI samples/utils.js
 	/**
 	 * A convenience function to convert javascript hashes into RHQ's configuration
@@ -215,14 +214,20 @@ var _common = function() {
 					if (propDef && propDef instanceof PropertyDefinitionSimple) {
 						// TODO implement all propertySimple types .. 
 						if (propDef.getType() == PropertySimpleType.BOOLEAN) {
-							representation = new Boolean(prop.booleanValue);
+							representation = Boolean(prop.booleanValue);
 						}
-						if (propDef.getType() == PropertySimpleType.DOUBLE) {
-							representation = new Number(prop.doubleValue);
+						else if (propDef.getType() == PropertySimpleType.DOUBLE
+								|| propDef.getType() == PropertySimpleType.INTEGER
+								|| propDef.getType() == PropertySimpleType.LONG
+								|| propDef.getType() == PropertySimpleType.FLOAT								
+								) {
+							representation = Number(prop.doubleValue);
+						} else {
+							representation = String(prop.stringValue);
 						}
 					}
 					else {
-						representation = new String(prop.stringValue);
+						representation = String(prop.stringValue);
 					}
 				} else if (prop instanceof PropertyList) {
 					representation = [];
@@ -288,7 +293,8 @@ var _common = function() {
 			else {
 				dlay = 5;
 			}
-			_info("common.waitFor(func,delay="+dlay+",timeout="+tout+")");
+			_trace("common.waitFor(func,delay="+dlay+",timeout="+tout+")");
+
 			var result = conditionFunc();
 			while (time<tout && !result) {
 				_debug("Waiting "+dlay+"s");
@@ -409,8 +415,9 @@ Inventory.discoveryQueue = (function () {
 	    criteria = Inventory.createCriteria(params);	   
 	    common.info("Waiting until resources become COMMITTED");
 	    var committed = _waitForResources(criteria);	    
-	    assertTrue(committed.size() > 0, "COMMITED resources size > 0");   
-	    return common.pageListToArray(committed).map(function(x){return new Resource(x);});
+	    assertTrue(committed.size() > 0, "COMMITED resources size > 0");
+	    // return only imported resources
+	    return common.pageListToArray(resources).map(function(x){return new Resource(x);});
 	};
 	
 	return {
@@ -450,7 +457,10 @@ Inventory.discoveryQueue = (function () {
 		},
 		importResource : function(resource,children) {
 			common.trace("discoveryQueue.importResource(resource="+resource+" children[default=true]="+children+")");
-			
+			// we can accept ID as a parameter too
+			if (typeof resource == "number") {
+				resource = new Resource(resource);
+			}	
 			// default is true (when null is passed)
 			if(children != false){children = true;}
 			
@@ -517,8 +527,11 @@ var Resource = function (param) {
 		opHistCriteria.fetchResults(true);
 		var pred = function() {
 			var histories = OperationManager.findResourceOperationHistoriesByCriteria(opHistCriteria);
-			if (histories.size() > 0 && histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
-				return histories.get(0);
+			if (histories.size() > 0) {
+				if (histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
+					return histories.get(0);
+				}
+				common.info("Operation in progress..");
 			};
 		};
 		common.debug("Waiting for result..");
@@ -560,7 +573,10 @@ var Resource = function (param) {
 		values = values || {};
 		for (var k in values) {
 			if (values.hasOwnProperty(k) && original.getMap().containsKey(k)) {
-				original.put(new PropertySimple(k, new java.lang.String(values[k])));
+				if (values[k]!=null) {
+					// TODO support arrays and maps!!!
+					original.put(new PropertySimple(k, new java.lang.String(values[k])));
+				}
 			}
 		}
 		return original;
@@ -606,8 +622,12 @@ var Resource = function (param) {
 				var current;
 				common.pageListToArray(histories).forEach(
 						function (x) {
-							if (x.id==history.id && x.status != DeleteResourceStatus.IN_PROGRESS) {
-								current = x;
+							if (x.id==history.id) {
+								if (x.status != DeleteResourceStatus.IN_PROGRESS) {
+									current = x;
+									return;
+								}
+								common.info("Waiting for resource to be removed");
 							}
 						}
 				);
@@ -658,6 +678,10 @@ var Resource = function (param) {
 			common.debug("Will apply this configuration: "+applied);
 			
 			var update = ConfigurationManager.updateResourceConfiguration(_id,applied);
+			if (!update) {
+				common.debug("Configuration has not been changed");
+				return;
+			}
 			if (update.status == ConfigurationUpdateStatus.INPROGRESS) {
 				var pred = function() {
 					var up = ConfigurationManager.getLatestResourceConfigurationUpdate(_id);
@@ -782,8 +806,12 @@ var Resource = function (param) {
 				var current;
 				common.pageListToArray(histories).forEach(
 						function (x) {
-							if (history && x.id==history.id && x.status != CreateResourceStatus.IN_PROGRESS) {
-								current = x;
+							if (history && x.id==history.id) {
+								if (x.status != CreateResourceStatus.IN_PROGRESS) {
+									current = x;
+									return;
+								}
+								common.info("Waiting for resource creation..");
 							}
 						}
 				);
@@ -875,7 +903,11 @@ var Resource = function (param) {
 		 */
 		waitForAvailable : function() {
 			common.trace("Resource("+_id+").waitForAvailable()");
-			return common.waitFor(_isAvailable);
+			return common.waitFor(function() { 
+				if (!_isAvailable()) {
+					common.info("Waiting for resource availability=UP");
+				} else { return true; }
+			});
 		},
 		/**
 		 * unimports resource
@@ -892,8 +924,10 @@ var Resource = function (param) {
 };
 
 // default verbosity,timeouts
-var verbose = 0;
-var delay = 5; //seconds
-var timeout = 120; //seconds
+
+var verbose = 0; // 0 INFO,1 DEBUG,>=2 TRACE
+// poll interval for any waiting
+var delay = 5; // poll interval for any waiting in seconds
+var timeout = 120; // total timeout of any waiting in seconds
 // END of commonmodule.js 
 

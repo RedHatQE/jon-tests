@@ -89,6 +89,18 @@
 	</classes>
 </test>
 
+<test name="Resource_Configuration">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="qe-api/resource_configuration.js"/>
+			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
 <test name="Resource_InvokeOperation">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
