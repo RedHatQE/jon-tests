@@ -429,15 +429,20 @@ Inventory.discoveryQueue = (function () {
 	};
 	
 	return {
-		list : function () {
-			common.trace("discoveryQueue.list()");
-			var criteria = Inventory.createCriteria({status:"NEW"});
+		list : function (params) {
+			params = params || {};
+			common.trace("discoveryQueue.list("+common.objToString(params)+")");
+			params["status"] = "NEW";
+			var criteria = Inventory.createCriteria(params);
 			var resources = ResourceManager.findResourcesByCriteria(criteria);
 			return common.pageListToArray(resources).map(function(x){return new Resource(x);});
 		},
-		listPlatforms : function listPlatforms() {
-			common.trace("discoveryQueue.listPlatforms()");
-			var criteria = Inventory.createCriteria({status:"NEW",category:"PLATFORM"});
+		listPlatforms : function listPlatforms(params) {
+			params = params || {};
+			common.trace("discoveryQueue.listPlatforms("+common.objToString(params)+")");
+			params["status"] = "NEW";
+			params["category"] = "PLATFORM";
+			var criteria = Inventory.createCriteria(params);
 			var resources = ResourceManager.findResourcesByCriteria(criteria);
 			return common.pageListToArray(resources).map(function(x){return new Resource(x);});
 		},
