@@ -578,18 +578,76 @@ var Resource = function (param) {
 	};
 	
 	/**
-	 * applies map of values to given configuration, currently supports applying only on level 1 (no recursion)
+	 * applies map of values to given configuration
 	 * @param original - Configuration instance
+	 * @param definition - ConfigurationDefintion
 	 * @param values - map of values to be applied to configuration
+	 * 
+	 * @return original Configuration object with applied values
 	 */
-	var _applyConfig = function(original,values) {
+	var _applyConfiguration = function(original,definition,values) {
 		values = values || {};
 		for (var k in values) {
-			if (values.hasOwnProperty(k) && original.getMap().containsKey(k)) {
-				if (values[k]!=null) {
-					// TODO support arrays and maps!!!
-					original.put(new PropertySimple(k, new java.lang.String(values[k])));
-				}
+			// we only iterrate over values
+			if (values.hasOwnProperty(k)) {		
+				// parent - parent configuration
+				// definition - parent configuration definition
+				// key - config key to be applied
+				// value - value to be applied
+				(function (parent,definition,key,value) {
+					var propDef = null;
+					var prop = null;
+					// decide which type of property are we working with
+					if (definition instanceof PropertyDefinitionMap) {
+						//println("DEF is map");
+						propDef = definition.get(key);
+					} else if (definition instanceof PropertyDefinitionList) {
+						//println("DEF is list");
+						propDef = definition.getMemberDefinition();
+					} else if (definition instanceof ConfigurationDefinition) {
+						//println("DEF is config");
+						propDef = definition.getPropertyDefinitions().get(key);
+					}
+
+					if (propDef==null) {
+						common.debug("Unable to get PropertyDefinition for key="+key);
+						return;
+					}
+					// process all 3 possible types
+					if (propDef instanceof PropertyDefinitionSimple) {
+						prop = new PropertySimple(key, null);
+						
+						if (value!=null) {
+							prop = new PropertySimple(key, new java.lang.String(value));
+						}
+							//println("it's simple! "+prop);
+					} else if (propDef instanceof PropertyDefinitionList) {
+						prop = new PropertyList(key);
+						//println("it's list! "+prop);
+						for(var i = 0; i < value.length; ++i) {
+							arguments.callee(prop,propDef,"",value[i]);
+						}
+					} else if (propDef instanceof PropertyDefinitionMap) {
+						prop = new PropertyMap(propDef.name);
+						//println("it's map! "+prop);
+						for (var i in value) {
+							if (value.hasOwnProperty(i)) {
+								arguments.callee(prop,propDef,i,value[i]);
+							}
+						}							
+					}
+					else {
+						common.info("Unkonwn property definition! this is a bug");
+						pretty.print(propDef);
+						return
+					}
+					// now we update our Configuration node						
+					if (parent instanceof PropertyList) {
+						parent.add(prop);
+					} else {
+						parent.put(prop);
+					}
+				}) (original,definition,k,values[k]);
 			}
 		}
 		return original;
@@ -685,9 +743,11 @@ var Resource = function (param) {
 			common.trace("Resource("+_id+").updateConfiguration("+common.objToString(params)+")");
 			params = params || {};
 			common.debug("Retrieving configuration and configuration definition");
+			var self = ProxyFactory.getResource(_id);
 			var config = ConfigurationManager.getLiveResourceConfiguration(_id,false);
 			common.debug("Got configuration : "+config);
-			var applied = _applyConfig(config,params);
+			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(self.resourceType.id);
+			var applied = _applyConfiguration(config,configDef,params);
 			common.debug("Will apply this configuration: "+applied);
 			
 			var update = ConfigurationManager.updateResourceConfiguration(_id,applied);
