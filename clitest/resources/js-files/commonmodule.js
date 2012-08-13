@@ -711,7 +711,10 @@ var Resource = function (param) {
 			if (result && result.status == DeleteResourceStatus.SUCCESS) {
 				return true;
 			}
-			common.debug("Resource creation failed, reason : "+result.errorMessage);
+			if (!result) {
+				common.info("Resource deletion still in progress, giving up...");
+			}
+			common.debug("Resource deletion failed, reason : "+result.errorMessage);
 			return false;
 		},
 		/**
