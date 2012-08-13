@@ -934,9 +934,19 @@ var Resource = function (param) {
 		uninventory : function() {
 			common.trace("Resource("+_id+").uninventory()");
 			ResourceManager.uninventoryResources([_id]);
-			common.waitFor(function () {return find().size()==0;});
+			var result = common.waitFor(function () {				
+					if (find().size()>0) {
+						common.debug("Waiting for resource to be removed from inventory");
+						return false;
+					}
+					else {
+						return true;
+					}
+				}
+			);
 			common.debug("Waiting 5s for sync..");
 			sleep(5*1000);
+			return result;
 		}
 	};
 };
