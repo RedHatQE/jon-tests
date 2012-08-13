@@ -12,7 +12,13 @@
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
 
+<!-- 
 
+Some of bellow testing JS files expect named parameter called 'agent' to be passed. You may ask, why it is not here.
+It's because agent (a platform name) is dynamic, see com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest
+which does that magic.
+
+ -->
  
 <test name="Standalone_Discovery_StartCommand_Parameters">
   	<classes>
@@ -28,6 +34,19 @@
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.domain.DiscoveryTest">	
 			<methods>
 				<include name="serverStartupTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+<test name="Uninventory_EAP_Servers">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">	
+			<parameter name="js.file"  value="eap6/uninventoryServers.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<parameter name="cli.args" value="--args-style=named discovery=yes" />
+			<methods>
+				<include name="runJSfile"></include>		
 			</methods>
 		</class>
 	</classes>
