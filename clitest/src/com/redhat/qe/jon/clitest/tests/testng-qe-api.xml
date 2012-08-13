@@ -18,6 +18,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />			
 			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
 			<methods>
 				<include name="runJSfile"></include>		
@@ -115,10 +116,11 @@
 
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
-<test name="Uninventory-Platforms">
+<test name="Uninventory-Platforms-End">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
+			<parameter name="js.depends" value="commonmodule.js" />			
 			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
 			<methods>
 				<include name="runJSfile"></include>		
