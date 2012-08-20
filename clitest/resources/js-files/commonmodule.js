@@ -317,31 +317,32 @@ var _common = function() {
 		trace : _trace,
 		configurationAsHash : _asHash,
 		hashAsConfiguration : _asConfiguration,
-	};
-};
-
-
-var Inventory = (function () {
-	var common = new _common();
-	return {
-		createCriteria : function(params) {
+		/**
+		 * generic function to create any type of criteria. This function takes 'criteria' object and fills
+		 * it with filter parameters given in 'param'. For param x in params call : criteria.addFilterX() will be done.
+		 * There's also a shortcutFunction that can handle non-standart calls, for example
+		 * function(key,value) { if (key=="status") {return "addFilterInventoryStatus.InventoryStatus"+value.toUpperCase()+")"}}
+		 * so param key 'status' is processed by that returned string and this string is evaluated on the 'criteria' object
+		 * 
+		 * @param {Criteria} criteria - RHQ Criteria object
+		 * @param {Object} params - hash of parameters
+		 * @param {function} shortcutFunc - function(key,value), if returns string, it will be evaluated
+		 */
+		createCriteria : function(criteria,params,shortcutFunc) {
 			params = params || {};
-			common.trace("Inventory.createCriteria("+common.objToString(params) +")");
-			var criteria = new ResourceCriteria();	
+			if (!criteria) {
+				throw "Criteria object must be defined!";
+			}
 			for (var k in params) {
 			    // use hasOwnProperty to filter out keys from the Object.prototype
 			    if (params.hasOwnProperty(k)) {
-			    	if (k=="status") {
-			    		 eval("criteria.addFilterInventoryStatus(InventoryStatus."+params[k].toUpperCase()+")");
-			    		 continue;
-			    	}
-			    	if (k=="category") {
-			    		eval("criteria.addFilterResourceCategories(ResourceCategory."+params[k].toUpperCase()+")");
-			    		 continue;
-			    	}
-			    	if (k=="availability") {
-			    		eval("criteria.addFilterCurrentAvailability(AvailabilityType."+params[k].toUpperCase()+")");
-			    		continue;
+			    	if (shortcutFunc) {
+				    	var shortcutExpr = shortcutFunc(k,params[k]);
+				    	if (shortcutExpr) {
+				    		// shortcut func returned something so we can eval it and skip normal processing for this property
+				    		eval("criteria."+shortcutExpr);
+				    		continue;
+				    	}
 			    	}
 			        var key = k[0].toUpperCase()+k.substring(1);        
 			        var func = eval("criteria.addFilter"+key);
@@ -360,6 +361,182 @@ var Inventory = (function () {
 			        }
 			    }
 			}
+			return criteria;
+		},
+	};
+};
+
+
+// resource groups
+
+/**
+ * provides access to ResourceGroups
+ */
+var groups = (function() {
+	var common = new _common();
+	
+	return {
+		/**
+		 * creates a org.rhq.domain.criteria.ResourceCriteria object based on given params
+		 * @param {Obejct} params - criteria params
+		 * @returns org.rhq.domain.criteria.ResourceCriteria
+		 */
+		createCriteria : function(params) {
+			params = params || {};
+			common.trace("groups.createCriteria("+common.objToString(params) +")");
+			var criteria = common.createCriteria(new ResourceGroupCriteria(),params, function (key,value) {
+				if (key=="category") { return "addFilterExplicitResourceCategory(ResourceCategory."+value.toUpperCase();}
+			});
+			return criteria;
+		},
+		/**
+		 * finds resource groups by given params
+		 * @param {Object} params
+		 * @returns
+		 */
+		find : function(params) {
+			params = params || {};
+			common.trace("groups.find("+common.objToString(params)+")");
+			var criteria = groups.createCriteria(params);
+			var result = ResourceGroupManager.findGroupsByCriteria(criteria);
+			common.debug("Found "+result.size()+" groups ");
+		    return common.pageListToArray(result).map(function(x){return new ResourceGroup(x);});
+		}
+	};
+}) ();
+
+var ResourceGroup = function(param) {
+	
+};
+
+// bundles
+/**
+ * provides access to Bundle subsystem
+ */
+var bundles = (function() {
+	var common = new _common();
+	var _find = function(params) {
+		params = params || {};
+		common.trace("bundles.find("+common.objToString(params)+")");
+		var criteria = bundles.createCriteria(params);
+		var result = BundleManager.findBundlesByCriteria(criteria);
+		common.debug("Found "+result.size()+" budles ");
+	    return common.pageListToArray(result).map(function(x){return new Bundle(x);});
+	};
+	return {
+		createCriteria : function(params) {
+			params = params || {};
+			common.trace("bundles.createCriteria("+common.objToString(params) +")");
+			var criteria = common.createCriteria(new BundleCriteria(),params);
+			return criteria;
+		},
+		find : _find,
+		createFromDistFile : function(dist) {
+			var file = new java.io.File(dist);
+			if (!file.exists()) {
+				throw "file parameter does not exist!";
+			}
+		    var version = BundleManager.createBundleVersionViaFile(file);
+		    println(version.bundle.id);
+		    return new Bundle(version.bundle);
+		},
+		createFromRecipe : function(recipe,files) {
+			// we're creating a resource with backing content
+			common.debug("Reading recipe file " + recipe + " ...");
+			var file = new java.io.File(recipe);
+			if (!file.exists()) {
+				throw "recipe parameter file does not exist!";
+			}
+		    var inputStream = new java.io.FileInputStream(file);
+		    var fileLength = file.length();
+		    // TODO read recipe to String properly!
+		    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);			    
+		    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); 	
+		    }
+		    println(fileBytes);
+		    var recipeStr = new String(fileBytes,0,fileLength);
+		    println(recipeStr);
+		    var bundleVersion = BundleManager.createBundleVersionViaRecipe(recipeStr);
+		}
+	};
+})();
+
+var Bundle = function(param) {
+
+	// we define Bundle child classes as hidden types
+	var Destination = function(param) {
+		
+	};
+	
+	var Version = function(param) {
+		return {
+			remove : function() {
+				
+			},
+			files : function() {
+				
+			},
+		};
+	};
+	
+	var common = new _common();
+	common.trace("new Bundle("+param+")");
+	if (!param) {
+		throw "either number or rhq.domain.Bundle parameter is required";
+	}
+	var _id = param.id;
+	var _bundle = param;
+	return {
+		toString : function() {return _bundle.toString();},
+		destinations : function(params) {
+			params = params || {};
+			common.trace("Bundle().destinations("+common.objToString(params)+")");
+			params["bundleId"] = _id;
+			var criteria = common.createCriteria(new BundleDestinationCriteria(),params, function(key,value) {
+				if (key=="status"){
+					return "addFilterStatus(BundleDeploymentStatus."+value.toUpperCase()+")";
+				}
+			});
+			var result = BundleManager.findBundleDestinationsByCriteria(criteria);
+			common.debug("Found "+result.size()+" destinations");
+			return common.pageListToArray(result).map(function(x){return new Destination(x);});
+		},
+		versions : function(params) {
+			params = params || {};
+			common.trace("Bundle().versions("+common.objToString(params)+")");
+			params["bundleId"] = _id;
+			var criteria = common.createCriteria(new BundleVersionCriteria(),params);
+			var result = BundleManager.findBundleVersionsByCriteria(criteria);
+			common.debug("Found "+result.size()+" versions");
+			return common.pageListToArray(result).map(function(x){return new Version(x);});
+		},
+		deploy : function(resourceGroup,params) {
+			
+		}
+	};
+
+};
+
+// resources
+
+var resources = (function () {
+	var common = new _common();
+	return {
+		createCriteria : function(params) {
+			params = params || {};
+			common.trace("resources.createCriteria("+common.objToString(params) +")");
+			var criteria = common.createCriteria(new ResourceCriteria(),params,function(key,value) {
+				if (key=="status") {
+		    		 return "addFilterInventoryStatus(InventoryStatus."+value.toUpperCase()+")";
+		    	}
+		    	if (key=="category") {
+		    		return "addFilterResourceCategories(ResourceCategory."+value.toUpperCase()+")";
+		    	}
+		    	if (key=="availability") {
+		    		return "addFilterCurrentAvailability(AvailabilityType."+value.toUpperCase()+")";
+		    	}
+			});
 			// by default only 200 items are returned, this line discards it .. so we get unlimited list
 			criteria.clearPaging();
 			return criteria;
@@ -371,12 +548,12 @@ var Inventory = (function () {
 		 */
 		find : function(params) {
 			params = params || {};
-			common.trace("Inventory.find("+common.objToString(params)+")");
+			common.trace("resources.find("+common.objToString(params)+")");
 			params.status="COMMITTED";
-			var criteria = Inventory.createCriteria(params);
-			var resources = ResourceManager.findResourcesByCriteria(criteria);
-			common.debug("Found "+resources.size()+" resources ");
-		    return common.pageListToArray(resources).map(function(x){return new Resource(x);});
+			var criteria = resources.createCriteria(params);
+			var res = ResourceManager.findResourcesByCriteria(criteria);
+			common.debug("Found "+res.size()+" resources ");
+		    return common.pageListToArray(res).map(function(x){return new Resource(x);});
 		},
 		/**
 		 * 
@@ -384,48 +561,48 @@ var Inventory = (function () {
 		 */
 		platforms : function(params) {
 			params = params || {};			
-			common.trace("Inventory.platforms("+common.objToString(params) +"))");
+			common.trace("resources.platforms("+common.objToString(params) +"))");
 			params['category'] = "PLATFORM";
-			return Inventory.find(params);
+			return resources.find(params);
 		}
 	};
 }) ();
 
-Inventory.discoveryQueue = (function () {
+discoveryQueue = (function () {
 	
 	var common = new _common();
 	
 	var _waitForResources = function(criteria) {
-		var resources = common.waitFor(function() {
-			var resources = ResourceManager.findResourcesByCriteria(criteria);
-			if (resources.size()>0) {
-				return resources;
+		var res = common.waitFor(function() {
+			var res = ResourceManager.findResourcesByCriteria(criteria);
+			if (res.size()>0) {
+				return res;
 			}
 		});
-		if (resources==null) {
+		if (res==null) {
 			return new java.util.ArrayList();
 		}
-		return resources;
+		return res;
 	};
 	
 	var _importResources = function (params){
 		params = params || {};
 		common.trace("discoveryQueue._importResources("+common.objToString(params)+")");
 		params.status="NEW";
-		var criteria = Inventory.createCriteria(params);	    
+		var criteria = resources.createCriteria(params);	    
 	    common.info("Waiting until desired resources become NEW");
-	    var resources = _waitForResources(criteria);
-	    common.debug("Found "+resources.size()+" NEW resources");	    
-	    var resourcesArray = common.pageListToArray(resources);
-	    assertTrue(resources.size()>0, "At least one resrouce was found");
+	    var res = _waitForResources(criteria);
+	    common.debug("Found "+res.size()+" NEW resources");	    
+	    var resourcesArray = common.pageListToArray(res);
+	    assertTrue(res.size()>0, "At least one resrouce was found");
 	    DiscoveryBoss.importResources(resourcesArray.map(function(x){return x.id;}));
 	    params.status="COMMITTED";
-	    criteria = Inventory.createCriteria(params);	   
+	    criteria = resources.createCriteria(params);	   
 	    common.info("Waiting until resources become COMMITTED");
 	    var committed = _waitForResources(criteria);	    
 	    assertTrue(committed.size() > 0, "COMMITED resources size > 0");
 	    // return only imported resources
-	    return common.pageListToArray(resources).map(function(x){return new Resource(x);});
+	    return common.pageListToArray(res).map(function(x){return new Resource(x);});
 	};
 	
 	return {
@@ -433,18 +610,18 @@ Inventory.discoveryQueue = (function () {
 			params = params || {};
 			common.trace("discoveryQueue.list("+common.objToString(params)+")");
 			params["status"] = "NEW";
-			var criteria = Inventory.createCriteria(params);
-			var resources = ResourceManager.findResourcesByCriteria(criteria);
-			return common.pageListToArray(resources).map(function(x){return new Resource(x);});
+			var criteria = resources.createCriteria(params);
+			var res = ResourceManager.findResourcesByCriteria(criteria);
+			return common.pageListToArray(res).map(function(x){return new Resource(x);});
 		},
 		listPlatforms : function listPlatforms(params) {
 			params = params || {};
 			common.trace("discoveryQueue.listPlatforms("+common.objToString(params)+")");
 			params["status"] = "NEW";
 			params["category"] = "PLATFORM";
-			var criteria = Inventory.createCriteria(params);
-			var resources = ResourceManager.findResourcesByCriteria(criteria);
-			return common.pageListToArray(resources).map(function(x){return new Resource(x);});
+			var criteria = resources.createCriteria(params);
+			var res = ResourceManager.findResourcesByCriteria(criteria);
+			return common.pageListToArray(res).map(function(x){return new Resource(x);});
 		},
 		importPlatform: function(name,children) {
 			common.trace("discoveryQueue.importPlatform(name="+name+" children[default=true]="+children+")");
@@ -453,20 +630,20 @@ Inventory.discoveryQueue = (function () {
 			if(children != false){children = true;}
 			
 			// first lookup whether platform is already imported
-			var resources = Inventory.find({name:name,category:"PLATFORM"});
-			if (resources.length == 1) {
+			var reso = resources.find({name:name,category:"PLATFORM"});
+			if (reso.length == 1) {
 				common.debug("Platform "+name+" is already in inventory, not importing");
-				return resources[0];
+				return res[0];
 			}
-			resources = _importResources({name:name,category:"PLATFORM"});
-			assertTrue(resources.length == 1, "Plaform was not imported");
+			res = _importResources({name:name,category:"PLATFORM"});
+			assertTrue(res.length == 1, "Plaform was not imported");
 			if (children) {
 				common.debug("Importing platform's children");
-				_importResources({parentResourceId:resources[0].getId()});
+				_importResources({parentResourceId:res[0].getId()});
 			}
 			common.debug("Waiting 15 seconds, 'till inventory syncrhonizes with agent");
 			sleep(15*1000);
-			return resources[0];
+			return res[0];
 		},
 		importResource : function(resource,children) {
 			common.trace("discoveryQueue.importResource(resource="+resource+" children[default=true]="+children+")");
@@ -505,10 +682,10 @@ var Resource = function (param) {
 	var _res = param;
 	
 	var find = function() {
-		var criteria = Inventory.createCriteria({id:_id});
-		var resources = ResourceManager.findResourcesByCriteria(criteria);
+		var criteria = resources.createCriteria({id:_id});
+		var res = ResourceManager.findResourcesByCriteria(criteria);
 		common.debug("Resource.find: "+resources);
-		return resources;
+		return res;
 	};
 	var _isAvailable = function() {
 		common.trace("Resource("+_id+").isAvaialbe()");
@@ -522,11 +699,11 @@ var Resource = function (param) {
 		return find().size() == 1;
 	};
 	var _parent = function() {
-		var criteria = Inventory.createCriteria({id:_id});
+		var criteria = resources.createCriteria({id:_id});
 		criteria.fetchParentResource(true);
-		var resources = ResourceManager.findResourcesByCriteria(criteria);
-		if (resources.size()==1 && resources.get(0).parentResource) {
-			return new Resource(resources.get(0).parentResource.id);
+		var res = ResourceManager.findResourcesByCriteria(criteria);
+		if (res.size()==1 && res.get(0).parentResource) {
+			return new Resource(res.get(0).parentResource.id);
 		}
 	};
 
@@ -713,6 +890,7 @@ var Resource = function (param) {
 			}
 			if (!result) {
 				common.info("Resource deletion still in progress, giving up...");
+				return false;
 			}
 			common.debug("Resource deletion failed, reason : "+result.errorMessage);
 			return false;
@@ -726,7 +904,7 @@ var Resource = function (param) {
 			common.trace("Resource("+_id+").children("+common.objToString(params)+")");
 			params = params || {};
 			params.parentResourceId=_id;
-			return Inventory.find(params);
+			return resources.find(params);
 		},
 		/**
 		 * 
@@ -737,11 +915,17 @@ var Resource = function (param) {
 			common.trace("Resource("+_id+").child("+common.objToString(params)+")");
 			params = params || {};
 			params.parentResourceId=_id;
-			var children = Inventory.find(params);
+			var children = resources.find(params);
 			if (children.length>0) {
 				return children[0];
 			}
 		},
+		/**
+		 * updates configuration of this resource. You can either pass whole configuration (retrieved by getConfiguration())
+		 * or only params that needs to be changed
+		 * @param {Object} params - new configuration parameters, partial configuration is supported
+		 * @returns
+		 */
 		updateConfiguration : function(params) {
 			common.trace("Resource("+_id+").updateConfiguration("+common.objToString(params)+")");
 			params = params || {};
@@ -777,12 +961,20 @@ var Resource = function (param) {
 				common.info("Resource configuration update failed : "+update.errorMessage);
 			}
 		},
+		/**
+		 * retrieves configuration of this resource
+		 * @returns
+		 */
 		getConfiguration : function() {
 			common.trace("Resource("+_id+").getConfiguration()");
 			var self = ProxyFactory.getResource(_id);
 			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(self.resourceType.id);
 			return common.configurationAsHash(ConfigurationManager.getLiveResourceConfiguration(_id,false),configDef);
 		},
+		/**
+		 * retrieves plugin configuration for this resource
+		 * @returns
+		 */
 		getPluginConfiguration : function() {
 			common.trace("Resource("+_id+").getPluginConfiguration()");
 			var self = ProxyFactory.getResource(_id);
@@ -791,7 +983,7 @@ var Resource = function (param) {
 		},
 		/**
 		 * creates a new child resource
-		 * @param params hashmap of params
+		 * @param {Object} params hashmap of params
 		 * @returns new resource if it was successfully created and discovered, null otherwise
 		 */
 		createChild : function(params) {
@@ -910,12 +1102,12 @@ var Resource = function (param) {
 			if (result && result.status == CreateResourceStatus.SUCCESS) {
 				common.debug("Waiting for resource to be auto-discovered");
 				// we assume there can be exactly one resource of one type having unique name
-				var discovered = common.waitFor(function() {return Inventory.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey}).length==1;});
+				var discovered = common.waitFor(function() {return resources.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey}).length==1;});
 				if (!discovered) {
 					common.info("Resource child was successfully created, but it's autodiscovery timed out!");
 					return;
 				}
-				return Inventory.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey})[0];
+				return resources.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey})[0];
 			}
 			common.debug("Resource creation failed, reason : "+result.errorMessage);
 			return;
@@ -924,6 +1116,12 @@ var Resource = function (param) {
 		operations : function() {
 			
 		},
+		/**
+		 * invokes operation on resource, operation status is polled 'till timeout is reached or operation finishes
+		 * @param {String} name of operation
+		 * @param {Object} params - hashmap for operation params
+		 * @returns
+		 */
 		invokeOperation : function(name,params) {
 			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
 			// let's obtain operation definitions, so we can check operation name and required params
@@ -1013,6 +1211,10 @@ var Resource = function (param) {
 		}
 	};
 };
+
+
+var Inventory = resources;
+Inventory.discoveryQueue = discoveryQueue;
 
 // default verbosity,timeouts
 
