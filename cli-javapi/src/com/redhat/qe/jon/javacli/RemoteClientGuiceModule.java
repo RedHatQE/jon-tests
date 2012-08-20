@@ -30,12 +30,6 @@ public class RemoteClientGuiceModule extends AbstractModule {
 		return remoteClient;
 	}
 
-/*public Subject login() throws Exception {
-	return remoteClient.login(
-			config.get(ConfigurationLoader.JAVA_API_PARAM.HOST_USER),
-			config.get(ConfigurationLoader.JAVA_API_PARAM.HOST_PASSWORD)
-			);	
-*/
-	}
+}
 
 
