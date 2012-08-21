@@ -123,6 +123,7 @@ public class Configuration extends ResourceTab {
 	}
 
 	public static class ConfigEntry {
+		private final Logger log = Logger.getLogger(this.getClass().getName());
 		private final SahiTasks tasks;
 		private final Editor editor;
 		ConfigEntry(SahiTasks tasks) {
@@ -146,7 +147,16 @@ public class Configuration extends ResourceTab {
 		 * clicks <b>OK</b> to confirm entry editing
 		 */
 		public void OK() {
-			tasks.xy(tasks.cell("OK"), 3, 3).click();
+			for (ElementStub ok : tasks.cell("OK").collectSimilar()) {
+				if (ok.isVisible()) {
+					try {
+						tasks.xy(ok,3,3).click();
+					}
+					catch (Exception ex){
+						log.warning("Failed to click on [OK] button");
+					}
+				}
+			}
 		}
 	}
 
