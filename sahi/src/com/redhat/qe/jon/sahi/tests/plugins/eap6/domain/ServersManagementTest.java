@@ -44,7 +44,8 @@ public class ServersManagementTest extends AS7DomainTest {
 
 	@Test(groups="serversManagement")
 	public void addManagedServer() {
-		NewChildWizard newChild = controller.inventory().childResources().newChild("Managed Server");
+		Inventory inventory = controller.inventory();
+		NewChildWizard newChild = inventory.childResources().newChild("Managed Server");
 		newChild.getEditor().setText("resourceName",managed_server);
 		newChild.next();
 		newChild.getEditor().checkRadio(hostController.getName());
@@ -53,8 +54,10 @@ public class ServersManagementTest extends AS7DomainTest {
 		newChild.getEditor().checkRadio("auto-start[0]");
 		newChild.getEditor().assertRequiredInputs();
 		newChild.finish();
+		inventory.childHistory().assertLastResourceChange(true);
 		mgmtDomain.assertResourcePresence("/host="+hostController.getName(), "server-config", managed_server, true);
-		controller.performManualAutodiscovery();
+		// this should not be needed anymore
+		//controller.performManualAutodiscovery();
 		managedServer.assertExists(true);
 		// we start the server
 		managedServerOperation(managedServer, "Start");
