@@ -56,6 +56,7 @@ function findSamples() {
 	Inventory.find({availability:"up",category:"server"});
 	Inventory.find({parentResourceId:123,name:"foo"});
 	Inventory.find({resourceTypeName:"JBoss AS7 Standalone Server"});
+	Inventory.find({type:"JBoss AS7 Standalone Server"}); // type is equivalent to resourceTypeName
 	Inventory.find({ids:[1,2,3]});
 }
 

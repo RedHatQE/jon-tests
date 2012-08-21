@@ -543,6 +543,9 @@ var resources = (function () {
 		    	if (key=="availability") {
 		    		return "addFilterCurrentAvailability(AvailabilityType."+value.toUpperCase()+")";
 		    	}
+		    	if (key=="type") {
+		    		return "addFilterResourceTypeName("+value+")";
+		    	}
 			});
 			// by default only 200 items are returned, this line discards it .. so we get unlimited list
 			criteria.clearPaging();
