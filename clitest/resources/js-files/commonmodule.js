@@ -219,8 +219,15 @@ var _common = function() {
 					if (propDef && propDef instanceof PropertyDefinitionSimple) {
 						// TODO implement all propertySimple types .. 
 						if (propDef.getType() == PropertySimpleType.BOOLEAN) {
-							representation = Boolean(prop.booleanValue);
-						}
+                            if (prop.booleanValue !=null) {
+                                if (prop.booleanValue == false) {
+                                	representation = false;
+                                }
+                                else {
+                                	representation = true;
+                                }
+                            }
+                        }
 						else if (propDef.getType() == PropertySimpleType.DOUBLE
 								|| propDef.getType() == PropertySimpleType.INTEGER
 								|| propDef.getType() == PropertySimpleType.LONG
