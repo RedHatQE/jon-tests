@@ -55,10 +55,10 @@ function PackageParser(pathName) {
 criteria = new ResourceCriteria();
 criteria.addFilterResourceTypeName(resTypeName);
 criteria.addFilterPluginName(pluginName);
-var resources = ResourceManager.findResourcesByCriteria(criteria);
+var myResources = ResourceManager.findResourcesByCriteria(criteria);
 
 
-assertTrue(resources.size() > 0, "No JBossAS 5 found!!");
+assertTrue(myResources.size() > 0, "No JBossAS 5 found!!");
 
 
 // create the config options for the new EAR 
@@ -84,9 +84,9 @@ PackageParser(pathName);
 var appType = ResourceTypeManager.getResourceTypeByNameAndPlugin(appTypeName, pluginName);
 
 // create the new EAR resource on each discovered app server
-if( resources != null ) {
-    for( i =0; i < resources.size(); ++i) {
-        var res = resources.get(i);
+if( myResources != null ) {
+    for( i =0; i < myResources.size(); ++i) {
+        var res = myResources.get(i);
         var startTime = new Date().getTime();
         var pageControl = new PageControl(0,1);
 
@@ -130,7 +130,7 @@ if( resources != null ) {
         res = Inventory.find({name:packageName}); 
         assertTrue(res.length > 0, packageName + " resource not found!!");
         assertTrue(res[0].waitForAvailable(), "MiscBeans.ear not available!!");
-        common.waitFor(function () {return findResChild(resources.get(0).id,packageName);});
+        common.waitFor(function () {return findResChild(myResources.get(0).id,packageName);});
 
     }
 }
