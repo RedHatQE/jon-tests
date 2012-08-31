@@ -6,7 +6,7 @@
  */
 
 
-// this depends on commonmodule.js
+// this depends on rhqapi.js
 
 
 // first we uninventory each platform child one-by-one, then platforms itself

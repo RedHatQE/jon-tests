@@ -18,7 +18,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
-			<parameter name="js.depends" value="commonmodule.js" />			
+			<parameter name="js.depends" value="rhqapi.js" />			
 			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
 			<methods>
 				<include name="runJSfile"></include>		
@@ -31,7 +31,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/common.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -43,7 +43,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/discoveryQueue.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -55,7 +55,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/import.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -67,7 +67,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/find.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -79,7 +79,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/resource_createChild.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<parameter name="res.src" value="/resources/deployments/hello1.war" />
 			<parameter name="res.dst" value="/tmp/hello.war" />
 			<parameter name="cli.args" value="--args-style=named deployment=/tmp/hello.war"/>
@@ -94,7 +94,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/resource_configuration.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -106,7 +106,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/resource_invokeOperation.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -117,7 +117,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/bundles.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 				<parameter name="res.src" value="/resources/bundles/bundle.zip,/resources/bundles/bundle-incomplete.zip" />
 				<parameter name="res.dst" value="/tmp/bundle.zip,/tmp/bundle-incomplete.zip" />
 			<methods>
@@ -130,7 +130,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/groups.js"/>
-			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />				
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />				
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -143,7 +143,7 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="UninventoryResources.js"/>
-			<parameter name="js.depends" value="commonmodule.js" />			
+			<parameter name="js.depends" value="rhqapi.js" />			
 			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
 			<methods>
 				<include name="runJSfile"></include>		

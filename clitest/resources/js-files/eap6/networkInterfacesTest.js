@@ -3,7 +3,7 @@
  * @author lzoubek@redhat.com (Libor Zoubek)
  * Jul 18, 2012
  * 
- * this script requires commonmodule.js and eap6/{standalone|domain}/server.js loaded into CLI prior running
+ * this script requires rhqapi.js and eap6/{standalone|domain}/server.js loaded into CLI prior running
  */
 
 

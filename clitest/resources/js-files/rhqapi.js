@@ -1,5 +1,5 @@
 /**
- * commonmodule.js implemented using module pattern
+ * rhqapi.js implemented using module pattern
  */
 
 
@@ -1273,5 +1273,5 @@ var verbose = 0; // 0 INFO,1 DEBUG,>=2 TRACE
 // poll interval for any waiting
 var delay = 5; // poll interval for any waiting in seconds
 var timeout = 120; // total timeout of any waiting in seconds
-// END of commonmodule.js 
+// END of rhqapi.js 
 
