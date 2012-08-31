@@ -1264,6 +1264,8 @@ var Resource = function (param) {
 };
 
 
+
+
 var Inventory = resources;
 Inventory.discoveryQueue = discoveryQueue;
 
@@ -1273,5 +1275,18 @@ var verbose = 0; // 0 INFO,1 DEBUG,>=2 TRACE
 // poll interval for any waiting
 var delay = 5; // poll interval for any waiting in seconds
 var timeout = 120; // total timeout of any waiting in seconds
+
+//commonjs support
+if (typeof exports !== "undefined") {
+	exports.resources = resources;
+	exports.discoveryQueue = discoveryQueue;
+	exports.bundles = bundles;
+	exports.groups = groups;
+	exports.Resource = Resource;
+	exports.verbose = verbose;
+	exports.delay = delay;
+	exports.timeout = timeout;
+}
+
 // END of rhqapi.js 
 
