@@ -394,6 +394,7 @@ var groups = (function() {
 			var criteria = common.createCriteria(new ResourceGroupCriteria(),params, function (key,value) {
 				if (key=="category") { return "addFilterExplicitResourceCategory(ResourceCategory."+value.toUpperCase();}
 			});
+			criteria.clearPaging();
 			return criteria;
 		},
 		/**
@@ -405,15 +406,51 @@ var groups = (function() {
 			params = params || {};
 			common.trace("groups.find("+common.objToString(params)+")");
 			var criteria = groups.createCriteria(params);
-			var result = ResourceGroupManager.findGroupsByCriteria(criteria);
+			var result = ResourceGroupManager.findResourceGroupsByCriteria(criteria);
 			common.debug("Found "+result.size()+" groups ");
-		    return common.pageListToArray(result).map(function(x){return new ResourceGroup(x);});
+		    return common.pageListToArray(result).map(function(x){return new ResGroup(x);});
+		},
+		create : function(name,children) {
+			children = children || [];
+			var rg = new ResourceGroup(name);
+			// detect whether all resources are same type
+			var resType = null;
+			var mixed = false;
+			children.forEach(function(x) {
+				if (resType==null) {
+					resType = x.getProxy().resourceType;
+				} else if (resType.id != x.getProxy().resourceType.id){
+					mixed = true;
+				}				
+			});
+			
+			if (resType!=null && !mixed) {
+				common.debug("All given resources are ["+resType+"] type, creating compatible group");
+				rg.setResourceType(resType);
+			}
+			var group = ResourceGroupManager.createResourceGroup(rg);
+			ResourceGroupManager.addResourcesToGroup(group.id,children.map(function(x){return x.getId();}));
+			return new ResGroup(group);
 		}
 	};
 }) ();
 
-var ResourceGroup = function(param) {
-	
+var ResGroup = function(param) {
+	var common = new _common();
+	common.trace("new ResGroup("+param+")");
+	if (!param) {
+		throw "either number or org.rhq.core.domain.resource.ResourceGroup parameter is required";
+	}
+	var _id = param.id;
+	return {
+		remove : function() {
+			common.trace("ResGroup("+_id+").remove()");
+			ResourceGroupManager.deleteResourceGroup(_id);
+		},
+		resources : function(params) {
+			
+		},
+	}
 };
 
 // bundles
@@ -498,7 +535,7 @@ var Bundle = function(param) {
 		toString : function() {return _bundle.toString();},
 		destinations : function(params) {
 			params = params || {};
-			common.trace("Bundle().destinations("+common.objToString(params)+")");
+			common.trace("Bundle("+_id+").destinations("+common.objToString(params)+")");
 			params["bundleId"] = _id;
 			var criteria = common.createCriteria(new BundleDestinationCriteria(),params, function(key,value) {
 				if (key=="status"){
@@ -511,7 +548,7 @@ var Bundle = function(param) {
 		},
 		versions : function(params) {
 			params = params || {};
-			common.trace("Bundle().versions("+common.objToString(params)+")");
+			common.trace("Bundle("+_id+").versions("+common.objToString(params)+")");
 			params["bundleId"] = _id;
 			var criteria = common.createCriteria(new BundleVersionCriteria(),params);
 			var result = BundleManager.findBundleVersionsByCriteria(criteria);
@@ -520,6 +557,10 @@ var Bundle = function(param) {
 		},
 		deploy : function(resourceGroup,params) {
 			
+		},
+		remove : function() {
+			common.trace("Bundle("+_id+").remove()");
+			BundleManager.deleteBundle(_id);
 		}
 	};
 
@@ -544,7 +585,7 @@ var resources = (function () {
 		    		return "addFilterCurrentAvailability(AvailabilityType."+value.toUpperCase()+")";
 		    	}
 		    	if (key=="type") {
-		    		return "addFilterResourceTypeName("+value+")";
+		    		return "addFilterResourceTypeName(\""+value+"\")";
 		    	}
 			});
 			// by default only 200 items are returned, this line discards it .. so we get unlimited list

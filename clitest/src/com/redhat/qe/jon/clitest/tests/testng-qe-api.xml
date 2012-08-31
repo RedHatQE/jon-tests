@@ -113,7 +113,30 @@
 		</class>
 	</classes>
 </test>
-
+<test name="Bundles">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="qe-api/bundles.js"/>
+			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />
+				<parameter name="res.src" value="/resources/bundles/bundle.zip,/resources/bundles/bundle-incomplete.zip" />
+				<parameter name="res.dst" value="/tmp/bundle.zip,/tmp/bundle-incomplete.zip" />
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+<test name="Groups">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="qe-api/groups.js"/>
+			<parameter name="js.depends" value="commonmodule.js,qe-api/config.js" />				
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
 <!--  This case SHOULD BE LAST ONE-->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation-->
 <test name="Uninventory-Platforms-End">
