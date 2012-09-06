@@ -164,6 +164,6 @@ public class AS7CliTest extends CliTest {
 		Assert.assertTrue(running, "Server process is running");
 		sshClient.runAndWait("netstat -pltn | grep java");
 		// do we run Domain or Standalone? we switch it by  by including eap6/{domain|standalone}/server.js
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/discoveryTest.js", null, start.getExpectedMessage()+",availability=UP", null,"commonmodule.js,eap6/"+serverType+"/server.js",null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/discoveryTest.js", null, start.getExpectedMessage()+",availability=UP", null,"rhqapi.js,eap6/"+serverType+"/server.js",null,null);
 	}
 }

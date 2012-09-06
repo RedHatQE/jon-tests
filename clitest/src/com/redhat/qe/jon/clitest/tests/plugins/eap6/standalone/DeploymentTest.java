@@ -29,14 +29,14 @@ public class DeploymentTest extends AS7CliTest {
 	
 	@Test(alwaysRun=true,dependsOnMethods={"deployWAR","redeployWAR"})
 	public void undeployWAR() throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named deployment=/tmp/hello.war", null, null,"eap6/standalone/server.js,commonmodule.js",null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named deployment=/tmp/hello.war", null, null,"eap6/standalone/server.js,rhqapi.js",null,null);
 	}
 	
 	private void createDeployment(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
 		String warFilePath = AS7CliTest.class.getResource("/resources/deployments/"+srcWar).getPath();
 		CliTasks.getCliTasks().copyFile(warFilePath, "/tmp/",destWar);
 
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named deployment=/tmp/"+destWar, expected, null,"eap6/standalone/server.js,commonmodule.js",null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named deployment=/tmp/"+destWar, expected, null,"eap6/standalone/server.js,rhqapi.js",null,null);
 		
 	}
 }
