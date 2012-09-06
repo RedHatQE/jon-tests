@@ -273,6 +273,83 @@ var _common = function() {
 		return ret;
 	};
 	
+	/**
+	 * applies map of values to given configuration
+	 * @param original - Configuration instance
+	 * @param definition - ConfigurationDefintion
+	 * @param values - map of values to be applied to configuration
+	 * 
+	 * @return original Configuration object with applied values
+	 */
+	var _applyConfiguration = function(original,definition,values) {
+		values = values || {};
+		for (var k in values) {
+			// we only iterrate over values
+			if (values.hasOwnProperty(k)) {		
+				// parent - parent configuration
+				// definition - parent configuration definition
+				// key - config key to be applied
+				// value - value to be applied
+				(function (parent,definition,key,value) {
+					var propDef = null;
+					var prop = null;
+					// decide which type of property are we working with
+					if (definition instanceof PropertyDefinitionMap) {
+						//println("DEF is map");
+						propDef = definition.get(key);
+					} else if (definition instanceof PropertyDefinitionList) {
+						//println("DEF is list");
+						propDef = definition.getMemberDefinition();
+					} else if (definition instanceof ConfigurationDefinition) {
+						//println("DEF is config");
+						propDef = definition.getPropertyDefinitions().get(key);
+					}
+
+					if (propDef==null) {
+						common.debug("Unable to get PropertyDefinition for key="+key);
+						return;
+					}
+					// process all 3 possible types
+					if (propDef instanceof PropertyDefinitionSimple) {
+						prop = new PropertySimple(key, null);
+						
+						if (value!=null) {
+							prop = new PropertySimple(key, new java.lang.String(value));
+						}
+							//println("it's simple! "+prop);
+					} else if (propDef instanceof PropertyDefinitionList) {
+						prop = new PropertyList(key);
+						//println("it's list! "+prop);
+						for(var i = 0; i < value.length; ++i) {
+							arguments.callee(prop,propDef,"",value[i]);
+						}
+					} else if (propDef instanceof PropertyDefinitionMap) {
+						prop = new PropertyMap(propDef.name);
+						//println("it's map! "+prop);
+						for (var i in value) {
+							if (value.hasOwnProperty(i)) {
+								arguments.callee(prop,propDef,i,value[i]);
+							}
+						}							
+					}
+					else {
+						common.info("Unkonwn property definition! this is a bug");
+						pretty.print(propDef);
+						return
+					}
+					// now we update our Configuration node						
+					if (parent instanceof PropertyList) {
+						parent.add(prop);
+					} else {
+						parent.put(prop);
+					}
+				}) (original,definition,k,values[k]);
+			}
+		}
+		return original;
+	};
+	
+	
 	return {
 		objToString : function(obj) {
 			var str=""; 
@@ -324,6 +401,7 @@ var _common = function() {
 		trace : _trace,
 		configurationAsHash : _asHash,
 		hashAsConfiguration : _asConfiguration,
+		applyConfiguration : _applyConfiguration,
 		/**
 		 * generic function to create any type of criteria. This function takes 'criteria' object and fills
 		 * it with filter parameters given in 'param'. For param x in params call : criteria.addFilterX() will be done.
@@ -442,7 +520,11 @@ var ResGroup = function(param) {
 		throw "either number or org.rhq.core.domain.resource.ResourceGroup parameter is required";
 	}
 	var _id = param.id;
+	var _obj = param;
 	return {
+		id : _id,
+		obj : _obj,
+		getId : function() {return _id;},
 		remove : function() {
 			common.trace("ResGroup("+_id+").remove()");
 			ResourceGroupManager.deleteResourceGroup(_id);
@@ -478,7 +560,7 @@ var bundles = (function() {
 		createFromDistFile : function(dist) {
 			var file = new java.io.File(dist);
 			if (!file.exists()) {
-				throw "file parameter does not exist!";
+				throw "file parameter ["+file+"] does not exist!";
 			}
 		    var version = BundleManager.createBundleVersionViaFile(file);
 		    println(version.bundle.id);
@@ -510,11 +592,40 @@ var Bundle = function(param) {
 
 	// we define Bundle child classes as hidden types
 	var Destination = function(param) {
-		
+		common.trace("new Destination("+param+")");
+		if (!param) {
+			throw "either number or org.rhq.core.domain.bundle.BundleDestination parameter is required";
+		}
+		var _id = param.id;
+		var _obj = param;
+		return {
+			obj : _obj,
+		};
 	};
 	
-	var Version = function(param) {
+	var Deployment = function(param) {
+		common.trace("new Deployment("+param+")");
+		if (!param) {
+			throw "either number or org.rhq.core.domain.bundle.BundleDestination parameter is required";
+		}
+		var _id = param.id;
+		var _obj = param;
 		return {
+			obj : _obj,
+		};
+	};
+	
+	
+	var Version = function(param) {
+		common.trace("new Version("+param+")");
+		if (!param) {
+			throw "either number or org.rhq.core.domain.bundle.BundleVersion parameter is required";
+		}
+		var _id = param.id;
+		var _obj = param;
+		return {
+			id : _id,
+			obj : _obj,
 			remove : function() {
 				
 			},
@@ -531,32 +642,131 @@ var Bundle = function(param) {
 	}
 	var _id = param.id;
 	var _bundle = param;
+	var _destinations = function(params) {
+		params = params || {};
+		common.trace("Bundle("+_id+").destinations("+common.objToString(params)+")");
+		params["bundleId"] = _id;
+		var criteria = common.createCriteria(new BundleDestinationCriteria(),params, function(key,value) {
+			if (key=="status"){
+				return "addFilterStatus(BundleDeploymentStatus."+value.toUpperCase()+")";
+			}
+		});
+		var result = BundleManager.findBundleDestinationsByCriteria(criteria);
+		common.debug("Found "+result.size()+" destinations");
+		return common.pageListToArray(result).map(function(x){return new Destination(x);});
+	};
+	var _versions = function(params) {
+		params = params || {};
+		common.trace("Bundle("+_id+").versions("+common.objToString(params)+")");
+		params["bundleId"] = _id;
+		var criteria = common.createCriteria(new BundleVersionCriteria(),params);
+		var result = BundleManager.findBundleVersionsByCriteria(criteria);
+		common.debug("Found "+result.size()+" versions");
+		return common.pageListToArray(result).map(function(x){return new Version(x);});
+	};
+	
 	return {
 		toString : function() {return _bundle.toString();},
-		destinations : function(params) {
+		destinations : _destinations,
+		versions : _versions,
+		deploy : function(destination,params,version) {
 			params = params || {};
-			common.trace("Bundle("+_id+").destinations("+common.objToString(params)+")");
-			params["bundleId"] = _id;
-			var criteria = common.createCriteria(new BundleDestinationCriteria(),params, function(key,value) {
-				if (key=="status"){
-					return "addFilterStatus(BundleDeploymentStatus."+value.toUpperCase()+")";
+			common.trace("Bundle("+_id+").deploy(destination="+destination+",params="+common.objToString(params)+",version="+version+")");
+			if (version==null) {
+				common.info("Param version is null, will use latest version of bundle");
+				var criteria = common.createCriteria(new BundleCriteria(),{id:_id});
+				var ver = BundleManager.findBundlesWithLatestVersionCompositesByCriteria(criteria).get(0).latestVersion;
+				version = _versions({bundleId:_id,version:ver})[0];
+			}
+			if (typeof(version) == "string") {
+				var versions = _versions({bundleId:_id,version:version});
+				if (version.length==0) {
+					throw "Param version ["+version+"] is invalid for this bundle - no such version";
+				}
+				version = versions[0];
+			}
+			// we need to fetch version object with configuration definition
+			var criteria = common.createCriteria(new BundleVersionCriteria(),{id:version.id});
+			criteria.fetchConfigurationDefinition(true);
+			println(BundleManager.findBundleVersionsByCriteria(criteria));
+			version.obj = BundleManager.findBundleVersionsByCriteria(criteria).get(0);
+			var configuration = new Configuration();
+			// so if the bundle has come configuration, we create default instance of it and apply our param values
+			if (version.obj.configurationDefinition.defaultTemplate!=null) {
+				var defaultConfig = version.obj.configurationDefinition.defaultTemplate.createConfiguration();
+				configuration = common.applyConfiguration(defaultConfig,version.obj.configurationDefinition,params);
+			}
+			var deployment = BundleManager.createBundleDeployment(version.obj.id, destination.obj.id, "", configuration);			
+			deployment = BundleManager.scheduleBundleDeployment(deployment.id, true);
+			var func = function() {
+				var crit = common.createCriteria(new BundleDeploymentCriteria(),{id:deployment.id});
+		        var result = BundleManager.findBundleDeploymentsByCriteria(crit);
+		        if (!result.isEmpty()) {
+		        	result = result.get(0);
+		        	if (!(result.status == BundleDeploymentStatus.PENDING || result.status == BundleDeploymentStatus.IN_PROGRESS)) {
+		        		return result;
+		        	}
+		        }
+			};
+			var deployment = common.waitFor(func);
+			if (deployment) {
+				common.info("Bundle deployment finished with status : "+deployment.status);
+				return;
+			}
+			throw "Bundle deployment error";
+		},
+		createDestination : function(group,name,target,baseName) {
+			common.trace("Bundle("+_id+").createDestination(group="+group+",name="+name+",target="+target+",baseName="+baseName+")");
+			if (group==null) {
+				throw "Resource group param cannot be null";
+			}
+			// check whether we can deploy bundles to this group
+			var g = groups.find({id:group.getId(),bundleTargetableOnly:true});
+			if (g.length==0) {
+				throw "Given resource group must contains only resources able to deploy bundles";
+			}
+			if (name==null) {
+				name = group.obj.name;
+				common.debug("Destination name is null, using group name ["+name+"] as name");
+			}
+			// wheck for valid baseName
+			var criteria = common.createCriteria(new ResourceTypeCriteria(),{id:group.obj.resourceType.id});
+			criteria.fetchBundleConfiguration(true);
+			var resType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
+			var baseNames = {};
+			var names = "";
+			var iterator = resType.resourceTypeBundleConfiguration.bundleDestinationBaseDirectories.iterator();
+			while(iterator.hasNext()) {
+				var dest = iterator.next();
+				baseNames[dest.name] = dest.valueName;
+				names+=dest.name+", ";
+			}
+			var size = resType.resourceTypeBundleConfiguration.bundleDestinationBaseDirectories.size();
+			if (size>1) {
+				if (baseName==null) {
+					throw "baseName parameter must NOT be null, because resource type for given group defines more than 1 baseNames ["+names+"]";
+				}
+				
+			}
+			if (baseName==null) {
+				baseName = resType.resourceTypeBundleConfiguration.bundleDestinationBaseDirectories.iterator().next().name;
+				common.info("Parameter baseName was not passed, using default : " +baseName)
+			}
+			if (typeof(baseNames[baseName]) == "undefined") {
+				throw "Invalid baseName parameter, valid for given resource group are ["+names+"]";
+			}
+			if (target==null) {
+				target = baseNames[baseName];
+				common.info("Parameter target was not passed, using default : "+target);
+			}
+			// check for destinations having same target on same group
+			_destinations({groupId:group.getId()}).forEach(function(d) {
+				if (d.obj.destinationBaseDirectoryName==baseName && d.obj.deployDir == target) {
+					throw "Destination under given group with given baseName and target already exists";
 				}
 			});
-			var result = BundleManager.findBundleDestinationsByCriteria(criteria);
-			common.debug("Found "+result.size()+" destinations");
-			return common.pageListToArray(result).map(function(x){return new Destination(x);});
-		},
-		versions : function(params) {
-			params = params || {};
-			common.trace("Bundle("+_id+").versions("+common.objToString(params)+")");
-			params["bundleId"] = _id;
-			var criteria = common.createCriteria(new BundleVersionCriteria(),params);
-			var result = BundleManager.findBundleVersionsByCriteria(criteria);
-			common.debug("Found "+result.size()+" versions");
-			return common.pageListToArray(result).map(function(x){return new Version(x);});
-		},
-		deploy : function(resourceGroup,params) {
-			
+			var bundleDestination = BundleManager.createBundleDestination(_id,name, "", baseName, target, group.getId());
+			return Destination(bundleDestination);
 		},
 		remove : function() {
 			common.trace("Bundle("+_id+").remove()");
@@ -805,81 +1015,7 @@ var Resource = function (param) {
 		}
 	};
 	
-	/**
-	 * applies map of values to given configuration
-	 * @param original - Configuration instance
-	 * @param definition - ConfigurationDefintion
-	 * @param values - map of values to be applied to configuration
-	 * 
-	 * @return original Configuration object with applied values
-	 */
-	var _applyConfiguration = function(original,definition,values) {
-		values = values || {};
-		for (var k in values) {
-			// we only iterrate over values
-			if (values.hasOwnProperty(k)) {		
-				// parent - parent configuration
-				// definition - parent configuration definition
-				// key - config key to be applied
-				// value - value to be applied
-				(function (parent,definition,key,value) {
-					var propDef = null;
-					var prop = null;
-					// decide which type of property are we working with
-					if (definition instanceof PropertyDefinitionMap) {
-						//println("DEF is map");
-						propDef = definition.get(key);
-					} else if (definition instanceof PropertyDefinitionList) {
-						//println("DEF is list");
-						propDef = definition.getMemberDefinition();
-					} else if (definition instanceof ConfigurationDefinition) {
-						//println("DEF is config");
-						propDef = definition.getPropertyDefinitions().get(key);
-					}
 
-					if (propDef==null) {
-						common.debug("Unable to get PropertyDefinition for key="+key);
-						return;
-					}
-					// process all 3 possible types
-					if (propDef instanceof PropertyDefinitionSimple) {
-						prop = new PropertySimple(key, null);
-						
-						if (value!=null) {
-							prop = new PropertySimple(key, new java.lang.String(value));
-						}
-							//println("it's simple! "+prop);
-					} else if (propDef instanceof PropertyDefinitionList) {
-						prop = new PropertyList(key);
-						//println("it's list! "+prop);
-						for(var i = 0; i < value.length; ++i) {
-							arguments.callee(prop,propDef,"",value[i]);
-						}
-					} else if (propDef instanceof PropertyDefinitionMap) {
-						prop = new PropertyMap(propDef.name);
-						//println("it's map! "+prop);
-						for (var i in value) {
-							if (value.hasOwnProperty(i)) {
-								arguments.callee(prop,propDef,i,value[i]);
-							}
-						}							
-					}
-					else {
-						common.info("Unkonwn property definition! this is a bug");
-						pretty.print(propDef);
-						return
-					}
-					// now we update our Configuration node						
-					if (parent instanceof PropertyList) {
-						parent.add(prop);
-					} else {
-						parent.put(prop);
-					}
-				}) (original,definition,k,values[k]);
-			}
-		}
-		return original;
-	};
 
 	return {
 		getId : function() {return _id;},
@@ -985,7 +1121,7 @@ var Resource = function (param) {
 			var config = ConfigurationManager.getLiveResourceConfiguration(_id,false);
 			common.debug("Got configuration : "+config);
 			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(self.resourceType.id);
-			var applied = _applyConfiguration(config,configDef,params);
+			var applied = common.applyConfiguration(config,configDef,params);
 			common.debug("Will apply this configuration: "+applied);
 			
 			var update = ConfigurationManager.updateResourceConfiguration(_id,applied);
