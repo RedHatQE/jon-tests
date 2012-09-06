@@ -73,7 +73,20 @@ which does that magic.
 		</class>		
 	</classes>
 </test>
-
+<test name="Standalone_BundleDeployment">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
+			<parameter name="js.file"  value="eap6/bundleDeploymentTest.js"/>
+			<parameter name="js.depends" value="rhqapi.js,eap6/standalone/server.js" />
+			<parameter name="res.src" value="/resources/bundles/bundle-war.zip" />
+			<parameter name="res.dst" value="/tmp/bundle-war.zip" />
+			<parameter name="cli.args" value="--args-style=named bundle=/tmp/bundle-war.zip" />
+			<methods>
+				<include name="runJSfile"></include>			
+			</methods>
+		</class>		
+	</classes>
+</test>
 <test name="Standalone_NetworkInterfaces">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
