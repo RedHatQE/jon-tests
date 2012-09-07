@@ -6,6 +6,7 @@
 */
 
 verbose=10;
+timeout=600;
 /**
  * gets an EAP instance, there is no such, or is not available, it fails
  * @param platform - platform name -  if null, first found EAP instance is found, if not, EAP would be found on this platform
