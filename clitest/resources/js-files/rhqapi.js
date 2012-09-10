@@ -1,5 +1,6 @@
 /**
- * rhqapi.js implemented using module pattern
+ * rhqapi.js tries to be synchronous and high-level API above standart RHQ remote API
+ * @author Libor Zoubek <lzoubek@redhat.com>
  */
 
 
@@ -938,14 +939,50 @@ var Resource = function (param) {
 	if ("number" == typeof param) {		
 		param = ProxyFactory.getResource(param);
 	}
+	else {
+		param = ProxyFactory.getResource(param.id);
+	}
 	
 	var _id = param.id;
 	var _res = param;
+	var _dynamic = {};
+	
+	// initialize dynamic methods
+	if (typeof(param.retrieveBackingContent) != "undefined") {
+		// methods for updating/retrieving backing content are generated dynamically only for content-based resources
+		println("creating dynamic methods...");
+		// TODO these 2 need to work better - this is initial implementation to workaround https://bugzilla.redhat.com/show_bug.cgi?id=830841
+		_dynamic.retrieveContent = function(destination) {
+			var self = ProxyFactory.getResource(_id);
+			var func = function() {
+				try {
+					self.retrieveBackingContent(destination);
+					return true;
+				} catch (e) {
+					common.debug("An exception has been thrown when retrieving backing content, retrying");
+				}
+			};
+			common.waitFor(func);
+			
+		};
+		_dynamic.updateContent = function (content,version) {
+			var self = ProxyFactory.getResource(_id);
+			var func = function() {
+				try {
+					self.updateBackingContent(content,version);
+					return true;
+				} catch (e) {
+					common.debug("An exception has been thrown when updating backing content, retrying");
+				}
+			};
+			common.waitFor(func);
+		};
+	}
 	
 	var find = function() {
 		var criteria = resources.createCriteria({id:_id});
 		var res = ResourceManager.findResourcesByCriteria(criteria);
-		common.debug("Resource.find: "+resources);
+		//common.debug("Resource.find: "+resources);
 		return res;
 	};
 	var _isAvailable = function() {
@@ -1017,7 +1054,7 @@ var Resource = function (param) {
 	
 
 
-	return {
+	var _static =  {
 		getId : function() {return _id;},
 		toString : function() {return _res.toString();},
 		getProxy : function() {
@@ -1111,7 +1148,7 @@ var Resource = function (param) {
 		 * updates configuration of this resource. You can either pass whole configuration (retrieved by getConfiguration())
 		 * or only params that needs to be changed
 		 * @param {Object} params - new configuration parameters, partial configuration is supported
-		 * @returns
+		 * @returns True if configuration was updated
 		 */
 		updateConfiguration : function(params) {
 			common.trace("Resource("+_id+").updateConfiguration("+common.objToString(params)+")");
@@ -1147,6 +1184,7 @@ var Resource = function (param) {
 			if (update.status == ConfigurationUpdateStatus.FAILURE) {
 				common.info("Resource configuration update failed : "+update.errorMessage);
 			}
+			return update.status == ConfigurationUpdateStatus.SUCCESS;
 		},
 		/**
 		 * retrieves configuration of this resource
@@ -1397,6 +1435,12 @@ var Resource = function (param) {
 			return result;
 		}
 	};
+	
+	// merge dynamic methods into static ones
+	for (key in _dynamic) {
+		_static[key] = _dynamic[key];
+	}
+	return _static;
 };
 
 
