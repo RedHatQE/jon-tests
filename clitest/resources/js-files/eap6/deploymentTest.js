@@ -30,7 +30,7 @@ name = content.replace(/.*\//,'');
 var deployed = eap.child({resourceTypeName:"Deployment",name:name});
 if (deployed) {
 	println("Updating backing content of ["+name+"] with "+deployment);
-	deployed.getProxy().updateBackingContent(content,"2.0");
+	deployed.updateContent(content,"2.0");
 }
 else {
 	println("Creating Deployment");
@@ -40,10 +40,9 @@ else {
 	assertTrue(deployed.waitForAvailable(),"Deployment resource is available!");
 }
 
-var res = deployed.getProxy();
 var tmpFile = '/tmp/retrieved.deployment';
 
-res.retrieveBackingContent(tmpFile);
+deployed.retrieveContent(tmpFile);
 var originalSize = new java.io.File(content).length();
 var retrievedSize = new java.io.File(tmpFile).length();
 assertTrue(originalSize==retrievedSize,'Size of deployed content ['+originalSize+'] differs from retrieved content ['+retrievedSize+']');
