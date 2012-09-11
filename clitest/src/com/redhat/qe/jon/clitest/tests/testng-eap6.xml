@@ -38,6 +38,7 @@ which does that magic.
 		</class>
 	</classes>
 </test>
+
 <test name="Uninventory_EAP_Servers">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">	
@@ -51,6 +52,7 @@ which does that magic.
 		</class>
 	</classes>
 </test>
+
 <!-- right after discovery tests we import our resources and the show can begin -->
 <test name="Import_Resources">
   	<classes>

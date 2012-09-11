@@ -950,7 +950,6 @@ var Resource = function (param) {
 	// initialize dynamic methods
 	if (typeof(param.retrieveBackingContent) != "undefined") {
 		// methods for updating/retrieving backing content are generated dynamically only for content-based resources
-		println("creating dynamic methods...");
 		// TODO these 2 need to work better - this is initial implementation to workaround https://bugzilla.redhat.com/show_bug.cgi?id=830841
 		_dynamic.retrieveContent = function(destination) {
 			var self = ProxyFactory.getResource(_id);
@@ -959,7 +958,13 @@ var Resource = function (param) {
 					self.retrieveBackingContent(destination);
 					return true;
 				} catch (e) {
-					common.debug("An exception has been thrown when retrieving backing content, retrying");
+					var msg = new java.lang.String(e);
+					if (msg.contains("Please try again in a few minutes")) {
+						common.debug("A known exception has been thrown when retrieving backing content, retrying");
+						common.debug(e);
+					} else {
+						throw e.message;
+					}
 				}
 			};
 			common.waitFor(func);
@@ -972,7 +977,13 @@ var Resource = function (param) {
 					self.updateBackingContent(content,version);
 					return true;
 				} catch (e) {
-					common.debug("An exception has been thrown when updating backing content, retrying");
+					var msg = new java.lang.String(e);
+					if (msg.contains("Please try again in a few minutes")) {
+						common.debug("A known exception has been thrown when updating backing content, retrying");
+						common.debug(e);
+					} else {
+						throw e.message;
+					}
 				}
 			};
 			common.waitFor(func);
@@ -1233,18 +1244,29 @@ var Resource = function (param) {
 			// these 2 are used for querying resource history
 			var startTime = new Date().getTime();
 			var pageControl = new PageControl(0,1);
-			// we need to obtain resourceTypeId, to get it, we need plugin, where the resource type
-			// is defined .. we'll get this plugin from parent (this) resource
-			var resType = ResourceTypeManager.getResourceTypeByNameAndPlugin(type, find().get(0).resourceType.plugin); 
-			if (!resType) {
-				throw "Invalid resource type [type="+type+"]";
-			}
-			// we need to re-request resource type so it contains configuration definition too
-			var criteria = new ResourceTypeCriteria();
-			criteria.addFilterId(resType.id);
+			// we need to obtain resourceType for a new resource
+			var selfType = find().get(0).resourceType;
+			var criteria = common.createCriteria(new ResourceTypeCriteria(),{name:type,pluginName:selfType.plugin,parentId:selfType.id,createDeletePolicy:CreateDeletePolicy.BOTH});
 			criteria.fetchResourceConfigurationDefinition(true);
 			criteria.fetchPluginConfigurationDefinition(true); 
-			resType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
+			var resTypes = ResourceTypeManager.findResourceTypesByCriteria(criteria);
+			var failed = resTypes.size() == 0;
+			for (var i=0;i<resTypes.size();i++) {
+				if (resTypes.get(i).name == type) {
+					failed = false;
+					break;
+				}
+			}
+			if (failed)  {				
+				criteria = common.createCriteria(new ResourceTypeCriteria(),{pluginName:selfType.plugin,parentId:selfType.id,createDeletePolicy:CreateDeletePolicy.BOTH});
+				resTypes = ResourceTypeManager.findResourceTypesByCriteria(criteria);
+				var types = "";
+				for (var i=0;i<resTypes.size();i++) {
+					types+=resTypes.get(i).name+", ";
+				}
+				throw "Invalid resource type [type="+type+"] valid type names are ["+types+"]";
+			}
+			var resType = resTypes.get(0);
 			var configuration =  new Configuration();
 		    if (config) {
 		    	configuration = common.hashAsConfiguration(config);

@@ -27,7 +27,7 @@ public class DeploymentTest extends AS7CliTest {
 		// TODO validate deployment on EAP server
 	}
 	
-	@Test(alwaysRun=true,dependsOnMethods={"deployWAR","redeployWAR"})
+	@Test(alwaysRun=true,dependsOnMethods={"deployWAR","redeployWAR"},priority=100)
 	public void undeployWAR() throws IOException, CliTasksException {
 		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named deployment=/tmp/hello.war", null, null,"rhqapi.js,eap6/standalone/server.js",null,null);
 	}
