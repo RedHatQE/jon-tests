@@ -70,7 +70,8 @@ which does that magic.
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.standalone.DeploymentTest">
 			<methods>
-				<include name=".*deploy.*"></include>			
+				<include name=".*deploy.*"></include>
+				<include name="retrieve.*"></include>			
 			</methods>
 		</class>		
 	</classes>
