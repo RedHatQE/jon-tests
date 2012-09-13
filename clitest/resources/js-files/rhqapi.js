@@ -963,7 +963,7 @@ var Resource = function (param) {
 						common.debug("A known exception has been thrown when retrieving backing content, retrying");
 						common.debug(e);
 					} else {
-						throw e.message;
+						throw e;
 					}
 				}
 			};
@@ -982,7 +982,7 @@ var Resource = function (param) {
 						common.debug("A known exception has been thrown when updating backing content, retrying");
 						common.debug(e);
 					} else {
-						throw e.message;
+						throw e;
 					}
 				}
 			};

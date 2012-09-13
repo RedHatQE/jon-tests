@@ -7,9 +7,10 @@
 
 /**
  * Scenario:
- * this script accepts 2 required named params
+ * this script accepts 3 required named params
  *  * agent - name of agent/platform
  *  * deployment - absolute path to original WAR file
+ *  * target - server group name - DomainDeployment is going to be deployed into this server-group
  *  it is assumed there is AS7 Standalone is imported on 'agent'(param) platform when test runs
  *  it is assumed that domain deployment is already up and ready on a server 
  * 1 - runs promote operation on deployment resource (via rhqapi.js), checks for new deployment resource in server group
@@ -19,8 +20,8 @@
 // bind INPUT parameters
 var platform = agent;
 var content = deployment;
+var sGroupName = target;
 
-var sGroupName = "main-server-group";
 
 var eap = getEAP(platform);
 var name = content.replace(/.*\//,'');

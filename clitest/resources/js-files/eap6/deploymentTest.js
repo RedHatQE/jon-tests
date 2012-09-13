@@ -11,6 +11,7 @@
  *  * agent - name of agent/platform
  *  * deployment - absolute path to original WAR file
  *  * type - deployment resource type name
+ * OPTIONAL parameter: child - name of a child resource on EAP server to be a parent resource of new deployment (if null EAP is parent itself)
  *  it is assumed there is AS7 Standalone is imported on 'agent'(param) platform when test runs
  * 1 - finds server on agent
  * 2 - creates 'Deployment' child resource on it - if resource exists re-deployment is performed instead of deployment
@@ -25,6 +26,11 @@ var deploymentType = type;
 
 var eap = getEAP(platform);
 
+if (typeof(child) != "undefined") {
+	// an optional flag parameter has been passed
+	eap = eap.child({name:child});
+	assertTrue(eap!=null,"Unable to find child ["+child+"] on AS7 server");
+}
 // check whether deployment already exists
 name = content.replace(/.*\//,'');
 var deployed = eap.child({type:type,name:name});
