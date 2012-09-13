@@ -35,6 +35,10 @@ public class DeploymentTest extends AS7CliTest {
 	public void retrieveBackingContentForRedeployed() throws IOException, CliTasksException {
 		retrieveBackingContent("hello2.war", "hello.war", null);
 	}
+	@Test(dependsOnMethods={"deployWAR"},priority=2)
+	public void deployToServerGroup() throws IOException, CliTasksException {
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/domain/deployToServerGroupTest.js", "--args-style=named deployment=/tmp/hello.war", null, null,"rhqapi.js,eap6/domain/server.js",null,null);
+	}
 	
 	
 	@Test(alwaysRun=true,dependsOnMethods={"deployWAR","redeployWAR"},priority=100)
