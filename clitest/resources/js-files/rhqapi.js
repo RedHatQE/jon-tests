@@ -601,18 +601,55 @@ var Bundle = function(param) {
 		var _obj = param;
 		return {
 			obj : _obj,
+			purge : function() {
+				common.trace("Destination("+_id+").purge()");
+				BundleManager.purgeBundleDestination(_id);
+			},
+			revert : function(isClean) {
+				if (isClean==null) {
+					isClean = false;
+				}
+				common.trace("Destination("+_id+").revert(isClean[default=false]="+isClean+")");
+				var deployment = BundleManager.scheduleRevertBundleDeployment(_id,null,isClean);
+				var func = function() {
+					var crit = common.createCriteria(new BundleDeploymentCriteria(),{id:deployment.id});
+			        var result = BundleManager.findBundleDeploymentsByCriteria(crit);
+			        if (!result.isEmpty()) {
+			        	result = result.get(0);
+			        	if (!(result.status == BundleDeploymentStatus.PENDING || result.status == BundleDeploymentStatus.IN_PROGRESS)) {
+			        		return result;
+			        	}
+			        }
+				};
+				var deployment = common.waitFor(func);
+				if (deployment) {
+					common.info("Bundle deployment finished with status : "+deployment.status);
+					return new Deployment(deployment);
+				}
+				throw "Bundle deployment error";
+			}
 		};
 	};
 	
 	var Deployment = function(param) {
 		common.trace("new Deployment("+param+")");
 		if (!param) {
-			throw "either number or org.rhq.core.domain.bundle.BundleDestination parameter is required";
+			throw "either number or org.rhq.core.domain.bundle.BundleDeployment parameter is required";
 		}
 		var _id = param.id;
 		var _obj = param;
 		return {
 			obj : _obj,
+			purge : function() {
+				common.trace("Deployment("+_id+").purge()");
+				if (_obj.isLive()) {
+					BundleManager.purgeBundleDestination(_obj.destination.id);
+				}
+				else {
+					throw "This Deployment("+_id+") cannot be purged, it is not LIVE";
+				}
+				
+			}
 		};
 	};
 	
@@ -712,7 +749,7 @@ var Bundle = function(param) {
 			var deployment = common.waitFor(func);
 			if (deployment) {
 				common.info("Bundle deployment finished with status : "+deployment.status);
-				return;
+				return new Deployment(deployment);
 			}
 			throw "Bundle deployment error";
 		},
@@ -826,6 +863,18 @@ var resources = (function () {
 			common.trace("resources.platforms("+common.objToString(params) +"))");
 			params['category'] = "PLATFORM";
 			return resources.find(params);
+		},
+		/**
+		 * returns 1st platform found based on given params or just nothing
+		 */
+		platform : function(params) {
+			params = params || {};			
+			common.trace("resources.platform("+common.objToString(params) +"))");
+			params['category'] = "PLATFORM";
+			var result = resources.find(params);
+			if (result.length>0) {
+				return result[0];
+			}
 		}
 	};
 }) ();
@@ -950,7 +999,7 @@ var Resource = function (param) {
 	// initialize dynamic methods
 	if (typeof(param.retrieveBackingContent) != "undefined") {
 		// methods for updating/retrieving backing content are generated dynamically only for content-based resources
-		// TODO these 2 need to work better - this is initial implementation to workaround https://bugzilla.redhat.com/show_bug.cgi?id=830841
+		// workaround for https://bugzilla.redhat.com/show_bug.cgi?id=830841
 		_dynamic.retrieveContent = function(destination) {
 			var self = ProxyFactory.getResource(_id);
 			var func = function() {
