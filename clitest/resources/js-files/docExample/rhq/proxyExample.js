@@ -52,7 +52,7 @@ assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status i
 
 // Configurations
 //var agentConf = agent.getResourceConfiguration();
-// NOTE - this example is changed to work even after fresh installation, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899
+// NOTE - currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899
 
 var agentConf = agents.get(0).getResourceConfiguration();
 

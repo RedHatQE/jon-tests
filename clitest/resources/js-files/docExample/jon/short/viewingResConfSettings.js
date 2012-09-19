@@ -4,7 +4,7 @@
  * June 17, 2012        
  **/
 
-// NOTE - this example is changed to work even after fresh installation, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899
+// NOTE - currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899
 
 
 var verbose = 10; // logging level 
@@ -14,13 +14,12 @@ var common = new _common(); // object with common methods
 criteria = new ResourceCriteria(); // find the resource
 criteria.addFilterResourceTypeName('RHQ Agent')
 //criteria.addFilterAgentName('agent1.example.com')
-criteria.fetchResourceConfiguration(true); 
 
 var resources = ResourceManager.findResourcesByCriteria(criteria);
 
 assertTrue(resources.size() > 0, "No RHQ Agent found in inventory!!");
 
-var conf = resources.get(0).getResourceConfiguration();
+var conf = ConfigurationManager.getResourceConfiguration(resources.get(0).id);
 
 assertNotNull(conf, "Returned configuration is null");
 

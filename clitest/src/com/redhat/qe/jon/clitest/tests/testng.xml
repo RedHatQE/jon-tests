@@ -127,6 +127,7 @@
 	</classes>
 </test>
 
+<!-- currently failing because of bug https://bugzilla.redhat.com/show_bug.cgi?id=851145 -->
 <test name="updatingContentBackedRes">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
@@ -192,6 +193,7 @@
 	</classes>
 </test>
 
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899 -->
 <test name="viewingResConfSettings">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
@@ -458,7 +460,7 @@
         </classes>
 </test>
 
-
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899 -->
 <test name="proxyExample">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -581,6 +583,7 @@
 	</classes>
 </test>
 
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
 <test name="userRoles">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -593,6 +596,7 @@
         </classes>
 </test>
 
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
 <test name="draft_testPermissions-ManageInventory">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -605,6 +609,8 @@
         </classes>
 </test>
 
+<!-- Can't commit because the transaction is in aborted state - this is caused because of creating of duplicate role. 
+This role is already created in previous test. This test must be fixed. Same for userName-->  
 <test name="draft_testPermissions-ManageSecurity">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -617,6 +623,8 @@
         </classes>
 </test>
 
+<!-- Can't commit because the transaction is in aborted state - this is caused because of creating of duplicate role. 
+This role is already created in previous test. This test must be fixed. Same for userName-->
 <test name="draft_testPermissions-ViewUsers">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">

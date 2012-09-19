@@ -1,3 +1,6 @@
+
+// currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 
+
 var userName = "testUserRemote";
 var firstName = "firstName";
 var lastName = "lastName";
