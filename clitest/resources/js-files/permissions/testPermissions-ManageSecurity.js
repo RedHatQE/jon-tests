@@ -1,3 +1,14 @@
+//  Runs only under JON 
+
+/**
+* creates test Role with Manage Security permission, creates user having that Role, checks manage Security permissions, removes manage inventory from roles, re-checks permissions.
+* TCMS TestCases - 174974 , 174978
+*/
+
+
+/**
+ * @author ahovsepy@redhat.com (Armine Hovsepyan)
+ */
 var userName = "testUserRemote";
 var userName1 = "testUserRemote1";
 var userName2 = "testUserRemote2";
@@ -6,7 +17,7 @@ var lastName = "lastName";
 var email = "ahovesepy@redhat.com";
 var password = "password";
 
-var roleName = "testRoleRemote";
+var roleName = "testRoleRemoteManSecure";
 var roleDescription = "test Role Description Remote";
 
 var roleIds = new Array();
@@ -206,10 +217,11 @@ function deleteUser(userIds) {
  */
 function verifyManageInventoryPermission(logedInUser, bool) {
 
+try {
+
 var rc = new ResourceCriteria();
 var resources = ResourceManager.findResourcesByCriteria(logedInUser,rc);
 
-try {
 
 	if(bool){
 	

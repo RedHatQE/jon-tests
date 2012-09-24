@@ -1,10 +1,22 @@
+// Runs only under JON 
+
+/**
+* creates test Role with View Users permission, creates user having that Role, checks View Users permissions, removes view users from roles, re-checks permissions.
+* TCMS TestCases - 174972 , 174973
+*/
+
+
+/**
+ * @author ahovsepy@redhat.com (Armine Hovsepyan)
+ */
+
 var userName = "testUserRemote";
 var firstName = "firstName";
 var lastName = "lastName";
 var email = "ahovesepy@redhat.com";
 var password = "password";
 
-var roleName = "testRoleRemote";
+var roleName = "testRoleRemoteViewUser";
 var roleDescription = "test Role Description Remote";
 
 var roleIds = new Array();
@@ -161,10 +173,11 @@ function deleteUser(userIds) {
  */
 function verifyViewUsersPermission(logedInUser, bool) {
 
+try {
+
 var sc = new SubjectCriteria();
 var userCount = SubjectManager.findSubjectsByCriteria(logedInUser, sc);
 
-try {
 
 	if(bool){
 		assertTrue(userCount.size() > 1, "View Users permission doesnt work correctly!!");

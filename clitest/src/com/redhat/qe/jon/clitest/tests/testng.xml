@@ -597,10 +597,10 @@
 </test>
 
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
-<test name="draft_testPermissions-ManageInventory">
+<test name="testPermissions-ManageInventory">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="draft_testPermissions-ManageInventory.js"/>
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageInventory.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
                         <methods>
                                 <include name="runJSfile"></include>
@@ -614,7 +614,7 @@ This role is already created in previous test. This test must be fixed. Same for
 <test name="draft_testPermissions-ManageSecurity">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="draft_testPermissions-ManageSecurity.js"/>
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageSecurity.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
                         <methods>
                                 <include name="runJSfile"></include>
@@ -628,7 +628,7 @@ This role is already created in previous test. This test must be fixed. Same for
 <test name="draft_testPermissions-ViewUsers">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="draft_testPermissions-ViewUsers.js"/>
+                        <parameter name="js.file"  value="permissions/testPermissions-ViewUsers.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
                         <methods>
                                 <include name="runJSfile"></include>

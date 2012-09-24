@@ -1,13 +1,22 @@
 
-// currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 
+// currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 - Runs only under JON 
 
+/**
+* creates test Role with Manage Inventory permission, creates user having that Role, checks manage Inventory permissions, removes manage inventory from roles, re-checks permissions.
+* TCMS TestCases - 174639 , 174725
+*/
+
+
+/**
+ * @author ahovsepy@redhat.com (Armine Hovsepyan)
+ */
 var userName = "testUserRemote";
 var firstName = "firstName";
 var lastName = "lastName";
 var email = "ahovesepy@redhat.com";
 var password = "password";
 
-var roleName = "testRoleRemote";
+var roleName = "testRoleRemoteManageInv";
 var roleDescription = "test Role Description Remote";
 
 var roleIds = new Array();
@@ -164,10 +173,11 @@ function deleteUser(userIds) {
  */
 function verifyManageInventoryPermission(logedInUser, bool) {
 
-var rc = new ResourceCriteria();
-var resources = ResourceManager.findResourcesByCriteria(logedInUser,rc);
 
 try {
+
+var rc = new ResourceCriteria();
+var resources = ResourceManager.findResourcesByCriteria(logedInUser,rc);
 
 	if(bool){
 		assertTrue(resources.size() > 1, "Manage Inventory permission doesnt work correctly!!");
