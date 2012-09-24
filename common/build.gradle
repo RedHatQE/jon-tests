@@ -25,9 +25,6 @@ eclipse {
 }
 
 repositories {
-    flatDir {
-        dirs "lib"
-    }
     mavenCentral()
     [
         'https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads',
@@ -55,5 +52,3 @@ dependencies {
 	"org.resteasy:jaxrs-api:1.0-beta-4"
 }
 
-jar {
-}

@@ -61,9 +61,6 @@ dependencies {
     testCompile files('../common/lib/cajo.jar', '../common/lib/ReportEngineClient.jar')
 }
 
-jar {
-}
-
 test {
 	useTestNG()
 	systemProperties = System.properties

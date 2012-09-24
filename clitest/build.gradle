@@ -52,9 +52,7 @@ dependencies {
     compile "com.redhat.qe.jon:common:1.0.0-SNAPSHOT",
 	"com.redhat.qe:logging-testscript:1.0.2",
 	"com.redhat.qe:testng-listeners:1.0.0",
-	"org.apache.commons:commons-lang3:3.1",
-	files('lib/cajo.jar', 'lib/ReportEngineClient.jar')
-    
+	"org.apache.commons:commons-lang3:3.1" 
     testCompile  "com.redhat.qe.jon:common:1.0.0-SNAPSHOT",
 	"com.redhat.qe:logging-testscript:1.0.2",
 	"org.uncommons:reportng:1.1.3",
@@ -82,4 +80,5 @@ test {
 
 	scanForTestClasses = false;
 	workingDir = "build"
+	ignoreFailures = true;
 }
