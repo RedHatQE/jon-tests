@@ -1,0 +1,19 @@
+subprojects {
+    apply plugin: 'java'
+}
+
+project(":clitest") {
+    dependencies {
+        compile project(":common")
+    }
+}
+project(":sahi") {
+    dependencies {
+        compile project(":common")
+    }
+}
+project(":rest-java") {
+    dependencies {
+        compile project(":common")
+    }
+}
