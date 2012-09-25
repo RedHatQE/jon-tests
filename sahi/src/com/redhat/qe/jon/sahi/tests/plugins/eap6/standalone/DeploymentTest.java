@@ -55,7 +55,7 @@ public class DeploymentTest extends AS7StandaloneTest {
 	}
 	@Test
 	public void deployWebService() {
-		deployWARFile(wsResource, "deploy/"+wsResource.getName());
+		deployWARFile(wsResource, "/deploy/"+wsResource.getName());
 		log.fine("Waiting "+Timing.toString(Timing.TIME_1M)+" for deployment child subsystems to be discovered");
 		sahiTasks.waitFor(Timing.TIME_1M);
 		wsResource.assertChildExists("webservices",true);
@@ -68,7 +68,7 @@ public class DeploymentTest extends AS7StandaloneTest {
 	
 	@Test
 	public void deployMessageDrivenBean() {
-		deployWARFile(mdbResource, "deploy/"+mdbResource.getName());
+		deployWARFile(mdbResource, "/deploy/"+mdbResource.getName());
 		log.fine("Waiting "+Timing.toString(Timing.TIME_1M)+" for deployment child subsystems to be discovered");
 		sahiTasks.waitFor(Timing.TIME_1M);
 		mdbResource.assertChildExists("messaging",true);
@@ -136,7 +136,7 @@ public class DeploymentTest extends AS7StandaloneTest {
 	
 	@Test()
 	public void deployWAR() {		
-		deployWARFile(warResource, "deploy/original/"+warResource.getName());
+		deployWARFile(warResource, "/deploy/original/"+warResource.getName());
 		httpClient.assertDeploymentContent(war,"Original","Check whether original version of WAR has been deployed");
 	}
 	
@@ -147,7 +147,7 @@ public class DeploymentTest extends AS7StandaloneTest {
 		ChildResources childResources = inventory.childResources();
 		NewChildWizard newChild = childResources.newChild("Deployment");
 		newChild.next();
-		newChild.upload("deploy/modified/"+war);
+		newChild.upload("/deploy/modified/"+war);
 		//wait for upload to finish
 		sahiTasks.waitFor(2*waitTime);
 		newChild.next();

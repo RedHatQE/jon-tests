@@ -4,6 +4,7 @@ import com.redhat.qe.auto.sahi.ExtendedSahi;
 import com.redhat.qe.Assert;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -901,7 +902,11 @@ public class SahiTasks extends ExtendedSahi {
      * @param path to file to be uploaded - relative to /automatjon/jon/sahi/resources/
      */
     public void setFileToUpload(String fileInputIdent, String path) {
-    	String fullPath = SahiTasks.class.getResource("/resources/"+path).getPath();
+    	URL resource = SahiTasks.class.getResource(path);
+    	if (resource==null) {
+    		throw new RuntimeException("Unable to find resource ["+path+"] on classpath");
+    	}
+    	String fullPath = resource.getPath();
     	this.file(fileInputIdent).setFile(fullPath);
     	this.execute("_sahi._call(_sahi._file(\""+fileInputIdent+"\").type = \"text\");");
 		this.textbox(fileInputIdent).setValue(fullPath);
