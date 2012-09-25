@@ -611,7 +611,7 @@
 
 <!-- Can't commit because the transaction is in aborted state - this is caused because of creating of duplicate role. 
 This role is already created in previous test. This test must be fixed. Same for userName-->  
-<test name="draft_testPermissions-ManageSecurity">
+<test name="testPermissions-ManageSecurity">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="permissions/testPermissions-ManageSecurity.js"/>
@@ -625,10 +625,49 @@ This role is already created in previous test. This test must be fixed. Same for
 
 <!-- Can't commit because the transaction is in aborted state - this is caused because of creating of duplicate role. 
 This role is already created in previous test. This test must be fixed. Same for userName-->
-<test name="draft_testPermissions-ViewUsers">
+<test name="testPermissions-ViewUsers">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="permissions/testPermissions-ViewUsers.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- works only for JON-->
+<test name="testPermissions-ManageBundles">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageBundles.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- works only for JON-->
+<test name="testPermissions-ManageSettings">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageSettings.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- works only for JON-->
+<test name="testPermissions-ManageRepositories">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageRepositories.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
                         <methods>
                                 <include name="runJSfile"></include>

@@ -29,7 +29,7 @@ var permissions  =  new Array();
 permissions.push(permissionManageSecurity);
 
 
-//call create Role with View users permission
+//call create Role with permission
 var savedRole = createRoleWithPermission(roleName,roleDescription, permissions);
 roleIds.push(savedRole.getId());
 
@@ -113,7 +113,7 @@ function createUser(userName, firstName, lastName, email, password) {
 }
 
 /** 
- * Function create user
+ * Function verify Create User Permissions
  * @param - username, firstName, lastname, password, email, logedInUser, bool 
  * @return - created user
  */
@@ -211,8 +211,8 @@ function deleteUser(userIds) {
 
 
 /** 
- *  Function - verify View Users functionality
- *  @param -  logedInUser, bool - view User permission Activated/Inactivated (boolean)
+ *  Function - verify manage inventory functionality
+ *  @param -  logedInUser, bool - manage inventory permission Activated/Inactivated (boolean)
  *  @return - 
  */
 function verifyManageInventoryPermission(logedInUser, bool) {
