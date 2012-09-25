@@ -42,11 +42,11 @@ public class DeploymentTest extends AS7CliTest {
 	}
 	
 	private void retrieveBackingContent(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/retrieveBackingContentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/standalone/server.js","/resources/deployments/"+srcWar,"/tmp/"+destWar);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/retrieveBackingContentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/standalone/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
 	}
 	
 	private void createDeployment(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/standalone/server.js","/resources/deployments/"+srcWar,"/tmp/"+destWar);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/standalone/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
 		
 	}
 }

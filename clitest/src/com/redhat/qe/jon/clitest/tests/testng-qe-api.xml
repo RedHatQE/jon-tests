@@ -80,7 +80,7 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/resource_createChild.js"/>
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<parameter name="res.src" value="/resources/deployments/hello1.war" />
+			<parameter name="res.src" value="/deployments/hello1.war" />
 			<parameter name="res.dst" value="/tmp/hello.war" />
 			<parameter name="cli.args" value="--args-style=named deployment=/tmp/hello.war"/>
 			<methods>
@@ -118,7 +118,7 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/bundles.js"/>
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-				<parameter name="res.src" value="/resources/bundles/bundle.zip,/resources/bundles/bundle-incomplete.zip" />
+				<parameter name="res.src" value="/bundles/bundle.zip,/bundles/bundle-incomplete.zip" />
 				<parameter name="res.dst" value="/tmp/bundle.zip,/tmp/bundle-incomplete.zip" />
 			<methods>
 				<include name="runJSfile"></include>		

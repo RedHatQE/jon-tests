@@ -31,7 +31,7 @@
 				
 				http://lzoubek-builds.brq.redhat.com/eap6/host.xml is downloaded from to /tmp/host.xml123 (absolute path)
 				 -->
-				<parameter name="res.src" value="/resources/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
+				<parameter name="res.src" value="/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
 				<parameter name="res.dst" value="hello.war,/tmp/foo" />
 				
 				<!-- OPTIONAL: comma-separated list of messages as a result of running JS in CLI. If any of messages is no found, test fails -->

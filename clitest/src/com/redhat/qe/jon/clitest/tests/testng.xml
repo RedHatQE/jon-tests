@@ -117,7 +117,7 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="docExample/jon/short/creatingContentBackedRes.js"/>
 			<parameter name="js.depends" value="rhqapi.js" />
-			<parameter name="res.src" value="/resources/deployments/MiscBeans-3.2.2.ear" />
+			<parameter name="res.src" value="/deployments/MiscBeans-3.2.2.ear" />
 			<parameter name="res.dst" value="/tmp/MiscBeans-3.2.2.ear" />
 			<parameter name="cli.args" value="--args-style=named deployment=/tmp/MiscBeans-3.2.2.ear"/>
 			<parameter name="expected.result"  value="Login successful"/>
@@ -134,7 +134,7 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="docExample/jon/short/updatingContentBackedRes.js"/>
 			<parameter name="js.depends" value="rhqapi.js" />
-			<parameter name="res.src" value="/resources/deployments/MiscBeans-3.2.5.ear" />
+			<parameter name="res.src" value="/deployments/MiscBeans-3.2.5.ear" />
 			<parameter name="res.dst" value="/tmp/MiscBeans-3.2.5.ear" />
 			<parameter name="cli.args" value="--args-style=named deployment=/tmp/MiscBeans-3.2.5.ear"/>
 			<parameter name="expected.result"  value="Login successful"/>
