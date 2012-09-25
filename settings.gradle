@@ -1,1 +1,1 @@
-include "common","clitest","sahi","rest-java"
+include "common","clitest","sahi","rest-java","rest-groovy"

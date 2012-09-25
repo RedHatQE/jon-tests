@@ -128,3 +128,30 @@ project(":common") {
 	}
 
 }
+project(":rest-groovy") {
+	apply plugin: 'groovy'
+		sourceSets {
+			main {
+				groovy {
+					srcDirs "src"
+				}
+			}
+			test {
+				groovy {
+					srcDirs "src"
+				}
+				resources {
+					srcDirs "resources"
+				} 
+			}
+		}
+	dependencies {
+		groovy localGroovy()
+			groovy group: 'org.codehaus.groovy.modules.http-builder', name:'http-builder', version:'0.5.2'
+			compile project(":common")
+			testCompile  project(":common"),
+				"com.redhat.qe:logging-testscript:1.0.2",
+				     "org.uncommons:reportng:1.1.3",
+				     files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
+	}
+}
