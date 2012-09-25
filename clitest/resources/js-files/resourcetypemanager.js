@@ -11,13 +11,17 @@
 
 //test find with filtering
 
-var resourceType = ResourceTypeManager.getResourceTypeByNameAndPlugin('service-alpha', 'PerfTest');
+var resName = 'service-alpha'; 
+var resPluginName = 'PerfTest';
+ 
+var resourceType = ResourceTypeManager.getResourceTypeByNameAndPlugin(resName, resPluginName);
+assertTrue(resourceType != null, "Resource type with name '" +resName + "' and plugin name '"+ resPluginName +"' not found!");
 
 var criteria = ResourceTypeCriteria();
-criteria.addFilterName('service-alpha');
+criteria.addFilterName(resName);
 criteria.addFilterDescription(resourceType.description);
 criteria.addFilterCategory(ResourceCategory.SERVICE);
-criteria.addFilterPluginName('PerfTest');
+criteria.addFilterPluginName(resPluginName);
 criteria.addFilterCreationDataType(ResourceCreationDataType.CONFIGURATION);
 criteria.addFilterCreateDeletePolicy(CreateDeletePolicy.NEITHER);
 criteria.addFilterSupportsManualAdd(false);
@@ -28,7 +32,8 @@ Assert.assertNumberEqualsJS(resourceTypes.size(), 1, 'Failed to find resource ty
 
 //test find with fetching associations
 
-var resourceType = ResourceTypeManager.getResourceTypeByNameAndPlugin('service-alpha', 'PerfTest');
+var resourceType = ResourceTypeManager.getResourceTypeByNameAndPlugin(resName, resPluginName);
+assertTrue(resourceType != null,"Resource type with name '" +resName + "' and plugin name '"+ resPluginName +"' not found!");
 
 var criteria = ResourceTypeCriteria();
 criteria.addFilterId(resourceType.id);

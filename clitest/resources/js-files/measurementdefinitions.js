@@ -10,13 +10,17 @@
 
 //find with filtering
 
+var resName = 'service-alpha'; 
+var resPluginName = 'PerfTest';
+
 var criteria = ResourceTypeCriteria();
-criteria.addFilterName('service-alpha');
-criteria.addFilterPluginName('PerfTest');
+criteria.addFilterName(resName);
+criteria.addFilterPluginName(resPluginName);
 
+var resourceTypes = ResourceTypeManager.findResourceTypesByCriteria(criteria);
+assertTrue(resourceTypes.size() > 0, "Resource type with name '" +resName + "' and plugin name '"+ resPluginName +"' not found!");
 
-
-var resourceType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
+var resourceType = resourceTypes.get(0);
 var criteria = MeasurementDefinitionCriteria();
 criteria.addFilterName('alpha-metric0');
 criteria.addFilterDisplayName('Alpha Metric 0');
@@ -33,7 +37,7 @@ criteria.addFilterDefaultInterval(1200000);
 
 var measurementDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
 
-Assert.assertNumberEqualsJS(measurementDefs.size(), 0, 'Failed to find measurement definition when filtering');
+Assert.assertNumberEqualsJS(measurementDefs.size(), 1, 'Failed to find measurement definition when filtering');
 
 
 // find with sorting
