@@ -1,3 +1,7 @@
+/**
+ * This imports RHQ agent and invokes promt command 'discovery'
+ **/
+
 
 /**             
  * @author fbrychta@redhat.com (Filip Brychta)
@@ -31,10 +35,13 @@ assertTrue(agents.length > 0, "No imported agent found!!");
 var agent = agents[0];
 agent.waitForAvailable();
 
+// invoke 'discovery' prompt command
 var history = agent.invokeOperation("executePromptCommand",{command:"discovery"});
 
+// check result of operation
 assertTrue(history.getStatus() == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.getStatus() + ", error message: " + history.getErrorMessage());
 
+// find all imported RHQ agents
 function findAgents(){
     var agents = Inventory.find({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
     common.debug(agents.length + " imported agent(s) found");
@@ -42,6 +49,7 @@ function findAgents(){
     return agents;
 }
 
+// find all imported platforms
 function findPlatforms(){
     var platforms = Inventory.find({resourceCategories:ResourceCategory.PLATFORM});
     common.debug(platforms.length + " imported platform(s) found");
