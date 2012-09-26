@@ -1,87 +1,86 @@
-
+// all our subrojects share same settings here
 subprojects {
-	apply plugin: 'java'
-		apply plugin: 'eclipse'
-		apply plugin: 'maven'
-		sourceCompatibility = 1.6
-		targetCompatibility = 1.6
-		group = 'com.redhat.qe.jon'
-		version = '1.0.0-SNAPSHOT'
-
-		sourceSets {
-			main {
-				java {
-					srcDirs "src"
-				}
-			}
-			test {
-				java {
-					srcDirs "src"
-				}
-				resources {
-					srcDirs "resources"
-				} 
+	apply plugin: "java"
+	apply plugin: "eclipse"
+	apply plugin: "maven"
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+	group = "com.redhat.qe.jon"
+	version = "1.0.0-SNAPSHOT"
+	sourceSets {
+		main {
+			java {
+				srcDirs "src"
 			}
 		}
+		test {
+			java {
+				srcDirs "src"
+			}
+			resources {
+				srcDirs "resources"
+			} 
+		}
+	}
 
 	eclipse {
 		classpath {
-			defaultOutputDir = file('bin')
+			defaultOutputDir = file("bin")
 		}
 	}
 
 	repositories {
 		mavenCentral()
-			mavenLocal()
-			[
-			'https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads',
-			'http://clojars.org/repo',
-			'http://download.java.net/maven/2/',
-			'http://repository.codehaus.org',
-			'http://snapshots.repository.codehaus.org'
-				].each { repo ->  
-					maven {
-						url repo
-					}
-				}
+		mavenLocal()
+		[
+			"https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads",
+			"http://clojars.org/repo",
+			"http://download.java.net/maven/2/",
+			"http://repository.codehaus.org",
+			"http://snapshots.repository.codehaus.org"
+		].each { repo ->  
+			maven {
+				url repo
+			}
+		}
 	}
 	test {
 		useTestNG()
-			systemProperties = System.properties
-			if ( systemProperties["testng.suite"] ) {
-				options.suites(systemProperties["testng.suite"])
+		systemProperties = System.properties
+		if ( systemProperties["testng.suite"] ) {
+			options.suites(systemProperties["testng.suite"])
+		}
+		else {
+			// we load defaultSuite property from particular $project/gradle.properties
+			if (project.hasProperty("defaultSuite")) {
+				options.suites(defaultSuite)
 			}
-			else {
-				// we load defaultSuite property from particular $project/gradle.properties
-				if (project.hasProperty("defaultSuite")) {
-					options.suites(defaultSuite)
-				}
-				else {				
-					options.suites("testng.xml")
-				}
+			else {				
+				options.suites("testng.xml")
 			}
+		}
 		options {
 			listeners << "com.redhat.qe.auto.testng.TestNGListener"
-				listeners << "org.uncommons.reportng.HTMLReporter"
-				listeners << "org.uncommons.reportng.JUnitXMLReporter"
+			listeners << "org.uncommons.reportng.HTMLReporter"
+			listeners << "org.uncommons.reportng.JUnitXMLReporter"
 		}
 		scanForTestClasses = false;
 		workingDir = "build"
-			ignoreFailures = true;
+		ignoreFailures = true;
 	}
 }
-
+// project specific stuff
 project(":clitest") {
 	dependencies {
 		compile "com.redhat.qe:logging-testscript:1.0.2",
 			"com.redhat.qe:testng-listeners:1.0.0",
 			"org.apache.commons:commons-lang3:3.1",
 			project(":common")
-				testCompile  project(":common"),
+		testCompile  project(":common"),
 			"com.redhat.qe:logging-testscript:1.0.2",
 			"org.uncommons:reportng:1.1.3",
 			"org.apache.commons:commons-lang3:3.1",
-			files('../common/lib/cajo.jar', '../common/lib/ReportEngineClient.jar')
+			files("../common/lib/cajo.jar", "../common/lib/ReportEngineClient.jar")
 	}
 }
 project(":sahi") {
@@ -91,7 +90,7 @@ project(":sahi") {
 			"org.apache.commons:commons-lang3:3.1",
 			project(":common")
 
-				testCompile  project(":common"),
+		testCompile  project(":common"),
 			"com.redhat.qe:logging-testscript:1.0.2",
 			"org.uncommons:reportng:1.1.3",
 			files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
@@ -106,11 +105,11 @@ project(":rest-java") {
 			"org.apache.commons:commons-lang3:3.1",
 			project(":common")
 
-				testCompile  project(":common"),
+			testCompile  project(":common"),
 			"com.redhat.qe:logging-testscript:1.0.2",
 			"org.uncommons:reportng:1.1.3",
 			"org.apache.commons:commons-lang3:3.1",
-			files('../common/lib/cajo.jar', '../common/lib/ReportEngineClient.jar')
+			files("../common/lib/cajo.jar", "../common/lib/ReportEngineClient.jar")
 	}
 }
 project(":common") {
@@ -128,8 +127,9 @@ project(":common") {
 	}
 
 }
+// rest-groovy project also uses "groovy" plugin
 project(":rest-groovy") {
-	apply plugin: 'groovy'
+	apply plugin: "groovy"
 		sourceSets {
 			main {
 				groovy {
@@ -147,11 +147,12 @@ project(":rest-groovy") {
 		}
 	dependencies {
 		groovy localGroovy()
-			groovy group: 'org.codehaus.groovy.modules.http-builder', name:'http-builder', version:'0.5.2'
-			compile project(":common")
-			testCompile  project(":common"),
-				"com.redhat.qe:logging-testscript:1.0.2",
-				     "org.uncommons:reportng:1.1.3",
-				     files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
+		groovy group: "org.codehaus.groovy.modules.http-builder", name:"http-builder", version:"0.5.2"
+		compile project(":common")
+			
+		testCompile  project(":common"),
+			"com.redhat.qe:logging-testscript:1.0.2",
+			"org.uncommons:reportng:1.1.3",
+			files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
 	}
 }
