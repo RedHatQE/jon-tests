@@ -27,6 +27,7 @@ var repoName3 = "repo3";
 var roleIds = new Array();
 var userIds = new Array();
 
+var count=0;
 var permissionManageRepositories = Permission.MANAGE_REPOSITORIES;
 
 var permissions = new Array();
@@ -64,7 +65,7 @@ repo3.setPrivate(true);
 repo3.setOwner(logedInUser);
 var newRepo3 = RepoManager.createRepo(logedInUser, repo3);
 // verify repository permissions
-verifyManageRepositoryPermission(logedInUser, true);
+verifyManageRepositoryPermission(logedInUser, true, newRepo3.getId());
 
 // verify manage repository permission not granted
 // update Role
@@ -73,8 +74,13 @@ removePermissionFromRole(savedRole, permissions);
 addRoleToUser(userIds[0], roleIds);
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
+// create Repo with newly created user
+var repo3 = new Repo(repoName3);
+repo3.setPrivate(true);
+repo3.setOwner(logedInUser);
+var newRepo3 = RepoManager.createRepo(logedInUser, repo3);
 // verify manage repository permission
-verifyManageRepositoryPermission(logedInUser, false);
+verifyManageRepositoryPermission(logedInUser, false, newRepo3.getId());
 
 
 //call delete repositories
@@ -83,10 +89,10 @@ verifyManageRepositoryPermission(logedInUser, false);
 //RepoManager.deleteRepo(newRepo3.getId());
 
 // call delete role function
-deleteRole(roleIds);
+//deleteRole(roleIds);
 
 // call delete user
-deleteUser(userIds);
+//deleteUser(userIds);
 
 /**
  * Function - create Role with Permission
@@ -197,32 +203,52 @@ function deleteUser(userIds) {
  * Function - verify manage repositories functionality
  * 
  * @param -
- *            logedInUser, bool (boolean - manage Repository permission
+ *            logedInUser, repoId, bool (boolean - manage Repository permission
  *            activated/deactivated)
  * @return -
  */
-function verifyManageRepositoryPermission(logedInUser, bool) {
+function verifyManageRepositoryPermission(logedInUser, bool, repoId) {
 
 	try {
 		var pgc = new PageControl();
 		var repoCount = RepoManager.findRepos(logedInUser, pgc);
-		println("repoCount ....  "+repoCount);
+		println("repoCount first....  "+repoCount.size());
+		
+		//var pckgCriteria = new PackageCriteria ();
+		var logedInUser = SubjectManager.login(userName, password);
+		//command will be un-commented as soon as bug#861092 is fixed.
+		//ContentManager.findPackagesByCriteria(logedinUser, pckgCriteria);
+		
 		if (bool) {
-			assertTrue(repoCount.size() == 4,
-					"Manage Repositories permission doesnt work correctly!!");
+			assertTrue(repoCount.size() == 4, "Manage Repositories permission doesnt work correctly1!!");
+			
+			var logedInUser = SubjectManager.login(userName, password);
+			//verify can delete repo created by this user
+			RepoManager.deleteRepo(logedInUser, repoId);
+			repoCount = RepoManager.findRepos(logedInUser, pgc);
+			println("repoCount ....  "+repoCount.size());
+			assertTrue(repoCount.size() == 3, "Manage Repositories permission doesnt work correctly2!!");
+			
 		} else {
 			assertTrue(repoCount.size() ==2,
-					"Manage Repositories permission doesnt work correctly!!");
+					"Manage Repositories permission doesnt work correctly3!!");
+			
+			
 		}
 	}
 
 	catch (err) {
-
+		//command will be un-commented as soon as bug# is fixed.
+//		if(err.message.toString().indexOf("Only repository managers can search for packages across all repos")!=-1){
+//			count= count+1;
+//			println("counter");
+//		}
 		if (err.message.toString().indexOf(
-				"Manage Repositories permission doesnt work correctly!!" != -1)) {
+				"Manage Repositories permission doesnt work correctly!!" != -1) || count>1) {
 			println("Manage Repositories permission doesnt work correctly!!");
 
 		}
+		
 
 	}
 
