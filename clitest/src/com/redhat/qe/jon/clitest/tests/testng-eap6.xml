@@ -38,6 +38,7 @@ which does that magic.
 		</class>
 	</classes>
 </test>
+
 <test name="Uninventory_EAP_Servers">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">	
@@ -51,6 +52,7 @@ which does that magic.
 		</class>
 	</classes>
 </test>
+
 <!-- right after discovery tests we import our resources and the show can begin -->
 <test name="Import_Resources">
   	<classes>
@@ -68,7 +70,8 @@ which does that magic.
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.standalone.DeploymentTest">
 			<methods>
-				<include name=".*deploy.*"></include>			
+				<include name=".*deploy.*"></include>
+				<include name="retrieve.*"></include>			
 			</methods>
 		</class>		
 	</classes>
@@ -78,9 +81,9 @@ which does that magic.
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
 			<parameter name="js.file"  value="eap6/bundleDeploymentTest.js"/>
 			<parameter name="js.depends" value="rhqapi.js,eap6/standalone/server.js" />
-			<parameter name="res.src" value="/resources/bundles/bundle-war.zip" />
-			<parameter name="res.dst" value="/tmp/bundle-war.zip" />
-			<parameter name="cli.args" value="--args-style=named bundle=/tmp/bundle-war.zip" />
+			<parameter name="res.src" value="/resources/bundles/bundle-war.zip,/resources/bundles/bundle-war-new.zip" />
+			<parameter name="res.dst" value="/tmp/bundle-war.zip,/tmp/bundle-war-new.zip" />
+			<parameter name="cli.args" value="--args-style=named bundle=/tmp/bundle-war.zip bundle2=/tmp/bundle-war-new.zip" />
 			<methods>
 				<include name="runJSfile"></include>			
 			</methods>
@@ -100,6 +103,16 @@ which does that magic.
 	</classes>
 </test>
 
+<test name="Domain_Deployment">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.domain.DeploymentTest">
+			<methods>
+				<include name=".*deploy.*"></include>
+				<include name="retrieve.*"></include>			
+			</methods>
+		</class>		
+	</classes>
+</test>
 
 <test name="Domain_NetworkInterfaces">
 	<classes>
