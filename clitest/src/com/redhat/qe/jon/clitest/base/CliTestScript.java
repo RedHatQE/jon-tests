@@ -52,15 +52,6 @@ public abstract class CliTestScript extends TestScript{
 		}
 		CliTest.rhqCliJavaHome = config.get(PARAM.RHQ_CLI_JAVA_HOME);
 		
-		String jsFileLoc = System.getProperty("js.files.dir");
-		if(jsFileLoc == null){
-			jsFileLoc = "resources/js-files/"; //taking default location
-			_logger.info("JS file location is not specified.. Taking default location..."+jsFileLoc);
-		}
-		CliTest.jsFileLocation = new File(jsFileLoc).getAbsolutePath();
-		if(!CliTest.jsFileLocation.endsWith("/")){
-			CliTest.jsFileLocation += "/";
-		}
 		_logger.log(Level.INFO, "Loaded before Suite");
 	}
 

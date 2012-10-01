@@ -23,7 +23,6 @@ import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 public class CliTest extends CliTestScript{
 	private static Logger _logger = Logger.getLogger(CliTest.class.getName());
 	public static String cliShLocation;
-	public static String jsFileLocation;
 	public static String rhqCliJavaHome;
 	public static String rhqTarget;
 	private String cliUsername;
@@ -46,6 +45,28 @@ public class CliTest extends CliTestScript{
 			this.cliUsername = cliUsername;
 		if(cliPassword != null)
 			this.cliPassword = cliPassword;
+	}
+	
+	private String getResourceFileName(String path) {
+		URL resource = null;
+		if (!path.startsWith("/")) {
+			_logger.fine("Appending / to resource path");
+			resource = CliTest.class.getResource("/"+path);
+			if (resource==null) {
+				_logger.fine("Appending /js-files/ to resource path");
+				resource = CliTest.class.getResource("/js-files/"+path);	
+			}
+			if (resource==null) {
+				throw new RuntimeException("Unable to retrieve either [/"+path+"] or [/js-files"+path+"] resource on classpath!");
+			}
+		}
+		else {
+			resource = CliTest.class.getResource(path);
+		}
+		if (resource==null) {
+			throw new RuntimeException("Unable to retrieve ["+path+"] resource on classpath!");
+		}
+		return resource.getFile();
 	}
 	
 	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure","js.depends","res.src","res.dst"})
@@ -72,13 +93,13 @@ public class CliTest extends CliTestScript{
 		// process additional resource files
 		if (resSrc!=null && resDst!=null) {
 			prepareResources(resSrc, resDst);
-		}		
-		
+		}
+		String jsFilePath = getResourceFileName(jsFile);
+		jsFileName = new File(jsFilePath).getName();
 		// upload JS file to remote host first
-		cliTasks.copyFile(jsFileLocation+jsFile, remoteFileLocation);
-		jsFileName = new File(jsFile).getName();
+		cliTasks.copyFile(jsFilePath, remoteFileLocation);
 		if (jsDepends!=null) {
-			prepareDependencies(jsFile, jsDepends);
+			prepareDependencies(jsFile, jsDepends,jsFilePath);
 		}
 		
 		// autodetect RHQ_CLI_JAVA_HOME if not defined
@@ -144,7 +165,7 @@ public class CliTest extends CliTestScript{
 		}
 	}
 
-	private void prepareDependencies(String jsFile, String jsDepends)
+	private void prepareDependencies(String jsFile, String jsDepends, String mainJsFilePath)
 			throws IOException, CliTasksException {
 		int longestDepNameLength=0;
 		Map<String,Integer> lines = new LinkedHashMap<String, Integer>(); 
@@ -153,18 +174,19 @@ public class CliTest extends CliTestScript{
 			if (dependency.length()>longestDepNameLength) {
 				longestDepNameLength = dependency.length();
 			}
-			lines.put(dependency, getFileLineCount(jsFileLocation+dependency));
-			cliTasks.copyFile(jsFileLocation+dependency, remoteFileLocation, "_tmp.js");
+			String jsFilePath = getResourceFileName(dependency);
+			lines.put(dependency, getFileLineCount(jsFilePath));
+			cliTasks.copyFile(jsFilePath, remoteFileLocation, "_tmp.js");
 			// as CLI does not support including, we must merge the files manually
 			cliTasks.runCommnad("cat "+remoteFileLocation+"_tmp.js >> "+remoteFileLocation+"_deps.js");
 		}
 		cliTasks.runCommnad("rm "+remoteFileLocation+"_tmp.js");
-		// finally merge main jsFile
+		// finally merge main jsFile		
 		cliTasks.runCommnad("cat "+remoteFileLocation+jsFileName+" >> "+remoteFileLocation+"_deps.js && mv "+remoteFileLocation+"_deps.js "+remoteFileLocation+jsFileName);			
 		_logger.info("JS file depenencies ready");
 		_logger.info("Output file has been merged from JS files as follows:");
 		int current = 0;
-		lines.put(jsFile, getFileLineCount(jsFileLocation+jsFile));
+		lines.put(jsFile, getFileLineCount(mainJsFilePath));
 		if (jsFile.length()>longestDepNameLength) {
 			longestDepNameLength = jsFile.length();
 		}
