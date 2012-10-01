@@ -20,7 +20,7 @@ import com.redhat.qe.jon.sahi.tasks.Timing;
  * Deploys and deletes WAR 
  * @author Libor Zoubek (lzoubek@redhat.com)
  * @since 15.12.2011
- * @see TCMS cases 96455 102978 96443
+ * see TCMS cases 96455 102978 96443
  */
 public class DeploymentTest extends AS7StandaloneTest {
 

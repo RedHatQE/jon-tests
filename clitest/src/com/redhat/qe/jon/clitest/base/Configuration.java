@@ -31,7 +31,6 @@ public class Configuration {
 	/**
 	 * Load test parameters from predefined properties file if -Denv=&lt;env&gt; system
 	 * is specified. Then override and add additional values from environment variables.
-	 * @return
 	 */
 	public static Configuration load( ) {
 		Properties props = new Properties();

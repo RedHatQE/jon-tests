@@ -25,7 +25,7 @@ public class Inventory extends ResourceTab{
 	}
 	/**
 	 * selects <b>Child Resources</b> subtab and returns helper object
-	 * @return
+	 * @return child resources subtab
 	 */
 	public ChildResources childResources() {
 		navigateUnderResource("Inventory/Children");
@@ -33,7 +33,7 @@ public class Inventory extends ResourceTab{
 	}
 	/**
 	 * selects <b>Child History</b> subtab and returns helper object
-	 * @return
+	 * @return child history subtab
 	 */
 	public ChildHistory childHistory() {
 		navigateUnderResource("Inventory/ChildHistory");
@@ -41,14 +41,14 @@ public class Inventory extends ResourceTab{
 	}
 	/**
 	 * returns true whether there can be some children resources
-	 * @return
+	 * @return true whether there are child resources
 	 */
 	public boolean hasChildren() {
 		return tasks.cell("Child Resources").exists();
 	}
 	/**
 	 * selects <b>Connection Settings</b> subtab and returns helper object
-	 * @return
+	 * @return connection settings subtab
 	 */
 	public ConnectionSettings connectionSettings() {
 		navigateUnderResource("Inventory/ConnectionSettings");
@@ -145,7 +145,7 @@ public class Inventory extends ResourceTab{
 		}
 		/**
 		 * gets status of last item in child history (first row in table) 
-		 * @return
+		 * @return status string
 		 */
 		public String getLastResourceChangeStatus() {
 			ElementStub row = getFirstRow();
@@ -243,7 +243,7 @@ public class Inventory extends ResourceTab{
 		/**
 		 * creates new child resource of given type (ie. Deployment) and returns helper object
 		 * @param type
-		 * @return
+		 * @return wizard
 		 */
 		public NewChildWizard newChild(String type) {
 			tasks.xy(tasks.cell("Create Child"),3,3).click();
@@ -254,7 +254,7 @@ public class Inventory extends ResourceTab{
 		/**
 		 * creates new child resource of given type (ie. Deployment) and returns helper object
 		 * @param type
-		 * @return
+		 * @return wizard
 		 */
 		public NewChildWizard importResource(String type) {
 			tasks.xy(tasks.cell("Import"),3,3).click();
@@ -298,7 +298,7 @@ public class Inventory extends ResourceTab{
 		}
 		/**
 		 * lists children resrource names
-		 * @return
+		 * @return list of children
 		 */
 		public String[] listChildren() {
 			List<String> children = new ArrayList<String>();

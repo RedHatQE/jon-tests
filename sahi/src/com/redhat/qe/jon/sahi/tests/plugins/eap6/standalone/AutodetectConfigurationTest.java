@@ -11,7 +11,7 @@ import com.redhat.qe.jon.sahi.tasks.Timing;
 /**
  * check whether AS7/EAP6 is correctly detected
  * @author Jan Martiska (jmartisk@redhat.com)
- * @see TCMS test case 96426
+ * see TCMS test case 96426
  * @since 7 September 2011
  * 
  */

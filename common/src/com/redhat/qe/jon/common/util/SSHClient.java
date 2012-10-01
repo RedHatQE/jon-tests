@@ -36,9 +36,9 @@ public class SSHClient {
 	}
 	/**
 	 * creates new SSHClient instance, input parameters are taken from environment variables
-	 * @param HOST_USER - for user
-	 * @param HOST_NAME - for server address
-	 * @param HOST_PASSWORD - for user's password
+	 * HOST_USER - for user
+	 * HOST_NAME - for server address
+	 * HOST_PASSWORD - for user's password
 	 */
 	public SSHClient() {
 		this(System.getenv().get("HOST_USER"), System.getenv().get("HOST_NAME"), System.getenv().get("HOST_PASSWORD"));

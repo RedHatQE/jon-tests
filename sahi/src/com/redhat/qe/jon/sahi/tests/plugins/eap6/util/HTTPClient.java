@@ -26,7 +26,7 @@ public class HTTPClient {
 	}
 	/**
 	 * returns true if server is reachable and responds 200 or 401 (unauthorized)
-	 * @return
+	 * @return true if server is reachable and responds 200 or 401 (unauthorized)
 	 */
 	public boolean isRunning() {
 		log.fine("Check whether "+getServerAddress()+" is running");
@@ -50,7 +50,7 @@ public class HTTPClient {
 	}
 	/**
 	 * gets server's http URL, where it is available
-	 * @return
+	 * @return server's http URL
 	 */
 	public String getServerAddress() {
 		return serverAddress;
@@ -93,7 +93,7 @@ public class HTTPClient {
 	/**
 	 * returns true when given deployment is reachable/available on server
 	 * @param deployment name (like xxx.war, xxx.ear), note: this will try to reach server:port/xxx deployment
-	 * @return
+	 * @return true when given deployment is reachable/available on server
 	 */
 	public boolean isDeploymentAvailable(String deployment) {
 		String context = deployment.replaceFirst("\\..*", "");

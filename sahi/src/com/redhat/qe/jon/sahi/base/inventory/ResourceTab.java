@@ -56,7 +56,7 @@ public abstract class ResourceTab {
 	/**
 	 * gets resource, that is being navigated on
 	 * 
-	 * @return
+	 * @return resource, that is being navigated on
 	 */
 	public Resource getResource() {
 		return resource;

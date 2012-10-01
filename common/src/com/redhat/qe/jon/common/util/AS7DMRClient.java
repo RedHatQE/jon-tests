@@ -41,14 +41,14 @@ public class AS7DMRClient {
 	}
 	/**
 	 * gets the username that our client will pass to client API when requested
-	 * @return
+	 * @return username
 	 */
 	public String getUsername() {
 		return username;
 	}
 	/**
 	 * gets the password that our client will pass to client API when requested
-	 * @return
+	 * @return passord
 	 */
 	public String getPassword() {
 		return password;
@@ -237,7 +237,7 @@ public class AS7DMRClient {
 	 * checks whether given model node (server's response) contains flag 
 	 * from server saying, that server needs to be reloaded (some config change required it)
 	 * @param result
-	 * @return
+	 * @return true if there's special repsonse-header 
 	 */
 	public boolean reloadOrRestartRequired(ModelNode result) {
 		ModelNode headers = result.get("response-headers");

@@ -15,7 +15,7 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 /**
  * @author Libor Zoubek (lzoubek@redhat.com)
  * @since 20.01.2011
- * @see TCMS cases 
+ * see TCMS cases 
  */
 public class DeploymentTest extends AS7DomainTest {
 

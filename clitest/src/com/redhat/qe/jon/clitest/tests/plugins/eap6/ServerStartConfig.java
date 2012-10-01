@@ -24,7 +24,6 @@ public class ServerStartConfig {
 	}
 	/**
 	 * gets command to be executed before AS7 is started in working directory of AS7 HOME
-	 * @return
 	 */
 	public String getPreStartCmd() {
 		return preStartCmd;

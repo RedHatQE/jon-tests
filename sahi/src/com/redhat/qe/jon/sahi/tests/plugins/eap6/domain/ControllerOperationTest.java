@@ -14,7 +14,7 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 *
 * @author lzoubek
 * @since 19.01.2012
-* @see TCMS cases 100056 97588 
+* see TCMS cases 100056 97588 
 */
 public class ControllerOperationTest extends AS7DomainTest {
 
