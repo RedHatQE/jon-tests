@@ -9,7 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 
 public class HTTPClient {
 	private static final Logger log = Logger.getLogger(HTTPClient.class.getName());

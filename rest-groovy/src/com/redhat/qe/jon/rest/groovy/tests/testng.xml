@@ -1,0 +1,23 @@
+<suite name="RHQ REST JAVA Client Test">
+
+  	<listeners>
+  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
+  	</listeners>
+  	
+  	<test name="Status">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.groovy.tests.StatusTest" />
+		</classes>
+  	</test>
+  	 <test name="Login">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.groovy.tests.LoginTest" />
+		</classes>
+  	</test>
+  	<test name="Resource">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.groovy.tests.ResourceTest" />
+		</classes>
+  	</test>
+</suite>

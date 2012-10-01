@@ -1,9 +1,10 @@
+package com.redhat.qe.jon.rest.groovy.tests;
+
 import org.testng.annotations.*
 import org.testng.TestNG
-import com.redhat.qe.auto.testng.Assert
 import org.testng.TestListenerAdapter
-// use cool mechanism to get http-builder dependency
-@Grab(group='org.codehaus.groovy.modules.http-builder', module='http-builder', version='0.5.1' )
+import com.redhat.qe.Assert
+import com.redhat.qe.jon.rest.groovy.RestClientTest
 import groovyx.net.http.RESTClient
 import groovy.util.slurpersupport.GPathResult
 import static groovyx.net.http.ContentType.URLENC
@@ -12,7 +13,7 @@ import static groovyx.net.http.ContentType.URLENC
  * @author Libor Zoubek (lzoubek@redhat.com)
  * @since 13.12.2011
  */
- @Test(testName='Resources')
+
 class ResourceTest extends RestClientTest {
 
 	@BeforeClass
@@ -26,7 +27,7 @@ class ResourceTest extends RestClientTest {
 
 	void visitResource(href) {
 		println "VisitResource href=${href}"
-		client.get( path : href ) { resp, json -> 
+		client.get( path : href ) { resp, json ->
 			println "Visited ${json.resourceId} : ${json.resourceName}"
 			json.links.each { link ->
 				// find link to resource's children
@@ -36,7 +37,7 @@ class ResourceTest extends RestClientTest {
 						for (child in json2) {
 							println "Found child ${child.resourceId}"
 							// find each child link & recurse
-							child.links.each { l -> 
+							child.links.each { l ->
 								if (l.get('rel') == 'self') {
 									visitResource(l.get('href'))
 								}
@@ -47,18 +48,18 @@ class ResourceTest extends RestClientTest {
 			}
 		}
 	}
-	@Test 
+	@Test
 	void nonexistingResource() {
 		client.handler.'404' = { resp ->
 			Assert.assertTrue resp.status == 404, 'Response status is 404'
 			Assert.assertTrue resp.contentType == 'application/xml', 'reponse contentType is XML'
 		}
 		client.get(path : 'resource/0.xml')
-		client.handler.'404' = {resp -> 
+		client.handler.'404' = {resp ->
 			Assert.assertTrue resp.status == 404, 'Response status is 404'
 			Assert.assertTrue resp.contentType == 'application/json', 'reponse contentType is JSON'
 		}
-	    	client.get(path : 'resource/0.json')
+		client.get(path : 'resource/0.json')
 		client.handler.remove('404')
 	}
 	@Test
@@ -72,5 +73,5 @@ class ResourceTest extends RestClientTest {
 				}
 			}
 		}
-	} 
- }
+	}
+}

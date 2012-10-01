@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.auto.testng.TestNGUtils;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 

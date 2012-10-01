@@ -3,7 +3,7 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.domain;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
@@ -41,7 +41,7 @@ public class DeploymentTest extends AS7DomainTest {
 		ChildResources childResources = inventory.childResources();
 		NewChildWizard newChild = childResources.newChild("DomainDeployment");
 		newChild.next();
-		newChild.upload("deploy/original/"+war);
+		newChild.upload("/deploy/original/"+war);
 		//wait for upload to finish
 		sahiTasks.waitFor(2*waitTime);
 		newChild.next();
@@ -55,7 +55,7 @@ public class DeploymentTest extends AS7DomainTest {
 		ChildResources childResources = inventory.childResources();
 		NewChildWizard newChild = childResources.newChild("DomainDeployment");
 		newChild.next();
-		newChild.upload("deploy/modified/"+war);
+		newChild.upload("/deploy/modified/"+war);
 		//wait for upload to finish
 		sahiTasks.waitFor(2*waitTime);
 		newChild.next();
@@ -109,7 +109,7 @@ public class DeploymentTest extends AS7DomainTest {
 		ChildResources childResources = inventory.childResources();
 		NewChildWizard newChild = childResources.newChild("Deployment");
 		newChild.next();
-		newChild.upload("deploy/original/"+war);
+		newChild.upload("/deploy/original/"+war);
 		//wait for upload to finish
 		sahiTasks.waitFor(2*waitTime);
 		newChild.next();

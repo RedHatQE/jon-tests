@@ -8,7 +8,7 @@ import net.sf.sahi.client.ElementStub;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 

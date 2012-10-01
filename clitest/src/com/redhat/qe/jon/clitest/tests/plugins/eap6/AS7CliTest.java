@@ -5,11 +5,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jboss.sasl.util.UsernamePasswordHashUtil;
 import org.testng.annotations.BeforeSuite;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartConfig.ConfigFile;
@@ -28,7 +28,7 @@ public class AS7CliTest extends CliTest {
 	protected static AS7SSHClient sshStandalone;
 	
 	@BeforeSuite
-	public void loadProperties() {
+	public void loadEap6Properties() {
 		try {
             System.getProperties().load(new FileInputStream(new File(System.getProperty("eap6plugin.configfile"))));
             log.fine("eap6plugin.properties loaded");

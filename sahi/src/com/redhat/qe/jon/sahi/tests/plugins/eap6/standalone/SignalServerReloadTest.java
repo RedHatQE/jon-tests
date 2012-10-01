@@ -8,7 +8,7 @@ import org.jboss.dmr.ModelNode;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 /**
  * this test checks whether UI correctly displays that AS7 requires either reload or restart (response-headers)
  * @author lzoubek
