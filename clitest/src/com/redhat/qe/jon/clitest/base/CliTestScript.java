@@ -1,6 +1,5 @@
 package com.redhat.qe.jon.clitest.base;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +31,7 @@ public abstract class CliTestScript extends TestScript{
 	public void loadBeforeSuite() throws IOException, CliTasksException{
 		_logger.log(Level.INFO, "Loading before Suite");
 		Configuration config = Configuration.load();
-		CliTasks.getCliTasks().getConnection(	config.get(PARAM.HOST_NAME), 
+		CliTasks.getCliTasks().initialize(	config.get(PARAM.HOST_NAME), 
 												config.get(PARAM.HOST_USER),
 												config.get(PARAM.HOST_PASSWORD));
 		
@@ -42,12 +41,12 @@ public abstract class CliTestScript extends TestScript{
 			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was not defined, auto-installing CLI and auto-detecting");
 			// auto-install and setup cli executable
 			// download from target server
-			CliTasks.getCliTasks().runCommnad("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
+			CliTasks.getCliTasks().runCommand("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
 			// detect CLI_HOME from zip content
-			String cliHome = CliTasks.getCliTasks().runCommnad("zip -sf rhq-cli.zip | head -n2 | grep cli").trim();
+			String cliHome = CliTasks.getCliTasks().runCommand("zip -sf rhq-cli.zip | head -n2 | grep cli").trim();
 			CliTest.cliShLocation = cliHome+"bin/rhq-cli.sh";
 			// unzip CLI
-			CliTasks.getCliTasks().runCommnad("rm -rf "+cliHome+" && unzip rhq-cli.zip; rm -f rhq-cli.zip");
+			CliTasks.getCliTasks().runCommand("rm -rf "+cliHome+" && unzip rhq-cli.zip; rm -f rhq-cli.zip");
 			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was autodetected to "+CliTest.cliShLocation);
 		}
 		CliTest.rhqCliJavaHome = config.get(PARAM.RHQ_CLI_JAVA_HOME);
