@@ -47,7 +47,18 @@ public class CliTest extends CliTestScript{
 			this.cliPassword = cliPassword;
 	}
 	
-	private String getResourceFileName(String path) {
+	private String getResourceFileName(String path) throws CliTasksException {
+		if (path.startsWith("http://") || path.startsWith("https://")) {
+			try {
+				File file = File.createTempFile("temp", ".js");
+				file.deleteOnExit();
+				cliTasks.runCommand("wget -nv '"+path+"' -O "+file.getAbsolutePath()+" 2>&1");
+				return file.getAbsolutePath();
+			} catch (IOException e) {
+				throw new CliTasksException("Unable to create temporary file", e);
+			}
+			
+		}
 		URL resource = null;
 		if (!path.startsWith("/")) {
 			_logger.fine("Appending / to resource path");
