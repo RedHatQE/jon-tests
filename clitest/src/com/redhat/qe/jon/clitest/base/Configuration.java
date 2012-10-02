@@ -2,8 +2,6 @@ package com.redhat.qe.jon.clitest.base;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -53,6 +51,19 @@ public class Configuration {
 		Configuration config = new Configuration(props);
 		config.refreshWithEnvironmentVariables();
 		config.populateAsSystemProperties();
+		// if RHQ_TARGET environment variable was not passed, let's try jon.server.host system property
+		if (StringUtils.trimToNull(config.get(PARAM.RHQ_TARGET))==null) {
+			String serverUrl = System.getProperty("jon.server.host");
+			if (serverUrl!=null) {
+				config.props.setProperty(PARAM.RHQ_TARGET.toString(), serverUrl);
+			}
+			else {
+				// well, these suite cannot run at all
+				throw new RuntimeException("No target server defined! Please set "+PARAM.RHQ_TARGET+" environment variable or 'jon.server.host' java system property");				
+			}
+		}
+
+		
 		return config;
 	}
 	/**

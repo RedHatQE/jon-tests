@@ -57,7 +57,7 @@ public class CliTest extends CliTestScript{
 				resource = CliTest.class.getResource("/js-files/"+path);	
 			}
 			if (resource==null) {
-				throw new RuntimeException("Unable to retrieve either [/"+path+"] or [/js-files"+path+"] resource on classpath!");
+				throw new RuntimeException("Unable to retrieve either [/"+path+"] or [/js-files/"+path+"] resource on classpath!");
 			}
 		}
 		else {
