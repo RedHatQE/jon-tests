@@ -8,7 +8,7 @@ import org.testng.annotations.DataProvider;
 
 import com.redhat.qe.auto.testng.TestNGUtils;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 
 import java.util.Arrays;
 import java.util.ArrayList;

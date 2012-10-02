@@ -13,7 +13,7 @@ import com.redhat.qe.jon.sahi.tasks.Timing;
 /**
  * tests whether some predefined metrics exist on AS7 resource, also adds/confiures/removes deployment scanner
  * @author Jan Martiska (jmartisk@redhat.com)
- * @see TCMS test case 96428, 96429
+ * see TCMS test case 96428, 96429
  * @since 7 September 2011
  * 
  */
@@ -34,7 +34,7 @@ public class ResourceConfigurationTest extends AS7StandaloneTest {
     
     /**
      * Tries to inventorize a standalone AS7 instance and then verifies that it appears in the inventory of the agent.
-     * @see TCMS test case 96428
+     * see TCMS test case 96428
      */
     @Test()
     public void inventoryTest() {
@@ -78,7 +78,7 @@ public class ResourceConfigurationTest extends AS7StandaloneTest {
     }
     
     /**
-     * @see TCMS testcase 96429
+     * see TCMS testcase 96429
      */
     @Test(dependsOnMethods={"inventoryTest"})
     public void predefinedMetricsTest() {               

@@ -167,8 +167,8 @@ function deleteUser(userIds) {
 
 
 /** 
- *  Function - verify View Users functionality
- *  @param -  logedInUser, bool - view User permission Activated/Inactivated (boolean)
+ *  Function - verify manage inventory functionality
+ *  @param -  logedInUser, bool - manage inventory permission Activated/Inactivated (boolean)
  *  @return - 
  */
 function verifyManageInventoryPermission(logedInUser, bool) {

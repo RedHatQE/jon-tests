@@ -2,11 +2,13 @@ package com.redhat.qe.jon.clitest.base;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Configuration {
 	private static Logger _logger = Logger.getLogger(Configuration.class.getName());
@@ -29,16 +31,15 @@ public class Configuration {
 	/**
 	 * Load test parameters from predefined properties file if -Denv=&lt;env&gt; system
 	 * is specified. Then override and add additional values from environment variables.
-	 * @return
 	 */
 	public static Configuration load( ) {
 		Properties props = new Properties();
 		String env =  System.getProperty("env");
-		
+
 		if (StringUtils.trimToNull(env) != null) {
 			_logger.log(Level.INFO, "Loading parameters for " + env);
 			try {
-				InputStream is = Configuration.class.getResourceAsStream("/resources/env/" + env + ".properties");
+				InputStream is = Configuration.class.getResourceAsStream("/env/" + env + ".properties");
 				if (is != null){
 					props.load(is);
 				} else {

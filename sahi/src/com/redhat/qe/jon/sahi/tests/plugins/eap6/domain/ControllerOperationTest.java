@@ -5,7 +5,7 @@ import java.util.Date;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Operations;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.Timing;
@@ -14,7 +14,7 @@ import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 *
 * @author lzoubek
 * @since 19.01.2012
-* @see TCMS cases 100056 97588 
+* see TCMS cases 100056 97588 
 */
 public class ControllerOperationTest extends AS7DomainTest {
 

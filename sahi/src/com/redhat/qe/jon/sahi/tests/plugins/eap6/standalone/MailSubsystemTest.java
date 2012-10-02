@@ -5,7 +5,7 @@ import java.util.Date;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration;
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.CurrentConfig;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory;

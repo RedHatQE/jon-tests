@@ -26,7 +26,7 @@ public class Configuration extends ResourceTab {
 	/**
 	 * navigates to <b>Current</b> subtab and returns helper object
 	 * 
-	 * @return
+	 * @return current configuration subtab
 	 */
 	public CurrentConfig current() {
 		navigateUnderResource("Configuration/Current");
@@ -36,7 +36,7 @@ public class Configuration extends ResourceTab {
 	/**
 	 * navigates to <b>History</b> subtab and returns helper object
 	 * 
-	 * @return
+	 * @return history subtab
 	 */
 	public ConfigHistory history() {
 		navigateUnderResource("Configuration/History");
@@ -72,7 +72,7 @@ public class Configuration extends ResourceTab {
 		/**
 		 * creates new config entry, click the <b>+</b> buttton and returns helper object
 		 * @param index of button on page
-		 * @return
+		 * @return new config entry
 		 */
 		public ConfigEntry newEntry(int index) {
 			return getEditor().newEntry(index);
@@ -80,7 +80,7 @@ public class Configuration extends ResourceTab {
 		/**
 		 * retrieves entry from table and returns helper object
 		 * @param name of entry, must be present in entry row
-		 * @return
+		 * @return existing config entry
 		 */
 		public ConfigEntry getEntry(String name) {
 			int entries = tasks.image("edit.png").in(tasks.cell(name).parentNode("tr")).countSimilar();
@@ -101,7 +101,7 @@ public class Configuration extends ResourceTab {
 		/**
 		 * removes entry from table, (first match)
 		 * use for tables, where remove button is separate under a table
-		 * @param name
+		 * @param select
 		 * @param index - index of remove table/button on page
 		 */
 		public void removeSimpleProperty(int index, String select, String option) {

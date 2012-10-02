@@ -31,7 +31,7 @@ public class Operations extends ResourceTab {
 	/**
 	 * Creates new Operation of given name, also selects it in <b>Operation:</b> combo
 	 * @param name of new Operation
-	 * @return
+	 * @return new operation
 	 */
 	public Operation newOperation(String name) {
 		tasks.cell("New").click();

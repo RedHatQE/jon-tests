@@ -3,14 +3,14 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6.domain;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.auto.testng.Assert;
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.AS7PluginSahiTasks;
 
 /**
  *
  * @author Jan Martiska (jmartisk@redhat.com)
- * @see TCMS test case 97550
+ * see TCMS test case 97550
  * @since 16 September 2011
  * 
  */

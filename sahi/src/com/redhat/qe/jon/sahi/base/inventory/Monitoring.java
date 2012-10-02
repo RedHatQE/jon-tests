@@ -19,7 +19,7 @@ public class Monitoring extends ResourceTab {
 	
 	/**
 	 * selects <b>Tables</b> subtab and returns helper object
-	 * @return
+	 * @return tables subtab
 	 */
 	public Tables tables() {
 		navigateUnderResource("Monitoring/Tables");
@@ -27,7 +27,7 @@ public class Monitoring extends ResourceTab {
 	}
 	/**
 	 * selects <b>Schedules</b> subtab and returns helper object
-	 * @return
+	 * @return schedules subtab
 	 */
 	public Schedules schedules() {
 		navigateUnderResource("Monitoring/Schedules");

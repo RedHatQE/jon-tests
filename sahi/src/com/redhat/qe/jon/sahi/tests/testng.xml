@@ -1,4 +1,4 @@
-<suite name="RHQ_4.3.0_UI_Test">
+<suite name="RHQ 4.x core UI Test">
 
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->

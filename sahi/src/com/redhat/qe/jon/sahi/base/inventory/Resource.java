@@ -14,10 +14,10 @@ import net.sf.sahi.client.ElementStub;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import org.testng.Assert;
+import com.redhat.qe.Assert;
 
-import com.redhat.qe.jon.rest.tasks.RestClient;
-import com.redhat.qe.jon.rest.tasks.RestClient.URIs;
+import com.redhat.qe.jon.common.util.RestClient;
+import com.redhat.qe.jon.common.util.RestClient.URIs;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
@@ -83,7 +83,7 @@ public class Resource {
 	}
 	/**
 	 * gets ID of resource, can be null which is perfectly valid for cases when we do not use/know it
-	 * @return
+	 * @return ID of resource
 	 */
 	public String getId() {
 		return id;
@@ -113,14 +113,14 @@ public class Resource {
 
 	/**
 	 * creates <b>Inventory</b> resource tab for this resource and navigates to it
-	 * @return
+	 * @return resource tab
 	 */
 	public Inventory inventory() {
 		return (Inventory)new Inventory(tasks, this).navigateFull();
 	}
 	/**
 	 * creates <b>Configuration</b> resource tab for this resource and navigates to it
-	 * @return
+	 * @return resource tab
 	 */
 	public Configuration configuration() {
 		return (Configuration)new Configuration(tasks,this).navigateFull();
@@ -128,49 +128,49 @@ public class Resource {
 	/**
 	 * returns {@link ResourceTab} object representing <b>Configuration</b> tab
 	 * without navigating to it
-	 * @return
+	 * @return resource tab
 	 */
 	public Configuration configurationNoNav() {
 		return new Configuration(tasks,this);
 	}
 	/**
 	 * creates <b>Operations</b> resource tab for this resource and navigates to it
-	 * @return
+	 * @return resource tab
 	 */
 	public Operations operations() {
 		return (Operations)new Operations(tasks, this).navigateFull();
 	}
 	/**
 	 * creates <b>Summary</b> resource tab for this resource and navigates to it
-	 * @return
+	 * @return resource tab
 	 */
 	public Summary summary() {
 		return (Summary)new Summary(tasks, this).navigateFull();
 	}
 	/**
 	 * creates <b>Monitoring</b> resource tab for this resource and navigates to it
-	 * @return
+	 * @return resource tab
 	 */
 	public Monitoring monitoring() {
 		return (Monitoring)new Monitoring(tasks, this).navigateFull();
 	}
 	/**
 	 * resource's path
-	 * @return
+	 * @return resource's path
 	 */
 	public List<String> getPath() {
 		return path;
 	}
 	/**
 	 * platform name - first item in {@link Resource#getPath()}
-	 * @return
+	 * @return platform name
 	 */
 	public String getPlatform() {
 		return this.path.get(0);
 	}
 	/**
 	 * resource name - last item in {@link Resource#getPath()}
-	 * @return
+	 * @return resource name
 	 */
 	public String getName() {
 		return this.path.get(this.path.size()-1);
@@ -250,9 +250,9 @@ public class Resource {
 	 * finds id of platform for this resource
 	 * @param rc
 	 * @param res
-	 * @return
+	 * @return id of platform
 	 */
-	private String findPlatformId(RestClient rc, WebResource res) {
+	private String findPlatformId(com.redhat.qe.jon.common.util.RestClient rc, WebResource res) {
 		HashMap<String, Object> result = rc.getReponse(res, URIs.PLATFORMS.getUri()+".json");
 		
 		JSONArray jsonArray = null;
@@ -281,7 +281,7 @@ public class Resource {
 	 * @param rc
 	 * @param res
 	 * @param platformId
-	 * @return
+	 * @return ID of this resource
 	 * @throws Exception
 	 */
 	private String findResourceId(RestClient rc, WebResource res, String platformId) throws Exception {
@@ -311,7 +311,7 @@ public class Resource {
 	 * @param rc
 	 * @param res
 	 * @param resourceId
-	 * @return
+	 * @return children of given resource (resourceId)
 	 * @throws Exception
 	 */
 	private Map<String,String> getChildren(RestClient rc, WebResource res,String resourceId) throws Exception {

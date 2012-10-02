@@ -1,0 +1,171 @@
+// all our subrojects share same settings here
+subprojects {
+	apply plugin: "java"
+	apply plugin: "eclipse"
+	apply plugin: "maven"
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+	group = "com.redhat.qe.jon"
+	version = "1.0.0-SNAPSHOT"
+	sourceSets {
+		main {
+			java {
+				srcDirs "src"
+			}
+		}
+		test {
+			java {
+				srcDirs "src"
+			}
+			resources {
+				srcDirs "resources"
+			} 
+		}
+	}
+
+	eclipse {
+		classpath {
+			defaultOutputDir = file("bin")
+		}
+	}
+
+	repositories {
+		mavenCentral()
+		mavenLocal()
+		[
+			"https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads",
+			"http://clojars.org/repo",
+			"http://download.java.net/maven/2/",
+			"http://repository.codehaus.org",
+			"http://snapshots.repository.codehaus.org"
+		].each { repo ->  
+			maven {
+				url repo
+			}
+		}
+	}
+	test {
+		useTestNG()
+		systemProperties = System.properties
+		if ( systemProperties["testng.suite"] ) {
+			options.suites(systemProperties["testng.suite"])
+		}
+		else {
+			// we load defaultSuite property from particular $project/gradle.properties
+			if (project.hasProperty("defaultSuite")) {
+				options.suites(defaultSuite)
+			}
+			else {				
+				options.suites("testng.xml")
+			}
+		}
+		options {
+			listeners << "com.redhat.qe.auto.testng.TestNGListener"
+			listeners << "org.uncommons.reportng.HTMLReporter"
+			listeners << "org.uncommons.reportng.JUnitXMLReporter"
+		}
+		scanForTestClasses = false;
+		workingDir = "build"
+		ignoreFailures = true;
+	}
+	// we build/install also sources and javadocs to local mvn repo
+	task sourcesJar (type: Jar, dependsOn:classes) {
+		classifier = "sources"
+		from sourceSets.main.allSource
+	}
+	task javadocJar (type: Jar, dependsOn:javadoc) {
+		classifier = "javadoc"
+		from javadoc.destinationDir
+	}
+	artifacts {
+		archives sourcesJar
+		archives javadocJar
+	}
+}
+// project specific stuff
+project(":clitest") {
+	dependencies {
+		compile "com.redhat.qe:logging-testscript:1.0.2",
+			"com.redhat.qe:testng-listeners:1.0.0",
+			"org.apache.commons:commons-lang3:3.1",
+			project(":common")
+		testCompile  project(":common"),
+			"com.redhat.qe:logging-testscript:1.0.2",
+			"org.uncommons:reportng:1.1.3",
+			"org.apache.commons:commons-lang3:3.1",
+			files("../common/lib/cajo.jar", "../common/lib/ReportEngineClient.jar")
+	}
+}
+project(":sahi") {
+	dependencies {
+		compile "com.redhat.qe:logging-testscript:1.0.2",
+			"com.redhat.qe:extended-sahi:1.0.2",
+			"org.apache.commons:commons-lang3:3.1",
+			project(":common")
+
+		testCompile  project(":common"),
+			"com.redhat.qe:logging-testscript:1.0.2",
+			"org.uncommons:reportng:1.1.3",
+			files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
+
+	}
+
+}
+project(":rest-java") {
+	dependencies {
+		compile "com.redhat.qe:logging-testscript:1.0.2",
+			"com.redhat.qe:testng-listeners:1.0.0",
+			"org.apache.commons:commons-lang3:3.1",
+			project(":common")
+
+			testCompile  project(":common"),
+			"com.redhat.qe:logging-testscript:1.0.2",
+			"org.uncommons:reportng:1.1.3",
+			"org.apache.commons:commons-lang3:3.1",
+			files("../common/lib/cajo.jar", "../common/lib/ReportEngineClient.jar")
+	}
+}
+project(":common") {
+	dependencies {
+		compile "com.redhat.qe:ssh-tools:1.0.0",
+			"com.redhat.qe:assertions:1.0.2",
+			"com.redhat.qe:testng-listeners:1.0.0",
+			"org.jboss.as:jboss-as-controller-client:7.1.2.Final",
+			"org.testng:testng:6.5.1",
+			"com.google.inject:guice:3.0",
+			"com.googlecode.json-simple:json-simple:1.1.1",
+			"com.sun.jersey:jersey-client:1.13",
+			"com.sun.jersey:jersey-core:1.13",
+			"org.resteasy:jaxrs-api:1.0-beta-4"
+	}
+
+}
+// rest-groovy project also uses "groovy" plugin
+project(":rest-groovy") {
+	apply plugin: "groovy"
+		sourceSets {
+			main {
+				groovy {
+					srcDirs "src"
+				}
+			}
+			test {
+				groovy {
+					srcDirs "src"
+				}
+				resources {
+					srcDirs "resources"
+				} 
+			}
+		}
+	dependencies {
+		groovy localGroovy()
+		groovy group: "org.codehaus.groovy.modules.http-builder", name:"http-builder", version:"0.5.2"
+		compile project(":common")
+			
+		testCompile  project(":common"),
+			"com.redhat.qe:logging-testscript:1.0.2",
+			"org.uncommons:reportng:1.1.3",
+			files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
+	}
+}

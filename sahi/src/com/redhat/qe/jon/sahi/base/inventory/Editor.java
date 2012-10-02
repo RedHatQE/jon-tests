@@ -81,7 +81,7 @@ public class Editor {
 	/**
 	 * creates new config entry, click the <b>+</b> buttton and returns helper object
 	 * @param index of button on page
-	 * @return
+	 * @return new config entry
 	 */
 	public ConfigEntry newEntry(int index) {
 		List<ElementStub> buttons = tasks.image("add.png").collectSimilar();

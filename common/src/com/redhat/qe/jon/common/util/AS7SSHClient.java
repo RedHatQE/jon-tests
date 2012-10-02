@@ -20,7 +20,7 @@ public class AS7SSHClient extends SSHClient {
 	}
 	/**
 	 * gets AS7/EAP home dir
-	 * @return
+	 * @return AS7/EAP home dir
 	 */
 	public String getAsHome() {
 		return asHome;
@@ -65,9 +65,9 @@ public class AS7SSHClient extends SSHClient {
 		return runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);
 	}
 	/**
-	 * gets server startup time by parsing 1st line of it's log file
+	 * 
 	 * @param logFile relative path located in {@link AS7SSHClient#getAsHome()} to server's boot.log logFile
-	 * @return
+	 * @return server startup time by parsing 1st line of it's log file
 	 */
 	public Date getStartupTime(String logFile) {
 		String dateStr = runAndWait("head -n1 "+asHome+"/"+logFile+" | awk -F, '{print $1}' ").getStdout().trim();

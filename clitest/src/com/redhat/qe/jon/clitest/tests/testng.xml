@@ -3,8 +3,9 @@
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
-  	  	<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found -->
+  	  	<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found 
   		<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
+  		-->
   	</listeners>
 
 
@@ -116,7 +117,7 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="docExample/jon/short/creatingContentBackedRes.js"/>
 			<parameter name="js.depends" value="rhqapi.js" />
-			<parameter name="res.src" value="/resources/deployments/MiscBeans-3.2.2.ear" />
+			<parameter name="res.src" value="/deployments/MiscBeans-3.2.2.ear" />
 			<parameter name="res.dst" value="/tmp/MiscBeans-3.2.2.ear" />
 			<parameter name="cli.args" value="--args-style=named deployment=/tmp/MiscBeans-3.2.2.ear"/>
 			<parameter name="expected.result"  value="Login successful"/>
@@ -133,7 +134,7 @@
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="docExample/jon/short/updatingContentBackedRes.js"/>
 			<parameter name="js.depends" value="rhqapi.js" />
-			<parameter name="res.src" value="/resources/deployments/MiscBeans-3.2.5.ear" />
+			<parameter name="res.src" value="/deployments/MiscBeans-3.2.5.ear" />
 			<parameter name="res.dst" value="/tmp/MiscBeans-3.2.5.ear" />
 			<parameter name="cli.args" value="--args-style=named deployment=/tmp/MiscBeans-3.2.5.ear"/>
 			<parameter name="expected.result"  value="Login successful"/>
@@ -611,7 +612,7 @@
 
 <!-- Can't commit because the transaction is in aborted state - this is caused because of creating of duplicate role. 
 This role is already created in previous test. This test must be fixed. Same for userName-->  
-<test name="draft_testPermissions-ManageSecurity">
+<test name="testPermissions-ManageSecurity">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="permissions/testPermissions-ManageSecurity.js"/>
@@ -625,10 +626,49 @@ This role is already created in previous test. This test must be fixed. Same for
 
 <!-- Can't commit because the transaction is in aborted state - this is caused because of creating of duplicate role. 
 This role is already created in previous test. This test must be fixed. Same for userName-->
-<test name="draft_testPermissions-ViewUsers">
+<test name="testPermissions-ViewUsers">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="permissions/testPermissions-ViewUsers.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- works only for JON-->
+<test name="testPermissions-ManageBundles">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageBundles.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- works only for JON-->
+<test name="testPermissions-ManageSettings">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageSettings.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- works only for JON-->
+<test name="testPermissions-ManageRepositories">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageRepositories.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
                         <methods>
                                 <include name="runJSfile"></include>

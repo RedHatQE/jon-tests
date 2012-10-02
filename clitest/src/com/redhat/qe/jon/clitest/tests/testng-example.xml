@@ -16,22 +16,27 @@
 	  	<classes>
 	  	    <!--  use of our generic test class -->
 			<class name="com.redhat.qe.jon.clitest.tests.CliTest">
-				<!-- REQUIRED: relative path to JS file to be used (within js.files.dir) -->	
-				<parameter name="js.file"  value="example_est.js"/>
+				<!-- REQUIRED:  path to JS file 
+					JS file is treated as a java resource so this path MUST be absolute				
+				 -->	
+				<parameter name="js.file"  value="/example_test.js"/>
 				
-				<!-- OPTIONAL: comma-separated list of JS files as a dependencies/modules of js.file. These gets merged together with js.file-->
-				<parameter name="js.depends" value="module1.js,module2.js" />
+				<!-- OPTIONAL: 
+					comma-separated list of JS files as a dependencies/modules of js.file. These gets merged together with js.file
+					Here apply same rules as for 'js.file' parameter
+				-->
+				<parameter name="js.depends" value="/module1.js,/module2.js" />
 				
 				<!-- 
 				OPTIONAL: prepare additional resources prior this test. Resources can be obtained either on classpath or from some URL
 				we require 2 files,
 				
-				/resources/deployments/hello1.war is taken as resource from clitest project classpath will appear in /tmp/deployments/hello.war
+				/deployments/hello1.war is taken as resource from classpath will appear in /tmp/deployments/hello.war
 				(/tmp/ is default location if destination path is relative)
 				
 				http://lzoubek-builds.brq.redhat.com/eap6/host.xml is downloaded from to /tmp/host.xml123 (absolute path)
 				 -->
-				<parameter name="res.src" value="/resources/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
+				<parameter name="res.src" value="/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
 				<parameter name="res.dst" value="hello.war,/tmp/foo" />
 				
 				<!-- OPTIONAL: comma-separated list of messages as a result of running JS in CLI. If any of messages is no found, test fails -->
@@ -50,9 +55,9 @@
 		<test name="example_test_without_comments">
 	  	<classes>
 			<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-				<parameter name="js.file"  value="example_test.js"/>
-				<parameter name="js.depends" value="module1.js,module2.js" />
-				<parameter name="res.src" value="/resources/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
+				<parameter name="js.file"  value="/example_test.js"/>
+				<parameter name="js.depends" value="/module1.js,/module2.js" />
+				<parameter name="res.src" value="/deployments/hello1.war,http://lzoubek-builds.brq.redhat.com/eap6/host.xml" />
 				<parameter name="res.dst" value="hello.war,/tmp/foo" />
 				<parameter name="expected.result"  value="Login successful"/>
 				<parameter name="cli.args" value="--args-style=named x=1 y=2"/>
