@@ -947,6 +947,7 @@ var Resource = function (param) {
 	var _res = param;
 	var _dynamic = {};
 	
+	
 	// initialize dynamic methods
 	if (typeof(param.retrieveBackingContent) != "undefined") {
 		// methods for updating/retrieving backing content are generated dynamically only for content-based resources
@@ -979,7 +980,11 @@ var Resource = function (param) {
 		};
 	}
 	
-	var find = function() {
+	var _getName = function(){
+		return _res.getName();
+	}
+	
+	var _find = function() {
 		var criteria = resources.createCriteria({id:_id});
 		var res = ResourceManager.findResourcesByCriteria(criteria);
 		//common.debug("Resource.find: "+resources);
@@ -987,14 +992,14 @@ var Resource = function (param) {
 	};
 	var _isAvailable = function() {
 		common.trace("Resource("+_id+").isAvaialbe()");
-		var found = find();
+		var found = _find();
 		if (found.size() != 1) {
 			return false;
 		}
 		return found.get(0).getCurrentAvailability().getAvailabilityType() == AvailabilityType.UP;
 	};
 	var _exists = function() {
-		return find().size() == 1;
+		return _find().size() == 1;
 	};
 	var _parent = function() {
 		var criteria = resources.createCriteria({id:_id});
@@ -1057,6 +1062,7 @@ var Resource = function (param) {
 	var _static =  {
 		getId : function() {return _id;},
 		toString : function() {return _res.toString();},
+		getName : function() {return _getName();},
 		getProxy : function() {
 			common.trace("Resource("+_id+").getProxy()");
 			return ProxyFactory.getResource(_id);
@@ -1235,7 +1241,7 @@ var Resource = function (param) {
 			var pageControl = new PageControl(0,1);
 			// we need to obtain resourceTypeId, to get it, we need plugin, where the resource type
 			// is defined .. we'll get this plugin from parent (this) resource
-			var resType = ResourceTypeManager.getResourceTypeByNameAndPlugin(type, find().get(0).resourceType.plugin); 
+			var resType = ResourceTypeManager.getResourceTypeByNameAndPlugin(type, _find().get(0).resourceType.plugin); 
 			if (!resType) {
 				throw "Invalid resource type [type="+type+"]";
 			}
@@ -1351,7 +1357,7 @@ var Resource = function (param) {
 			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
 			// let's obtain operation definitions, so we can check operation name and required params
 			var criteria = new ResourceTypeCriteria();
-			criteria.addFilterId(find().get(0).resourceType.id);
+			criteria.addFilterId(_find().get(0).resourceType.id);
 			criteria.fetchOperationDefinitions(true);
 			var resType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
 			var iter = resType.operationDefinitions.iterator();
@@ -1421,7 +1427,7 @@ var Resource = function (param) {
 			common.trace("Resource("+_id+").uninventory()");
 			ResourceManager.uninventoryResources([_id]);
 			var result = common.waitFor(function () {				
-					if (find().size()>0) {
+					if (_find().size()>0) {
 						common.debug("Waiting for resource to be removed from inventory");
 						return false;
 					}
