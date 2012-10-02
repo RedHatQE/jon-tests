@@ -1,4 +1,4 @@
-<suite name="RHQ REST JAVA Client Test">
+<suite name="RHQ REST Groovy Client Test">
 
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->

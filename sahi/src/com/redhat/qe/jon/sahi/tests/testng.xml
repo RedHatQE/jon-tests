@@ -1,10 +1,10 @@
-<suite name="RHQ_4.3.0_UI_Test">
+<suite name="RHQ 4.x core UI Test">
 
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->
-  	  	<!-- <listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" /> -->
+  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
   	  	<!-- Listener to clear pop-up's if any on test failure-->
-    	<!-- <listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" /> -->
+    	<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" />
   	</listeners>
 
   	<test name="GuiLoginTest">
