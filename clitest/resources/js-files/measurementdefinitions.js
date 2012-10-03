@@ -32,7 +32,7 @@ criteria.addFilterNumericType(NumericType.DYNAMIC);
 criteria.addFilterDataType(DataType.MEASUREMENT);
 criteria.addFilterDisplayType(DisplayType.DETAIL);
 criteria.addFilterDefaultOn(false);
-criteria.addFilterDefaultInterval(1200000);
+criteria.addFilterDefaultInterval(2400000);
     
 
 var measurementDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
