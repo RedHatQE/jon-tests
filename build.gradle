@@ -100,7 +100,6 @@ project(":clitest") {
 project(":sahi") {
 	dependencies {
 		compile "com.redhat.qe:logging-testscript:1.0.2",
-			"com.redhat.qe:extended-sahi:1.0.2",
 			"org.apache.commons:commons-lang3:3.1",
 			project(":common")
 
