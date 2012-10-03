@@ -101,6 +101,7 @@ project(":sahi") {
 	dependencies {
 		compile "com.redhat.qe:logging-testscript:1.0.2",
 			"org.apache.commons:commons-lang3:3.1",
+			"net.sf:sahi:3.5",
 			project(":common")
 
 		testCompile  project(":common"),
