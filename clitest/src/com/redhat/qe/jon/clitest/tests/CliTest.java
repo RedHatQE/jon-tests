@@ -80,8 +80,7 @@ public class CliTest extends CliTestScript{
 		return resource.getFile();
 	}
 	
-	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure","js.depends","res.src","res.dst"})
-	@Test
+	
 	/**
 	 * parameters resSrc and resDest must have same count of items and are processed together (resSrc[0] will be copied to resDst[0])
 	 * @param rhqTarget
@@ -97,6 +96,8 @@ public class CliTest extends CliTestScript{
 	 * @throws IOException
 	 * @throws CliTasksException
 	 */
+	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure","js.depends","res.src","res.dst"})
+	@Test
 	public void runJSfile(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure,@Optional String jsDepends,@Optional String resSrc, @Optional String resDst) throws IOException, CliTasksException{
 		loadSetup(rhqTarget, cliUsername, cliPassword, makeFilure);
 		cliTasks = CliTasks.getCliTasks();
