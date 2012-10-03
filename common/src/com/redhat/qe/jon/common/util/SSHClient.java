@@ -7,16 +7,22 @@ import java.util.logging.Logger;
 import com.redhat.qe.tools.SSHCommandResult;
 import com.redhat.qe.tools.SSHCommandRunner;
 import com.trilead.ssh2.Connection;
-
-public class SSHClient {
+import com.trilead.ssh2.SCPClient;
+/**
+ * This class is a remote command runner that uses SSH as a transport protocol for executing remote commands 
+ * @author lzoubek
+ *
+ */
+public class SSHClient implements ICommandRunner {
 	protected SSHCommandRunner sshCommandRunner = null;
+	protected SCPClient scpClient = null;
 	protected Connection connection = null;
 	private final String user;
 	private final String host;
 	private final String pass;
 	protected static final Logger log = Logger.getLogger(SSHClient.class.getName());
 
-	protected SSHClient(String user, String host, String pass) {		
+	public SSHClient(String user, String host, String pass) {		
 		log.fine("Creating SSHClient that will connect to [" +user+"@"+host+"]");
 		this.user = user;
 		this.host  = host;
@@ -53,6 +59,7 @@ public class SSHClient {
 			connection.connect();
 			connection.authenticateWithPassword(user, pass);
 			sshCommandRunner = new SSHCommandRunner(connection, null);
+			scpClient = new SCPClient(connection);
 		} catch (IOException e) {
 			connection = null;
 			throw new RuntimeException(
@@ -78,8 +85,9 @@ public class SSHClient {
 	 * runs given command and waits for return value on SSH server, if client is not connected it will connect automatically, 
 	 * don't forget to disconnect ;)
 	 * @param command
+	 * @param timeoutMilis command timeout
 	 */
-	public SSHCommandResult runAndWait(String command, Long timeoutMilis) {
+	public SSHCommandResult runAndWait(String command, long timeoutMilis) {
 		if (!isConnected()) {
 			connect();
 		}
@@ -88,7 +96,7 @@ public class SSHClient {
 	}
 	/**
 	 * runs given command on SSH server, if client is not connected it will connect automatically, 
-	 * don't forget to disconnect ;)
+	 * don't forget to disconnect
 	 * @param command
 	 */
 	public void run(String command) {
@@ -105,6 +113,28 @@ public class SSHClient {
 			connection.close();
 			connection = null;
 		}
+	}
+	/**
+	 * copies file to remote host
+	 * @param src source file
+	 * @param dest destination dir on remote host
+	 * @throws IOException
+	 */
+	public void copyFile(String srcPath, String destDir) throws IOException {
+		scpClient.put(srcPath, destDir);
+		log.fine("File ["+srcPath+"] copied to "+connection.getHostname()+":"+destDir);
+	}
+	/**
+	 * copies file to remote host when you can specify destination file name within 'destFileName' param
+	 * @param srcPath source file
+	 * @param destDir destinaion dir on remote host
+	 * @param destFileName remote fileName
+	 * @throws IOException
+	 */
+	public void copyFile(String srcPath, String destDir, String destFileName)throws IOException  {
+		scpClient.put(srcPath, destFileName, destDir, "0600");
+		log.fine("File ["+srcPath+"] copied to "+getHost()+":"+destDir+"/"+destFileName);
+		
 	}
 	
 }

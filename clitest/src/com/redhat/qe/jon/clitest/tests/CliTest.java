@@ -47,7 +47,18 @@ public class CliTest extends CliTestScript{
 			this.cliPassword = cliPassword;
 	}
 	
-	private String getResourceFileName(String path) {
+	private String getResourceFileName(String path) throws CliTasksException {
+		if (path.startsWith("http://") || path.startsWith("https://")) {
+			try {
+				File file = File.createTempFile("temp", ".js");
+				file.deleteOnExit();
+				cliTasks.runCommand("wget -nv '"+path+"' -O "+file.getAbsolutePath()+" 2>&1");
+				return file.getAbsolutePath();
+			} catch (IOException e) {
+				throw new CliTasksException("Unable to create temporary file", e);
+			}
+			
+		}
 		URL resource = null;
 		if (!path.startsWith("/")) {
 			_logger.fine("Appending / to resource path");
@@ -57,7 +68,7 @@ public class CliTest extends CliTestScript{
 				resource = CliTest.class.getResource("/js-files/"+path);	
 			}
 			if (resource==null) {
-				throw new RuntimeException("Unable to retrieve either [/"+path+"] or [/js-files"+path+"] resource on classpath!");
+				throw new RuntimeException("Unable to retrieve either [/"+path+"] or [/js-files/"+path+"] resource on classpath!");
 			}
 		}
 		else {
@@ -104,7 +115,7 @@ public class CliTest extends CliTestScript{
 		
 		// autodetect RHQ_CLI_JAVA_HOME if not defined
 		if (StringUtils.trimToNull(rhqCliJavaHome)==null) {
-			rhqCliJavaHome = cliTasks.runCommnad("echo $JAVA_HOME").trim();
+			rhqCliJavaHome = cliTasks.runCommand("echo $JAVA_HOME").trim();
 			_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
 		}
 		String consoleOutput = null;
@@ -114,7 +125,7 @@ public class CliTest extends CliTestScript{
 		}
 		// get live output in log file on server
 		command +=" | tee -a /tmp/cli-automation.log";
-		consoleOutput = cliTasks.runCommnad(command);
+		consoleOutput = cliTasks.runCommand(command);
 		if(!isVersionSet){
 			System.setProperty("rhq.build.version", consoleOutput.substring(consoleOutput.indexOf("Remote server version is:")+25, consoleOutput.indexOf("Login successful")).trim());
 			isVersionSet = true;
@@ -151,9 +162,9 @@ public class CliTest extends CliTestScript{
 				destDir="/tmp/"+destDir;
 			}
 							
-			cliTasks.runCommnad("mkdir -p "+destDir);
+			cliTasks.runCommand("mkdir -p "+destDir);
 			if (src.startsWith("http")) {
-				cliTasks.runCommnad("wget -nv "+src+" -O "+destDir+"/"+dst.getName()+" 2>&1");
+				cliTasks.runCommand("wget -nv "+src+" -O "+destDir+"/"+dst.getName()+" 2>&1");
 			}
 			else {
 				URL resource = CliTest.class.getResource(src);
@@ -178,11 +189,11 @@ public class CliTest extends CliTestScript{
 			lines.put(dependency, getFileLineCount(jsFilePath));
 			cliTasks.copyFile(jsFilePath, remoteFileLocation, "_tmp.js");
 			// as CLI does not support including, we must merge the files manually
-			cliTasks.runCommnad("cat "+remoteFileLocation+"_tmp.js >> "+remoteFileLocation+"_deps.js");
+			cliTasks.runCommand("cat "+remoteFileLocation+"_tmp.js >> "+remoteFileLocation+"_deps.js");
 		}
-		cliTasks.runCommnad("rm "+remoteFileLocation+"_tmp.js");
+		cliTasks.runCommand("rm "+remoteFileLocation+"_tmp.js");
 		// finally merge main jsFile		
-		cliTasks.runCommnad("cat "+remoteFileLocation+jsFileName+" >> "+remoteFileLocation+"_deps.js && mv "+remoteFileLocation+"_deps.js "+remoteFileLocation+jsFileName);			
+		cliTasks.runCommand("cat "+remoteFileLocation+jsFileName+" >> "+remoteFileLocation+"_deps.js && mv "+remoteFileLocation+"_deps.js "+remoteFileLocation+jsFileName);			
 		_logger.info("JS file depenencies ready");
 		_logger.info("Output file has been merged from JS files as follows:");
 		int current = 0;
@@ -201,7 +212,7 @@ public class CliTest extends CliTestScript{
 	@AfterTest
 	public void deleteJSFile(){
 		try {
-			CliTasks.getCliTasks().runCommnad("rm -rf '"+remoteFileLocation+jsFileName+"'", 1000*60*3);
+			CliTasks.getCliTasks().runCommand("rm -rf '"+remoteFileLocation+jsFileName+"'", 1000*60*3);
 		} catch (CliTasksException ex) {
 			_logger.log(Level.WARNING, "Exception on remote File deletion!, ", ex);
 		}

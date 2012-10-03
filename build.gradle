@@ -67,6 +67,7 @@ subprojects {
 		scanForTestClasses = false;
 		workingDir = "build"
 		ignoreFailures = true;
+		testLogging.showStandardStreams = true
 	}
 	// we build/install also sources and javadocs to local mvn repo
 	task sourcesJar (type: Jar, dependsOn:classes) {
@@ -99,8 +100,8 @@ project(":clitest") {
 project(":sahi") {
 	dependencies {
 		compile "com.redhat.qe:logging-testscript:1.0.2",
-			"com.redhat.qe:extended-sahi:1.0.2",
 			"org.apache.commons:commons-lang3:3.1",
+			"sahi:sahi:3.5",
 			project(":common")
 
 		testCompile  project(":common"),

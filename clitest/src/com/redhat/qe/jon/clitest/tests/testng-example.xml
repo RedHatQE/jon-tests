@@ -17,7 +17,8 @@
 	  	    <!--  use of our generic test class -->
 			<class name="com.redhat.qe.jon.clitest.tests.CliTest">
 				<!-- REQUIRED:  path to JS file 
-					JS file is treated as a java resource so this path MUST be absolute				
+					JS file is treated as a java resource so this path MUST be absolute
+					or it can be URL 				
 				 -->	
 				<parameter name="js.file"  value="/example_test.js"/>
 				
@@ -25,7 +26,7 @@
 					comma-separated list of JS files as a dependencies/modules of js.file. These gets merged together with js.file
 					Here apply same rules as for 'js.file' parameter
 				-->
-				<parameter name="js.depends" value="/module1.js,/module2.js" />
+				<parameter name="js.depends" value="/module1.js,http://yourserver.com/js-files/module2.js" />
 				
 				<!-- 
 				OPTIONAL: prepare additional resources prior this test. Resources can be obtained either on classpath or from some URL
