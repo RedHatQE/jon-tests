@@ -20,7 +20,7 @@ assertTrue(res.size() > 0, "No MiscBeans.ear resource found!!");
 var startTime = new Date().getTime();
 var parentId = res.get(0).getParentResource().getId();
 
-common.debug("Deleting resource with id: " + res.get(0).id);
+common.info("Deleting resource with id: " + res.get(0).id);
 
 var history = ResourceFactoryManager.deleteResource(res.get(0).id)
 
@@ -42,6 +42,7 @@ var pred = function() {
 var result = common.waitFor(pred);
 assertTrue(result && result.status == DeleteResourceStatus.SUCCESS, "Deleting resource failed!!");
 
+common.info("Checking that resource was removed from inventory...");
 // check that resource is not in inventory
 var res = Inventory.find({name:"MiscBeans.ear"});
 assertTrue(res.length ==0 , "MiscBeans.ear resource was not removed form inventory!!")

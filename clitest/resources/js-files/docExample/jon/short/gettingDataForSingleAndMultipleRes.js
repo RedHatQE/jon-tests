@@ -20,7 +20,9 @@ assertTrue(resources.size() > 0, "There is no resource of Linux type!!");
 
 var measCriteria = new MeasurementDefinitionCriteria();
 measCriteria.addFilterResourceTypeName('Linux');
+common.info("Getting measurement definitions for Linux resource type...");
 var mdefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(measCriteria);
+
 
 assertTrue(mdefs.size() > 1, "There is " + mdefs.size() + "measurement definitions but more than 1 is expected");
 
@@ -30,6 +32,8 @@ var end = java.lang.System.currentTimeMillis();
 var outCsvName = 'output.csv';
 exporter.setTarget('csv', outCsvName);
 
+common.info("Exporting data to " + outCsvName);
+//TODO: check exported result
 if( mdefs != null ) {
     if( mdefs.size() > 1 ) {
         for( i =0; i < mdefs.size(); ++i) {

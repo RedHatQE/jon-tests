@@ -15,27 +15,30 @@ var platforms = findPlatforms();
 if(platforms.length == 0){
     common.info("No imported platforms found, importing a new one...");
     var platforms = Inventory.discoveryQueue.listPlatforms();
-    assertTrue(platforms.length>0,"There is at least one platform in discovery queue");
+    assertTrue(platforms.length>0,"There is no platform in discovery queue!!");
     // using importPlatform, we import it without children resources
     var imported = Inventory.discoveryQueue.importPlatform(platforms[0].getProxy().getName(),false);
-    assertTrue(imported.exists(),"Imported platform exists in inventory");
+    assertTrue(imported.exists(),"Imported platform does not exist in inventory!!");
     // let's wait until our platform becomes available
     imported.waitForAvailable();
+    assertTrue(imported.isAvailable(),"Imported platform is not available!!");
+    common.info("Platform is imported and available");
 }
 
 var agents = findAgents();
 if(agents.length == 0){
     common.info("No agent imported, importing new agent..");
-    Inventory.discoveryQueue.importResources({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
-
-    agents = findAgents();
+    agents = Inventory.discoveryQueue.importResources({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
+    assertTrue(agents.length > 0, "Importing agents failed!!");
 }
 
-assertTrue(agents.length > 0, "No imported agent found!!");
 var agent = agents[0];
 agent.waitForAvailable();
+assertTrue(agent.isAvailable(),"Imported agent is not available!!");
+common.info("Agent is imported and available");
 
 // invoke 'discovery' prompt command
+common.info("Invoking discovery scan...");
 var history = agent.invokeOperation("executePromptCommand",{command:"discovery"});
 
 // check result of operation

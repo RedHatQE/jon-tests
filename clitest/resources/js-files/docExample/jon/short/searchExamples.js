@@ -55,15 +55,15 @@ assertTrue(resources.size()> 0, "There is no JBossAS Server imported!!");
 
 // 1.4 fetching associations
 resource = resources.get(0);
-if (resource.childResources == null) print('no child resources')
 
-assertNull(resource.childResources);// check that resource has no child resources(lazy loading)
+common.info("Checking that no child resource was returned (lazy loading)");
+assertTrue(resource.childResources == null, "Not null was returned -> some children resources were returned");
 
 criteria.fetchChildResources(true);
 resources = ResourceManager.findResourcesByCriteria(criteria);
 resource = resources.get(0);
 
-common.info("Checking child resourcess..");
+common.info("Fetching of child resources enabled, checking child resourcess..");
 assertNotNull(resource.childResources,"No child resource found!!");
 
 if (resource.childResources == null) print('no child resources'); else pretty.print(resource.childResources);
