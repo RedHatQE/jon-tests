@@ -1771,7 +1771,7 @@ public class SahiTasks extends ExtendedSahi {
     }
     public boolean validatePage(String page, String tableName, String tableColumns, int columnIndexFrom, int minRowCount){
     	navigateToAdministrationPage(page, tableName);
-    	LinkedList<String> header = getTableHeader(null);
+    	LinkedList<String> header = getTableHeader(columnIndexFrom);
     	LinkedList<LinkedList<String>> tableContent = getJSPtable(tableName, header.size(), columnIndexFrom);
     	
     	StringBuffer tableDetails = new StringBuffer("***********Friendly Tabele Details***************\n");
@@ -1790,13 +1790,13 @@ public class SahiTasks extends ExtendedSahi {
     	}    	
     	return ((minRowCount <= tableContent.size()) && (header.size() == 0));
     }
-    public LinkedList<String> getTableHeader(String tableName){
+    public LinkedList<String> getTableHeader(int columnIndexFrom){
     	LinkedList<String> header = new LinkedList<String>();
     	String tableHeadertext = "/rich-table-subheadercell/";
     	String headerText = "headerText";
     	int tableHeaderCount = this.tableHeader(tableHeadertext).countSimilar();
     	_logger.log(Level.FINE, "Table Header Count: "+tableHeaderCount);
-    	for(int i=0; i<tableHeaderCount;i++){
+    	for(int i=columnIndexFrom; i<tableHeaderCount;i++){
     		header.addLast(this.span(headerText).in(this.tableHeader(tableHeadertext+"["+i+"]")).getText());
     	}
     	return header;
