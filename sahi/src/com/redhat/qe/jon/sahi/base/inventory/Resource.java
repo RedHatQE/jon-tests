@@ -22,6 +22,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.exceptions.NothingInDiscoveryQueueException;
 import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.sun.jersey.api.client.WebResource;
 /**
@@ -367,7 +368,6 @@ public class Resource {
 	/**
 	 * checks whether this resource is available (ONLINE) by navigating to it's summary 
 	 * and searching for UP/DOWN image.
-	 * Note that this will call Assert.fail when unable to determine resource availability
 	 * @return true if this resource is online, false if it is offline
 	 */
 	public boolean isAvailable() {
@@ -383,7 +383,7 @@ public class Resource {
 	            log.fine("Resource [" + getName() + "] is offline!");
 	            return false;
 	        }
-	        if (tasks.image("Server_up_24.png").exists()) {
+	        if (tasks.image("Server_up_24.png").exists() || tasks.image("availability_green_24.png").exists()) {
 	            log.fine("Resource [" + getName() + "] is online!");
 	            return true;
 	        }
@@ -523,6 +523,84 @@ public class Resource {
     	log.warning("Checking resurce (un)existence timed out");
     	Assert.assertEquals(!shouldExist,shouldExist, "Resource ["+resourceName+"] exists.");
     }
+    /**
+     * imports this resource from discovery queue. It is required that parent platform is already imported. This
+     * function does not work for platforms.
+     * This is done by following steps
+     * <ul>
+     * <ol>it is performed a check - if this resource is already in inventory nothing else happens</ol>
+     * <ol>Manual Autodiscovery operation is performed on parent platform</ol>
+     * <ol>Resource is imported</ol>
+     * </ul>
+     * @param sleepTime time miliseconds to sleep after resource has been imported (JON imports it's children asynchronously)
+     * @return true if resource was imported, false if it was not due to error or already existed in inventory
+     */
+	public boolean importFromDiscoQueue(int sleepTime) {
+		String resourceName = this.getName();
+		String agentName = this.getPlatform();
+		log.fine("Trying to inventorize resource \"" + resourceName
+				+ "\" of agent \"" + agentName + "\".");
+
+		if (this.exists()) {
+			log.fine("Resource \"" + resourceName + "\" of agent \""
+					+ agentName + "\" have been already inventorized");
+
+			return false;
+		}
+		log.fine("Will perform manual autodiscovery first.");
+		this.performManualAutodiscovery();
+		try {
+			tasks.link("Inventory").click();
+			tasks.cell("Discovery Queue").click();
+			tasks.waitFor(Timing.WAIT_TIME);
+			ElementStub elm = tasks.cell(agentName);
+			if (elm.exists()) {
+				elm.doubleClick();
+			} else {
+				throw new NothingInDiscoveryQueueException();
+			}
+
+		} catch (NothingInDiscoveryQueueException ex) {
+			log.fine("Could not inventorize resource "
+					+ resourceName
+					+ ", nothing appeared in autodiscovery queue even after performing manual autodiscovery");
+			return false;
+		}
+		ElementStub elm = tasks.image("unchecked.png").near(
+				tasks.cell(resourceName));
+		if (elm.exists()) {
+			elm.check();
+			tasks.cell("Import").click();
+			log.fine("Waiting " + Timing.toString(sleepTime)
+					+ " for resource to import...");
+			tasks.waitFor(sleepTime);
+			return true;
+		} else {
+			log.fine("Resource \""
+					+ resourceName
+					+ "\" of agent \""
+					+ agentName
+					+ "\" not found in Autodiscovery queue, it might have been already inventorized");
+			
+		}
+		return false;
+	}
+    /**
+     * imports this resource from discovery queue. It is required that parent platform is already imported. This
+     * function does not work for platforms.
+     * This is done by following steps
+     * <ul>
+     * <ol>it is performed a check - if this resource is already in inventory nothing else happens</ol>
+     * <ol>Manual Auto-discovery operation is performed on parent platform</ol>
+     * <ol>Resource is imported</ol>
+     * <ol>Wait 15 minutes for child subsystems to be imported</ol>
+     * </ul>
+     * @return true if resource was imported, false if it was not due to error or already existed in inventory
+     */
+	public boolean importFromDiscoQueue() {
+		return importFromDiscoQueue(15 * Timing.TIME_1M);
+	}
+    
 	
 	@Override
 	public String toString() {

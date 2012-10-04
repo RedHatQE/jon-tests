@@ -32,8 +32,9 @@ public class CliTasks {
 			commandRunner = new LocalCommandRunner(".");
 		}
 		else {
-			commandRunner = new SSHClient(userName,hostName,passWord);
+			commandRunner = new SSHClient(userName,hostName,passWord);			
 		}
+		commandRunner.connect();
 	}
 	/**
 	 * copies file to remote host

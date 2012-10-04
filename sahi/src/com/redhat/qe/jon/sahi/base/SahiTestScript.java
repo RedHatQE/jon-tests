@@ -4,8 +4,14 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tests.plugins.eap6.util.HTTPClient;
 import com.redhat.qe.auto.testng.TestScript;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public abstract class SahiTestScript extends TestScript {
@@ -23,12 +29,13 @@ public abstract class SahiTestScript extends TestScript {
 
 	public SahiTestScript() {
 		super();
-
+		checkForCorrectSahiLocation();
 		sahiTasks = new SahiTasks(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
 	}
         
 	@BeforeSuite(groups={"setup"})
 	public void openBrowser() {
+		checkForSahiProxyRunning();
 		log.finer("Opening browser");
 		sahiTasks.open();
 		log.finer("Loading RHQ system page: "+System.getProperty("jon.server.url"));
@@ -39,5 +46,38 @@ public abstract class SahiTestScript extends TestScript {
 	public void closeBrowser() {
 		log.finer("Closing browser");
 		sahiTasks.close();
+	}
+	private Properties getSahiConfigProperties() {
+		File config = new File(sahiBaseDir+File.separator+"config"+File.separator+"sahi.properties");
+		Properties props = new Properties();
+		try {
+			props.load(new FileInputStream(config));
+			return props;
+		} catch (FileNotFoundException e) {
+			log.severe("Unable to locate SAHI config file ["+config.getAbsolutePath()+"]");
+			return null;
+		} catch (IOException e) {
+			log.severe("Unable to locate SAHI config file ["+config.getAbsolutePath()+"]");
+			return null;			
+		}
+	}
+	private void checkForCorrectSahiLocation() {
+		if (getSahiConfigProperties()==null) {
+			throw new RuntimeException("Unable to locate SAHI config file, system property [jon.sahi.base.dir] might not be set correctly");
+		}
+	
+	}
+
+	private void checkForSahiProxyRunning() {
+		Properties props = getSahiConfigProperties();
+		if (props==null) {
+			throw new RuntimeException("Unable to locate SAHI config file, system property [jon.sahi.base.dir] might not be set correctly");
+		}
+		String port = props.getProperty("proxy.port", "9999");
+		if (!new HTTPClient("localhost", Integer.parseInt(port)).isRunning()) {
+			throw new RuntimeException(
+					"Unable to connect to SAHI proxy on http://localhost:9999 - SAHI is not running! Please start it up");
+		}
+
 	}
 }

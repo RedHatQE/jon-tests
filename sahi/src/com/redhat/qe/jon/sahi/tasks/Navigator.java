@@ -30,6 +30,9 @@ public class Navigator {
 		itNav.put("Configuration", "Configure_grey_16.png");
 		
 		String url = System.getProperty("jon.server.url");
+		if (url==null) {
+			throw new RuntimeException("System property [jon.server.url] is not defined please set it to JON server url so I know where to connect");
+		}
 		if (!url.endsWith("coregui")) {
 			url+="/coregui";
 		}

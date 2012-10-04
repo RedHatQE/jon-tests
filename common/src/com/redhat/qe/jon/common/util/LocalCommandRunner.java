@@ -152,4 +152,9 @@ public class LocalCommandRunner implements ICommandRunner {
 			}
 		}
 	}
+	@Override
+	public void connect() {
+		// TODO Auto-generated method stub
+		
+	}
 }

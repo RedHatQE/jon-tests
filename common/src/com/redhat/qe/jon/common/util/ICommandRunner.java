@@ -37,4 +37,5 @@ public interface ICommandRunner {
 	 * disconnects (useful for remote runner implementations)
 	 */
 	void disconnect();
+	void connect();
 }
