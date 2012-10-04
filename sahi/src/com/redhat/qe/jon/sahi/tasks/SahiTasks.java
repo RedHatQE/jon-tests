@@ -345,14 +345,12 @@ public class SahiTasks extends ExtendedSahi {
     
     
     public void checkResourceBrowserAvailabilityColumnsInGroupDef() {
-
-        this.link("Inventory").click();
-        this.cell("Dynagroup Definitions").click();
-        this.cell("Name").exists();
-        org.testng.Assert.assertTrue(this.cell("Description").exists());
+    	org.testng.Assert.assertTrue(selectPage("Inventory-->Dynagroup Definitions", this.cell("Expression Set"), 1000*5, 3));
+        org.testng.Assert.assertTrue(this.cell("Name").exists());
         org.testng.Assert.assertTrue(this.cell("Description").exists());
         org.testng.Assert.assertTrue(this.cell("Expression Set").exists());
         org.testng.Assert.assertTrue(this.cell("Last Calculation Time").exists());
+        org.testng.Assert.assertTrue(this.cell("Next Calculation Time").exists());
     }
 
     public void checkResourceBrowserAvailabilityColumnsInEachGroup() {
