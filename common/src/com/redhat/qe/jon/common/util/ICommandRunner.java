@@ -29,13 +29,22 @@ public interface ICommandRunner {
 	/**
 	 * runs a command
 	 * @param command
-	 * @return
+	 * @return returns command result
 	 */
 	SSHCommandResult runAndWait(String command);
+	/**
+	 *  runs a command with timeout
+	 * @param command
+	 * @param commandTimeout
+	 * @return returns command result
+	 */
 	SSHCommandResult runAndWait(String command, long commandTimeout);
 	/**
 	 * disconnects (useful for remote runner implementations)
 	 */
 	void disconnect();
+	/**
+	 * connects (useful for remote runner implementations)
+	 */
 	void connect();
 }
