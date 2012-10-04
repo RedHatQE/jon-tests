@@ -1794,11 +1794,12 @@ public class SahiTasks extends ExtendedSahi {
     }
     public LinkedList<String> getTableHeader(String tableName){
     	LinkedList<String> header = new LinkedList<String>();
+    	String tableHeadertext = "/rich-table-subheadercell/";
     	String headerText = "headerText";
-    	int headerCount = this.span(headerText).countSimilar();
-    	_logger.log(Level.FINE, "Count: "+headerCount);
-    	for(int i=0; i<headerCount;i++){
-    		header.addLast(this.span(headerText+"["+i+"]").getText());
+    	int tableHeaderCount = this.tableHeader(tableHeadertext).countSimilar();
+    	_logger.log(Level.FINE, "Table Header Count: "+tableHeaderCount);
+    	for(int i=0; i<tableHeaderCount;i++){
+    		header.addLast(this.span(headerText).in(this.tableHeader(tableHeadertext+"["+i+"]")).getText());
     	}
     	return header;
     }
