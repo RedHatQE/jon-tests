@@ -116,8 +116,8 @@ public class SSHClient implements ICommandRunner {
 	}
 	/**
 	 * copies file to remote host
-	 * @param src source file
-	 * @param dest destination dir on remote host
+	 * @param srcPath source file
+	 * @param destDir destination dir on remote host
 	 * @throws IOException
 	 */
 	public void copyFile(String srcPath, String destDir) throws IOException {

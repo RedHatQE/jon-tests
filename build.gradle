@@ -170,3 +170,19 @@ project(":rest-groovy") {
 			files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
 	}
 }
+
+task docs(type: Javadoc) {
+	source subprojects.collect {project -> project.sourceSets.main.allJava } 
+	classpath = files(subprojects.collect {project -> project.sourceSets.main.compileClasspath}) 
+	destinationDir = new File("$buildDir/javadocs")
+	options {
+		group("SAHI ", ["com.redhat.qe.jon.sahi.base*","com.redhat.qe.jon.sahi.tasks"])
+		group("CLI", ["com.redhat.qe.jon.clitest.base","com.redhat.qe.jon.clitest.tests","com.redhat.qe.jon.clitest.tasks"])
+		group("REST", ["com.redhat.qe.jon.rest*"])
+		group("Common", ["com.redhat.qe.jon.common*"])
+		group("CLI EAP6 Tests", ["com.redhat.qe.jon.clitest.tests.plugins.eap6*"])
+		group("SAHI Core Tests", ["com.redhat.qe.jon.sahi.tests"])
+		group("SAHI EAP6 Tests", ["com.redhat.qe.jon.sahi.tests.plugins.eap6*"])
+	}
+    	title = "JON QE Automation API & tests"
+}
