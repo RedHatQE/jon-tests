@@ -678,6 +678,20 @@ This role is already created in previous test. This test must be fixed. Same for
 </test>
 
 
+<!-- works only for JON-->
+<test name="create_delete_driftTemplate">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="create_delete_driftTemplate.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
 <test name="OperationManager">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
