@@ -67,10 +67,10 @@ var bundleVersion = BundleManager.createBundleVersionViaRecipe(recipeString1);
 sleep(2000);
 println("bundleVersion   " + bundleVersion);
 
-var archiveDir = "/home/jonUser/";
-var largeFileName = "bundle.zip";
-var fileName = "tikal-bugzilla-bundle-standalone.zip";
-var bundlename = "/home/jonUser/tikal-bugzilla-bundle-standalone.zip";
+var archiveDir = "../../bundle/";
+//var largeFileName = "tikal-bugzilla-bundle-standalone.zip";
+var fileName = "byebye.war";
+var bundlename = "byebye.war";
 
 
 // read bundleFile 
