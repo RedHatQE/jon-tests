@@ -1,1 +1,0 @@
-JON cli jars only.  Do not place other 3rd party jars here!

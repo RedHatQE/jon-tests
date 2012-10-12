@@ -7,21 +7,6 @@ subprojects {
 	targetCompatibility = 1.6
 	group = "com.redhat.qe.jon"
 	version = "1.0.0-SNAPSHOT"
-	sourceSets {
-		main {
-			java {
-				srcDirs "src"
-			}
-		}
-		test {
-			java {
-				srcDirs "src"
-			}
-			resources {
-				srcDirs "resources"
-			} 
-		}
-	}
 
 	eclipse {
 		classpath {
@@ -51,13 +36,7 @@ subprojects {
 			options.suites(systemProperties["testng.suite"])
 		}
 		else {
-			// we load defaultSuite property from particular $project/gradle.properties
-			if (project.hasProperty("defaultSuite")) {
-				options.suites(defaultSuite)
-			}
-			else {				
-				options.suites("testng.xml")
-			}
+			options.suites("src/main/resources/testng.xml")
 		}
 		options {
 			listeners << "com.redhat.qe.auto.testng.TestNGListener"
@@ -86,44 +65,22 @@ subprojects {
 // project specific stuff
 project(":clitest") {
 	dependencies {
-		compile "com.redhat.qe:logging-testscript:1.0.2",
-			"com.redhat.qe:testng-listeners:1.0.0",
-			"org.apache.commons:commons-lang3:3.1",
-			project(":common")
-		testCompile  project(":common"),
-			"com.redhat.qe:logging-testscript:1.0.2",
-			"org.uncommons:reportng:1.1.3",
-			"org.apache.commons:commons-lang3:3.1",
-			files("../common/lib/cajo.jar", "../common/lib/ReportEngineClient.jar")
+		compile project(":common")
+		testCompile  project(":common")
 	}
 }
 project(":sahi") {
 	dependencies {
-		compile "com.redhat.qe:logging-testscript:1.0.2",
-			"org.apache.commons:commons-lang3:3.1",
-			"sahi:sahi:3.5",
-			project(":common")
-
-		testCompile  project(":common"),
-			"com.redhat.qe:logging-testscript:1.0.2",
-			"org.uncommons:reportng:1.1.3",
-			files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
-
+		compile project(":common"),
+			"sahi:sahi:3.5"
+		testCompile  project(":common")
 	}
 
 }
 project(":rest-java") {
 	dependencies {
-		compile "com.redhat.qe:logging-testscript:1.0.2",
-			"com.redhat.qe:testng-listeners:1.0.0",
-			"org.apache.commons:commons-lang3:3.1",
-			project(":common")
-
-			testCompile  project(":common"),
-			"com.redhat.qe:logging-testscript:1.0.2",
-			"org.uncommons:reportng:1.1.3",
-			"org.apache.commons:commons-lang3:3.1",
-			files("../common/lib/cajo.jar", "../common/lib/ReportEngineClient.jar")
+		compile project(":common")
+		testCompile  project(":common")
 	}
 }
 project(":common") {
@@ -137,40 +94,40 @@ project(":common") {
 			"com.googlecode.json-simple:json-simple:1.1.1",
 			"com.sun.jersey:jersey-client:1.13",
 			"com.sun.jersey:jersey-core:1.13",
-			"org.resteasy:jaxrs-api:1.0-beta-4"
+			"org.resteasy:jaxrs-api:1.0-beta-4",
+			"org.uncommons:reportng:1.1.3",
+			"org.apache.commons:commons-lang3:3.1",
+			files("lib/cajo.jar", "lib/ReportEngineClient.jar")
 	}
 
 }
 // rest-groovy project also uses "groovy" plugin
 project(":rest-groovy") {
 	apply plugin: "groovy"
-		sourceSets {
-			main {
-				groovy {
-					srcDirs "src"
-				}
-			}
-			test {
-				groovy {
-					srcDirs "src"
-				}
-				resources {
-					srcDirs "resources"
-				} 
-			}
-		}
 	dependencies {
 		groovy localGroovy()
 		groovy group: "org.codehaus.groovy.modules.http-builder", name:"http-builder", version:"0.5.2"
 		compile project(":common")
-			
-		testCompile  project(":common"),
-			"com.redhat.qe:logging-testscript:1.0.2",
-			"org.uncommons:reportng:1.1.3",
-			files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
+		testCompile  project(":common")
 	}
 }
-
+project("cli-javapi") {
+	repositories {
+		maven {
+			url "http://download.lab.bos.redhat.com/brewroot/repos/jboss-on-3-build/latest/maven/"
+		}
+	}
+	dependencies {
+		testCompile project(":common"),
+		"org.rhq:rhq-remoting-cli:4.4.0.JON311GA",
+		"org.rhq:rhq-enterprise-server:4.4.0.JON311GA-client",
+		"commons-configuration:commons-configuration:1.8",
+		"org.apache.commons:commons-lang3:3.0",
+		"com.redhat.qe:logging-testscript:1.0.2",
+		"org.uncommons:reportng:1.1.3",
+		files("../common/lib/ReportEngineClient.jar","../common/lib/cajo.jar")
+	}
+}
 task docs(type: Javadoc) {
 	source subprojects.collect {project -> project.sourceSets.main.allJava } 
 	classpath = files(subprojects.collect {project -> project.sourceSets.main.compileClasspath}) 
