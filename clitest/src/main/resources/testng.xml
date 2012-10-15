@@ -674,6 +674,7 @@
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="permissions/testPermissions-ManageDrift.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
+                        <parameter name="make.failure"  value="manage drift permissions doesnt work correctly"/>
                         <methods>
                                 <include name="runJSfile"></include>
                         </methods>

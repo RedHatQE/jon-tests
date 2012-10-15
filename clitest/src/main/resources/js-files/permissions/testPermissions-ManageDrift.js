@@ -289,6 +289,14 @@ function deleteDriftDefinition(logedInUser,resource, driftDef) {
 
 
 /**
+ * custom exception
+ */
+ 
+ function DriftException() {
+	println("manage drift permissions doesnt work correctly!!");
+}
+ 
+/**
  * Function - verify manage drift
  * 
  * @param -
@@ -306,7 +314,8 @@ try{
 	var driftDefinition = createDriftDefinition(logedInUser,resource);
 	deleteDriftDefinition(logedInUser,resource, driftDefinition);
 	
-	if(!bool) println("manage drift permissions doesnt work correctly!!");
+	if(!bool) throw new DriftException();
+		println("manage drift permissions doesnt work correctly!!!!!!!!!!");
 } catch(err){ //bug#864870
 	//if(err.toString().indexOf("[Warning] User [" + userName + "] does not have permission to manage drift"  ) != -1 && bool)
 	println("manage drift permissions doesnt work correctly!!");
