@@ -22,11 +22,16 @@ public class SahiTasks extends ExtendedSahi {
     private Navigator navigator;
     public SahiTasks(String browserPath, String browserName, String browserOpt, String sahiBaseDir, String sahiUserdataDir) {
         super(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
-        this.navigator = new Navigator(this);
     }
     public Navigator getNavigator() {
 		return navigator;
 	}
+    @Override
+    public void open() {
+    	// initialize navigator in 
+    	this.navigator = new Navigator(this);
+    	super.open();
+    }
 
     // ***************************************************************************
     // Login/Logout
