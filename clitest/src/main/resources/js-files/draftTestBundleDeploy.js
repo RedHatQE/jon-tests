@@ -1,7 +1,7 @@
 //precondition Jboss EAP is inventored 
 
 //cli param bundle
-var fileName = bundle;
+var filePath = bundle;
 
 var JBossTypeName = "JBossAS7 Standalone Server";
 var JBossVersion = "EAP"; 
@@ -71,12 +71,12 @@ println("bundleVersion   " + bundleVersion);
 
 //var archiveDir = "../../bundle/";
 //var largeFileName = "tikal-bugzilla-bundle-standalone.zip";
-//var fileName = "byebye.war";
+var fileName = "byebye.war";
 //var bundlename = "byebye.war";
 
 
 // read bundleFile 
-    var file = new java.io.File(fileName);
+    var file = new java.io.File(filePath);
     println("Reading " + file + " ...");
     var inputStream = new java.io.FileInputStream(file);
     var fileLength = file.length();
