@@ -1,7 +1,7 @@
 //precondition Jboss EAP is inventored 
 
 //cli param bundle
-var file = fileName;
+var fileName = bundle;
 
 var JBossTypeName = "JBossAS7 Standalone Server";
 var JBossVersion = "EAP"; 

@@ -694,7 +694,7 @@ This role is already created in previous test. This test must be fixed. Same for
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="draftTestBundleDeploy.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
-                        <parameter name="res.src" value="/../bundles/byebye.war" />
+                        <parameter name="res.src" value="/bundles/byebye.war" />
 						<parameter name="res.dst" value="/tmp/byebye.war" />
 						<parameter name="cli.args" value="--args-style=named bundle=/tmp/byebye.war" />
                         <methods>
