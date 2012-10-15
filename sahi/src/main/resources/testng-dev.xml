@@ -1,9 +1,8 @@
 <suite name="RHQ_4.4_UI_AS7Plugin_Test">
-    
+<!-- This test suite can be used for test development it is ignored by git -->    
   	<listeners>
   	  	<!-- Listener to clear pop-up's if any and take screenshots on test failure-->
     	<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" />
-    	<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
   	</listeners>
   	
   	 <!-- keep this test as FIRST one -->
