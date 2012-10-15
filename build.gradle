@@ -46,7 +46,10 @@ subprojects {
 		scanForTestClasses = false;
 		workingDir = "build"
 		ignoreFailures = true;
-		testLogging.showStandardStreams = true
+		testLogging {
+			showStandardStreams = true
+			showExceptions = true
+		}
 	}
 	// we build/install also sources and javadocs to local mvn repo
 	task sourcesJar (type: Jar, dependsOn:classes) {
