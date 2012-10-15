@@ -1,5 +1,7 @@
 //precondition Jboss EAP is inventored 
 
+//cli param bundle
+var file = fileName;
 
 var JBossTypeName = "JBossAS7 Standalone Server";
 var JBossVersion = "EAP"; 
@@ -67,83 +69,83 @@ var bundleVersion = BundleManager.createBundleVersionViaRecipe(recipeString1);
 sleep(2000);
 println("bundleVersion   " + bundleVersion);
 
-var archiveDir = "../../bundle/";
+//var archiveDir = "../../bundle/";
 //var largeFileName = "tikal-bugzilla-bundle-standalone.zip";
-var fileName = "byebye.war";
-var bundlename = "byebye.war";
+//var fileName = "byebye.war";
+//var bundlename = "byebye.war";
 
 
 // read bundleFile 
-    var file = new java.io.File(archiveDir + fileName);
+    var file = new java.io.File(fileName);
     println("Reading " + file + " ...");
-//    var inputStream = new java.io.FileInputStream(file);
-//    var fileLength = file.length();
-//    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
-//    for ( numRead=0,  offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) { numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); }
-//
-//
-//var bundleFile = BundleManager.addBundleFileViaByteArray(bundleVersion.id, fileName, bundleVersion.version, null, fileBytes);
-//sleep(1000);
+    var inputStream = new java.io.FileInputStream(file);
+    var fileLength = file.length();
+    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
+    for ( numRead=0,  offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) { numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); }
+
+
+var bundleFile = BundleManager.addBundleFileViaByteArray(bundleVersion.id, fileName, bundleVersion.version, null, fileBytes);
+sleep(1000);
 ////var bundleFile = BundleManager.addBundleFile(10061,"tikal-bugzilla-bundle-standalone.zip", "1.0", null, inputStream);
-//
-//
-//
+
+
+
 ////create resource group
 ////var rgc = new ResourceGroupCriteria();
-//
+
 ////var rsGroupCriteria= rgc.addFilterBundleTargetableOnly(true);
 ////rgc.addFilterGroupCategory(GroupCategory.COMPATIBLE);
-//
+
 ////ResourceGroupManager.findResourceGroupsByCriteria(rgc);
-//
-//
+
+
 ////var rt =  new ResourceType("name",  "test", ResourceCategory.PLATFORM, null);
-//
-//var resourceGroup = new ResourceGroup("resGroup1", jbossType);
-//sleep(2000);
-//
-//println("resourceGroup.... " +resourceGroup);
-//var resourceGroupNew = ResourceGroupManager.createResourceGroup(resourceGroup);
-//sleep(2000);
-//
-//println("resourceGroupNew.... " +resourceGroupNew);
-//
-////addResourcesToGroup
-//
-//ResourceGroupManager.addResourcesToGroup(resourceGroupNew.id, resourcesArray);
-//sleep(2000);
-//
-//
+
+var resourceGroup = new ResourceGroup("resGroup1", jbossType);
+sleep(2000);
+
+println("resourceGroup.... " +resourceGroup);
+var resourceGroupNew = ResourceGroupManager.createResourceGroup(resourceGroup);
+sleep(2000);
+
+println("resourceGroupNew.... " +resourceGroupNew);
+
+//addResourcesToGroup
+
+ResourceGroupManager.addResourcesToGroup(resourceGroupNew.id, resourcesArray);
+sleep(2000);
+
+
 ////get bundle ID
-//var bundleId = bundleVersion.getBundle().getId();
+var bundleId = bundleVersion.getBundle().getId();
 //
 ////create Bundle Destination
-//var bundleDestination = BundleManager.createBundleDestination(bundleId,"firstDestName", "dest Descr", "Deploy Directory", "/home/jonUser/", resourceGroupNew.id);
+var bundleDestination = BundleManager.createBundleDestination(bundleId,"firstDestName", "dest Descr", "Deploy Directory", "/home/jonUser/", resourceGroupNew.id);
 ////BundleManager.createBundleDestination(10061,"firstDestName1", "dest Descr", "/home/jonuser", "/home/jonUser/", resourceGroupNew.id);
-//sleep(2000);
-//println("bundleDestination.... " +bundleDestination);
-//
-//
+sleep(2000);
+println("bundleDestination.... " +bundleDestination);
+
+
 ////create configuration
-//var deployConfig = new Configuration();
-//  deployConfig.put( new PropertySimple("deployOptions", "latestVersion"));
-//deployConfig.put( new PropertySimple("listener.port", "8080"));
-//sleep(2000);
-//
-//
+var deployConfig = new Configuration();
+  deployConfig.put( new PropertySimple("deployOptions", "latestVersion"));
+deployConfig.put( new PropertySimple("listener.port", "8080"));
+sleep(2000);
+
+
 ////create bundle deployment
-//var bundleDeployment = BundleManager.createBundleDeployment(bundleVersion.id, bundleDestination.id, "name", deployConfig);
-//sleep(1000);
-//println("bundleDeployment.... " +bundleDeployment);
-//
+var bundleDeployment = BundleManager.createBundleDeployment(bundleVersion.id, bundleDestination.id, "name", deployConfig);
+sleep(1000);
+println("bundleDeployment.... " +bundleDeployment);
+
 ////Schedule deployment
-//
-//var scheduleDeployment = BundleManager.scheduleBundleDeployment(bundleDeployment.id, true);
-//sleep(2000);
-//println("scheduleDeployment.... " +scheduleDeployment);
-//
-//println("deploy large bunlde function ends...");
-//}
+
+var scheduleDeployment = BundleManager.scheduleBundleDeployment(bundleDeployment.id, true);
+sleep(2000);
+println("scheduleDeployment.... " +scheduleDeployment);
+
+println("deploy large bunlde function ends...");
+}
 
 
 function getAllResourcesByName(resName){

@@ -689,6 +689,20 @@ This role is already created in previous test. This test must be fixed. Same for
         </classes>
 </test>
 
+<test name="draftTestBundleDeploy">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="draftTestBundleDeploy.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <parameter name="cli.args" value="--args-style=named bundle=/bundle/byebye.war"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
 
 <test name="OperationManager">
         <classes>
