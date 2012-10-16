@@ -10,13 +10,10 @@ import org.rhq.enterprise.server.bundle.BundleManagerRemote;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
-import com.google.inject.Inject;
-import com.redhat.qe.jon.common.ConfigurationLoader;
 
 @Test(groups={"unit"})
 @Guice(modules = RemoteClientGuiceModule.class)
 public class HelloWorldTest {
-	@Inject ConfigurationLoader config;
 	
 	public void foo() throws Exception {
 		RemoteClient remoteClient = new RemoteClient(null, "localhost", 7080);

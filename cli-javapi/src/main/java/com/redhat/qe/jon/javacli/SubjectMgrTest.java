@@ -15,11 +15,10 @@ import com.google.inject.Inject;
 
 
 @Test(groups={"unit"})
-@Guice(modules = RemoteClientGuiceModule.class)
-public class SubjectMgrTest {
+
+public class SubjectMgrTest extends RemoteApiTest {
 	
-	@Inject 
-	private RemoteClient remoteClient;
+
 	
 	public void foo() throws Exception {
 		
