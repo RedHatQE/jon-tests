@@ -29,28 +29,26 @@ subprojects {
 			}
 		}
 	}
-	test {
-		useTestNG()
-		systemProperties = System.properties
-		if ( systemProperties["testng.suite"] ) {
-			options.suites(systemProperties["testng.suite"])
+  task test(dependsOn: "testClasses",overwrite:true) << {
+    def workspace = System.getProperty("workspace.dir", System.getenv("WORKSPACE") ?: System.properties["user.dir"])
+    def xmlSuite = "src/main/resources/testng.xml"
+		if ( System.properties["testng.suite"] ) {
+		  xmlSuite = System.properties["testng.suite"]
 		}
-		else {
-			options.suites("src/main/resources/testng.xml")
-		}
-		options {
-			listeners << "com.redhat.qe.auto.testng.TestNGListener"
-			listeners << "org.uncommons.reportng.HTMLReporter"
-			listeners << "org.uncommons.reportng.JUnitXMLReporter"
-		}
-		scanForTestClasses = false;
-		workingDir = "build"
-		ignoreFailures = true;
-		testLogging {
-			showStandardStreams = true
-			showExceptions = true
-		}
-	}
+    ant.taskdef( resource: 'testngtasks', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
+    ant.propertyset(id:"all") {
+      propertyref(builtin:"commandline")
+    }
+    ant.testng(
+      classpath: sourceSets.main.runtimeClasspath.asPath, 
+      listeners: "com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter,org.uncommons.reportng.JUnitXMLReporter",
+      outputdir: "$buildDir/reports/tests",
+      workingDir: "$buildDir"
+    ) {
+        xmlfileset(file: "${xmlSuite}")
+        propertyset(refid:"all")
+    }
+  }
 	// we build/install also sources and javadocs to local mvn repo
 	task sourcesJar (type: Jar, dependsOn:classes) {
 		classifier = "sources"
