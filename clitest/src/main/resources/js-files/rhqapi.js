@@ -489,6 +489,11 @@ var groups = (function() {
 			common.debug("Found "+result.size()+" groups ");
 		    return common.pageListToArray(result).map(function(x){return new ResGroup(x);});
 		},
+    /**
+     * creates a new resource group. If all children are same type, COMPATIBLE group is created
+     * @param {String} name for a new group
+     * @param {Array} children - array of resources that represents content of this group
+     */
 		create : function(name,children) {
 			children = children || [];
 			var rg = new ResourceGroup(name);
@@ -531,7 +536,7 @@ var ResGroup = function(param) {
 			ResourceGroupManager.deleteResourceGroup(_id);
 		},
 		resources : function(params) {
-			
+	// TODO implement 		
 		},
 	}
 };
@@ -551,14 +556,26 @@ var bundles = (function() {
 	    return common.pageListToArray(result).map(function(x){return new Bundle(x);});
 	};
 	return {
-		createCriteria : function(params) {
+		/**
+     * creates BundleCriteria object based on given params
+     * @param {Object} params - filter parameters
+     */
+    createCriteria : function(params) {
 			params = params || {};
 			common.trace("bundles.createCriteria("+common.objToString(params) +")");
 			var criteria = common.createCriteria(new BundleCriteria(),params);
 			return criteria;
 		},
-		find : _find,
-		createFromDistFile : function(dist) {
+		/*
+     * finds bundles based on query parameters
+     * @param {Object} params - hash of query params
+     */
+    find : _find,
+		/**
+     * creates a bundle 
+     * @param {String} dist - path to bundle distribution ZIP file
+     */
+    createFromDistFile : function(dist) {
 			var file = new java.io.File(dist);
 			if (!file.exists()) {
 				throw "file parameter ["+file+"] does not exist!";
@@ -567,25 +584,26 @@ var bundles = (function() {
 		    println(version.bundle.id);
 		    return new Bundle(version.bundle);
 		},
-		createFromRecipe : function(recipe,files) {
+  
+		//createFromRecipe : function(recipe,files) {
 			// we're creating a resource with backing content
-			common.debug("Reading recipe file " + recipe + " ...");
-			var file = new java.io.File(recipe);
-			if (!file.exists()) {
-				throw "recipe parameter file does not exist!";
-			}
-		    var inputStream = new java.io.FileInputStream(file);
-		    var fileLength = file.length();
+			//common.debug("Reading recipe file " + recipe + " ...");
+			//var file = new java.io.File(recipe);
+			//if (!file.exists()) {
+			//	throw "recipe parameter file does not exist!";
+			//}
+		  //  var inputStream = new java.io.FileInputStream(file);
+		  //  var fileLength = file.length();
 		    // TODO read recipe to String properly!
-		    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);			    
-		    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
-			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); 	
-		    }
-		    println(fileBytes);
-		    var recipeStr = new String(fileBytes,0,fileLength);
-		    println(recipeStr);
-		    var bundleVersion = BundleManager.createBundleVersionViaRecipe(recipeStr);
-		}
+		  //  var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);			    
+		  //  for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+			//   numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); 	
+		  //  }
+		  //  println(fileBytes);
+		  //  var recipeStr = new String(fileBytes,0,fileLength);
+		  //  println(recipeStr);
+		  //  var bundleVersion = BundleManager.createBundleVersionViaRecipe(recipeStr);
+		//}
 	};
 })();
 
@@ -601,10 +619,17 @@ var Bundle = function(param) {
 		var _obj = param;
 		return {
 			obj : _obj,
-			purge : function() {
+			/**
+       * purges this destination
+       */
+      purge : function() {
 				common.trace("Destination("+_id+").purge()");
 				BundleManager.purgeBundleDestination(_id);
 			},
+      /**
+       * reverts bundle deployment in this destination
+       * @param {boolean} isClean
+       */
 			revert : function(isClean) {
 				if (isClean==null) {
 					isClean = false;
@@ -705,8 +730,22 @@ var Bundle = function(param) {
 	
 	return {
 		toString : function() {return _bundle.toString();},
-		destinations : _destinations,
+		/**
+     * returns Bundle destinations based on query params
+     * @param {Object} params - filter
+     */
+    destinations : _destinations,
+		/**
+     * returns Bundle versions based on query params
+     * @param {Object} params - filter
+     */
 		versions : _versions,
+    /**
+     * deploys this bundle
+     * @param {Destination} destination - destination to be deployed to
+     * @param {Object} params - map of input parameters required by bundle
+     * @param {Version} or {String} version - bundle version to be deployed, if null, latest version is used
+     */
 		deploy : function(destination,params,version) {
 			params = params || {};
 			common.trace("Bundle("+_id+").deploy(destination="+destination+",params="+common.objToString(params)+",version="+version+")");
@@ -753,6 +792,13 @@ var Bundle = function(param) {
 			}
 			throw "Bundle deployment error";
 		},
+    /**
+     * creates a Bundle destination
+     * @param {ResGroup} group - must be COMPATIBLE and must contain resources supporting Bundle deployment
+     * @param {String} name of new destination, if null, name is taken from group
+     * @param {String} target - directory or path relative to `baseName` - if null, default is taken (this default defines ResourceType - so it will be based on baseName)
+     * @param {String} baseName - name of property found in group's ResourceType will be used as base when constructing target deploy directory - can be null when group's ResourceType defines exactly 1 baseName
+     */
 		createDestination : function(group,name,target,baseName) {
 			common.trace("Bundle("+_id+").createDestination(group="+group+",name="+name+",target="+target+",baseName="+baseName+")");
 			if (group==null) {
@@ -815,11 +861,17 @@ var Bundle = function(param) {
 };
 
 // resources
-
+/**
+ * provides access to inventory
+ */
 var resources = (function () {
 	var common = new _common();
 	return {
-		createCriteria : function(params) {
+		/**
+     * creates ResourceCriteria object based on filter
+     * @param {Object} params - query params
+     */
+    createCriteria : function(params) {
 			params = params || {};
 			common.trace("resources.createCriteria("+common.objToString(params) +")");
 			var criteria = common.createCriteria(new ResourceCriteria(),params,function(key,value) {
@@ -842,7 +894,7 @@ var resources = (function () {
 		},
 		/**
 		 * finds resources in inventory
-		 * @param params
+		 * @param {Object} params
 		 * @returns array of resources
 		 */
 		find : function(params) {
@@ -879,6 +931,9 @@ var resources = (function () {
 	};
 }) ();
 
+/**
+ * provides access to discovery queue
+ */
 discoveryQueue = (function () {
 	
 	var common = new _common();
@@ -895,7 +950,11 @@ discoveryQueue = (function () {
 		}
 		return res;
 	};
-	
+	/**
+   * imports resources based on given filter
+   * @param {Object} params - filter
+   * @returns Array of resource that have been imported
+   */
 	var _importResources = function (params){
 		params = params || {};
 		common.trace("discoveryQueue._importResources("+common.objToString(params)+")");
@@ -905,7 +964,7 @@ discoveryQueue = (function () {
 	    var res = _waitForResources(criteria);
 	    common.debug("Found "+res.size()+" NEW resources");	    
 	    var resourcesArray = common.pageListToArray(res);
-	    assertTrue(res.size()>0, "At least one resrouce was found");
+	    //assertTrue(res.size()>0, "At least one resrouce was found");
 	    DiscoveryBoss.importResources(resourcesArray.map(function(x){return x.id;}));
 	    params.status="COMMITTED";
 	    criteria = resources.createCriteria(params);	   
@@ -916,16 +975,7 @@ discoveryQueue = (function () {
 	    return common.pageListToArray(res).map(function(x){return new Resource(x);});
 	};
 	
-	return {
-		list : function (params) {
-			params = params || {};
-			common.trace("discoveryQueue.list("+common.objToString(params)+")");
-			params["status"] = "NEW";
-			var criteria = resources.createCriteria(params);
-			var res = ResourceManager.findResourcesByCriteria(criteria);
-			return common.pageListToArray(res).map(function(x){return new Resource(x);});
-		},
-		listPlatforms : function listPlatforms(params) {
+  _listPlatforms = function listPlatforms(params) {
 			params = params || {};
 			common.trace("discoveryQueue.listPlatforms("+common.objToString(params)+")");
 			params["status"] = "NEW";
@@ -933,7 +983,33 @@ discoveryQueue = (function () {
 			var criteria = resources.createCriteria(params);
 			var res = ResourceManager.findResourcesByCriteria(criteria);
 			return common.pageListToArray(res).map(function(x){return new Resource(x);});
+	};
+	return {
+		/**
+     * lists discovery queue
+     * @param {Object} params - filter
+     * @returns Array of resources in discovery queue matching given filter
+     */
+    list : function (params) {
+			params = params || {};
+			common.trace("discoveryQueue.list("+common.objToString(params)+")");
+			params["status"] = "NEW";
+			var criteria = resources.createCriteria(params);
+			var res = ResourceManager.findResourcesByCriteria(criteria);
+			return common.pageListToArray(res).map(function(x){return new Resource(x);});
 		},
+		/**
+     * lists platforms from discovery queue
+     * @param {Object} params - filter
+     * @returns Array of platforms in discovery queue matching given filter
+     */
+    listPlatforms : _listPlatforms,
+    /**
+     * imports platform by name 
+     * @param {String} name - platform name to be imported
+     * @param {Booolean} children - if true (default) import also all child resources
+     * @returns platform resource
+     */
 		importPlatform: function(name,children) {
 			common.trace("discoveryQueue.importPlatform(name="+name+" children[default=true]="+children+")");
 			
@@ -946,8 +1022,13 @@ discoveryQueue = (function () {
 				common.debug("Platform "+name+" is already in inventory, not importing");
 				return res[0];
 			}
+      if (_listPlatforms({name:name}).length < 1) {
+        throw "Platform ["+name+"] was not found in discovery queue"
+      }
 			res = _importResources({name:name,category:"PLATFORM"});
-			assertTrue(res.length == 1, "Plaform was not imported");
+			if (res.length != 1) {
+        throw "Plaform was not imported, server error?"
+      }
 			if (children) {
 				common.debug("Importing platform's children");
 				_importResources({parentResourceId:res[0].getId()});
@@ -956,6 +1037,11 @@ discoveryQueue = (function () {
 			sleep(15*1000);
 			return res[0];
 		},
+    /**
+     * imports resource
+     * @param {Resource} or {Number} resource or ID - to be imported
+     * @param {Booolean} children - if true (default) import also all child resources (if any)
+     */
 		importResource : function(resource,children) {
 			common.trace("discoveryQueue.importResource(resource="+resource+" children[default=true]="+children+")");
 			// we can accept ID as a parameter too
@@ -1122,13 +1208,17 @@ var Resource = function (param) {
 
 
 	var _static =  {
-		getId : function() {return _id;},
+    id : _id,
+    getId : function() {return _id;},
 		toString : function() {return _res.toString();},
-		getName : function() {return _getName();},
+    getName : function() {return _getName();},
 		getProxy : function() {
 			common.trace("Resource("+_id+").getProxy()");
 			return ProxyFactory.getResource(_id);
 		},
+    /**
+     * @returns parent resource
+     */
 		parent : function() {
 			common.trace("Resource("+_id+").parent()");
 			return _parent();
@@ -1255,7 +1345,7 @@ var Resource = function (param) {
 			return update.status == ConfigurationUpdateStatus.SUCCESS;
 		},
 		/**
-		 * retrieves configuration of this resource
+		 * retrieves LIVE configuration of this resource
 		 * @returns
 		 */
 		getConfiguration : function() {
@@ -1277,6 +1367,13 @@ var Resource = function (param) {
 		/**
 		 * creates a new child resource
 		 * @param {Object} params hashmap of params
+     * Params object can contain following:
+     *  - name {String} (required)- name for a new resource child, name is optional when `content` is provided
+     *  - type {String} (required) - resource type name to be created
+     *  - config {Object} (optional) - configuration map for new resource, if not present, default is taken 
+     *  - pluginConfig {Object} (optional) - plugin configuration for new resource, if not present, default is taken (NOT YET IMPLEMENTED)
+     *  - content {String} (optional) - absolute path for resource's content file (typical for deployments)
+     *  - version ${String} (optional) - version string 
 		 * @returns new resource if it was successfully created and discovered, null otherwise
 		 */
 		createChild : function(params) {
@@ -1423,7 +1520,7 @@ var Resource = function (param) {
 		/**
 		 * invokes operation on resource, operation status is polled 'till timeout is reached or operation finishes
 		 * @param {String} name of operation
-		 * @param {Object} params - hashmap for operation params
+		 * @param {Object} params - hashmap for operation params (Configuration)
 		 * @returns
 		 */
 		invokeOperation : function(name,params) {
@@ -1529,11 +1626,18 @@ var Inventory = resources;
 Inventory.discoveryQueue = discoveryQueue;
 
 // default verbosity,timeouts
-
-var verbose = 0; // 0 INFO,1 DEBUG,>=2 TRACE
-// poll interval for any waiting
-var delay = 5; // poll interval for any waiting in seconds
-var timeout = 120; // total timeout of any waiting in seconds
+/**
+ * verbosity, default 0 (0=INFO, 1=DEBUG,2=TRACE)
+ */
+var verbose = 0;
+/**
+ * poll interval for any waiting in seconds
+ */
+var delay = 5;
+/**
+ * total timeout of any waiting in seconds
+ */
+var timeout = 120; 
 
 //commonjs support
 if (typeof exports !== "undefined") {
