@@ -596,6 +596,90 @@
                 </class>
         </classes>
 </test>
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
+<test name="test_LargeBundleDeploy">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="test_LargeBundleDeploy.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <parameter name="res.src" value="/bundles/large_bundle.zip" />
+						<parameter name="res.dst" value="/tmp/large_bundle.zip" />
+						<parameter name="cli.args" value="--args-style=named bundle=/tmp/large_bundle.zip" />
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
+<test name="test_LargeWarDeploy.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="test_LargeWarDeploy.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <parameter name="res.src" value="/deployments/rh_dep1.war" />
+						<parameter name="res.dst" value="/tmp/rh_dep1.war" />
+						<parameter name="cli.args" value="--args-style=named bundle=/tmp/rh_dep1.war" />
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-CreateChildRepositories">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-CreateChildRepositories.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-DeleteChildRepositories">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-DeleteChildRepositories.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ManageBundles">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageBundles.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ManageDrift">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageDrift.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
 
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
 <test name="testPermissions-ManageInventory">
@@ -610,12 +694,11 @@
         </classes>
 </test>
 
-<!-- Can't commit because the transaction is in aborted state - this is caused because of creating of duplicate role. 
-This role is already created in previous test. This test must be fixed. Same for userName-->  
-<test name="testPermissions-ManageSecurity">
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ManageMeasurements">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="permissions/testPermissions-ManageSecurity.js"/>
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageMeasurements.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
                         <methods>
                                 <include name="runJSfile"></include>
@@ -624,47 +707,7 @@ This role is already created in previous test. This test must be fixed. Same for
         </classes>
 </test>
 
-<!-- Can't commit because the transaction is in aborted state - this is caused because of creating of duplicate role. 
-This role is already created in previous test. This test must be fixed. Same for userName-->
-<test name="testPermissions-ViewUsers">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="permissions/testPermissions-ViewUsers.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
-
-<!-- works only for JON-->
-<test name="testPermissions-ManageBundles">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="permissions/testPermissions-ManageBundles.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
-
-<!-- works only for JON-->
-<test name="testPermissions-ManageSettings">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="permissions/testPermissions-ManageSettings.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
-
-<!-- works only for JON-->
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
 <test name="testPermissions-ManageRepositories">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -677,6 +720,98 @@ This role is already created in previous test. This test must be fixed. Same for
         </classes>
 </test>
 
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ManageSecurity">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageSecurity.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ManageSettings">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageSettings.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ResourceConfiguration">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ResourceConfiguration.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ResourceControl">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ResourceControl.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ResourceGroup">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ResourceGroup.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ResourcePermissionsInventory">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ResourcePermissionsInventory.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ViewUsers.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ViewUsers.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
 <test name="create_delete_driftTemplate">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -688,22 +823,6 @@ This role is already created in previous test. This test must be fixed. Same for
                 </class>
         </classes>
 </test>
-
-<test name="draftTestBundleDeploy">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="draftTestBundleDeploy.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <parameter name="res.src" value="/bundles/byebye.war" />
-						<parameter name="res.dst" value="/tmp/byebye.war" />
-						<parameter name="cli.args" value="--args-style=named bundle=/tmp/byebye.war" />
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
-
 
 
 <test name="OperationManager">

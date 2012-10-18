@@ -84,15 +84,15 @@ verifyManageRepositoryPermission(logedInUser, false, newRepo3.getId());
 
 
 //call delete repositories
-//RepoManager.deleteRepo(newRepo1.getId());
-//RepoManager.deleteRepo(newRepo2.getId());
-//RepoManager.deleteRepo(newRepo3.getId());
+RepoManager.deleteRepo(newRepo1.getId());
+RepoManager.deleteRepo(newRepo2.getId());
+RepoManager.deleteRepo(newRepo3.getId());
 
 // call delete role function
-//deleteRole(roleIds);
+deleteRole(roleIds);
 
 // call delete user
-//deleteUser(userIds);
+deleteUser(userIds);
 
 /**
  * Function - create Role with Permission

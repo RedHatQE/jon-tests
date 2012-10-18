@@ -24,7 +24,7 @@ var roleIds = new Array();
 var userIds = new Array();
 
 var count = 0;
-var permissionManageBundles = Permission.MANAGE_SETTINGS;
+var permissionManageSettings = Permission.MANAGE_SETTINGS;
 
 var permissions = new Array();
 permissions.push(permissionManageSettings);

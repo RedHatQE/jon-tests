@@ -2,7 +2,7 @@
 
 //cli param bundle
 var filePath = bundle;
-//var filePath = "/../bundles/byebye.war";
+
 var JBossTypeName = "JBossAS7 Standalone Server";
 var JBossVersion = "EAP"; 
 var jbossResType = "JBossAS7";
@@ -71,8 +71,8 @@ println("bundleVersion   " + bundleVersion);
 
 //var archiveDir = "../../bundle/";
 //var largeFileName = "tikal-bugzilla-bundle-standalone.zip";
-var fileName = "byebye.war";
-//var bundlename = "byebye.war";
+var fileName = "large_bundle.zip";
+
 
 
 // read bundleFile 
@@ -145,6 +145,10 @@ sleep(2000);
 println("scheduleDeployment.... " +scheduleDeployment);
 
 println("deploy large bunlde function ends...");
+
+
+//removeBundle version
+BundleManager.deleteBundleVersion(bundleId, true);
 
 
 

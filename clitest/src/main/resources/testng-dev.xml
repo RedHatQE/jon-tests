@@ -20,4 +20,110 @@
 	</classes>
 </test>
 
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ManageRepositories">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageRepositories.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ManageSecurity">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageSecurity.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ManageSettings">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageSettings.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ResourceConfiguration">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ResourceConfiguration.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ResourceControl">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ResourceControl.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ResourceGroup">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ResourceGroup.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ResourcePermissionsInventory">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ResourcePermissionsInventory.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
+<test name="testPermissions-ViewUsers.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ViewUsers.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
 </suite>

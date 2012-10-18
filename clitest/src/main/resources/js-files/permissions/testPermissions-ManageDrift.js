@@ -256,20 +256,18 @@ function createDriftDefinition(logedInUser,resource) {
 	driftDef.setDescription("descr");
 	driftDef.setEnabled(true);
 	driftDef.setAttached(true);
-	driftDef
-			.setDriftHandlingMode(DriftConfigurationDefinition.DEFAULT_DRIFT_HANDLING_MODE);
+	driftDef.setDriftHandlingMode(DriftConfigurationDefinition.DEFAULT_DRIFT_HANDLING_MODE);
 	driftDef.setPinned(false);
 	driftDef.setInterval(1800.0)
 
-	driftDef.setBasedir(DriftDefinition.BaseDirectory(
-			DriftConfigurationDefinition.BaseDirValueContext.fileSystem, "bd"));
+	driftDef.setBasedir(DriftDefinition.BaseDirectory(DriftConfigurationDefinition.BaseDirValueContext.fileSystem, "bd"));
 	var driftTemplateCriteria = new DriftDefinitionTemplateCriteria()
 	driftTemplateCriteria.addFilterResourceTypeId(resource.getResourceType().id);
 	var template = DriftTemplateManager.findTemplatesByCriteria(driftTemplateCriteria).get(0);
 	driftDef.setTemplate(template);
 	
 	var entityContext = new EntityContext(resource.id, null, null, null);
-	DriftManager.updateDriftDefinition(entityContext,driftDef)
+	DriftManager.updateDriftDefinition(logedInUser,entityContext,driftDef)
 	
 	return driftDef;
 
@@ -308,6 +306,7 @@ try{
 	var driftDefinition = createDriftDefinition(logedInUser,resource);
 	deleteDriftDefinition(logedInUser,resource, driftDefinition);
 	
+	if(!bool) println("manage drift permissions doesnt work correctly!!");
 } catch(err){ //bug#864870
 	//if(err.toString().indexOf("[Warning] User [" + userName + "] does not have permission to manage drift"  ) != -1 && bool)
 	println("manage drift permissions doesnt work correctly!!");

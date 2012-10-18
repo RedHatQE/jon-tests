@@ -19,7 +19,7 @@ var password = "password";
 
 var recipeString1 = '<?xml version="1.0"?> \
 	<project name="test-bundle" default="main"   xmlns:rhq="antlib:org.rhq.bundle"> \
-	     <rhq:bundle name="LargeBundle" version="1.0" description="an example bundle"> \
+	     <rhq:bundle name="LargeBundle" version="1.1" description="an example bundle"> \
 	        <rhq:input-property    name="listener.port"  description="This is where the product will listen for incoming messages"  required="true"   defaultValue="8080" type="integer"/> \
 	        <rhq:deployment-unit name="appserver" preinstallTarget="preinstall" postinstallTarget="postinstall"> \
 	           <rhq:archive name="tikal-bugzilla-bundle-standalone.zip"> \

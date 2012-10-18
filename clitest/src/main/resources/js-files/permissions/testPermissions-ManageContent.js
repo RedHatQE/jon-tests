@@ -1,7 +1,7 @@
 //  Runs only under JON 
 
 /**
- * creates test Role with create child resource permission, creates user having that Role, checks create child resource  permissions, removes create child resource from roles, re-checks permissions.
+ * creates test Role with manage content permission, creates user having that Role, checks manage content  permissions, removes manage content permission from roles, re-checks permissions.
  * TCMS TestCases - 206279 , 206280
  */
 
@@ -17,25 +17,62 @@ var lastName = "lastName";
 var email = "ahovesepy@redhat.com";
 var password = "password";
 
-var roleName = "testRoleCreateChild";
+var roleName = "testRoleManageContent";
 var roleDescription = "test Role Description Remote";
 var resourceGroupName = "testResourceGroupName";
-
-var childResourceName = Math.floor(Math.random()*10000).toString() ;
 
 var roleIds = new Array();
 var userIds = new Array();
 var resourceIds = new Array();
 
+var recipeString1 = '<?xml version="1.0"?> \
+	<project name="test-bundle" default="main"   xmlns:rhq="antlib:org.rhq.bundle"> \
+	     <rhq:bundle name="LargeBundle" version="1.0" description="an example bundle"> \
+	        <rhq:input-property    name="listener.port"  description="This is where the product will listen for incoming messages"  required="true"   defaultValue="8080" type="integer"/> \
+	        <rhq:deployment-unit name="appserver" preinstallTarget="preinstall" postinstallTarget="postinstall"> \
+	           <rhq:archive name="byebye.war"> \
+	                <rhq:replace> \
+	                    <rhq:fileset> \
+	                        <include name="**/*.properties"/> \
+	                    </rhq:fileset> \
+	                </rhq:replace> \
+	           </rhq:archive> \
+	             <rhq:ignore> \
+	                <rhq:fileset> \
+	                    <include name="logs/*.log"/> \
+	                </rhq:fileset> \
+	            </rhq:ignore> \
+	       </rhq:deployment-unit> \
+	    </rhq:bundle> \
+	    <target name="main" /> \
+	    <target name="preinstall"> \
+	        <echo>Deploying Test Bundle v2.4 to ${rhq.deploy.dir}...</echo> \
+	        <property name="preinstallTargetExecuted" value="true"> </property> \
+	    </target> \
+	    <target name="postinstall"> \
+	        <echo>Done deploying Test Bundle v2.4 to ${rhq.deploy.dir}.</echo> \
+	        <property name="postinstallTargetExecuted" value="true"> </property> \
+	    </target> \
+	</project> ';
+
 var count = 0;
-var permissionCreateChildResource = Permission.CREATE_CHILD_RESOURCES;
+var permissionManageContent = Permission.MANAGE_CONTENT;
 
 var permissions = new Array();
-permissions.push(permissionCreateChildResource);
+permissions.push(permissionManageContent);
+
+
+var additionalPermissions = new Array(); 
+additionalPermissions.push(Permission.MANAGE_REPOSITORIES);
+additionalPermissions.push(Permission.MANAGE_BUNDLE);
 
 // call create Role with create child resources permission
 var savedRole = createRoleWithPermission(roleName, roleDescription, permissions);
 roleIds.push(savedRole.getId());
+
+
+//add additional permissions to role
+addPermissionToRole(savedRole, additionalPermissions);
 
 // create resource group with all resources included into
 var resourceGroup = createResourceGroup(resourceGroupName);
@@ -44,6 +81,7 @@ var resourceGroup = createResourceGroup(resourceGroupName);
 var resourceGroupIds = new Array([ resourceGroup.getId() ]);
 println("resourceGroupIds  " + resourceGroupIds);
 savedRole = addResourceGroupToRole(savedRole, resourceGroupIds);
+
 
 // call create user function
 var createdUser = createUser(userName, firstName, lastName, email, password);
@@ -54,7 +92,28 @@ addRoleToUser(userIds[0], roleIds);
 
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
-verifyCreateChildResourcePermission(logedInUser, true);
+
+//get platform rsource
+var resourceCriteria = new ResourceCriteria();
+resourceCriteria.addFilterResourceTypeName("Linux");
+var resource = ResourceManager.findResourcesByCriteria(resourceCriteria).get(0);
+
+// create a bundle version
+var bundleVersion = BundleManager.createBundleVersionViaRecipe(recipeString1);
+
+//get the bundle name
+var repoName = bundleVersion.getName();
+
+//get repo with bundle name
+var repoCriteria = new RepoCriteria();
+repoCriteria.addFilterName(repoName);
+var repo = RepoManager.findReposByCriteria(repoCriteria).get(0);
+
+//create a list of repoIds
+var repoIds = new Array();
+repoIds.push(repo.getId());
+//verify it is possible to subscribe to the repo for logedIn user
+verifySubscribeToRepoPermission(logedInUser, repoIds,resource, true);
 
 // verify create child resource permission not granted
 // update Role
@@ -64,7 +123,10 @@ addRoleToUser(userIds[0], roleIds);
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
 // verify create child resource permission
-verifyCreateChildResourcePermission(logedInUser, false);
+verifySubscribeToRepoPermission(logedInUser, repoIds,resource, false);
+
+//removeBundle version
+BundleManager.deleteBundleVersion(bundleVersion.getId(), true);
 
 // call delete role function
 deleteRole(roleIds);
@@ -171,6 +233,24 @@ function removePermissionFromRole(role, permissions) {
 }
 
 /**
+* Function - add permission to Role
+* 
+* @param -
+*            role , permissions[] list
+* @return
+*/
+
+function addPermissionToRole(role, permissions) {
+
+	for (i = 0; i < permissions.length; i++) {
+		role.addPermission(permissions[i]);
+	}
+	println("role is " + role);
+	RoleManager.updateRole(role);
+	println("updated role is " + role);
+}
+
+/**
  * Function - add resource group to Role
  * 
  * @param -
@@ -241,31 +321,30 @@ function deleteUser(userIds) {
 }
 
 /**
- * Function - verify create child resource
+ * Function - verify subscribe to Repo
  * 
  * @param -
- *            logedInUser, bool - create child resource permission
+ *            logedInUser, repoIds, resource, bool - Manage Content permission
  *            Activated/Inactivated (boolean)
  * @return -
  */
-function verifyCreateChildResourcePermission(logedInUser, bool) {
+function verifySubscribeToRepoPermission(logedInUser,rrepoIds,resource,  bool) {
 
 	try {
 		
-		var resourceCriteria = new ResourceCriteria();
-		resourceCriteria.addFilterResourceTypeName("POSTGRES SERVER");
-		var resource = ResourceManager
-				.findResourcesByCriteria(resourceCriteria).get(0);
-
-		ResourceFactoryManager.createResource(logedInUser, resource.getId(),
-				resource.getId(), childResourceName, new Configuration(),
-				new Configuration(), 22);
+		RepoManager.subscribeResourceToRepos(logedInUser,resource.id, repoIds);
+		RepoManager.unsubscribeResourceFromRepos(logedInUser,resource.getId(), repoIds);
+		
+		if(!bool) println("manage Content permissions doesnt work correctly!!");
 
 	} catch (err) {
 		count = count + 1;
-		if (err.toString().indexOf("[Warning] User [" + userName + "] does not have permission to create a child resource") != -1 && bool )
-			println("Create Child resource permissions doesnt work correctly!!");
+		if (err.toString().indexOf("does not have permission to unsubscribe this resource from repositories") != -1 && bool )
+			println("manage Content permissions doesnt work correctly!!");
 
 		} 
 
 }
+
+
+

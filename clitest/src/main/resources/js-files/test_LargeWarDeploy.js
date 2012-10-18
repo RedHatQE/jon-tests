@@ -1,3 +1,6 @@
+//failing cause of bug #829399
+//cli args
+var warPath = bundle;
 
 var JBossTypeName = "JBossAS7 Standalone Server";
 var JBossVersion = "EAP"; 
@@ -25,10 +28,7 @@ println(appType);
 
 
 //********deployment start
-
 deployNewWar();
-
-
 
 //*******deployment end
 
@@ -71,8 +71,8 @@ function getChildResources(resId){
 
 function deployNewWar(){
     //TODO parametrize this
-    var fileName = "iBook1.war";
-    var archiveDir = "/home/jonUser/"
+    var fileName = "rh_dep1.war";
+    
     var appTypeName = "Deployment";
     var pluginName = "JBossAS7";
   
@@ -83,7 +83,7 @@ function deployNewWar(){
 
 
     // read war 
-    var file = new java.io.File(archiveDir + fileName);
+    var file = new java.io.File(warPath);
     println("Reading " + file + " ...");
     var inputStream = new java.io.FileInputStream(file);
     var fileLength = file.length();
@@ -94,18 +94,13 @@ println ("just reached ResourceTypeManager.....");
 var appType = ResourceTypeManager.getResourceTypeByNameAndPlugin(appTypeName, pluginName);
 
 //ResourceFactoryManager.createResource(jBossId, appType.id, fileName, null,deployConfig, null);
-
 //ResourceFactoryManager.createResource(14113, 10140, "iBook.war", null,null, null);
-
 //ResourceTypeManager.getResourceTypeByNameAndPlugin("Deployment", "JBossAS7");
 
 var appTypeNew = ResourceTypeManager.getResourceTypeByNameAndPlugin(appTypeName, pluginName);
 
 
 //ResourceFactoryManager.createPackageBackedResource(14113,10140,"iBook.war", null, "iBook.war",null, null, deployConfig, fileBytes, null);
-
-
-//ResourceFactoryManager.createPackageBackedResource(14113,10192,"iBook.war", null, "iBook.war",null, null, deployConfig, fileBytes, null);
 /*ResourceFactoryManager.createPackageBackedResource(jBossId,	appTypeNew.id,	fileName, null,  fileName,1.0, null, deployConfig,fileBytes,null  ); 
 */
 println("appTypeNew...."+appTypeNew)
