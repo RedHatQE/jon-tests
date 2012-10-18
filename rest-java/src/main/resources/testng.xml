@@ -62,4 +62,13 @@
 			</class>
 		</classes>
   	</test>
+  	<test name="Check Platform Operations">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="checkPlatformOperations"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
 </suite>
