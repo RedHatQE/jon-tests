@@ -71,7 +71,7 @@ println("bundleVersion   " + bundleVersion);
 
 //var archiveDir = "../../bundle/";
 //var largeFileName = "tikal-bugzilla-bundle-standalone.zip";
-var fileName = "large_bundle.zip";
+var fileName = "byebye.war";
 
 
 
