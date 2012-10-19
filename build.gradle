@@ -37,7 +37,7 @@ subprojects {
 		}
     ant.taskdef( resource: 'testngtasks', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
     ant.propertyset(id:"all") {
-      propertyref(builtin:"commandline")
+      propertyref(builtin:"system")
     }
     ant.testng(
       classpath: sourceSets.main.runtimeClasspath.asPath, 
