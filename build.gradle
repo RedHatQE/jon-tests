@@ -29,16 +29,6 @@ subprojects {
 			}
 		}
 	}
-  task cmd() << {
-
-    def cmd = System.properties["sun.java.command"]
-    println cmd
-    def matcher = cmd =~ /-D([^s]+)/
-    matcher.each {
-      println it
-    }
-
-  }
   task test(dependsOn: "testClasses",overwrite:true) << {
     def workspace = System.getProperty("workspace.dir", System.getenv("WORKSPACE") ?: System.properties["user.dir"])
     def xmlSuite = "src/main/resources/testng.xml"
