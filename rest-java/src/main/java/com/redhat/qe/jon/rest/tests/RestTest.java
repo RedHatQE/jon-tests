@@ -167,13 +167,13 @@ public class RestTest extends RestClient{
 			Assert.assertTrue(jsonArray.size()>0, "Number of platform(s) [>0] : "+jsonArray.size());
 			JSONObject jsonObject;
 			jsonObject = (JSONObject) jsonArray.get(0);
-			this.printKeyValue(jsonObject);
+		//	this.printKeyValue(jsonObject);
 			parentId = ""+jsonObject.get(RESOURCE_ID);
 		}
 
 		//call get operation for platform
 		_logger.log(Level.INFO,"REQUEST IS ---" + webResource + "  URI -- " + URIs.OPERATION_DEFINITION.getUri() );
-		MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
+		MultivaluedMap queryParams = new MultivaluedMapImpl();
 		queryParams.add("resourceId", parentId);
 		result = this.getReponse(webResource, URIs.OPERATION_DEFINITIONS.getUri(), queryParams);
 		_logger.log(Level.INFO,"RESULT IS ---" + result );
@@ -187,12 +187,12 @@ public class RestTest extends RestClient{
 		_logger.log(Level.INFO,"operationId IS ---" + operationId );
 		
 		String  operationName = ""+jsonObject.get(NAME);
-		_logger.log(Level.INFO,"operationId IS ---" + operationName );
+		_logger.log(Level.INFO,"operationName IS ---" + operationName );
 		
 		//call operation/definition with post
 		MultivaluedMap queryParam = new MultivaluedMapImpl();
 		queryParam.add("resourceId", parentId);
-
+		_logger.log(Level.INFO, "Query Param IS   ---  "+queryParam);
 		result = this.postResponse(webResource, URIs.OPERATION_DEFINITION.getUri().replace("@@id@@", operationId), queryParam);
 		_logger.log(Level.INFO, "reponse code is  ---  "+result.get(RESPONSE_STATUS_CODE));
 		}
@@ -207,7 +207,7 @@ public class RestTest extends RestClient{
 		JSONArray jsonArray = this.getJSONArray(""+result.get(RESPONSE_CONTENT));
 		JSONObject jsonObject;
 		jsonObject = (JSONObject) jsonArray.get(0);
-		this.printKeyValue(jsonObject);
+	//	this.printKeyValue(jsonObject);
 		String  resourceId = ""+jsonObject.get(RESOURCE_ID);
 		//get schedules
 		result = this.getReponse(webResource, URIs.SCHEDULES.getUri().replace("@@id@@", resourceId)+".json", null);
@@ -224,7 +224,7 @@ public class RestTest extends RestClient{
 		JSONArray jsonArray = this.getJSONArray(""+result.get(RESPONSE_CONTENT));
 		JSONObject jsonObject;
 		jsonObject = (JSONObject) jsonArray.get(0);
-		this.printKeyValue(jsonObject);
+	//	this.printKeyValue(jsonObject);
 		String  resourceId = ""+jsonObject.get(RESOURCE_ID);
 		//get schedules
 		result = this.getReponse(webResource, URIs.SCHEDULES.getUri().replace("@@id@@", resourceId)+".json", null);
@@ -251,7 +251,7 @@ public class RestTest extends RestClient{
 		JSONArray jsonArray = this.getJSONArray(""	+ result.get(RESPONSE_CONTENT));
 		JSONObject jsonObject;
 		jsonObject = (JSONObject) jsonArray.get(0);
-		this.printKeyValue(jsonObject);
+		//this.printKeyValue(jsonObject);
 		String resourceId = "" + jsonObject.get(RESOURCE_ID);
 		// get schedules
 		result = this.getReponse(webResource, URIs.SCHEDULES.getUri().replace("@@id@@", resourceId)	+ ".json", null);
@@ -265,9 +265,9 @@ public class RestTest extends RestClient{
 
 		// create query param for start end times, dataPoints and hideEmpty
 		// params
-		MultivaluedMapImpl queryParam = new MultivaluedMapImpl();
+		MultivaluedMap queryParam = new MultivaluedMapImpl();
 		boolean hideEmpty = false;
-		queryParam.add("hideEmpty", hideEmpty);
+		queryParam.add("hideEmpty", ""+hideEmpty);
 		queryParam.add("dataPoints", "60");
 
 		result = this.getReponse(webResource, URIs.METRIC_DATA.getUri()

@@ -118,7 +118,7 @@ public class RestClient extends TestScript {
 	}
 
 	public HashMap<String, Object> getReponse(WebResource webResource,
-			String url, MultivaluedMapImpl queryParams) {
+			String url, MultivaluedMap queryParams) {
 		_logger.info("URI: " + url);
 		ClientResponse clientResponse ;
 		
@@ -154,7 +154,7 @@ if(queryParam != null)
  else 
 	     clientResponse = webResource.path(uri).post(ClientResponse.class);
 
-		_logger.log(Level.INFO, webResource.getURI().getQuery());
+		//_logger.log(Level.INFO, webResource.getURI().getQuery());
 	
 		HashMap<String, Object> response = new HashMap<String, Object>();
 		response.put(RESPONSE_STATUS_CODE, clientResponse.getStatus());
