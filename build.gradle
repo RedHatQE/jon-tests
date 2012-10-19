@@ -36,9 +36,6 @@ subprojects {
 		  xmlSuite = System.properties["testng.suite"]
 		}
     ant.taskdef( resource: 'testngtasks', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
-    ant.propertyset(id:"all") {
-      propertyref(builtin:"commandline")
-    }
     ant.testng(
       classpath: sourceSets.main.runtimeClasspath.asPath, 
       listeners: "com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter,org.uncommons.reportng.JUnitXMLReporter",
@@ -46,7 +43,16 @@ subprojects {
       workingDir: "$buildDir"
     ) {
         xmlfileset(file: "${xmlSuite}")
-        propertyset(refid:"all")
+        // we pass all system properties to testNG except line.sepatator
+        // there's an issue that stacktraces are not output on new lines (only god knows why)
+        for (def prop in System.properties) {
+          if (prop.key.equals("line.separator")) {
+            continue
+          }
+          else {
+            sysproperty(key:prop.key,value:prop.value)
+            }
+        }
     }
   }
 	// we build/install also sources and javadocs to local mvn repo
@@ -89,6 +95,7 @@ project(":common") {
 		compile "com.redhat.qe:ssh-tools:1.0.0",
 			"com.redhat.qe:assertions:1.0.2",
 			"com.redhat.qe:testng-listeners:1.0.0",
+			"com.redhat.qe:log-checker:1.0.0-SNAPSHOT",
 			"org.jboss.as:jboss-as-controller-client:7.1.2.Final",
 			"org.testng:testng:6.5.1",
 			"com.google.inject:guice:3.0",
