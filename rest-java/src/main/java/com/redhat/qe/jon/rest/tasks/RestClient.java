@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+
 import com.redhat.qe.auto.testng.TestScript;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -44,6 +45,7 @@ public class RestClient extends TestScript {
 
 	protected static String LINKS = "links";
 	protected static String RESOURCE_ID = "resourceId";
+	protected static String SCHEDULE_ID = "scheduleId";
 	protected static String PARENT_ID = "parentId";
 	protected static String ID = "id";
 	protected static String NAME = "name";
@@ -65,6 +67,8 @@ public class RestClient extends TestScript {
 		PLATFORMS("/resource/platforms"), 
 		OPERATION_DEFINITION("/operation/definition/@@id@@"), 
 		OPERATION_DEFINITIONS("/operation/definitions"), 
+		METRIC_DATA("/metric/data/@@id@@"),
+		SCHEDULES("/resource/@@id@@/schedules"),
 		CHILDREN_RESOURCE("/resource/@@id@@/children");
 
 		String uri;
@@ -114,10 +118,13 @@ public class RestClient extends TestScript {
 	}
 
 	public HashMap<String, Object> getReponse(WebResource webResource,
-			String url) {
+			String url, MultivaluedMapImpl queryParams) {
 		_logger.info("URI: " + url);
-		ClientResponse clientResponse = webResource.path(url).get(
-				ClientResponse.class);
+		ClientResponse clientResponse ;
+		
+		if(queryParams != null)
+			 clientResponse = webResource.path(url).queryParams(queryParams).get(ClientResponse.class); 
+		else clientResponse = webResource.path(url).get(ClientResponse.class);
 		HashMap<String, Object> response = new HashMap<String, Object>();
 		response.put(RESPONSE_STATUS_CODE, clientResponse.getStatus());
 		response.put(RESPONSE_STATUS_MESSAGE,
@@ -137,43 +144,18 @@ public class RestClient extends TestScript {
 		return response;
 	}
 
-	public HashMap<String, Object> getReponseWithParams(
-			WebResource webResource, String url, MultivaluedMapImpl queryParams) {
-		// MultivaluedMap queryParams = new MultivaluedMapImpl();
-		// queryParams.add("param1", "val1");
-		// queryParams.add("param2", "val2");
-		ClientResponse clientResponse = webResource.path(url)
-				.queryParams(queryParams).get(ClientResponse.class);
-		_logger.info("URI: " + url);
-		// ClientResponse clientResponse =
-		// webResource.path(url).get(ClientResponse.class );
-		HashMap<String, Object> response = new HashMap<String, Object>();
-		response.put(RESPONSE_STATUS_CODE, clientResponse.getStatus());
-		response.put(RESPONSE_STATUS_MESSAGE,
-				clientResponse.getClientResponseStatus());
-		response.put(RESPONSE_CONTENT_LENGTH,
-				clientResponse.getHeaders().get("Content-Length"));
-		response.put(RESPONSE_CONTENT_TYPE,
-				clientResponse.getHeaders().get("Content-Type"));
-		response.put(RESPONSE_DATE, clientResponse.getHeaders().get("Date"));
-		response.put(RESPONSE_EXPIRES,
-				clientResponse.getHeaders().get("Expires"));
-		response.put(RESPONSE_SERVER, clientResponse.getHeaders().get("Server"));
-		response.put(RESPONSE_X_POWERED_BY,
-				clientResponse.getHeaders().get("X-Powered-By"));
-		response.put(RESPONSE_CONTENT, clientResponse.getEntity(String.class));
-		_logger.fine("Response: " + response);
-		return response;
-	}
-
+	
 	public HashMap<String, Object> postResponse(WebResource webResource,
 			String uri, MultivaluedMap queryParam) {
-
-		ClientResponse clientResponse = webResource.path(uri).queryParams(queryParam).post(ClientResponse.class);
+		ClientResponse clientResponse ;
+		
+if(queryParam != null)
+		 clientResponse = webResource.path(uri).queryParams(queryParam).post(ClientResponse.class);
+ else 
+	     clientResponse = webResource.path(uri).post(ClientResponse.class);
 
 		_logger.log(Level.INFO, webResource.getURI().getQuery());
-		// ClientResponse clientResponse =
-		// webResource.path(uri).post(ClientResponse.class, name);
+	
 		HashMap<String, Object> response = new HashMap<String, Object>();
 		response.put(RESPONSE_STATUS_CODE, clientResponse.getStatus());
 		response.put(RESPONSE_STATUS_MESSAGE,
@@ -182,13 +164,6 @@ public class RestClient extends TestScript {
 				clientResponse.getHeaders().get("Content-Length"));
 		response.put(RESPONSE_CONTENT_TYPE,
 				clientResponse.getHeaders().get("Content-Type"));
-		// response.put(RESPONSE_DATE, clientResponse.getHeaders().get("Date"));
-		// response.put(RESPONSE_EXPIRES,
-		// clientResponse.getHeaders().get("Expires"));
-		// response.put(RESPONSE_SERVER,
-		// clientResponse.getHeaders().get("Server"));
-		// response.put(RESPONSE_X_POWERED_BY,
-		// clientResponse.getHeaders().get("X-Powered-By"));
 		response.put(RESPONSE_CONTENT, clientResponse.getEntity(String.class));
 		_logger.fine("Response: " + response);
 		return response;

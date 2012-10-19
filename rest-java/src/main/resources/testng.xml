@@ -62,11 +62,42 @@
 			</class>
 		</classes>
   	</test>
+  	
   	<test name="Check Platform Operations">
   	  	<classes>
 			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
 			<methods>
 				<include name="checkPlatformOperations"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="Validate Schedules">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="validateSchedules"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="Validate Metric Data Default">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="validateMetricDataDefault"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="Validate Metric Data">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="validateMetricData"></include>
 			</methods>
 			</class>
 		</classes>
