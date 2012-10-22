@@ -8,11 +8,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
-import com.redhat.qe.auto.testng.TestScript;
 import com.redhat.qe.jon.clitest.base.Configuration.PARAM;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.common.TestScript;
 
 
 /**

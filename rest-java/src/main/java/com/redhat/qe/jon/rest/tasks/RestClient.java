@@ -14,12 +14,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
-import com.redhat.qe.auto.testng.TestScript;
+import com.redhat.qe.jon.common.TestScript;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
  * @author jkandasa (Jeeva Kandasamy)
