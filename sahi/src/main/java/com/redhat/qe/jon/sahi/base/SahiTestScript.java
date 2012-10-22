@@ -3,9 +3,9 @@ package com.redhat.qe.jon.sahi.base;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+import com.redhat.qe.jon.common.TestScript;
 import com.redhat.qe.jon.common.util.HTTPClient;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.auto.testng.TestScript;
 
 import java.io.File;
 import java.io.FileInputStream;

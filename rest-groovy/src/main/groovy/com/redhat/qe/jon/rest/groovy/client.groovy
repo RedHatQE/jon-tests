@@ -3,7 +3,7 @@ package com.redhat.qe.jon.rest.groovy;
 import org.testng.annotations.*
 import org.testng.TestNG
 import com.redhat.qe.Assert
-import com.redhat.qe.auto.testng.TestScript
+import com.redhat.qe.jon.common.TestScript
 import org.testng.TestListenerAdapter
 import groovyx.net.http.RESTClient
 import groovy.util.slurpersupport.GPathResult

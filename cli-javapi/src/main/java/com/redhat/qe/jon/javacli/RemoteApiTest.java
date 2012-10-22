@@ -4,7 +4,8 @@ import org.rhq.enterprise.clientapi.RemoteClient;
 import org.testng.annotations.Guice;
 
 import com.google.inject.Inject;
-import com.redhat.qe.auto.testng.TestScript;
+import com.redhat.qe.jon.common.TestScript;
+
 
 @Guice(modules = RemoteClientGuiceModule.class)
 public class RemoteApiTest extends TestScript {
