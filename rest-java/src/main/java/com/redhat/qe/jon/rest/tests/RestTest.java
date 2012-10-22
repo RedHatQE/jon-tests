@@ -151,7 +151,7 @@ public class RestTest extends RestClient{
 			
 		}
 		
-		}
+	}
 	
 	@Parameters({ "parent.id"})
 	@Test (groups="restClientJava")
@@ -169,7 +169,7 @@ public class RestTest extends RestClient{
 			jsonObject = (JSONObject) jsonArray.get(0);
 		//	this.printKeyValue(jsonObject);
 			parentId = ""+jsonObject.get(RESOURCE_ID);
-		}
+	}
 
 		//call get operation for platform
 		_logger.log(Level.INFO,"REQUEST IS ---" + webResource + "  URI -- " + URIs.OPERATION_DEFINITION.getUri() );
@@ -195,11 +195,11 @@ public class RestTest extends RestClient{
 		_logger.log(Level.INFO, "Query Param IS   ---  "+queryParam);
 		result = this.postResponse(webResource, URIs.OPERATION_DEFINITION.getUri().replace("@@id@@", operationId), queryParam);
 		_logger.log(Level.INFO, "reponse code is  ---  "+result.get(RESPONSE_STATUS_CODE));
-		}
+	}
 	
 	@Parameters({ "parent.id"})
 	@Test (groups="restClientJava")
-	public void validateSchedules(@Optional String parentId) throws ParseException{
+	public void validateSchedules() throws ParseException{
 		HashMap<String, Object> result;
 		
 		//get platform
@@ -212,11 +212,11 @@ public class RestTest extends RestClient{
 		//get schedules
 		result = this.getReponse(webResource, URIs.SCHEDULES.getUri().replace("@@id@@", resourceId)+".json", null);
 		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
-		}
+	}
 	
-	@Parameters({ "parent.id"})
+	
 	@Test (groups="restClientJava")
-	public void validateMetricDataDefault(@Optional String parentId) throws ParseException{
+	public void validateMetricDataDefault() throws ParseException{
 		HashMap<String, Object> result;
 		
 		//get platform
@@ -239,9 +239,9 @@ public class RestTest extends RestClient{
 		result = this.getReponse(webResource, URIs.METRIC_DATA.getUri().replace("@@id@@", scheduleId), null);
 		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
 	 
-}
+	}
 
-	@Parameters({ "parent.id"})
+	
 	@Test (groups="restClientJava")
 	public void validateMetricData(@Optional String parentId) throws ParseException{
 		HashMap<String, Object> result;
@@ -274,5 +274,12 @@ public class RestTest extends RestClient{
 				.replace("@@id@@", scheduleId), queryParam);
 		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
 
-}
+	}
+	@Test (groups="restClientJava")
+	public void visitAlerts() throws ParseException{
+		HashMap<String, Object> result = this.getReponse(webResource, URIs.ALERT.getUri()+".json", null);
+		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
+		
+	}
+		
 }
