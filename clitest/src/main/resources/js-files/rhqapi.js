@@ -1,6 +1,8 @@
 /**
- * rhqapi.js tries to be synchronous and high-level API above standart RHQ remote API
- * @author Libor Zoubek <lzoubek@redhat.com>
+ * @overview this library tries to be synchronous and high-level API built on top of standard RHQ remote API
+ * @name RHQ API
+ * @version 0.1
+ * @author Libor Zoubek (lzoubek@redhat.com), Filip Brychta (fbrychta@redhat.com)
  */
 
 
@@ -17,7 +19,7 @@ var p = function(object) {
 };
 
 /**
- * this common module is instantiated by most of modules as private var
+ * @ignore this common module is instantiated by most of modules as private var
  */
 var _common = function() {
 	var _println = function(object) {
@@ -51,50 +53,58 @@ var _common = function() {
 	};
 	// taken from CLI samples/utils.js
 	/**
-	 * A convenience function to convert javascript hashes into RHQ's configuration
-	 * objects.
+	 * A convenience function to convert javascript hashes into RHQ's
+	 * configuration objects.
 	 * <p>
 	 * The conversion of individual keys in the hash follows these rules:
 	 * <ol>
-	 * <li> if a value of a key is a javascript array, it is interpreted as PropertyList
+	 * <li> if a value of a key is a javascript array, it is interpreted as
+	 * PropertyList
 	 * <li> if a value is a hash, it is interpreted as a PropertyMap
 	 * <li> otherwise it is interpreted as a PropertySimple
 	 * <li> a null or undefined value is ignored
 	 * </ol>
 	 * <p>
-	 * Note that the conversion isn't perfect, because the hash does not contain enough
-	 * information to restore the names of the list members.
+	 * Note that the conversion isn't perfect, because the hash does not contain
+	 * enough information to restore the names of the list members.
 	 * <p>
 	 * Example: <br/>
+	 * 
 	 * <pre><code>
 	 * {
-	 *   simple : "value",
-	 *   list : [ "value1", "value2"],
-	 *   listOfMaps : [ { k1 : "value", k2 : "value" }, { k1 : "value2", k2 : "value2" } ]
+	 * 	simple : &quot;value&quot;,
+	 * 	list : [ &quot;value1&quot;, &quot;value2&quot; ],
+	 * 	listOfMaps : [ {
+	 * 		k1 : &quot;value&quot;,
+	 * 		k2 : &quot;value&quot;
+	 * 	}, {
+	 * 		k1 : &quot;value2&quot;,
+	 * 		k2 : &quot;value2&quot;
+	 * 	} ]
 	 * }
 	 * </code></pre>
-	 * gets converted to a configuration object:
-	 * Configuration:
+	 * 
+	 * gets converted to a configuration object: Configuration:
 	 * <ul>
 	 * <li> PropertySimple(name = "simple", value = "value")
 	 * <li> PropertyList(name = "list")
-	 *      <ol>
-	 *      <li>PropertySimple(name = "list", value = "value1")
-	 *      <li>PropertySimple(name = "list", value = "value2")
-	 *      </ol>
+	 * <ol>
+	 * <li>PropertySimple(name = "list", value = "value1")
+	 * <li>PropertySimple(name = "list", value = "value2")
+	 * </ol>
 	 * <li> PropertyList(name = "listOfMaps")
-	 *      <ol>
-	 *      <li> PropertyMap(name = "listOfMaps")
-	 *           <ul>
-	 *           <li>PropertySimple(name = "k1", value = "value")
-	 *           <li>PropertySimple(name = "k2", value = "value")
-	 *           </ul>
-	 *      <li> PropertyMap(name = "listOfMaps")
-	 *           <ul>
-	 *           <li>PropertySimple(name = "k1", value = "value2")
-	 *           <li>PropertySimple(name = "k2", value = "value2")
-	 *           </ul>
-	 *      </ol>
+	 * <ol>
+	 * <li> PropertyMap(name = "listOfMaps")
+	 * <ul>
+	 * <li>PropertySimple(name = "k1", value = "value")
+	 * <li>PropertySimple(name = "k2", value = "value")
+	 * </ul>
+	 * <li> PropertyMap(name = "listOfMaps")
+	 * <ul>
+	 * <li>PropertySimple(name = "k1", value = "value2")
+	 * <li>PropertySimple(name = "k2", value = "value2")
+	 * </ul>
+	 * </ol>
 	 * </ul>
 	 * Notice that the members of the list have the same name as the list itself
 	 * which generally is not the case.
@@ -123,9 +133,11 @@ var _common = function() {
 				function isPrimitive(obj) {
 					return typeof(obj) != 'object' || obj == null || (obj instanceof Boolean  || obj instanceof Number || obj instanceof String);
 				}
-				//this is an anonymous function, so the only way it can call itself
-				//is by getting its reference via argument.callee. Let's just assign
-				//a shorter name for it.
+				// this is an anonymous function, so the only way it can call
+				// itself
+				// is by getting its reference via argument.callee. Let's just
+				// assign
+				// a shorter name for it.
 				var me = arguments.callee;
 
 				var prop = null;
@@ -148,7 +160,7 @@ var _common = function() {
 					for(var i = 0; i < value.length; ++i) {
 						var v = value[i];
 						if (v != null) {
-							//me(prop, key, v);
+							// me(prop, key, v);
 						}
 					}
 				} else if (isHash(value)) {
@@ -156,7 +168,7 @@ var _common = function() {
 					for(var i in value) {
 						var v = value[i];
 						if (value != null) {
-							//me(prop, i, v);
+							// me(prop, i, v);
 						}
 					}
 				}
@@ -180,11 +192,12 @@ var _common = function() {
 	
 	// taken from CLI samples/utils.js
 	/**
-	 * Opposite of <code>asConfiguration</code>. Converts an RHQ's configuration object
-	 * into a javascript hash.
-	 *
+	 * Opposite of <code>asConfiguration</code>. Converts an RHQ's
+	 * configuration object into a javascript hash.
+	 * 
 	 * @param configuration
-	 * @param configuration definition - optional
+	 * @param configuration
+	 *            definition - optional
 	 */
 	var _asHash = function(configuration,configDef) {
 		ret = {};
@@ -218,7 +231,7 @@ var _common = function() {
 
 				if (prop instanceof PropertySimple) {
 					if (propDef && propDef instanceof PropertyDefinitionSimple) {
-						// TODO implement all propertySimple types .. 
+						// TODO implement all propertySimple types ..
 						if (propDef.getType() == PropertySimpleType.BOOLEAN) {
                             if (prop.booleanValue !=null) {
                                 if (prop.booleanValue == false) {
@@ -276,9 +289,13 @@ var _common = function() {
 	
 	/**
 	 * applies map of values to given configuration
-	 * @param original - Configuration instance
-	 * @param definition - ConfigurationDefintion
-	 * @param values - map of values to be applied to configuration
+	 * 
+	 * @param original -
+	 *            Configuration instance
+	 * @param definition -
+	 *            ConfigurationDefintion
+	 * @param values -
+	 *            map of values to be applied to configuration
 	 * 
 	 * @return original Configuration object with applied values
 	 */
@@ -296,13 +313,13 @@ var _common = function() {
 					var prop = null;
 					// decide which type of property are we working with
 					if (definition instanceof PropertyDefinitionMap) {
-						//println("DEF is map");
+						// println("DEF is map");
 						propDef = definition.get(key);
 					} else if (definition instanceof PropertyDefinitionList) {
-						//println("DEF is list");
+						// println("DEF is list");
 						propDef = definition.getMemberDefinition();
 					} else if (definition instanceof ConfigurationDefinition) {
-						//println("DEF is config");
+						// println("DEF is config");
 						propDef = definition.getPropertyDefinitions().get(key);
 					}
 
@@ -317,16 +334,16 @@ var _common = function() {
 						if (value!=null) {
 							prop = new PropertySimple(key, new java.lang.String(value));
 						}
-							//println("it's simple! "+prop);
+							// println("it's simple! "+prop);
 					} else if (propDef instanceof PropertyDefinitionList) {
 						prop = new PropertyList(key);
-						//println("it's list! "+prop);
+						// println("it's list! "+prop);
 						for(var i = 0; i < value.length; ++i) {
 							arguments.callee(prop,propDef,"",value[i]);
 						}
 					} else if (propDef instanceof PropertyDefinitionMap) {
 						prop = new PropertyMap(propDef.name);
-						//println("it's map! "+prop);
+						// println("it's map! "+prop);
 						for (var i in value) {
 							if (value.hasOwnProperty(i)) {
 								arguments.callee(prop,propDef,i,value[i]);
@@ -338,7 +355,7 @@ var _common = function() {
 						pretty.print(propDef);
 						return
 					}
-					// now we update our Configuration node						
+					// now we update our Configuration node
 					if (parent instanceof PropertyList) {
 						parent.add(prop);
 					} else {
@@ -366,8 +383,9 @@ var _common = function() {
 		    return resourcesArray;
 		},		
 		/**
-		 * @param conditionFunc - predicate
-		 * waits until conditionFunc does return any defined value except for false 
+		 * @param conditionFunc -
+		 *            predicate waits until conditionFunc does return any
+		 *            defined value except for false
 		 */
 		waitFor : function(conditionFunc) {
 			var time = 0;
@@ -404,15 +422,22 @@ var _common = function() {
 		hashAsConfiguration : _asConfiguration,
 		applyConfiguration : _applyConfiguration,
 		/**
-		 * generic function to create any type of criteria. This function takes 'criteria' object and fills
-		 * it with filter parameters given in 'param'. For param x in params call : criteria.addFilterX() will be done.
-		 * There's also a shortcutFunction that can handle non-standart calls, for example
-		 * function(key,value) { if (key=="status") {return "addFilterInventoryStatus.InventoryStatus"+value.toUpperCase()+")"}}
-		 * so param key 'status' is processed by that returned string and this string is evaluated on the 'criteria' object
+		 * generic function to create any type of criteria. This function takes
+		 * 'criteria' object and fills it with filter parameters given in
+		 * 'param'. For param x in params call : criteria.addFilterX() will be
+		 * done. There's also a shortcutFunction that can handle non-standart
+		 * calls, for example function(key,value) { if (key=="status") {return
+		 * "addFilterInventoryStatus.InventoryStatus"+value.toUpperCase()+")"}}
+		 * so param key 'status' is processed by that returned string and this
+		 * string is evaluated on the 'criteria' object
 		 * 
-		 * @param {Criteria} criteria - RHQ Criteria object
-		 * @param {Object} params - hash of parameters
-		 * @param {function} shortcutFunc - function(key,value), if returns string, it will be evaluated
+		 * @param {Criteria}
+		 *            criteria - RHQ Criteria object
+		 * @param {Object}
+		 *            params - hash of parameters
+		 * @param {function}
+		 *            shortcutFunc - function(key,value), if returns string, it
+		 *            will be evaluated
 		 */
 		createCriteria : function(criteria,params,shortcutFunc) {
 			params = params || {};
@@ -420,12 +445,14 @@ var _common = function() {
 				throw "Criteria object must be defined!";
 			}
 			for (var k in params) {
-			    // use hasOwnProperty to filter out keys from the Object.prototype
+			    // use hasOwnProperty to filter out keys from the
+				// Object.prototype
 			    if (params.hasOwnProperty(k)) {
 			    	if (shortcutFunc) {
 				    	var shortcutExpr = shortcutFunc(k,params[k]);
 				    	if (shortcutExpr) {
-				    		// shortcut func returned something so we can eval it and skip normal processing for this property
+				    		// shortcut func returned something so we can eval
+							// it and skip normal processing for this property
 				    		eval("criteria."+shortcutExpr);
 				    		continue;
 				    	}
@@ -456,16 +483,20 @@ var _common = function() {
 // resource groups
 
 /**
- * provides access to ResourceGroups
+ * @namespace provides access to Resource groups
  */
 var groups = (function() {
 	var common = new _common();
 	
 	return {
 		/**
-		 * creates a org.rhq.domain.criteria.ResourceCriteria object based on given params
-		 * @param {Obejct} params - criteria params
-		 * @returns org.rhq.domain.criteria.ResourceCriteria
+		 * creates a org.rhq.domain.criteria.ResourceCriteria object based on
+		 * given params
+		 * 
+		 * @param {Obejct}
+		 *            params - criteria params
+		 * @returns ResourceGroupCriteria
+		 * @ignore
 		 */
 		createCriteria : function(params) {
 			params = params || {};
@@ -479,7 +510,12 @@ var groups = (function() {
 		/**
 		 * finds resource groups by given params
 		 * @param {Object} params
-		 * @returns
+		 * see ResourceGroupCriteria for available params
+		 * There are also shortcuts for ENUM parameters: - you can use 
+		 * <ul>
+		 *    <li>{category:"platform"} insetead of {explicitResourceCategory:"ExplicitResourceCategory.PLATFORM"}</li>
+		 *  </ul>
+		 * @type ResGroup[]
 		 */
 		find : function(params) {
 			params = params || {};
@@ -490,10 +526,13 @@ var groups = (function() {
 		    return common.pageListToArray(result).map(function(x){return new ResGroup(x);});
 		},
     /**
-     * creates a new resource group. If all children are same type, COMPATIBLE group is created
-     * @param {String} name for a new group
-     * @param {Array} children - array of resources that represents content of this group
-     */
+	 * creates a new resource group. If all children are same type, COMPATIBLE
+	 * group is created
+	 * 
+	 * @param {String} name for a new group
+	 * @param {Resource[]} children - array of resources that represents content of this group
+	 * @type ResGroup
+	 */
 		create : function(name,children) {
 			children = children || [];
 			var rg = new ResourceGroup(name);
@@ -518,7 +557,10 @@ var groups = (function() {
 		}
 	};
 }) ();
-
+/**
+ * @class
+ * @constructor
+ */
 var ResGroup = function(param) {
 	var common = new _common();
 	common.trace("new ResGroup("+param+")");
@@ -527,54 +569,84 @@ var ResGroup = function(param) {
 	}
 	var _id = param.id;
 	var _obj = param;
-	return {
+    /**
+	 * @lends ResGroup.prototype
+	 */
+	return {		
+		/**
+		 * gets ID of this group
+		 * @fiels
+		 */
 		id : _id,
+		/**
+		 * gets underlying ResourceGroup instance
+		 * @field
+		 * 
+		 */
 		obj : _obj,
+		/**
+		 * returns ID of this group
+		 * @function
+		 * @type Number
+		 */
 		getId : function() {return _id;},
-		remove : function() {
+		/**
+		 * removes this resource group
+		 */
+    remove : function() {
 			common.trace("ResGroup("+_id+").remove()");
 			ResourceGroupManager.deleteResourceGroup(_id);
 		},
 		resources : function(params) {
-	// TODO implement 		
+	// TODO implement
 		},
 	}
 };
 
-// bundles
 /**
- * provides access to Bundle subsystem
+ * @namespace provides access to Bundle subsystem
  */
 var bundles = (function() {
-	var common = new _common();
-	var _find = function(params) {
+
+  var common = new _common();
+
+  var _find = function(params) {
 		params = params || {};
 		common.trace("bundles.find("+common.objToString(params)+")");
 		var criteria = bundles.createCriteria(params);
 		var result = BundleManager.findBundlesByCriteria(criteria);
 		common.debug("Found "+result.size()+" budles ");
-	    return common.pageListToArray(result).map(function(x){return new Bundle(x);});
+	  return common.pageListToArray(result).map(function(x){return new Bundle(x;});
 	};
-	return {
+
+  return {
 		/**
-     * creates BundleCriteria object based on given params
-     * @param {Object} params - filter parameters
-     */
-    createCriteria : function(params) {
+		 * creates BundleCriteria object based on given params
+		 * 
+		 * @param {Object} params - filter parameters
+		 * @ignore
+		 */
+	  	createCriteria : function(params) {
 			params = params || {};
 			common.trace("bundles.createCriteria("+common.objToString(params) +")");
 			var criteria = common.createCriteria(new BundleCriteria(),params);
 			return criteria;
 		},
-		/*
-     * finds bundles based on query parameters
-     * @param {Object} params - hash of query params
-     */
+		/**
+		 * finds bundles based on query parameters
+		 * 
+		 * @param {Object} params - hash of query params
+		 * See BundleCriteria class for available params
+		 * @type Bundle[]
+		 * @function
+	*/
     find : _find,
 		/**
-     * creates a bundle 
-     * @param {String} dist - path to bundle distribution ZIP file
-     */
+		 * creates a bundle
+		 * 
+		 * @param {String} dist - path to bundle distribution ZIP file
+		 * @type Bundle
+		 */
     createFromDistFile : function(dist) {
 			var file = new java.io.File(dist);
 			if (!file.exists()) {
@@ -585,31 +657,46 @@ var bundles = (function() {
 		    return new Bundle(version.bundle);
 		},
   
-		//createFromRecipe : function(recipe,files) {
+		// createFromRecipe : function(recipe,files) {
 			// we're creating a resource with backing content
-			//common.debug("Reading recipe file " + recipe + " ...");
-			//var file = new java.io.File(recipe);
-			//if (!file.exists()) {
-			//	throw "recipe parameter file does not exist!";
-			//}
-		  //  var inputStream = new java.io.FileInputStream(file);
-		  //  var fileLength = file.length();
+			// common.debug("Reading recipe file " + recipe + " ...");
+			// var file = new java.io.File(recipe);
+			// if (!file.exists()) {
+			// throw "recipe parameter file does not exist!";
+			// }
+		  // var inputStream = new java.io.FileInputStream(file);
+		  // var fileLength = file.length();
 		    // TODO read recipe to String properly!
-		  //  var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);			    
-		  //  for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
-			//   numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset); 	
-		  //  }
-		  //  println(fileBytes);
-		  //  var recipeStr = new String(fileBytes,0,fileLength);
-		  //  println(recipeStr);
-		  //  var bundleVersion = BundleManager.createBundleVersionViaRecipe(recipeStr);
-		//}
+		  // var fileBytes =
+			// java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE,
+			// fileLength);
+		  // for (numRead=0, offset=0; ((numRead >= 0) && (offset <
+			// fileBytes.length)); offset += numRead ) {
+			// numRead = inputStream.read(fileBytes, offset, fileBytes.length -
+			// offset);
+		  // }
+		  // println(fileBytes);
+		  // var recipeStr = new String(fileBytes,0,fileLength);
+		  // println(recipeStr);
+		  // var bundleVersion =
+			// BundleManager.createBundleVersionViaRecipe(recipeStr);
+		// }
 	};
 })();
 
+		
+/**
+ * @class
+ * @constructor
+ */
 var Bundle = function(param) {
 
 	// we define Bundle child classes as hidden types
+	  /**
+	   *  @name Bundle-Destination
+		 * @class
+		 * @constructor
+		 */
 	var Destination = function(param) {
 		common.trace("new Destination("+param+")");
 		if (!param) {
@@ -617,19 +704,24 @@ var Bundle = function(param) {
 		}
 		var _id = param.id;
 		var _obj = param;
+		/**
+		 * @lends Bundle-Destination.prototype
+		 */
 		return {
 			obj : _obj,
 			/**
-       * purges this destination
-       */
+			 * purges this destination
+			 */
       purge : function() {
 				common.trace("Destination("+_id+").purge()");
 				BundleManager.purgeBundleDestination(_id);
 			},
       /**
-       * reverts bundle deployment in this destination
-       * @param {boolean} isClean
-       */
+		 * reverts bundle deployment in this destination
+		 * 
+		 * @param {boolean}
+		 *            isClean
+		 */
 			revert : function(isClean) {
 				if (isClean==null) {
 					isClean = false;
@@ -654,8 +746,13 @@ var Bundle = function(param) {
 				throw "Bundle deployment error";
 			}
 		};
-	};
-	
+	};	  
+
+	/**
+	 * @name Bundle-Deployment
+	 * @class
+	 * @constructor
+	 */
 	var Deployment = function(param) {
 		common.trace("new Deployment("+param+")");
 		if (!param) {
@@ -663,8 +760,18 @@ var Bundle = function(param) {
 		}
 		var _id = param.id;
 		var _obj = param;
+		/**
+		 * @lends Bundle-Deployment.prototype
+		 */
 		return {
+			/**
+			 * gets underlying BundleDeployment object
+			 * @field
+			 */
 			obj : _obj,
+			/**
+			 * purges this deployment
+			 */
 			purge : function() {
 				common.trace("Deployment("+_id+").purge()");
 				if (_obj.isLive()) {
@@ -677,8 +784,13 @@ var Bundle = function(param) {
 			}
 		};
 	};
+
 	
-	
+	/**
+	 * @name Bundle-Version
+	 * @class
+	 * @constructor
+	 */
 	var Version = function(param) {
 		common.trace("new Version("+param+")");
 		if (!param) {
@@ -686,12 +798,29 @@ var Bundle = function(param) {
 		}
 		var _id = param.id;
 		var _obj = param;
+		/**
+		 * @lends Bundle-Version.prototype
+		 */
 		return {
+			/**
+			 * gets this ID
+			 * @field
+			 */
 			id : _id,
+			/**
+			 * gets underlying BundleVersion object
+			 * @field
+			 */
 			obj : _obj,
+			/**
+			 * removes this version of bundle from server (not yet implemented)
+			 */
 			remove : function() {
 				
 			},
+			/**
+			 * returns all files contained in this version of bundle (not yet implemented)
+			 */
 			files : function() {
 				
 			},
@@ -727,25 +856,42 @@ var Bundle = function(param) {
 		common.debug("Found "+result.size()+" versions");
 		return common.pageListToArray(result).map(function(x){return new Version(x);});
 	};
-	
+
+/**
+ * @lends Bundle.prototype
+ */  
 	return {
 		toString : function() {return _bundle.toString();},
 		/**
-     * returns Bundle destinations based on query params
-     * @param {Object} params - filter
-     */
+		 * returns Bundle destinations based on query params
+		 * 
+		 * @function
+		 * @param {Object}params - filter
+		 * See BundleResourceDeploymentCriteria class for available params
+		 * There are also shortcuts for ENUM parameters: - you can use 
+		 * <ul>
+		 *    <li>{status:"success"} insetead of {BundleDeploymentStatus:"BundleDeploymentStatus.SUCCESS"}</li>
+		 *  </ul>
+		 * @type Bundle-Destination[]
+		 */
     destinations : _destinations,
 		/**
-     * returns Bundle versions based on query params
-     * @param {Object} params - filter
-     */
+		 * returns Bundle versions based on query params
+		 * 
+		 * @function
+		 * @param {Object} params - filter
+		 * See BundleVersionCriteria class for available params
+		 * @type Bundle-Version[]
+		 */
 		versions : _versions,
     /**
-     * deploys this bundle
-     * @param {Destination} destination - destination to be deployed to
-     * @param {Object} params - map of input parameters required by bundle
-     * @param {Version} or {String} version - bundle version to be deployed, if null, latest version is used
-     */
+	 * deploys this bundle
+	 * 
+	 * @param {Bundle-Destination} destination - destination to be deployed to
+	 * @param {Object} params - map of input parameters required by bundle
+	 * @param {Bundle-Version|String} version - bundle version to be deployed, if null, latest version is used
+	 * @type Bundle-Deployment
+	 */
 		deploy : function(destination,params,version) {
 			params = params || {};
 			common.trace("Bundle("+_id+").deploy(destination="+destination+",params="+common.objToString(params)+",version="+version+")");
@@ -768,7 +914,8 @@ var Bundle = function(param) {
 			println(BundleManager.findBundleVersionsByCriteria(criteria));
 			version.obj = BundleManager.findBundleVersionsByCriteria(criteria).get(0);
 			var configuration = new Configuration();
-			// so if the bundle has come configuration, we create default instance of it and apply our param values
+			// so if the bundle has come configuration, we create default
+			// instance of it and apply our param values
 			if (version.obj.configurationDefinition.defaultTemplate!=null) {
 				var defaultConfig = version.obj.configurationDefinition.defaultTemplate.createConfiguration();
 				configuration = common.applyConfiguration(defaultConfig,version.obj.configurationDefinition,params);
@@ -793,12 +940,17 @@ var Bundle = function(param) {
 			throw "Bundle deployment error";
 		},
     /**
-     * creates a Bundle destination
-     * @param {ResGroup} group - must be COMPATIBLE and must contain resources supporting Bundle deployment
-     * @param {String} name of new destination, if null, name is taken from group
-     * @param {String} target - directory or path relative to `baseName` - if null, default is taken (this default defines ResourceType - so it will be based on baseName)
-     * @param {String} baseName - name of property found in group's ResourceType will be used as base when constructing target deploy directory - can be null when group's ResourceType defines exactly 1 baseName
-     */
+	 * creates a Bundle destination
+	 * 
+	 * @param {ResGroup} group - must be COMPATIBLE and must contain resources supporting Bundle deployment
+	 * @param {String} name of new destination, if null, name is taken from group
+	 * @param {String} target - directory or path relative to `baseName` - if null, 
+	 * default is taken (this default defines ResourceType - so it will be based on baseName)
+	 * @param {String} baseName - name of property found in group's ResourceType will 
+	 * be used as base when constructing target deploy directory - can be null when 
+	 * group's ResourceType defines exactly 1 baseName
+	 * @type Bundle-Destination
+	 */
 		createDestination : function(group,name,target,baseName) {
 			common.trace("Bundle("+_id+").createDestination(group="+group+",name="+name+",target="+target+",baseName="+baseName+")");
 			if (group==null) {
@@ -852,6 +1004,9 @@ var Bundle = function(param) {
 			var bundleDestination = BundleManager.createBundleDestination(_id,name, "", baseName, target, group.getId());
 			return Destination(bundleDestination);
 		},
+		/**
+		 * removes this bundle from server
+		 */
 		remove : function() {
 			common.trace("Bundle("+_id+").remove()");
 			BundleManager.deleteBundle(_id);
@@ -860,17 +1015,18 @@ var Bundle = function(param) {
 
 };
 
-// resources
 /**
- * provides access to inventory
+ * @namespace provides access to resources in inventory
  */
 var resources = (function () {
 	var common = new _common();
 	return {
 		/**
-     * creates ResourceCriteria object based on filter
-     * @param {Object} params - query params
-     */
+		 * creates ResourceCriteria object based on filter
+		 * 
+		 * @param {Object} params - query params
+		 * @ignore
+		 */
     createCriteria : function(params) {
 			params = params || {};
 			common.trace("resources.createCriteria("+common.objToString(params) +")");
@@ -888,14 +1044,26 @@ var resources = (function () {
 		    		return "addFilterResourceTypeName(\""+value+"\")";
 		    	}
 			});
-			// by default only 200 items are returned, this line discards it .. so we get unlimited list
+			// by default only 200 items are returned, this line discards it ..
+			// so we get unlimited list
 			criteria.clearPaging();
 			return criteria;
 		},
 		/**
 		 * finds resources in inventory
-		 * @param {Object} params
+		 * 
+		 * @param {Object} params - see ResourceCriteria.addFilter[param] methods for available params. 
+		 * There are also shortcuts for ENUM parameters: - you can use 
+		 * <ul>
+		 *    <li>{status:"new"} insetead of {InventoryStatus:"InventoryStatus.NEW"}</li>
+		 *    <li>{category:"platform"} instead of {ResourceCategory:"ResourceCategory.PLATTFORM"}</li>
+		 *    <li>{availability:"up"} instead of {AvailabilityType:"AvailabilityType.UP}</li>
+		 *    <li>{type:"RHQ Agent"} instead of {resourceTypeName:"RHQ Agent"}</li>
+		 *  </ul>
+		 * @example resources.find({type:"RHQ Agent",name:"RHQ Agent",availability:"down"});
+		 * @example resources.find({type:"JBoss AS7 Standalone Server",parentResourceId:12345});
 		 * @returns array of resources
+		 * @type Resource[]
 		 */
 		find : function(params) {
 			params = params || {};
@@ -909,6 +1077,7 @@ var resources = (function () {
 		/**
 		 * 
 		 * @returns array of platforms in inventory
+		 * @type Array
 		 */
 		platforms : function(params) {
 			params = params || {};			
@@ -918,6 +1087,8 @@ var resources = (function () {
 		},
 		/**
 		 * returns 1st platform found based on given params or just nothing
+		 * 
+		 * @type Resource
 		 */
 		platform : function(params) {
 			params = params || {};			
@@ -932,7 +1103,7 @@ var resources = (function () {
 }) ();
 
 /**
- * provides access to discovery queue
+ * @namespace provides access to discovery queue
  */
 discoveryQueue = (function () {
 	
@@ -950,11 +1121,6 @@ discoveryQueue = (function () {
 		}
 		return res;
 	};
-	/**
-   * imports resources based on given filter
-   * @param {Object} params - filter
-   * @returns Array of resource that have been imported
-   */
 	var _importResources = function (params){
 		params = params || {};
 		common.trace("discoveryQueue._importResources("+common.objToString(params)+")");
@@ -964,7 +1130,7 @@ discoveryQueue = (function () {
 	    var res = _waitForResources(criteria);
 	    common.debug("Found "+res.size()+" NEW resources");	    
 	    var resourcesArray = common.pageListToArray(res);
-	    //assertTrue(res.size()>0, "At least one resrouce was found");
+	    // assertTrue(res.size()>0, "At least one resrouce was found");
 	    DiscoveryBoss.importResources(resourcesArray.map(function(x){return x.id;}));
 	    params.status="COMMITTED";
 	    criteria = resources.createCriteria(params);	   
@@ -975,7 +1141,7 @@ discoveryQueue = (function () {
 	    return common.pageListToArray(res).map(function(x){return new Resource(x);});
 	};
 	
-  _listPlatforms = function listPlatforms(params) {
+  _listPlatforms = function(params) {
 			params = params || {};
 			common.trace("discoveryQueue.listPlatforms("+common.objToString(params)+")");
 			params["status"] = "NEW";
@@ -986,10 +1152,12 @@ discoveryQueue = (function () {
 	};
 	return {
 		/**
-     * lists discovery queue
-     * @param {Object} params - filter
-     * @returns Array of resources in discovery queue matching given filter
-     */
+		 * lists discovery queue
+		 * 
+		 * @param {Object} params - filter
+		 * @returns Array of resources in discovery queue matching given filter
+		 * @type Resource[]
+		 */
     list : function (params) {
 			params = params || {};
 			common.trace("discoveryQueue.list("+common.objToString(params)+")");
@@ -999,17 +1167,22 @@ discoveryQueue = (function () {
 			return common.pageListToArray(res).map(function(x){return new Resource(x);});
 		},
 		/**
-     * lists platforms from discovery queue
-     * @param {Object} params - filter
-     * @returns Array of platforms in discovery queue matching given filter
-     */
+		 * lists platforms from discovery queue
+		 * 
+		 * @param {Object} params - filter
+		 * @returns Array of platforms in discovery queue matching given filter
+		 * @type Resource[]
+		 * @function
+		 */
     listPlatforms : _listPlatforms,
     /**
-     * imports platform by name 
-     * @param {String} name - platform name to be imported
-     * @param {Booolean} children - if true (default) import also all child resources
-     * @returns platform resource
-     */
+	 * imports platform by name
+	 * 
+	 * @param {String} name - platform name to be imported
+	 * @param {Booolean} children - if true (default) import also all child resources
+	 * @returns platform resource
+	 * @type Resource
+	 */
 		importPlatform: function(name,children) {
 			common.trace("discoveryQueue.importPlatform(name="+name+" children[default=true]="+children+")");
 			
@@ -1038,10 +1211,14 @@ discoveryQueue = (function () {
 			return res[0];
 		},
     /**
-     * imports resource
-     * @param {Resource} or {Number} resource or ID - to be imported
-     * @param {Booolean} children - if true (default) import also all child resources (if any)
-     */
+	 * imports resource
+	 * 
+	 * @param {Resource} resource or ID - to be imported
+	 * @param {Booolean}
+	 *            children - if true (default) import also all child resources
+	 *            (if any)
+	 * @type Resource
+	 */
 		importResource : function(resource,children) {
 			common.trace("discoveryQueue.importResource(resource="+resource+" children[default=true]="+children+")");
 			// we can accept ID as a parameter too
@@ -1061,10 +1238,20 @@ discoveryQueue = (function () {
 			}
 			return resource;
 		},
+    /**
+	 * imports all resources found in discovery queue
+	 * 
+	 * @function
+	 */
 		importResources : _importResources,
 	};
 }) ();
 
+/**
+ * @class
+ * @constructor
+ * @param param {org.rhq.bindings.client.ResourceClientProxy|Number} proxy object or id
+ */
 var Resource = function (param) {
 	var common = new _common();
 	common.trace("new Resource("+param+")");
@@ -1080,33 +1267,43 @@ var Resource = function (param) {
 	
 	var _id = param.id;
 	var _res = param;
-	var _dynamic = {};
+    var _dynamic = {};
 	
+    /**
+	 * @function
+	 * @lends Resource
+	 */
+    var _retrieveContent = function(destination) {
+		var self = ProxyFactory.getResource(_id);
+		var func = function() {
+			try {
+				self.retrieveBackingContent(destination);
+				return true;
+			} catch (e) {
+				var msg = new java.lang.String(e);
+				if (msg.contains("Please try again in a few minutes")) {
+					common.debug("A known exception has been thrown when retrieving backing content, retrying");
+					common.debug(e);
+				} else {
+					common.debug(e);
+					throw e;
+				}
+			}
+		};
+		common.waitFor(func);
+		
+	};
 	
 	// initialize dynamic methods
 	if (typeof(param.retrieveBackingContent) != "undefined") {
-		// methods for updating/retrieving backing content are generated dynamically only for content-based resources
+		// methods for updating/retrieving backing content are generated
+		// dynamically only for content-based resources
 		// workaround for https://bugzilla.redhat.com/show_bug.cgi?id=830841
-		_dynamic.retrieveContent = function(destination) {
-			var self = ProxyFactory.getResource(_id);
-			var func = function() {
-				try {
-					self.retrieveBackingContent(destination);
-					return true;
-				} catch (e) {
-					var msg = new java.lang.String(e);
-					if (msg.contains("Please try again in a few minutes")) {
-						common.debug("A known exception has been thrown when retrieving backing content, retrying");
-						common.debug(e);
-					} else {
-						common.debug(e);
-						throw e;
-					}
-				}
-			};
-			common.waitFor(func);
-			
-		};
+		/**
+		 * @function
+		 * @lends Resource.prototype
+		 */
+		_dynamic.retrieveContent = _retrieveContent;
 		_dynamic.updateContent = function (content,version) {
 			var self = ProxyFactory.getResource(_id);
 			var func = function() {
@@ -1127,7 +1324,7 @@ var Resource = function (param) {
 			common.waitFor(func);
 		};
 	}
-	
+
 	var _getName = function(){
 		return _res.getName();
 	}
@@ -1135,7 +1332,7 @@ var Resource = function (param) {
 	var _find = function() {
 		var criteria = resources.createCriteria({id:_id});
 		var res = ResourceManager.findResourcesByCriteria(criteria);
-		//common.debug("Resource.find: "+resources);
+		// common.debug("Resource.find: "+resources);
 		return res;
 	};
 	var _isAvailable = function() {
@@ -1163,8 +1360,10 @@ var Resource = function (param) {
 		if(resOpShedule)
 			opHistCriteria.addFilterJobId(resOpShedule.getJobId());
 		opHistCriteria.addFilterResourceIds(resourceId);
-		opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent at top of results
-		opHistCriteria.setPaging(0, 1); // only return one result, in effect the latest
+		opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent
+															// at top of results
+		opHistCriteria.setPaging(0, 1); // only return one result, in effect the
+										// latest
 		opHistCriteria.fetchResults(true);
 		var pred = function() {
 			var histories = OperationManager.findResourceOperationHistoriesByCriteria(opHistCriteria);
@@ -1206,26 +1405,42 @@ var Resource = function (param) {
 	};
 	
 
-
 	var _static =  {
+	/**
+	 * @lends Resource.prototype
+	 */
     id : _id,
+	/**
+	 * @type Number
+	 */
     getId : function() {return _id;},
 		toString : function() {return _res.toString();},
+    /**
+	 * 
+	 * @type String
+	 */
     getName : function() {return _getName();},
-		getProxy : function() {
+	/**
+	 * returns Resource proxy object
+	 */	
+    getProxy : function() {
 			common.trace("Resource("+_id+").getProxy()");
 			return ProxyFactory.getResource(_id);
 		},
     /**
-     * @returns parent resource
-     */
+	 * @returns parent resource
+	 * @type Resource
+	 */
 		parent : function() {
 			common.trace("Resource("+_id+").parent()");
 			return _parent();
 		},
 		/**
-		 * removes/deletes this resource from inventory. 
-		 * @returns true if resource no longer exists in inventory, false otherwise
+		 * removes/deletes this resource from inventory.
+		 * 
+		 * @returns true if resource no longer exists in inventory, false
+		 *          otherwise
+		 * @type Boolean
 		 */
 		remove : function() {
 			common.trace("Resource("+_id+").remove()");
@@ -1279,8 +1494,10 @@ var Resource = function (param) {
 		},
 		/**
 		 * 
-		 * @param {Object} params
+		 * @param {Object}
+		 *            params
 		 * @returns array of child resources
+		 * @type Resource[]
 		 */
 		children : function(params) {
 			common.trace("Resource("+_id+").children("+common.objToString(params)+")");
@@ -1290,8 +1507,10 @@ var Resource = function (param) {
 		},
 		/**
 		 * 
-		 * @param {Object} params hashmap of filter params
+		 * @param {Object}
+		 *            params hashmap of filter params
 		 * @returns first matching child resource found
+		 * @type Resource
 		 */
 		child : function(params) {
 			common.trace("Resource("+_id+").child("+common.objToString(params)+")");
@@ -1303,10 +1522,13 @@ var Resource = function (param) {
 			}
 		},
 		/**
-		 * updates configuration of this resource. You can either pass whole configuration (retrieved by getConfiguration())
-		 * or only params that needs to be changed
+		 * updates configuration of this resource. You can either pass whole
+		 * configuration (retrieved by getConfiguration()) or only params that
+		 * needs to be changed
+		 * 
 		 * @param {Object} params - new configuration parameters, partial configuration is supported
 		 * @returns True if configuration was updated
+		 * @type Boolean
 		 */
 		updateConfiguration : function(params) {
 			common.trace("Resource("+_id+").updateConfiguration("+common.objToString(params)+")");
@@ -1346,7 +1568,9 @@ var Resource = function (param) {
 		},
 		/**
 		 * retrieves LIVE configuration of this resource
+		 * 
 		 * @returns
+		 * @type Object
 		 */
 		getConfiguration : function() {
 			common.trace("Resource("+_id+").getConfiguration()");
@@ -1356,7 +1580,9 @@ var Resource = function (param) {
 		},
 		/**
 		 * retrieves plugin configuration for this resource
+		 * 
 		 * @returns
+		 * @type Object
 		 */
 		getPluginConfiguration : function() {
 			common.trace("Resource("+_id+").getPluginConfiguration()");
@@ -1366,15 +1592,17 @@ var Resource = function (param) {
 		},
 		/**
 		 * creates a new child resource
-		 * @param {Object} params hashmap of params
-     * Params object can contain following:
-     *  - name {String} (required)- name for a new resource child, name is optional when `content` is provided
-     *  - type {String} (required) - resource type name to be created
-     *  - config {Object} (optional) - configuration map for new resource, if not present, default is taken 
-     *  - pluginConfig {Object} (optional) - plugin configuration for new resource, if not present, default is taken (NOT YET IMPLEMENTED)
-     *  - content {String} (optional) - absolute path for resource's content file (typical for deployments)
-     *  - version ${String} (optional) - version string 
+		 * 
+		 * @param {Object} params can contain following: - 
+		 * <ul>
+		 * <li>name [String] (required)- name for a new resource child, name is optional when `content` is provided</li>
+		 * <li>type [String] (required) - resource type name to be created</li>
+		 * <li>config [Object] (optional) - configuration map for new resource, if not present, default is taken</li>
+		 * <li>pluginConfig [Object] (optional) - plugin configuration for new resource, if not present, default is taken (NOT YET IMPLEMENTED)</li>
+		 * <li>content [String] (optional) - absolute path for resource's content file (typical for deployments)</li>
+		 * <li>version [String] (optional) - version string</li>
 		 * @returns new resource if it was successfully created and discovered, null otherwise
+		 * @type Resource
 		 */
 		createChild : function(params) {
 			common.trace("Resource("+_id+").createChild("+common.objToString(params)+")");
@@ -1455,7 +1683,7 @@ var Resource = function (param) {
 					name, 
 					version, // packageVersion
 					null, // architectureId
-					configuration, // resourceConfiguration 
+					configuration, // resourceConfiguration
 					fileBytes, // content
 					null // timeout
 				);
@@ -1502,7 +1730,8 @@ var Resource = function (param) {
 			}
 			if (result && result.status == CreateResourceStatus.SUCCESS) {
 				common.debug("Waiting for resource to be auto-discovered");
-				// we assume there can be exactly one resource of one type having unique name
+				// we assume there can be exactly one resource of one type
+				// having unique name
 				var discovered = common.waitFor(function() {return resources.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey}).length==1;});
 				if (!discovered) {
 					common.info("Resource child was successfully created, but it's autodiscovery timed out!");
@@ -1518,14 +1747,19 @@ var Resource = function (param) {
 			
 		},
 		/**
-		 * invokes operation on resource, operation status is polled 'till timeout is reached or operation finishes
-		 * @param {String} name of operation
-		 * @param {Object} params - hashmap for operation params (Configuration)
+		 * invokes operation on resource, operation status is polled 'till
+		 * timeout is reached or operation finishes
+		 * 
+		 * @param {String}
+		 *            name of operation
+		 * @param {Object}
+		 *            params - hashmap for operation params (Configuration)
 		 * @returns
 		 */
 		invokeOperation : function(name,params) {
 			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
-			// let's obtain operation definitions, so we can check operation name and required params
+			// let's obtain operation definitions, so we can check operation
+			// name and required params
 			var criteria = new ResourceTypeCriteria();
 			criteria.addFilterId(_find().get(0).resourceType.id);
 			criteria.fetchOperationDefinitions(true);
@@ -1548,9 +1782,9 @@ var Resource = function (param) {
 							configuration = template.createConfiguration();
 						}
 					}
-					//if (configuration)
-					//	pretty.print(configuration);
-					// 	println(common.objToString(common.configurationAsHash(configuration)));
+					// if (configuration)
+					// pretty.print(configuration);
+					// println(common.objToString(common.configurationAsHash(configuration)));
 					
 					_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,common.configurationAsHash(configuration));
 					
@@ -1562,24 +1796,38 @@ var Resource = function (param) {
 			throw "Operation name ["+name+"] is invalid for this resource, valid operation names are : " + ops;
 		},
 		/**
-		 * Waits until operation is finished or timeout is reached. 
+		 * Waits until operation is finished or timeout is reached.
+		 * 
 		 * @param resourceId
-		 * @param resOpShedule may be null, than the most recent job for given resourceId is picked
+		 * @param resOpShedule
+		 *            may be null, than the most recent job for given resourceId
+		 *            is picked
 		 * @returns operation history
+		 * @function
 		 */
 		waitForOperationResult : _waitForOperationResult,
 		/**
 		 * checks whether resource exists in inventory
+		 * 
 		 * @returns bool
+		 * @type Boolean
 		 */
 		exists : function() {
 			common.trace("Resource("+_id+").exists()");
 			return _exists();
 		},
+		/**
+		 * returns true if availability == UP
+		 * 
+		 * @function
+		 * @type Boolean
+		 */
 		isAvailable : _isAvailable,
 		/**
 		 * wait's until resource becomes UP or timeout is reached
+		 * 
 		 * @returns true if became is available, false otherwise
+		 * @type Boolean
 		 */
 		waitForAvailable : function() {
 			common.trace("Resource("+_id+").waitForAvailable()");
@@ -1591,7 +1839,10 @@ var Resource = function (param) {
 		},
 		/**
 		 * unimports resource
-		 * @returns true if resource is dos no longer exist in inventory, false otherwise
+		 * 
+		 * @returns true if resource is dos no longer exist in inventory, false
+		 *          otherwise
+		 * @type Boolean
 		 */
 		uninventory : function() {
 			common.trace("Resource("+_id+").uninventory()");
@@ -1621,11 +1872,12 @@ var Resource = function (param) {
 
 
 
-
+/**
+ * @lends _global_
+ */
 var Inventory = resources;
 Inventory.discoveryQueue = discoveryQueue;
 
-// default verbosity,timeouts
 /**
  * verbosity, default 0 (0=INFO, 1=DEBUG,2=TRACE)
  */
@@ -1639,7 +1891,7 @@ var delay = 5;
  */
 var timeout = 120; 
 
-//commonjs support
+// commonjs support
 if (typeof exports !== "undefined") {
 	exports.resources = resources;
 	exports.discoveryQueue = discoveryQueue;
@@ -1651,5 +1903,5 @@ if (typeof exports !== "undefined") {
 	exports.timeout = timeout;
 }
 
-// END of rhqapi.js 
+// END of rhqapi.js
 
