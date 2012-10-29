@@ -75,6 +75,23 @@ project(":clitest") {
 		compile project(":common")
 		testCompile  project(":common")
 	}
+  task jsdoc() << {
+    description "generates JSDoc for rhqapi.js"
+    def jsdocDir = file("$buildDir/jsdoc/rhqapi")
+    def toolkit = "jsdoc_toolkit-2.4.0"
+    ant.mkdir(dir:"$jsdocDir")
+    ant.get(src:"http://jsdoc-toolkit.googlecode.com/files/${toolkit}.zip",dest:"$buildDir",skipexisting:true)
+    ant.unzip(src:"$buildDir/${toolkit}.zip",dest:"$buildDir")
+    def toolkit_dir = "$buildDir/$toolkit/jsdoc-toolkit/"
+    ant.java(jar:"${toolkit_dir}jsrun.jar",fork:true,dir:toolkit_dir,newenvironment:true,timeout:60000) {
+      arg(value: "app/run.js")
+      arg(value: "--allfunctions")
+      arg(value: "--template=templates/jsdoc")
+      arg(value: "--directory=$jsdocDir")
+      arg(value: "--verbose")
+      arg(value: "$projectDir/src/main/resources/js-files/rhqapi.js")
+    }
+  }
 }
 project(":sahi") {
 	dependencies {
