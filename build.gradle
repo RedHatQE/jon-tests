@@ -85,7 +85,7 @@ project(":clitest") {
     def toolkit_dir = "$buildDir/$toolkit/jsdoc-toolkit/"
     ant.java(jar:"${toolkit_dir}jsrun.jar",fork:true,dir:toolkit_dir,newenvironment:true,timeout:60000) {
       arg(value: "app/run.js")
-      arg(value: "--allfunctions")
+    //  arg(value: "--allfunctions")
       arg(value: "--template=templates/jsdoc")
       arg(value: "--directory=$jsdocDir")
       arg(value: "--verbose")
