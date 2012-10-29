@@ -616,7 +616,7 @@ var bundles = (function() {
 		var criteria = bundles.createCriteria(params);
 		var result = BundleManager.findBundlesByCriteria(criteria);
 		common.debug("Found "+result.size()+" budles ");
-	  return common.pageListToArray(result).map(function(x){return new Bundle(x;});
+	  return common.pageListToArray(result).map(function(x){return new Bundle(x);});
 	};
 
   return {
@@ -1898,9 +1898,13 @@ if (typeof exports !== "undefined") {
 	exports.bundles = bundles;
 	exports.groups = groups;
 	exports.Resource = Resource;
-	exports.verbose = verbose;
-	exports.delay = delay;
-	exports.timeout = timeout;
+	exports.verbose = verbose.value;
+	exports.initialize = function(verb,dlay,tout) {
+		verbose = verb;
+		delay = dlay;
+		timeout = tout;
+		println("rhqapi initialized: verbose="+verb+" delay="+dlay+"s timeout="+tout+"s");
+	}
 }
 
 // END of rhqapi.js
