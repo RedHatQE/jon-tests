@@ -597,8 +597,14 @@ var ResGroup = function(param) {
 			common.trace("ResGroup("+_id+").remove()");
 			ResourceGroupManager.deleteResourceGroup(_id);
 		},
+		/**
+		 * get resources contained in this group (NOT YET IMPLEMENTED)
+		 * @param params - you can filter child resources same way as in {@link resources.find()} function
+		 * @returns array of resources
+		 * @type Resrouce[]
+		 */
 		resources : function(params) {
-	// TODO implement
+			// TODO implement
 		},
 	}
 };
@@ -1493,9 +1499,8 @@ var Resource = function (param) {
 			return false;
 		},
 		/**
-		 * 
-		 * @param {Object}
-		 *            params
+		 * get's child resources
+		 * @param {Object} params - you can filter child resources same way as in {@link resources.find()} function
 		 * @returns array of child resources
 		 * @type Resource[]
 		 */
@@ -1507,8 +1512,7 @@ var Resource = function (param) {
 		},
 		/**
 		 * 
-		 * @param {Object}
-		 *            params hashmap of filter params
+		 * @param {Object} params - you can filter child resources same way as in {@link resources.find()} function
 		 * @returns first matching child resource found
 		 * @type Resource
 		 */
@@ -1898,7 +1902,6 @@ if (typeof exports !== "undefined") {
 	exports.bundles = bundles;
 	exports.groups = groups;
 	exports.Resource = Resource;
-	exports.verbose = verbose.value;
 	exports.initialize = function(verb,dlay,tout) {
 		verbose = verb;
 		delay = dlay;
