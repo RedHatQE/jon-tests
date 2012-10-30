@@ -1276,6 +1276,7 @@ var Resource = function (param) {
 	}
 
 	var _id = param.id;
+	var _name = param.name;
 	var _res = param;
   var _dynamic = {};
 
@@ -1417,6 +1418,11 @@ var Resource = function (param) {
 	  * @lends Resource.prototype
 	  */
     id : _id,
+    /**
+     * gets resource name
+     * @type String
+     */
+    name : _name,
   	/**
     * gets resource ID
 	  * @type Number
@@ -1428,7 +1434,7 @@ var Resource = function (param) {
     */
 		toString : function() {return _res.toString();},
     /**
-	  *
+	  * gets resource name
 	  * @type String
 	  */
     getName : function() {return _getName();},
