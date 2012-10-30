@@ -653,18 +653,33 @@ var bundles = (function() {
 		/**
 		 * creates a bundle
 		 *
-		 * @param {String} dist - path to bundle distribution ZIP file
+		 * @param {String} dist - path to bundle distribution ZIP file or URL. 
+		 * If URL it must be reachable by RHQ server
 		 * @type Bundle
 		 */
     createFromDistFile : function(dist) {
+    	if (dist==null) {
+    		throw "parameter dist must not be null"
+    	}
+    	if (dist.startsWith("http")) {
+    		var version = BundleManager.createBundleVersionViaURL(dist);
+		    return new Bundle(version.bundle);
+    	}
+    	else {
 			var file = new java.io.File(dist);
 			if (!file.exists()) {
 				throw "file parameter ["+file+"] does not exist!";
 			}
-		    var version = BundleManager.createBundleVersionViaFile(file);
-		    println(version.bundle.id);
+		    var inputStream = new java.io.FileInputStream(file);
+		    var fileLength = file.length();
+		    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
+		    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
+		    }
+		    var version = BundleManager.createBundleVersionViaByteArray(fileBytes);
 		    return new Bundle(version.bundle);
-		},
+    	}
+	},
 
 		// createFromRecipe : function(recipe,files) {
 			// we're creating a resource with backing content
