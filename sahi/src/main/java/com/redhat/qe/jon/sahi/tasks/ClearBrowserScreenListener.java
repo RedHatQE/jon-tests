@@ -81,10 +81,10 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	}
 	
 	//To take Screen shot
-	public void takeScreenShot(){
+	public void takeScreenShot(ITestResult result){
 		try{
 			_logger.log(Level.INFO, "Taking screen shot...");
-			String fileDirPath = System.getProperty("user.dir")+"/"+System.getProperty("testng.outputdir")+"/html/";
+			String fileDirPath = result.getTestContext().getOutputDirectory()+"/../html/";
 			if(new File(fileDirPath).mkdirs()){
 				_logger.log(Level.INFO, "Directory Created... : "+fileDirPath);
 			}else{
@@ -107,7 +107,7 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	
 	@Override
 	public void onTestFailure(ITestResult result) {
-		takeScreenShot();
+		takeScreenShot(result);
 		try {		
 			cleanPopUpOnScreen();
 		} catch (Exception ex) {
