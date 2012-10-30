@@ -117,6 +117,9 @@ public class CliTest extends CliTestScript{
 		// autodetect RHQ_CLI_JAVA_HOME if not defined
 		if (StringUtils.trimToNull(rhqCliJavaHome)==null) {
 			rhqCliJavaHome = cliTasks.runCommand("echo $JAVA_HOME").trim();
+			if ("".equals(rhqCliJavaHome)) {
+			    throw new CliTasksException("Neither RHQ_CLI_JAVA_HOME nor JAVA_HOME environment variables were defined, unable to run RHQ CLI");
+			}
 			_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
 		}
 		String consoleOutput = null;
@@ -127,13 +130,14 @@ public class CliTest extends CliTestScript{
 		// get live output in log file on server
 		command +=" | tee -a /tmp/cli-automation.log";
 		consoleOutput = cliTasks.runCommand(command);
-		if(!isVersionSet){
+		_logger.log(Level.INFO, consoleOutput);
+		if(!isVersionSet && consoleOutput.length()>25){
 			System.setProperty("rhq.build.version", consoleOutput.substring(consoleOutput.indexOf("Remote server version is:")+25, consoleOutput.indexOf("Login successful")).trim());
 			isVersionSet = true;
 			_logger.log(Level.INFO, "RHQ/JON Version: "+System.getProperty("rhq.build.version"));
 		}
 		
-		_logger.log(Level.INFO, consoleOutput);
+		
 		if(makeFilure != null){
 			cliTasks.validateErrorString(consoleOutput , makeFilure);
 		}
