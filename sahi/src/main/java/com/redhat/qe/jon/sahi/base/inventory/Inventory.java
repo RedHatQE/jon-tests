@@ -246,10 +246,20 @@ public class Inventory extends ResourceTab{
 		 * @return wizard
 		 */
 		public NewChildWizard newChild(String type) {
-			tasks.xy(tasks.cell("Create Child"),3,3).click();
+		    return selectMenu("Create Child", type);			
+		}
+		private NewChildWizard selectMenu(String menu,String item) {
+			tasks.xy(tasks.cell(menu),3,3).click();
 			tasks.waitFor(Timing.WAIT_TIME);
-			tasks.xy(tasks.cell(type).in(tasks.table("menuTable")),3,3).click();
-			return new NewChildWizard(tasks);
+			// we need to iterate over all menuTables and use the visible one
+			// because smartGWT is so smart, that it leaves invisible menuTable within a DOM model
+			for (ElementStub es : tasks.table("menuTable").collectSimilar()) {
+			    if (es.isVisible()) {
+				tasks.xy(tasks.cell(item).in(es),3,3).click();
+				return new NewChildWizard(tasks);
+			    }
+			}
+			throw new RuntimeException("Unable to select ["+item+"] from ["+menu+"] menu");
 		}
 		/**
 		 * creates new child resource of given type (ie. Deployment) and returns helper object
@@ -257,10 +267,7 @@ public class Inventory extends ResourceTab{
 		 * @return wizard
 		 */
 		public NewChildWizard importResource(String type) {
-			tasks.xy(tasks.cell("Import"),3,3).click();
-			tasks.waitFor(Timing.WAIT_TIME);
-			tasks.xy(tasks.cell(type).in(tasks.table("menuTable")),3,3).click();
-			return new NewChildWizard(tasks);
+			return selectMenu("Import", type);
 		}
 		/**
 		 * removes child by given name from repository
