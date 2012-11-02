@@ -661,7 +661,7 @@ var bundles = (function() {
     	if (dist==null) {
     		throw "parameter dist must not be null"
     	}
-    	if (dist.startsWith("http")) {
+    	if (dist.indexOf("http")==0) {
     		var version = BundleManager.createBundleVersionViaURL(dist);
 		    return new Bundle(version.bundle);
     	}
