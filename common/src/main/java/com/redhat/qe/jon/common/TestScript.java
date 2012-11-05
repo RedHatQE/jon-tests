@@ -114,4 +114,41 @@ public class TestScript {
 			log.log(Level.SEVERE, "Could not load automation properties from "+propFile, e);
 		}
 	}
+	public static void checkRequiredProperties(String... names) {
+	    StringBuilder failed = new StringBuilder();
+	    if (names!=null) {
+		log.info("Checking required system properties");
+		for (String prop : names) {
+		    String value = System.getProperty(prop,null);
+		    String msg = "Property ["+prop+"] ... ";
+		    if (value==null) {
+			msg+="no";
+			failed.append(prop+",");
+		    }
+		    else {
+			msg+="yes ["+value+"]";
+		    }
+		    log.info(msg);
+		}		
+	    }
+	    if (failed.length()>0) {
+		throw new RuntimeException("Some required properties are not defined : "+failed.toString());
+	    }
+	}
+	public static void checkOptionalProperties(String... names) {
+	    if (names!=null) {
+		log.info("Checking optional system properties");
+		for (String prop : names) {
+		    String value = System.getProperty(prop,null);
+		    String msg = "Property ["+prop+"] ... ";
+		    if (value==null) {
+			msg+="no";
+		    }
+		    else {
+			msg+="yes ["+value+"]";
+		    }
+		    log.info(msg);
+		}		
+	    }
+	}
 }

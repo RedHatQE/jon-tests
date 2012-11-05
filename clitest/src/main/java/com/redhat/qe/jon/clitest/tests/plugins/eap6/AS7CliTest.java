@@ -15,7 +15,17 @@ import com.redhat.qe.jon.clitest.tests.CliTest;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartConfig.ConfigFile;
 import com.redhat.qe.jon.common.util.AS7DMRClient;
 import com.redhat.qe.jon.common.util.AS7SSHClient;
+import com.redhat.qe.jon.common.util.RestClient;
+import com.redhat.qe.tools.checklog.CheckLog;
+import com.redhat.qe.tools.checklog.LogFile;
 
+@CheckLog(
+	enabled=false,
+	logs={
+		@LogFile(id="agent",user="${jon.agent.user}",pass="${jon.agent.password}",host="${jon.agent.host}",logFile="rhq-agent/logs/agent.log"),
+		@LogFile(id="server",user="${jon.server.user}",pass="${jon.server.password}",host="${jon.server.host}",logFile="${jon.server.home}/logs/rhq-server-log4j.log"),
+	}	
+)
 public class AS7CliTest extends CliTest {
 
 	protected static String agentName;
@@ -46,6 +56,11 @@ public class AS7CliTest extends CliTest {
             }
 
         }
+		checkRequiredProperties(
+			"agent.name","jon.agent.user","jon.agent.host","jon.agent.password",
+			"as7.standalone1.home","as7.domain.home",
+			"jon.server.host","jon.server.user","jon.server.password"
+		);
 		agentName = System.getProperty("agent.name");
 		standalone1Home = System.getProperty("as7.standalone1.home");
 		standalone1HostName = System.getProperty("as7.standalone1.hostname");
@@ -55,6 +70,12 @@ public class AS7CliTest extends CliTest {
 		sshStandalone = new AS7SSHClient(standalone1Home,"hudson",standalone1HostName,"hudson");
 		installRHQUser(sshDomain,null,"/domain/configuration/mgmt-users.properties");
 		installRHQUser(sshStandalone,null,"/standalone/configuration/mgmt-users.properties");
+		if (System.getProperty("jon.server.home","").equals("")) {
+		    log.fine("Auto-detecting [jon.server.home]");
+		    String value = RestClient.detectServerInstallDir();
+		    log.fine("[jon.server.home] detected : "+value);
+		    System.setProperty("jon.server.home", value);
+		}
 	}
 	
 	/**

@@ -54,7 +54,7 @@ public class RestClient {
 	
 	public enum URIs
 	{
-		STATUS("/status"),
+		STATUS("/status"),		
 		GROUP("/group"),
 		ALERT("/alert"),
 		ALERT_DEFINATION("alert/definition"),
@@ -76,6 +76,29 @@ public class RestClient {
 		public String getFullUri() {
 			return (URI_PREFIX+uri);
 		}
+	}
+	
+	public static String detectServerInstallDir() {
+	    try {
+        	    RestClient self = new RestClient();
+        	    String jonUrl = System.getProperty("jon.server.url",null);
+        	    if (jonUrl==null) {
+        		String jonHost = System.getProperty("jon.server.host",null);
+        		if (jonHost!=null) {
+        		    jonUrl="http://"+jonHost+":7080";
+        		}        		
+        	    }
+        	    WebResource resource = self.getWebResource(jonUrl+URI_PREFIX, "rhqadmin", "rhqadmin");
+        	    HashMap<String, Object> result = self.getReponse(resource, URIs.STATUS.getUri()+".json");
+        	    JSONObject jsonObject = self.getJSONObject(""+result.get(RESPONSE_CONTENT));
+        	    jsonObject = (JSONObject) jsonObject.get(STATUS_VALUES);
+        	    return (String) jsonObject.get("SERVER_INSTALL_DIR");
+	    }
+	    catch (Exception ex) {
+		_logger.severe("Unable to detect server install dir via REST: "+ex.getMessage());
+		return null;
+	    }
+
 	}
 	
 	public WebResource getWebResource(String url, String userName, String passWord){
@@ -117,7 +140,7 @@ public class RestClient {
         response.put(RESPONSE_SERVER, clientResponse.getHeaders().get("Server"));
         response.put(RESPONSE_X_POWERED_BY, clientResponse.getHeaders().get("X-Powered-By"));
         response.put(RESPONSE_CONTENT, clientResponse.getEntity(String.class));
-        _logger.fine("Response: "+response);
+        //_logger.fine("Response: "+response);
         return response ;
 	}
 	

@@ -2,7 +2,6 @@ package com.redhat.qe.jon.sahi.tests.plugins.eap6;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.testng.annotations.AfterSuite;
@@ -11,20 +10,21 @@ import org.testng.annotations.BeforeSuite;
 import com.redhat.qe.jon.common.util.AS7DMRClient;
 import com.redhat.qe.jon.common.util.AS7SSHClient;
 import com.redhat.qe.jon.common.util.HTTPClient;
+import com.redhat.qe.jon.common.util.RestClient;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.tools.checklog.CheckLog;
+import com.redhat.qe.tools.checklog.LogFile;
 
 /**
  * @author jmartisk, lzoubek
  */
-// agent.log temporary disabled until https://bugzilla.redhat.com/show_bug.cgi?id=814243 is fixed
-//@CheckRemoteLog(logs=
-//	@RemoteLog(
-//			logFile="${jon.server.home}/logs/rhq-server-log4j.log",
-//			host="${jon.server.host}",
-//			user="${jon.server.user}",
-//			pass="${jon.server.password}"
-//	)
-//)
+
+@CheckLog(enabled=false,
+	logs={
+		@LogFile(id="agent",user="${jon.agent.user}",pass="${jon.agent.password}",host="${jon.agent.host}",logFile="rhq-agent/logs/agent.log"),
+		@LogFile(id="server",user="${jon.server.user}",pass="${jon.server.password}",host="${jon.server.host}",logFile="${jon.server.home}/logs/rhq-server-log4j.log"),
+	}	
+)
 public class AS7PluginSahiTestScript extends SahiTestScript {
 
     protected static final Logger log = Logger.getLogger(AS7PluginSahiTestScript.class.getName());
@@ -100,6 +100,12 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
 
         }
 
+        checkRequiredProperties(
+		"agent.name","jon.agent.user","jon.agent.host","jon.agent.password",
+		"as7.standalone1.home","as7.standalone1.port","as7.standalone1.hostname",
+		"as7.domain.home","as7.domain.port","as7.domain.hostname",
+		"jon.server.host","jon.server.user","jon.server.password"
+	);
         // ********************************************
         // MANAGEMENT INTERFACE INITIALIZATION ********
         // ********************************************
@@ -128,20 +134,13 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         httpDomainThree = new HTTPClient(System.getProperty("as7.domain.hostname"), Integer.parseInt(System.getProperty("as7.domain.host.server-three.http.port")));
         
         as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
-//        try {
-//        	remoteLogAccess = new RemoteLogAccess(System.getenv("HOST_USER"), System.getenv("HOST_NAME"), System.getenv("HOST_PASSWORD"), "rhq-agent/logs/agent.log");
-//        	remoteLogAccess.startRedirectingLog();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-        // should we include this or not? it uninventorizes all EAP-instance resources from the agent before the testing starts..
-    /*    as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.standalone.name"));
-        as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
-        as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-one.name"));
-        as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-two.name"));
-        as7SahiTasks.uninventorizeResourceByNameIfExists(System.getProperty("agent.name"), System.getProperty("as7.domain.host.server-three.name"));
-    */}
+	if (System.getProperty("jon.server.home","").equals("")) {
+	    log.fine("Auto-detecting [jon.server.home]");
+	    String value = RestClient.detectServerInstallDir();
+	    log.fine("[jon.server.home] detected : "+value);
+	    System.setProperty("jon.server.home", value);
+	}
+    }
 
     @AfterSuite(groups="teardown")
     public void clientsCleanup() {
