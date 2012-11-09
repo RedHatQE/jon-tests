@@ -135,6 +135,10 @@ public class LocalCommandRunner implements ICommandRunner {
 		if (!destFile.exists()) {
 			destFile.createNewFile();
 		}
+		if (sourceFile.equals(destFile)) {
+		    log.fine("Source and Destination file ["+sourceFile.getAbsolutePath()+"] are same file, not copying");
+		    return;
+		}
 
 		FileChannel source = null;
 		FileChannel destination = null;
