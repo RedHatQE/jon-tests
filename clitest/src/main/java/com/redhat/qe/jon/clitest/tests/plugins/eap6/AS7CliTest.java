@@ -121,21 +121,7 @@ public class AS7CliTest extends CliTest {
 		}
 	}	
 	
-	public void waitFor(int ms) {
-		waitFor(ms, "Waiting");
-	}
-	public void waitFor(int ms,String message) {
-		log.fine(message+" "+(ms/1000)+"s");
-		if(ms<=0) {
-			ms = 1;
-		}
-		try {
-			Thread.currentThread().join(ms);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 	@Override
 	public void runJSfile(String rhqTarget, String cliUsername,
 			String cliPassword, String jsFile, String cliArgs,

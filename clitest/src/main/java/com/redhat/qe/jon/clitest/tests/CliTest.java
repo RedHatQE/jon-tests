@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,6 +21,7 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.clitest.base.CliTestScript;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
+import com.redhat.qe.jon.common.util.LocalCommandRunner;
 
 public class CliTest extends CliTestScript{
 	private static Logger _logger = Logger.getLogger(CliTest.class.getName());
@@ -28,6 +31,7 @@ public class CliTest extends CliTestScript{
 	private String cliUsername;
 	private String cliPassword;
 	protected CliTasks cliTasks;
+	protected String consoleOutput;
 	
 	private String jsFileName;
 	private static String remoteFileLocation = "/tmp/";
@@ -58,6 +62,14 @@ public class CliTest extends CliTestScript{
 				throw new CliTasksException("Unable to create temporary file", e);
 			}
 			
+		}
+		else if (path.startsWith("file://")) {
+		    try {
+			File file = new File(new URI(path));
+			return file.getAbsolutePath();
+		    } catch (URISyntaxException e) {
+			e.printStackTrace();
+		    }
 		}
 		URL resource = null;
 		if (!path.startsWith("/")) {
@@ -108,6 +120,7 @@ public class CliTest extends CliTestScript{
 		}
 		String jsFilePath = getResourceFileName(jsFile);
 		jsFileName = new File(jsFilePath).getName();
+		
 		// upload JS file to remote host first
 		cliTasks.copyFile(jsFilePath, remoteFileLocation);
 		if (jsDepends!=null) {
@@ -122,7 +135,7 @@ public class CliTest extends CliTestScript{
 			}
 			_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
 		}
-		String consoleOutput = null;
+
 		String command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName;
 		if(cliArgs != null){
 			command +=" "+cliArgs;
@@ -136,8 +149,7 @@ public class CliTest extends CliTestScript{
 			isVersionSet = true;
 			_logger.log(Level.INFO, "RHQ/JON Version: "+System.getProperty("rhq.build.version"));
 		}
-		
-		
+				
 		if(makeFilure != null){
 			cliTasks.validateErrorString(consoleOutput , makeFilure);
 		}
@@ -145,6 +157,29 @@ public class CliTest extends CliTestScript{
 			cliTasks.validateExpectedResultString(consoleOutput , expectedResult);
 		}
 		
+	}
+	/**
+	 * runs given javascript snippet
+	 * @param snippet
+	 * @param rhqTarget
+	 * @param cliUsername
+	 * @param cliPassword
+	 * @param cliArgs
+	 * @param expectedResult
+	 * @param makeFilure
+	 * @param jsDepends
+	 * @param resSrc
+	 * @param resDst
+	 * @return text output of CLI client running this snippet
+	 * @throws IOException
+	 * @throws CliTasksException
+	 */
+	public String runJSSnippet(String snippet, String rhqTarget, String cliUsername,String cliPassword,String cliArgs,String expectedResult,String makeFilure,String jsDepends, String resSrc, String resDst) throws IOException, CliTasksException {
+	    	LocalCommandRunner runner = new LocalCommandRunner();
+	    	runner.connect();
+	    	runner.runAndWait("echo \""+snippet+"\" > /tmp/snippet.js");
+	    	runJSfile(rhqTarget, cliUsername, cliPassword, "file:///tmp/snippet.js", cliArgs, expectedResult, makeFilure, jsDepends, resSrc, resDst);
+	    	return consoleOutput;
 	}
 
 	private void prepareResources(String resSrc, String resDst)
@@ -212,7 +247,23 @@ public class CliTest extends CliTestScript{
 			current+=lines.get(dep)+1;
 		}
 		_logger.info("===========================");
-	}	
+	}
+	
+	public void waitFor(int ms) {
+		waitFor(ms, "Waiting");
+	}
+	public void waitFor(int ms,String message) {
+		log.fine(message+" "+(ms/1000)+"s");
+		if(ms<=0) {
+			ms = 1;
+		}
+		try {
+			Thread.currentThread().join(ms);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	@AfterTest
 	public void deleteJSFile(){

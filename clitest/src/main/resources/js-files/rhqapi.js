@@ -1293,8 +1293,73 @@ var Resource = function (param) {
 	var _id = param.id;
 	var _name = param.name;
 	var _res = param;
+	
+	// we define a metric as an internal type
+	//TODO implement reading last metric value properly
+	/**
+	 * creates a new instance of Metric
+	 * @class
+	 * @constructor
+	 * @name Metric
+	 */
+	var Metric = function(param,res) {
+		var common = new _common();
+		var _param = param;
+		var _res = res;
+		return {
+			/**
+			 * name of metric
+			 * @lends Metric.prototype
+			 * @field
+			 * @type String
+			 */
+			name : param.name,
+			/**
+			 * latest value of metric
+			 * @field
+			 */
+			value : param.value,
+			/**
+			 * enables/disables metric and sets its collection interval
+			 * @param enabled {Boolean} - enable or disable metric
+			 * @param interval {Number} - optinally set collection interval
+			 */
+			set : function(enabled,interval) {
+				common.trace("Resource("+_res.id+").metrics.["+param.name+"].set(enabled="+enabled+",interval="+interval+")");
+				var criteria = common.createCriteria(new MeasurementDefinitionCriteria(),{resourceTypeId:_res.resourceType.id,name:_param.name});				
+				var mDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
+				if (mDefs.size()!=1) {
+					throw "Unable to retrieve measurement definition, this is a bug"
+				}
+				if (enabled==false) {
+					common.debug("Disabling measurement");
+					MeasurementScheduleManager.disableSchedulesForResource(_res.id,[mDefs.get(0).id])
+					return;
+				}else if (enabled==true) {
+					common.debug("Enabling measurement");
+					MeasurementScheduleManager.enableSchedulesForResource(_res.id,[mDefs.get(0).id])
+				}
+				if (typeof interval == "number") {
+					common.debug("Setting collection interval to "+interval+"s");
+					MeasurementScheduleManager.updateSchedulesForResource(_res.id,[mDefs.get(0).id],interval*1000);
+				}
+				
+			}
+		}
+	};
+	
   var _dynamic = {};
+  
+  var _shortenMetricName = function(name) {
+	  return (String(name)[0].toLowerCase()+name.substring(1)).replace(/ /g,"");
+  }
 
+  var _metrics = {};
+  for (index in param.measurements) {
+	  var metric = new Metric(param.measurements[index],param);
+	  var _metricName = _shortenMetricName(metric.name);
+	  _metrics[_metricName] = metric;
+  }
   var _retrieveContent = function(destination) {
 		var self = ProxyFactory.getResource(_id);
 		var func = function() {
@@ -1345,6 +1410,7 @@ var Resource = function (param) {
 			common.waitFor(func);
 		};
 	}
+
 
 	var _getName = function(){
 		return _res.getName();
@@ -1438,10 +1504,34 @@ var Resource = function (param) {
      * @type String
      */
     name : _name,
-  	/**
+	/**
+	 * enumerates metrics available for this resource, returned value is not an array but a hash,
+	 * where name is metric name without spaces
+	 * @example resource.metrics.totalSwapSpace // get's a metric called 'Total Swap Space'
+	 * @type Metric[]
+	 * @field
+	 */
+    metrics : _metrics,
+    /**
+     * gets a metric by it's name
+     * @example resource.getMetric("Total Swap Space")
+     * @type Metric
+     */
+    getMetric : function(name) {
+    	common.trace("Resource("+_id+").getMetric("+name+")");
+    	var key = _shortenMetricName(name);
+    	if (key in _metrics) {
+    		return _metrics[key];
+    	}
+    	else {
+    		throw "Cannot find metric called ["+name+"]"
+    	}
+    },
+    /**
     * gets resource ID
 	  * @type Number
 	  */
+    
     getId : function() {return _id;},
     /**
     * gets resource String representation
@@ -1454,7 +1544,7 @@ var Resource = function (param) {
 	  */
     getName : function() {return _getName();},
 	  /**
-	  * returns Resource proxy object
+	  * @returns Resource proxy object
 	  */
     getProxy : function() {
 			common.trace("Resource("+_id+").getProxy()");
