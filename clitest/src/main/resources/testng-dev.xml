@@ -1,0 +1,229 @@
+<suite name="RHQ CLI JS/JAVA Test">
+
+  	<listeners>
+  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
+  	  	<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found 
+  		<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
+  		-->
+  	</listeners>
+
+
+<parameter name="cli.username"  value="rhqadmin"/>
+<parameter name="cli.password"  value="rhqadmin"/>
+<!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
+<parameter name="make.failure"  value="Login failed:,No such file or directory"/>
+
+
+<test name="discoveryScan">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="discoveryScan.js"/>
+			<parameter name="js.depends" value="rhqapi.js" />
+			<parameter name="expected.result"  value="Login successful"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>     
+		</class>   
+	</classes>
+</test>
+
+<!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test -->
+<test name="Uninventory-Platforms-Start">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="UninventoryResources.js"/>
+			<parameter name="js.depends" value="rhqapi.js" />
+			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+<test name="Import-Resources">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="ImportResources.js"/>
+			<parameter name="expected.result"  value="Login successful,Resources are imported successfully"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+<!-- 	***********************************************************************************************
+		<start> Examples from jon documentation, chapter Short Examples 
+		http://docs.redhat.com/docs/en-US/JBoss_Operations_Network/3.1/html/Dev_Writing_JON_Command-Line_Scripts/building-blocks.html
+		***********************************************************************************************
+-->
+
+
+<test name="configAgentAutoUpdate.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentAutoUpdate.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentClientMaximumConcurrency.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientMaximumConcurrency.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientMaxRetries.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientMaxRetries.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientMulticastDetector.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientMulticastDetector.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientQueueSize.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientQueueSize.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientQueueThrottling.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientQueueThrottling.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientRetryInterval.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientRetryInterval.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientSendThrottling.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientSendThrottling.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientServerPullingInterval.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientServerPullingInterval.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientTestFiloverListAtStartup.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientTestFiloverListAtStartup.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentClientTimeout.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientTimeout.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="configAgentUpdatePluginAtStartup.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentUpdatePluginAtStartup.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
+
+<!--  This case SHOULD BE LAST ONE or before the one -->
+<!--  Doing inventory and Uninventory for N number times -->
+<test name="InventoryConsistency">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.InventoryConsistencyTest">
+                        <methods>
+                                <include name="importAndUninventory"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
+<!--  This case SHOULD BE LAST ONE -->
+<!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation -->
+<test name="Uninventory-Platforms-End">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="UninventoryResources.js"/>
+			<parameter name="js.depends" value="rhqapi.js" />			
+			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+</suite>

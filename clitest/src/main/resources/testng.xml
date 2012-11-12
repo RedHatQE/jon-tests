@@ -628,7 +628,10 @@
         </classes>
 </test>
 
-<test name="configAgentAutoUpdate.js">
+
+<!--RHQ Resource  Configuration Update -->
+
+<test name="configAgentAutoUpdate">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentAutoUpdate.js"/>
@@ -640,7 +643,7 @@
         </classes>
 </test>
 
-<test name="configAgentClientMaximumConcurrency.js">
+<test name="configAgentClientMaximumConcurrency">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientMaximumConcurrency.js"/>
@@ -651,7 +654,8 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientMaxRetries.js">
+
+<test name="configAgentClientMaxRetries">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientMaxRetries.js"/>
@@ -662,7 +666,32 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientMulticastDetector.js">
+
+<test name="configAgentClientMulticastDetectorDefaultDelay">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientMulticastDetectorDefaultDelay.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentClientMulticastDetectorHearbeatDelay">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientMulticastDetectorHearbeatDelay.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentClientMulticastDetector">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientMulticastDetector.js"/>
@@ -673,7 +702,44 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientQueueSize.js">
+
+<test name="configAgentClientMulticastDetectorMulticastAddress">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientMulticastDetectorMulticastAddress.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentClientMulticastDetectorMulticastBindAddress">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientMulticastDetectorMulticastBindAddress.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentClientMulticastDetectorPort">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientMulticastDetectorPort.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentClientQueueSize">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientQueueSize.js"/>
@@ -684,7 +750,8 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientQueueThrottling.js">
+
+<test name="configAgentClientQueueThrottling">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientQueueThrottling.js"/>
@@ -695,7 +762,8 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientRetryInterval.js">
+
+<test name="configAgentClientRetryInterval">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientRetryInterval.js"/>
@@ -706,7 +774,8 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientSendThrottling.js">
+
+<test name="configAgentClientSendThrottling">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientSendThrottling.js"/>
@@ -717,7 +786,20 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientServerPullingInterval.js">
+
+<test name="configAgentClientServerPollingInterval">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentClientServerPollingInterval.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentClientServerPullingInterval">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientServerPullingInterval.js"/>
@@ -728,7 +810,8 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientTestFiloverListAtStartup.js">
+
+<test name="configAgentClientTestFiloverListAtStartup">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientTestFiloverListAtStartup.js"/>
@@ -739,7 +822,8 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentClientTimeout.js">
+
+<test name="configAgentClientTimeout">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentClientTimeout.js"/>
@@ -750,7 +834,152 @@
                 </class>
         </classes>
 </test>
-<test name="configAgentUpdatePluginAtStartup.js">
+
+<test name="configAgentCommandSpoolFilename">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentCommandSpoolFilename.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentCommandSpoolFilenameParams">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentCommandSpoolFilenameParams.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentCompressSpoolFile">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentCompressSpoolFile.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentPrimaryServerSwitchoverCheckInterval">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentPrimaryServerSwitchoverCheckInterval.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentRegisterWithServerAtStartup">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentRegisterWithServerAtStartup.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentRemoteStreamIdleTimeout">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentRemoteStreamIdleTimeout.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentRHQServerBindAddress">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentRHQServerBindAddress.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentRHQServerBindPort">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentRHQServerBindPort.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentRHQServerTransportParams">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentRHQServerTransportParams.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentRHQServerTransportProtocol">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentRHQServerTransportProtocol.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentTransportBindPort">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentTransportBindPort.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentTransportProtocol">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentTransportProtocol.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentUpdatePluginAtStartup">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/configAgentUpdatePluginAtStartup.js"/>
@@ -761,6 +990,60 @@
                 </class>
         </classes>
 </test>
+
+<test name="configAgentVMHealthCheckInterval">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentVMHealthCheckInterval.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentVMHealthCheckLowHeapMemoryThreshold">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentVMHealthCheckLowHeapMemoryThreshold.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentVMHealthCheckLowNonHeapMemoryThreshold">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentVMHealthCheckLowNonHeapMemoryThreshold.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="configAgentWaitForServerAtStartup">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/configAgentWaitForServerAtStartup.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
+
+
+
+
 
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
 <test name="testPermissions-CreateChildRepositories">
