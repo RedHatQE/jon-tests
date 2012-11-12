@@ -10,6 +10,7 @@
 
 var criteria = new ResourceCriteria();
 criteria.addFilterName("RHQ Agent");
+criteria.addFilterResourceTypeName("RHQ Agent");
 var resources = ResourceManager.findResourcesByCriteria(criteria);
 var resource = resources.get(0);
 var resourceId = resource.id;

@@ -9,13 +9,16 @@
 
 var criteria = new ResourceCriteria();
 criteria.addFilterName("RHQ Agent");
+criteria.addFilterResourceTypeName("RHQ Agent");
 var resources = ResourceManager.findResourcesByCriteria(criteria);
 var resource = resources.get(0);
 var resourceId = resource.id;
+println(resource);
 var testFiloverAtStartup = "rhq.agent.test-failover-list-at-startup";
 
 //get  RHQ agent original configuration
 var agentConfiguration = ConfigurationManager.getResourceConfiguration(resource.id);
+println(agentConfiguration);
 var isAgentTestFiloverAtStartupEnabledOriginal = isAgentTestFiloverAtStartupEnabled(agentConfiguration);
 
 // Update configuration
