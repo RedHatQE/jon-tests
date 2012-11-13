@@ -1283,6 +1283,7 @@ var Resource = function (param) {
 	if (!param) {
 		throw "either Number or org.rhq.bindings.client.ResourceClientProxy parameter is required";
 	}
+	common.debug("Retrieving proxy instance")
 	if ("number" == typeof param) {
 		param = ProxyFactory.getResource(param);
 	}
@@ -1306,6 +1307,15 @@ var Resource = function (param) {
 		var common = new _common();
 		var _param = param;
 		var _res = res;
+		var _defId = function() {
+			var criteria = common.createCriteria(new MeasurementDefinitionCriteria(),{resourceTypeId:_res.resourceType.id,displayName:_param.name});				
+			var mDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
+			println(mDefs);
+			if (mDefs.size()!=1) {
+				throw "Unable to retrieve measurement definition, this is a bug"
+			}
+			return mDefs.get(0).id;
+		};
 		return {
 			/**
 			 * name of metric
@@ -1315,10 +1325,18 @@ var Resource = function (param) {
 			 */
 			name : param.name,
 			/**
-			 * latest value of metric
-			 * @field
+			 * gets live value for metric
+			 * @type String
+			 * @returns String whatever the value is
+			 * 
 			 */
-			value : param.value,
+			getLiveValue : function() {
+				common.trace("Resource("+_res.id+").metrics.["+param.name+"].getLiveValue()");				
+				var defId = _defId();
+				var values = MeasurementDataManager.findLiveData(_res.id,[defId])
+				var value = values.get(0);
+				return String(value.value);
+			},
 			/**
 			 * enables/disables metric and sets its collection interval
 			 * @param enabled {Boolean} - enable or disable metric
@@ -1326,22 +1344,18 @@ var Resource = function (param) {
 			 */
 			set : function(enabled,interval) {
 				common.trace("Resource("+_res.id+").metrics.["+param.name+"].set(enabled="+enabled+",interval="+interval+")");
-				var criteria = common.createCriteria(new MeasurementDefinitionCriteria(),{resourceTypeId:_res.resourceType.id,name:_param.name});				
-				var mDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
-				if (mDefs.size()!=1) {
-					throw "Unable to retrieve measurement definition, this is a bug"
-				}
+				var defId = _defId();
 				if (enabled==false) {
 					common.debug("Disabling measurement");
-					MeasurementScheduleManager.disableSchedulesForResource(_res.id,[mDefs.get(0).id])
+					MeasurementScheduleManager.disableSchedulesForResource(_res.id,[defId])
 					return;
 				}else if (enabled==true) {
 					common.debug("Enabling measurement");
-					MeasurementScheduleManager.enableSchedulesForResource(_res.id,[mDefs.get(0).id])
+					MeasurementScheduleManager.enableSchedulesForResource(_res.id,[defId])
 				}
 				if (typeof interval == "number") {
 					common.debug("Setting collection interval to "+interval+"s");
-					MeasurementScheduleManager.updateSchedulesForResource(_res.id,[mDefs.get(0).id],interval*1000);
+					MeasurementScheduleManager.updateSchedulesForResource(_res.id,[defId],interval*1000);
 				}
 				
 			}
@@ -1353,7 +1367,7 @@ var Resource = function (param) {
   var _shortenMetricName = function(name) {
 	  return (String(name)[0].toLowerCase()+name.substring(1)).replace(/ /g,"");
   }
-
+  common.debug("Enumerating metrics")
   var _metrics = {};
   for (index in param.measurements) {
 	  var metric = new Metric(param.measurements[index],param);
