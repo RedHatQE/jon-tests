@@ -9,7 +9,7 @@ var resourceId = resource.id;
 
 //get  RHQ agent original configuration
 var agentConfiguration = ConfigurationManager.getResourceConfiguration(resource.id);
-
+println(agentConfiguration);
 var agentConfiguration = ConfigurationManager.getResourceConfiguration(resource.id);
 
 if (propType == "bool"){

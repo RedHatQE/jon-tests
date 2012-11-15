@@ -631,7 +631,7 @@
 
 <!--RHQ Resource  Configuration Update -->
 
-<test name="TEST_METHOD">
+<test name="Test_Update_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.coniguration.AgentConfiguration">	
 			<methods>
