@@ -2016,6 +2016,86 @@ var Resource = function (param) {
 };
 
 
+//
+/**
+* Function - Gets configuration parameter boolean value for given configuration object
+* 
+* @param - configuration // config object
+* @param - configProperty //configuration property	 
+*	
+*            
+* @return - isEnabled // boolean
+*/
+var isConfigPropertyEnabled = function(configuration, configProperty){
+
+	var isEnabled = configuration.getSimple(configProperty).getBooleanValue();
+
+
+	return isEnabled;
+}
+
+
+
+/**
+* Function - Update  Configuration, check update is done, change config back
+* 
+* @param	resourceId  //  resource Id
+* @param	oldConfiguration 
+* @param 	configPropValue // String config property value
+*	isEnabled // boolean
+*            
+* @return - 
+*/
+var updateConfigurationString = function(resourceId, configuration, configProperty, configPropValue ){
+	println(configuration);
+	var configValue = configuration.getSimple(configProperty).stringValue;
+
+	//update config
+	configuration.setSimpleValue(configProperty, configPropValue ); 
+	ConfigurationManager.updateResourceConfiguration(resourceId, configuration);
+	var newConfiguration = ConfigurationManager.getResourceConfiguration(resourceId);
+	var configValueNew1 = configuration.getSimple(configProperty).stringValue;
+	assertTrue(configValueNew1 == configPropValue, "Updating  "+ configProperty +" configuration failed!!");
+
+
+	// update configuration back
+	newConfiguration.setSimpleValue(configProperty, configValue); 
+	ConfigurationManager.updateResourceConfiguration(resourceId, newConfiguration);
+	var configValueNew2 = newConfiguration.getSimple(configProperty).stringValue;
+
+
+	assertTrue(!configValueNew1.equals(configValueNew2) , "Updating  "+ configProperty +" configuration failed!!");
+	assertTrue(configValueNew2 == configValue , "Updating  "+ configProperty +" configuration failed!!");
+	
+}
+
+
+
+/**
+* Function - Update n Configuration
+* 
+* @param - resourceId  // n resource Id
+* @param	oldConfiguration 
+* @param	isEnabled // boolean
+*            
+* @return - newConfiguration
+*/
+
+var updateConfigurationBoolean = function(resourceId,configuration,configProperty,isEnabled ){
+
+if (isEnabled == true){
+	configuration.setSimpleValue(configProperty,  "false"); 
+}
+else {
+	configuration.setSimpleValue(configProperty,  "true"); 
+	}
+
+ConfigurationManager.updateResourceConfiguration(resourceId, configuration);
+var newConfiguration = ConfigurationManager.getResourceConfiguration(resourceId);
+
+return newConfiguration;
+
+}
 
 /**
  * @lends _global_
