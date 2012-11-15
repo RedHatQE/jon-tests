@@ -268,7 +268,7 @@ function createDriftDefinition(logedInUser,resource) {
 	
 	var entityContext = new EntityContext(resource.id, null, null, null);
 	DriftManager.updateDriftDefinition(logedInUser,entityContext,driftDef)
-	
+	println("it is possible to create/update Drift");
 	return driftDef;
 
 }
@@ -285,6 +285,7 @@ function deleteDriftDefinition(logedInUser,resource, driftDef) {
 
 	var entityContext = new EntityContext(resource.id, null, null, null);
 	DriftManager.deleteDriftDefinition(logedInUser, entityContext, driftDef.getName()); 
+	println("it is possible to delete Drift");
 }
 
 
@@ -314,11 +315,13 @@ try{
 	var driftDefinition = createDriftDefinition(logedInUser,resource);
 	deleteDriftDefinition(logedInUser,resource, driftDefinition);
 	
-	if(!bool) throw new DriftException();
-		println("manage drift permissions doesnt work correctly!!!!!!!!!!");
+	if(!bool) { throw new DriftException();
+		println("manage drift permissions doesnt work correctly_____!!!!");
+	}
 } catch(err){ //bug#864870
-	//if(err.toString().indexOf("[Warning] User [" + userName + "] does not have permission to manage drift"  ) != -1 && bool)
-	println("manage drift permissions doesnt work correctly!!");
+//	if(err.toString().indexOf("[Warning] User [" + userName + "] does not have permission to manage drift"  ) != -1 && bool)
+	if(err.toString().indexOf("lacks MANAGE_DRIFT"  ) != -1 && bool)
+		println("manage drift permissions doesnt work correctly!!");
 }
 
 
