@@ -112,6 +112,20 @@ public class Operations extends ResourceTab {
 						log.fine("Selected operation [" + op + "].");
 						return;
 					}
+					else {
+					    log.fine("Trying workaround with focused picker");
+					    ElementStub focused = tasks.image("comboBoxPicker_Over.png"); 
+					    if (focused.isVisible()) {
+						log.fine("Focused picker was visible, clicking...");
+						tasks.xy(focused,3,3).click();
+						operation = tasks.row(op);
+						if (operation.exists()) {
+							tasks.xy(operation, 3, 3).click();
+							log.fine("Selected operation [" + op + "].");
+							return;
+						}
+					    }
+					}
 				}
 			}
 			throw new RuntimeException("Unable to select operation ["+op+"] clicked on each visible combo, but operation did NOT pop up");
