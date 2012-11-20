@@ -2027,32 +2027,23 @@ var Resource = function (param) {
 * @return - isEnabled // boolean
 */
 var isConfigPropertyEnabled = function(configuration, configProperty){
-
 	var isEnabled = configuration.getSimple(configProperty).getBooleanValue();
-
 
 	return isEnabled;
 }
 
 
-
 /**
-* Function - Update  Configuration, check update is done, change config back
+* Function - Wait For Configuration To Update
 * 
-* @param	resourceId  //  resource Id
-* @param	oldConfiguration 
-* @param 	configPropValue // String config property value
-*	isEnabled // boolean
+* @param	update  //  configuation update result	
+* @param	resourceId
+*	
 *            
-* @return - 
+* @return - updateStatus //boolean
 */
-var updateConfigurationString = function(resourceId, configuration, configProperty, configPropValue ){
-	println(configuration);
-	var configValue = configuration.getSimple(configProperty).stringValue;
 
-	//update config
-	configuration.setSimpleValue(configProperty, configPropValue ); 
-	var update = ConfigurationManager.updateResourceConfiguration(resourceId, configuration);
+var waitForConfigurationToUpdate = function(update, resourceId){
 	var common = new _common();
 	if (!update) {
 		common.debug("Configuration has not been changed");
@@ -2076,44 +2067,52 @@ var updateConfigurationString = function(resourceId, configuration, configProper
 	if (update.status == ConfigurationUpdateStatus.FAILURE) {
 		common.info("Resource configuration update failed : "+update.errorMessage);
 	}
+	return update.status == ConfigurationUpdateStatus.SUCCESS;
+}
+
+/**
+* Function - Update  Configuration, check update is done, change config back
+* 
+* @param	resourceId  //  resource Id
+* @param	oldConfiguration 
+* @param 	configPropValue // String config property value
+*	isEnabled // boolean
+*            
+* @return - 
+*/
+var updateConfigurationString = function(resourceId, configuration, configProperty, configPropValue ){
+	var common = new _common();
+	println(configuration);
+	var configValue = configuration.getSimple(configProperty).stringValue;
+
+
+	//update config
+	configuration.setSimpleValue(configProperty, configPropValue ); 
+	var update = ConfigurationManager.updateResourceConfiguration(resourceId, configuration);
+	if(!(waitForConfigurationToUpdate(update,resourceId))){
+		return ;
+	}
+
 	var newConfiguration = ConfigurationManager.getResourceConfiguration(resourceId);
-	var configValueNew1 = configuration.getSimple(configProperty).stringValue;
+	var configValueNew1 = newConfiguration.getSimple(configProperty).stringValue;
 	assertTrue(configValueNew1 == configPropValue, "Updating  "+ configProperty +" configuration failed!!");
 
 
 	// update configuration back
 	newConfiguration.setSimpleValue(configProperty, configValue); 
 	var update = ConfigurationManager.updateResourceConfiguration(resourceId, newConfiguration);
-	if (!update) {
-		common.debug("Configuration has not been changed");
-		return;
+	
+	if(!(waitForConfigurationToUpdate(update,resourceId))){
+		return ;
 	}
-	if (update.status == ConfigurationUpdateStatus.INPROGRESS) {
-		var pred = function() {
-			var up = ConfigurationManager.getLatestResourceConfigurationUpdate(resourceId);
-			if (up) {
-				return up.status != ConfigurationUpdateStatus.INPROGRESS;
-			}
-		};
-		common.debug("Waiting for configuration to be updated...");
-		var result = common.waitFor(pred);
-		if (!result) {
-			throw "Resource configuration update timed out!";
-		}
-		update = ConfigurationManager.getLatestResourceConfigurationUpdate(resourceId);
-	}
-	common.debug("Configuration update finished with status : "+update.status);
-	if (update.status == ConfigurationUpdateStatus.FAILURE) {
-		common.info("Resource configuration update failed : "+update.errorMessage);
-	}
-	var configValueNew2 = newConfiguration.getSimple(configProperty).stringValue;
+	var newConfiguration2 = ConfigurationManager.getResourceConfiguration(resourceId);
+	var configValueNew2 = newConfiguration2.getSimple(configProperty).stringValue;
 
 
 	assertTrue(!configValueNew1.equals(configValueNew2) , "Updating  "+ configProperty +" configuration failed!!");
 	assertTrue(configValueNew2 == configValue , "Updating  "+ configProperty +" configuration failed!!");
 	
 }
-
 
 
 /**
@@ -2136,28 +2135,9 @@ else {
 	}
 
 var update = ConfigurationManager.updateResourceConfiguration(resourceId, configuration);
-var common = new _common();
-if (!update) {
-	common.debug("Configuration has not been changed");
-	return;
-}
-if (update.status == ConfigurationUpdateStatus.INPROGRESS) {
-	var pred = function() {
-		var up = ConfigurationManager.getLatestResourceConfigurationUpdate(resourceId);
-		if (up) {
-			return up.status != ConfigurationUpdateStatus.INPROGRESS;
-		}
-	};
-	common.debug("Waiting for configuration to be updated...");
-	var result = common.waitFor(pred);
-	if (!result) {
-		throw "Resource configuration update timed out!";
-	}
-	update = ConfigurationManager.getLatestResourceConfigurationUpdate(resourceId);
-}
-common.debug("Configuration update finished with status : "+update.status);
-if (update.status == ConfigurationUpdateStatus.FAILURE) {
-	common.info("Resource configuration update failed : "+update.errorMessage);
+var configUpdateStatus = waitForConfigurationToUpdate(update,resourceId);
+if(!configUpdateStatus){
+	return ;
 }
 var newConfiguration = ConfigurationManager.getResourceConfiguration(resourceId);
 
