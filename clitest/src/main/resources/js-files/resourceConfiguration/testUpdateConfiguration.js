@@ -8,7 +8,7 @@ var resource = resources.get(0);
 var resourceId = resource.id;
 
 //get  RHQ agent original configuration
-var agentConfiguration = ConfigurationManager.getResourceConfiguration(resource.id);
+var agentConfiguration = ConfigurationManager.getLiveResourceConfiguration(resource.id, true);
 println(agentConfiguration);
 
 if (propType == "bool"){
