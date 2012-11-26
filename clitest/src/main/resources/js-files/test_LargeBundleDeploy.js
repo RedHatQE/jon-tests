@@ -55,6 +55,9 @@ sleep(1000);
 var jBossId = resourcesArray[0];
 var jbossType = resourcesTypeArray[0];
 
+assertTrue(jbossType != null, "No JBossAS 7 found!!");
+
+//assertTrue(jbossType);
 
 
 //deployLargeBundle();

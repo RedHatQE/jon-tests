@@ -13,6 +13,8 @@ println("resource id"+resourcesArray[0]);
 println("resource length"+resourcesArray.length);
 var jBossId = resourcesArray[0];
 
+assertTrue(jBossId != null, "No JBossAS 7 found!!");
+
 var childResource = getChildResources(jBossId);
 
 println("childResource "+ childResource);
