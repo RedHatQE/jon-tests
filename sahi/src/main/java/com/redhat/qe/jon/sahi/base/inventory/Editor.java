@@ -8,6 +8,7 @@ import net.sf.sahi.client.ElementStub;
 import org.testng.Assert;
 
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -22,6 +23,7 @@ public class Editor {
 	 * asserts all required input fields have been filled
 	 */
 	public void assertRequiredInputs() {
+	    	tasks.waitFor(Timing.WAIT_TIME);
 		Assert.assertTrue(!tasks.image("exclamation.png").exists(), "All required inputs were provided");
 	}
 	/**
@@ -40,6 +42,81 @@ public class Editor {
 	public void checkRadio(String selection) {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.radio(selection).check();
+	}
+	/**
+	 * jumps to section (or category)
+	 * this clicks 'Jump to Section' button, and tries to click on  menu item that just <b>contains</b> text given by 'name' parameter,
+	 * first match is used
+	 * @param name of section - substring defining a section menuItem text
+	 */
+	public void jumpToSection(String name) {
+		tasks.xy(tasks.cell("Jump to Section"),3,3).click();
+		tasks.waitFor(Timing.WAIT_TIME);
+		// we need to iterate over all menuTables and use the visible one
+		// because smartGWT is so smart, that it leaves invisible menuTable within a DOM model
+		for (ElementStub es : tasks.table("menuTable").collectSimilar()) {
+		    if (es.isVisible()) {
+			for (ElementStub cell : tasks.cell("menuTitleField").in(es).collectSimilar()) {
+			    if (cell.fetch("innerHTML").contains(name)) {
+				tasks.xy(cell,3,3).click();
+				return;
+			    }
+			}
+			
+			
+		    }
+		}
+		throw new RuntimeException("Unable to jump to section ["+name+"]");
+	}
+	/**
+	 * clicks on upper scroll arrow
+	 * @param clicks - how many times to click
+	 */
+	public void scrollUp(int clicks) {
+	    ElementStub scroll = tasks.image("vscroll_start.png");
+	    if (scroll.exists() && scroll.isVisible()) {
+		log.fine("Scrollbar found");
+		for (int i = 0; i < clicks;i++) {
+		    tasks.xy(scroll,3,3).click();
+		    scroll = tasks.image("vscroll_Over_start.png"); // after first click we must locate _Over_
+		    tasks.waitFor(Timing.TIME_5S/5);
+		    log.fine("Clicked scroll arrow");
+		}
+	    }
+	    else {
+		log.warning("Scrollbar not found!");
+	    }
+	}
+	/**
+	 * clicks once on upper scroll arrow
+	 */
+	public void scrollUp() {
+	    scrollUp(1);
+	}
+	/**
+	 * clicks on bottom scroll arrow
+	 * @param clicks - how many times to click
+	 */
+	public void scrollDown(int clicks) {
+	    ElementStub scroll = tasks.image("vscroll_end.png");
+	    if (scroll.exists() && scroll.isVisible()) {
+		log.fine("Scrollbar found");
+		for (int i = 0; i < clicks;i++) {
+		    tasks.xy(scroll,3,3).click();
+		    scroll = tasks.image("vscroll_Over_end.png"); // after first click we must locate _Over_
+		    tasks.waitFor(Timing.TIME_5S/5);
+		    log.fine("Clicked scroll arrow");
+		}
+	    }
+	    else {
+		log.warning("Scrollbar not found!");
+	    }
+	}
+	/**
+	 * clicks once on bottom scroll arrow
+	 */
+	public void scrollDown() {
+	    scrollDown(1);
 	}
 	public void selectCombo(int index, String selection) {
 		 int pickers = tasks.image("comboBoxPicker.png").countSimilar();
