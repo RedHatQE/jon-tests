@@ -72,21 +72,21 @@ public class Editor {
 	 * clicks on upper scroll arrow
 	 * @param clicks - how many times to click
 	 */
-	public void scrollUp(int clicks) {
-	    ElementStub scroll = tasks.image("vscroll_start.png");
-	    if (scroll.exists() && scroll.isVisible()) {
-		log.fine("Scrollbar found");
-		for (int i = 0; i < clicks;i++) {
-		    tasks.xy(scroll,3,3).click();
-		    scroll = tasks.image("vscroll_Over_start.png"); // after first click we must locate _Over_
-		    tasks.waitFor(Timing.TIME_5S/5);
-		    log.fine("Clicked scroll arrow");
-		}
-	    }
-	    else {
-		log.warning("Scrollbar not found!");
-	    }
-	}
+        public void scrollUp(int clicks) {
+        	for (int i = 0; i < clicks; i++) {
+        	    ElementStub scroll = tasks.image("vscroll_start.png");
+        	    if (!scroll.exists()) {
+        		scroll = tasks.image("vscroll_Over_start.png");
+        	    }
+        	    if (scroll.exists() && scroll.isVisible()) {
+        		tasks.xy(scroll, 3, 3).click();
+        		log.fine("Clicked scroll arrow");
+        		tasks.waitFor(Timing.TIME_5S / 5);
+        	    } else {
+        		log.warning("Scroll arrow not found!");
+        	    }
+        	}
+        }
 	/**
 	 * clicks once on upper scroll arrow
 	 */
@@ -97,21 +97,22 @@ public class Editor {
 	 * clicks on bottom scroll arrow
 	 * @param clicks - how many times to click
 	 */
-	public void scrollDown(int clicks) {
+    public void scrollDown(int clicks) {
+	for (int i = 0; i < clicks; i++) {
 	    ElementStub scroll = tasks.image("vscroll_end.png");
+	    if (!scroll.exists()) {
+		scroll = tasks.image("vscroll_Over_end.png"); 
+	    }
 	    if (scroll.exists() && scroll.isVisible()) {
-		log.fine("Scrollbar found");
-		for (int i = 0; i < clicks;i++) {
-		    tasks.xy(scroll,3,3).click();
-		    scroll = tasks.image("vscroll_Over_end.png"); // after first click we must locate _Over_
-		    tasks.waitFor(Timing.TIME_5S/5);
-		    log.fine("Clicked scroll arrow");
-		}
+		tasks.xy(scroll, 3, 3).click();
+		log.fine("Clicked scroll arrow");
+		tasks.waitFor(Timing.TIME_5S / 5);				
 	    }
 	    else {
-		log.warning("Scrollbar not found!");
+		log.warning("Scroll arrow not found!");
 	    }
 	}
+    }
 	/**
 	 * clicks once on bottom scroll arrow
 	 */
