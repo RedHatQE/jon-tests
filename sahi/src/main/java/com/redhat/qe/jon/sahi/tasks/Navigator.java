@@ -33,8 +33,10 @@ public class Navigator {
 		if (url==null) {
 			throw new RuntimeException("System property [jon.server.url] is not defined please set it to JON server url so I know where to connect");
 		}
-		if (!url.endsWith("coregui")) {
-			url+="/coregui";
+		// fix url if someone puts / at the end
+		if (url.endsWith("/")) {
+		    url = url.substring(0,url.length()-1);
+		    System.setProperty("jon.server.url", url);
 		}
 		serverBaseUrl = url;
 	}
