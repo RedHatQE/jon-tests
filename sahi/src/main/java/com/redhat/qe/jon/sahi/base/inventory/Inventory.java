@@ -66,14 +66,19 @@ public class Inventory extends ResourceTab{
 	
 	public static class ConnectionSettings {
 		private final SahiTasks tasks;
+		private final Editor editor;
 		private ConnectionSettings(SahiTasks tasks) {
 			this.tasks = tasks;
+			this.editor = new Editor(tasks);
 		}
 		/**
 		 * clicks <b>Save</b> button
 		 */
 		public void save() {
 			tasks.cell("Save").click();
+		}
+		public Editor getEditor() {
+		    return editor;
 		}
 	}
 	
