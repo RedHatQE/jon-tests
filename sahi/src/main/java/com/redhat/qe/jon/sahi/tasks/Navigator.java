@@ -38,6 +38,7 @@ public class Navigator {
 		    url = url.substring(0,url.length()-1);
 		    System.setProperty("jon.server.url", url);
 		}
+		url+="/coregui";
 		serverBaseUrl = url;
 	}
 
