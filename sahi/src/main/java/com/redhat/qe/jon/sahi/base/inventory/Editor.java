@@ -73,16 +73,15 @@ public class Editor {
 	 * @param clicks - how many times to click
 	 */
         public void scrollUp(int clicks) {
+        	ElementStub scroll = getScrollButton("start");
         	for (int i = 0; i < clicks; i++) {
-        	    ElementStub scroll = tasks.image("vscroll_start.png");
-        	    if (!scroll.exists()) {
-        		scroll = tasks.image("vscroll_Over_start.png");
-        	    }
-        	    if (scroll.exists() && scroll.isVisible()) {
+        	    if (scroll!=null && scroll.exists() && scroll.isVisible()) {
         		tasks.xy(scroll, 3, 3).click();
         		log.fine("Clicked scroll arrow");
         		tasks.waitFor(Timing.TIME_5S / 5);
-        	    } else {
+        		scroll = getScrollButton("Over_start");
+        	    }
+        	    else {
         		log.warning("Scroll arrow not found!");
         	    }
         	}
@@ -93,20 +92,25 @@ public class Editor {
 	public void scrollUp() {
 	    scrollUp(1);
 	}
+	private ElementStub getScrollButton(String type) {
+	    List<ElementStub> scrolls = tasks.image("vscroll_"+type+".png").collectSimilar();
+	    if (scrolls.size()>0) {
+		return scrolls.get(scrolls.size()-1);
+	    }
+	    return null;
+	}
 	/**
 	 * clicks on bottom scroll arrow
 	 * @param clicks - how many times to click
 	 */
     public void scrollDown(int clicks) {
+	ElementStub scroll = getScrollButton("end");
 	for (int i = 0; i < clicks; i++) {
-	    ElementStub scroll = tasks.image("vscroll_end.png");
-	    if (!scroll.exists()) {
-		scroll = tasks.image("vscroll_Over_end.png"); 
-	    }
-	    if (scroll.exists() && scroll.isVisible()) {
+	    if (scroll!=null && scroll.exists() && scroll.isVisible()) {
 		tasks.xy(scroll, 3, 3).click();
 		log.fine("Clicked scroll arrow");
-		tasks.waitFor(Timing.TIME_5S / 5);				
+		tasks.waitFor(Timing.TIME_5S / 5);
+		scroll = getScrollButton("Over_end");
 	    }
 	    else {
 		log.warning("Scroll arrow not found!");
