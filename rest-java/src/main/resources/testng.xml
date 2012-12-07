@@ -5,7 +5,7 @@
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
   	</listeners>
 
-
+ 	
   	<test name="Login Test Negative">
   	  	<classes>
 			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
@@ -15,6 +15,19 @@
 				<parameter name="test.type" value="negative"/>	
 				<include name="unauthorizedLoginTest"></include>		
 				<include name="loginTest"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="check New Rest Api">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<parameter name="rest.username" value="rhqadmin"/>
+				<parameter name="rest.password" value="rhqadmin"/>
+				<parameter name="test.type" value="positive"/>			
+				<include name="checkNewRestApi"></include> 
 			</methods>
 			</class>
 		</classes>
