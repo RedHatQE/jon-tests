@@ -34,11 +34,21 @@ public class RestTest extends RestClient{
 
 	}
 
+	private void checkNewRestApi(Object responseCode){
+		
+		if (!responseCode.equals(200) || !responseCode.equals(401))
+		{	
+			RestClient.URI_PREFIX = "/rest";
+			_logger.log(Level.INFO, "THE RestClient.URI_PREFIX IS --- " + RestClient.URI_PREFIX);
+			
+		}
+	}
 	@Parameters({ "rest.username", "rest.password", "test.type" })
 	@Test (groups="restClientJava")
 	public void loginTest(String rhqUser, String rhqPassword, String testType){
 		webResource = this.getWebResource(SERVER_URI+URI_PREFIX, rhqUser, rhqPassword);
 		HashMap<String, Object> result = this.getReponse(webResource, URIs.STATUS.getUri()+".json", null);
+		checkNewRestApi(result.get(RESPONSE_STATUS_CODE));		
 		if(testType.equalsIgnoreCase("positive")){
 			Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200, "Login validation check Positive, Response Code: "+result.get(RESPONSE_STATUS_CODE)+", Response Message: "+result.get(RESPONSE_STATUS_MESSAGE));
 		}else{
@@ -73,6 +83,7 @@ public class RestTest extends RestClient{
 		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200, "Response Code: "+result.get(RESPONSE_STATUS_CODE)+", Response Message: "+result.get(RESPONSE_STATUS_MESSAGE));
 		JSONArray jsonArray = this.getJSONArray(""+result.get(RESPONSE_CONTENT));
 		_logger.fine("Number of Resource(s): "+jsonArray.size());
+		_logger.log(Level.INFO, "Number of Resource(s): "+jsonArray.size());
 		Assert.assertTrue(jsonArray.size()>0, "Number of Platform(s) [>0] : "+jsonArray.size());
 		JSONObject jsonObject;
 		for(int i=0; i<jsonArray.size();i++){

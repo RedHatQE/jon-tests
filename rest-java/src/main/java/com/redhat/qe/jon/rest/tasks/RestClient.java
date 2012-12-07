@@ -55,7 +55,7 @@ public class RestClient extends TestScript {
 	protected static String BUILD_NUMBER = "BuildNumber";
 
 	protected static String SERVER_URI;
-	protected static String URI_PREFIX = "/rest";
+	protected static String URI_PREFIX = "/rest/1";
 
 	public enum URIs {
 		STATUS("/status"), 
