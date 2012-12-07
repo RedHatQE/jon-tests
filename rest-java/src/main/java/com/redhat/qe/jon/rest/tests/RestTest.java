@@ -256,7 +256,7 @@ public class RestTest extends RestClient{
 
 	
 	@Test (groups="restClientJava")
-	public void validateMetricData(@Optional String parentId) throws ParseException{
+	public void validateMetricData() throws ParseException{
 		HashMap<String, Object> result;
 		
 		// get platform
