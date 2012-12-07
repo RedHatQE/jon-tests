@@ -57,7 +57,7 @@ public class RestTest extends RestClient{
 		
 		Assert.assertTrue(jsonObject != null, "Result set should not be NULL");
 		System.setProperty("rhq.build.version", jsonObject.get(SERVER_VERSION)+" ("+jsonObject.get(BUILD_NUMBER)+")");
-		_logger.info("Status Result: \n"+this.getKeyValue(jsonObject, new StringBuffer()));		
+	//	_logger.info("Status Result: \n"+this.getKeyValue(jsonObject, new StringBuffer()));		
 	}
 	
 	@Test (groups="restClientJava")
@@ -94,7 +94,7 @@ public class RestTest extends RestClient{
 			Assert.assertTrue(jsonArray.size()>0, "Number of platform(s) [>0] : "+jsonArray.size());
 			JSONObject jsonObject;
 			jsonObject = (JSONObject) jsonArray.get(0);
-			this.printKeyValue(jsonObject);
+			//this.printKeyValue(jsonObject);
 			parentId = ""+jsonObject.get(RESOURCE_ID);
 		}
 
