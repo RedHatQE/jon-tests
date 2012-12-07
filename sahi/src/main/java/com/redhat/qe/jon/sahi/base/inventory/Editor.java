@@ -107,15 +107,16 @@ public class Editor {
 	ElementStub scroll = getScrollButton("end");
 	for (int i = 0; i < clicks; i++) {
 	    if (scroll!=null && scroll.exists() && scroll.isVisible()) {
-		tasks.xy(scroll, 3, 3).click();
+		tasks.xy(scroll.parentNode(), 3, 3).click();
+		
 		log.fine("Clicked scroll arrow");
-		tasks.waitFor(Timing.TIME_5S / 5);
 		scroll = getScrollButton("Over_end");
 	    }
 	    else {
 		log.warning("Scroll arrow not found!");
 	    }
 	}
+	
     }
 	/**
 	 * clicks once on bottom scroll arrow
@@ -153,12 +154,16 @@ public class Editor {
 	 * @param check true to check, false to uncheck
 	 */
 	public void checkBox(int index, boolean check) {
+	    String checkBox =null;
 		if (check) {
-			tasks.xy(tasks.image("unchecked.png["+index+"]").parentNode(),3,3).click();
+			checkBox = "unchecked.png["+index+"]";
 		}
 		else {
-			tasks.xy(tasks.image("checked.png["+index+"]").parentNode(),3,3).click();
+			checkBox = "checked.png["+index+"]";
 		}
+		tasks.image(checkBox).parentNode().focus();
+		log.fine("Sending keypress to "+checkBox);
+		tasks.execute("_sahi._keyPress(_sahi._image('" +checkBox+"'), 32);");		
 	}
 	/**
 	 * creates new config entry, click the <b>+</b> buttton and returns helper object
