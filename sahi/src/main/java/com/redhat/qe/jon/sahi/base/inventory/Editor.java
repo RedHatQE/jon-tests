@@ -8,6 +8,7 @@ import net.sf.sahi.client.ElementStub;
 import org.testng.Assert;
 
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.NewChildWizard;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -22,6 +23,7 @@ public class Editor {
 	 * asserts all required input fields have been filled
 	 */
 	public void assertRequiredInputs() {
+	    	tasks.waitFor(Timing.WAIT_TIME);
 		Assert.assertTrue(!tasks.image("exclamation.png").exists(), "All required inputs were provided");
 	}
 	/**
@@ -40,6 +42,87 @@ public class Editor {
 	public void checkRadio(String selection) {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.radio(selection).check();
+	}
+	/**
+	 * jumps to section (or category)
+	 * this clicks 'Jump to Section' button, and tries to click on  menu item that just <b>contains</b> text given by 'name' parameter,
+	 * first match is used
+	 * @param name of section - substring defining a section menuItem text
+	 */
+	public void jumpToSection(String name) {
+		tasks.xy(tasks.cell("Jump to Section"),3,3).click();
+		tasks.waitFor(Timing.WAIT_TIME);
+		// we need to iterate over all menuTables and use the visible one
+		// because smartGWT is so smart, that it leaves invisible menuTable within a DOM model
+		for (ElementStub es : tasks.table("menuTable").collectSimilar()) {
+		    if (es.isVisible()) {
+			for (ElementStub cell : tasks.cell("menuTitleField").in(es).collectSimilar()) {
+			    if (cell.fetch("innerHTML").contains(name)) {
+				tasks.xy(cell,3,3).click();
+				return;
+			    }
+			}
+			
+			
+		    }
+		}
+		throw new RuntimeException("Unable to jump to section ["+name+"]");
+	}
+	/**
+	 * clicks on upper scroll arrow
+	 * @param clicks - how many times to click
+	 */
+        public void scrollUp(int clicks) {
+        	ElementStub scroll = getScrollButton("start");
+        	for (int i = 0; i < clicks; i++) {
+        	    if (scroll!=null && scroll.exists() && scroll.isVisible()) {
+        		tasks.xy(scroll, 3, 3).click();
+        		log.fine("Clicked scroll arrow");
+        		tasks.waitFor(Timing.TIME_5S / 5);
+        		scroll = getScrollButton("Over_start");
+        	    }
+        	    else {
+        		log.warning("Scroll arrow not found!");
+        	    }
+        	}
+        }
+	/**
+	 * clicks once on upper scroll arrow
+	 */
+	public void scrollUp() {
+	    scrollUp(1);
+	}
+	private ElementStub getScrollButton(String type) {
+	    List<ElementStub> scrolls = tasks.image("vscroll_"+type+".png").collectSimilar();
+	    if (scrolls.size()>0) {
+		return scrolls.get(scrolls.size()-1);
+	    }
+	    return null;
+	}
+	/**
+	 * clicks on bottom scroll arrow
+	 * @param clicks - how many times to click
+	 */
+    public void scrollDown(int clicks) {
+	ElementStub scroll = getScrollButton("end");
+	for (int i = 0; i < clicks; i++) {
+	    if (scroll!=null && scroll.exists() && scroll.isVisible()) {
+		tasks.xy(scroll.parentNode(), 3, 3).click();
+		
+		log.fine("Clicked scroll arrow");
+		scroll = getScrollButton("Over_end");
+	    }
+	    else {
+		log.warning("Scroll arrow not found!");
+	    }
+	}
+	
+    }
+	/**
+	 * clicks once on bottom scroll arrow
+	 */
+	public void scrollDown() {
+	    scrollDown(1);
 	}
 	public void selectCombo(int index, String selection) {
 		 int pickers = tasks.image("comboBoxPicker.png").countSimilar();
@@ -71,12 +154,16 @@ public class Editor {
 	 * @param check true to check, false to uncheck
 	 */
 	public void checkBox(int index, boolean check) {
+	    String checkBox =null;
 		if (check) {
-			tasks.xy(tasks.image("unchecked.png["+index+"]").parentNode(),3,3).click();
+			checkBox = "unchecked.png["+index+"]";
 		}
 		else {
-			tasks.xy(tasks.image("checked.png["+index+"]").parentNode(),3,3).click();
+			checkBox = "checked.png["+index+"]";
 		}
+		tasks.image(checkBox).parentNode().focus();
+		log.fine("Sending keypress to "+checkBox);
+		tasks.execute("_sahi._keyPress(_sahi._image('" +checkBox+"'), 32);");		
 	}
 	/**
 	 * creates new config entry, click the <b>+</b> buttton and returns helper object
