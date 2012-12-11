@@ -1,7 +1,9 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sf.sahi.client.ElementStub;
@@ -41,8 +43,10 @@ public class Operations extends ResourceTab {
 	 * asserts operation result, waits until operation is either success or failure.
 	 * @param op operation 
 	 * @param success if true, success is expected, otherwise failure is expected
+	 * @return result map returned by this operation if operation succeeded, otherwise null.
+	 * In this map, keys are result properties and values are result values
 	 */
-	public void assertOperationResult(Operation op, boolean success) {
+	public Map<String,String> assertOperationResult(Operation op, boolean success) {
 		String opName = op.name;
 		String resultImage = "Operation_failed_16.png";
     	String succ="Failed";
@@ -80,11 +84,33 @@ public class Operations extends ResourceTab {
     		tasks.xy(tasks.image("close.png["+(buttons-1)+"]"),3,3).click();
     		if (message!=null) {
     			Assert.assertTrue(existsImage,"Operation ["+opName+"] result: "+succ+" errorMessage:\n"+message);
-    			return;
+    			return null;
     		}
     		
     	}
     	Assert.assertTrue(existsImage,"Operation ["+opName+"] result: "+succ);
+    	log.fine("Getting operation result");
+    	tasks.image(resultImage).in(tasks.div(opName+"[0]").parentNode("tr")).doubleClick();
+    	List<ElementStub> headerCells = tasks.cell("Property").collectSimilar();
+    	if (headerCells.size()>1) {
+    	    Map<String,String> result = new HashMap<String, String>();
+    	    ElementStub table = headerCells.get(headerCells.size()-1).parentNode("table");
+    	    List<ElementStub> rows = tasks.row("").in(table).collectSimilar();
+    	    // starting with 3rd row, because 1st some shit and 2nd is table header
+    	    // we also ignore last because sahi was failing
+    	    log.fine("Have "+(rows.size()-3)+" result rows");
+
+    	    for (int i = 2;i<rows.size()-1;i++) {
+    		ElementStub row = rows.get(i);
+    		ElementStub key = tasks.cell(0).in(row);
+    		ElementStub value = tasks.cell(2).in(row);
+    		log.fine("Found result property ["+key.getText()+"]");
+    		result.put(key.getText(),value.getText());
+    	    }
+    	    return result;
+    	}
+    	log.fine("Result table not found");
+    	return null;
     }
 	
 	public static class Operation {
