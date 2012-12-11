@@ -95,7 +95,9 @@ public class Resource {
 		if (HAVE_REST_API) {
 			fetchId(false);
 			String serverBaseUrl = tasks.getNavigator().getServerBaseUrl();
-			tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
+			String url = serverBaseUrl+"/#Resource/"+getId()+"/Inventory";
+			log.fine("Navigating to ["+url+"]");
+			tasks.navigateTo(url,false);
 			ElementStub es =  tasks.byXPath("//td[@class='WarnBlock'][1]");
 			if (es.exists() && es.getText().contains("does not exist")) {
 				// need to refresh resource's ID
