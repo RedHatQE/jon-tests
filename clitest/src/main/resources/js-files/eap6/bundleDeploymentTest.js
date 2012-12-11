@@ -86,7 +86,7 @@ bundleDeployment.purge();
 println("Executing availability scan");
 resources.platform({name:platform}).child({type:"RHQ Agent"}).invokeOperation("executePromptCommand",{command:"avail -f"});
 println("Ensure that deployment was pugred -> must be DOWN");
-assertFalse(deployments[0].isAvailable(),"Deployment on server is available");
+assertTrue(deployments[0].waitForNotAvailable(),"Deployment on server is NOT available");
 println("Removing deployment resource");
 deployments[0].uninventory();
 
