@@ -46,6 +46,26 @@ public class Editor {
         return tasks.textbox(name).getValue();
     }
 
+    /**
+     * Fills text in textarea specified by name
+     * @param name represents name of textarea element to fill
+     * @param value the text to fill the specified textarea
+     */
+    public void setTextInTextArea(String name, String value) {
+        tasks.waitFor(Timing.WAIT_TIME);
+        tasks.textarea(name).setValue(value);
+    }
+
+    /**
+     * Returns text in the specified textarea element
+     * @param name textarea element name
+     * @return text filled in the specified textarea element
+     */
+    public String getTextInTextArea(String name) {
+        tasks.waitFor(Timing.WAIT_TIME);
+        return tasks.textarea(name).getValue();
+    }
+
 	public void setPassword(String name, String value) {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.password(name).setValue(value);
