@@ -35,10 +35,22 @@ public class Editor {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.textbox(name).setValue(value);
 	}
+
+    /**
+     * Returns value in specified textbox field
+     * @param name of the textbox field
+     * @return value filled in the specified textbox field
+     */
+    public String getText(String name) {
+        tasks.waitFor(Timing.WAIT_TIME);
+        return tasks.textbox(name).getValue();
+    }
+
 	public void setPassword(String name, String value) {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.password(name).setValue(value);
 	}
+
 	public void checkRadio(String selection) {
 		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.radio(selection).check();
