@@ -113,8 +113,12 @@ public class Operations extends ResourceTab {
                 ElementStub row = rows.get(i);
                 ElementStub key = tasks.cell(0).in(row);
                 ElementStub value = tasks.cell(2).in(row);
-                log.fine("Found result property [" + key.getText() + "]");
-                result.put(key.getText(), value.getText());
+                if (key.exists() && value.exists()) {
+                    log.fine("Found result property [" + key.getText() + "]");
+                    result.put(key.getText(), value.getText());
+                } else {
+                    log.warning("Missing key or value column in the results table - probably caused by nonstandard result output");
+                }
             }
             return result;
         }
