@@ -39,6 +39,7 @@ public class Resource {
 	 */
 	private static final Map<String,String> idChache = new HashMap<String, String>();
 	private final List<String> path;
+	private final boolean isPlatform;
 	private final SahiTasks tasks;
 	private String id;
 	private static final Logger log = Logger.getLogger(Resource.class.getName());
@@ -73,6 +74,7 @@ public class Resource {
 	private Resource(String id,SahiTasks tasks, List<String> path) {
 		this.tasks = tasks;
 		this.path = path;
+		this.isPlatform = this.path.size() == 1;
 		this.id = id;
 		if (this.path.isEmpty()) {
 			throw new RuntimeException("Resource path cannot be empty");
@@ -175,7 +177,12 @@ public class Resource {
 	 * @return resource name
 	 */
 	public String getName() {
-		return this.path.get(this.path.size()-1);
+		if(this.isPlatform){
+			// this resource is platform
+			return this.path.get(0);
+		}else{
+			return this.path.get(this.path.size()-1);
+		}
 	}
 	/**
 	 * whis method checks whether {@link Resource#getId()} is null. 
@@ -396,15 +403,31 @@ public class Resource {
 	}
 	/**
 	 * navigates to parent resource of this resource and checks whether this resource exists.
-	 * Parent resource MUST exist!!
+	 * Parent resource MUST exist (except for platform)!!
 	 * @return true if this resource exists
 	 */
 	public boolean exists() {
 		// because UI (tree) caches things and we keep refreshing same page
 		// we need to force it to reload .. so we navigate somewhere else
 		tasks.link("Dashboard").click();
-		return parent().inventory().childResources().existsChild(getName());
+		if(this.isPlatform){
+	        navigateToPlatforms();
+			if (tasks.cell("No items to show").isVisible()) {
+				return false;
+			}
+			return tasks.cell(this.getName()).isVisible();
+		}else{
+			return parent().inventory().childResources().existsChild(getName());
+		}
 	}
+	private void navigateToPlatforms(){
+		//TODO hardcoded waiting, make common method for this somewhere
+		tasks.link("Inventory").click();
+		tasks.waitFor(5000);
+		tasks.cell("Platforms").click();
+		tasks.waitFor(5000);
+	}
+	
 	/**
 	 *  runs <b>Manual Autodiscovery</b> operation on parent platform of this resource
 	 */
@@ -424,19 +447,37 @@ public class Resource {
 		if (!mustExist && !exists()) {
 			return;
 		}
-		parent().inventory().childResources().uninventoryChild(getName());		
+		if(this.isPlatform){
+			navigateToPlatforms();
+			log.fine("Uninventoring platform " + this.getName());
+			int children = tasks.cell(this.getName()).countSimilar();
+			log.fine("Matched cells "+children);
+			if (children==0) {
+				throw new RuntimeException("Unable to select resource ["+this.getName()+"], NOT FOUND!");
+			}
+			tasks.xy(tasks.cell(this.getName()+"["+(children-1)+"]"), 3, 3).click();
+			tasks.cell("Uninventory").click();
+			tasks.cell("Yes").click();
+			
+		}else{
+			parent().inventory().childResources().uninventoryChild(getName());
+		}
 	}
 	/**
-	 * deletes this resource from inventory, do not use for deleting platforms
+	 * deletes this resource from inventory
 	 * resource MUST exist .. otherwise this fails
 	 */
 	public void delete() {
-		Inventory inventory = parent().inventory();
-		inventory.childResources().deleteChild(getName());
-		inventory.childHistory().assertLastResourceChange(true);
+		if(this.isPlatform){
+			uninventory(false);
+		}else{
+			Inventory inventory = parent().inventory();
+			inventory.childResources().deleteChild(getName());
+			inventory.childHistory().assertLastResourceChange(true);
+		}
 	}
 	/**
-	 * deletes this resource from inventory, do not use for deleting platforms
+	 * deletes this resource from inventory
 	 * @param mustExist - if set to true this method will fail if this resource does not exist
 	 */
 	public void delete(boolean mustExist) {
@@ -483,7 +524,16 @@ public class Resource {
      * @param shouldExist - true for asserting resource existence, false for checking resource non-existence
      */
     public void assertExists(boolean shouldExist) {
-    	parent().assertChildExists(this.getName(), shouldExist);
+    	if(this.isPlatform){
+    		log.info("Checking existence of [" + this.getName() +"]");
+    		if (shouldExist) {
+    			Assert.assertTrue(exists(), "Resource ["+this.getName()+"] exists.");
+    		}else{
+    			Assert.assertFalse(exists(), "Resource ["+this.getName()+"] exists.");
+    		}
+    	}else{
+    		parent().assertChildExists(this.getName(), shouldExist);
+    	}
     }
     
     /**
@@ -525,12 +575,13 @@ public class Resource {
     	Assert.assertEquals(!shouldExist,shouldExist, "Resource ["+resourceName+"] exists.");
     }
     /**
-     * imports this resource from discovery queue. It is required that parent platform is already imported. This
-     * function does not work for platforms.
+     * imports this resource from discovery queue. It is required that parent platform is already imported (this doesn't 
+     * apply to platform type).
      * This is done by following steps
      * <ul>
      * <ol>it is performed a check - if this resource is already in inventory nothing else happens</ol>
-     * <ol>Manual Autodiscovery operation is performed on parent platform</ol>
+     * <ol>Manual Autodiscovery operation is performed on parent platform (this doesn't 
+     * apply to platform type)</ol>
      * <ol>Resource is imported</ol>
      * </ul>
      * @param sleepTime time miliseconds to sleep after resource has been imported (JON imports it's children asynchronously)
@@ -542,14 +593,18 @@ public class Resource {
 		log.fine("Trying to inventorize resource \"" + resourceName
 				+ "\" of agent \"" + agentName + "\".");
 
+		
 		if (this.exists()) {
 			log.fine("Resource \"" + resourceName + "\" of agent \""
 					+ agentName + "\" have been already inventorized");
 
 			return false;
 		}
-		log.fine("Will perform manual autodiscovery first.");
-		this.performManualAutodiscovery();
+		if(!this.isPlatform){
+			log.fine("Will perform manual autodiscovery first.");
+			this.performManualAutodiscovery();
+		}
+		
 		try {
 			tasks.link("Inventory").click();
 			tasks.cell("Discovery Queue").click();
@@ -567,10 +622,16 @@ public class Resource {
 					+ ", nothing appeared in autodiscovery queue even after performing manual autodiscovery");
 			return false;
 		}
+		
+		
 		ElementStub elm = tasks.image("unchecked.png").near(
 				tasks.cell(resourceName));
 		if (elm.exists()) {
 			elm.check();
+			// this resource is platform
+			if(this.isPlatform){
+				tasks.cell("No").click();
+			}
 			tasks.cell("Import").click();
 			log.fine("Waiting " + Timing.toString(sleepTime)
 					+ " for resource to import...");
