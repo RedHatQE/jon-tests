@@ -56,9 +56,9 @@ serverGroup.children({name:name}).forEach(function(x) {
 
 // step #2
 println("Running promote opeartion via ResourceProxy");
-var schedule = deployed.getProxy().deploytoServerGroup(null,true,sGroupName);
+var schedule = deployed.getProxy().assigntoServerGroup(null,true,sGroupName);
 var result = deployed.waitForOperationResult(deployed.getId(),schedule.id);
-assertTrue(result.status == OperationRequestStatus.SUCCESS,"deployToServerGroup operation via ResourceProxy succeeded");
+assertTrue(result.status == OperationRequestStatus.SUCCESS,"assigntoServerGroup operation via ResourceProxy succeeded");
 println("Running discovery on parent platform");
 resources.platforms({name:platform})[0].invokeOperation("discovery",{detailedDiscovery:true});
 

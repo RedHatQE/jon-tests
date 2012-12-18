@@ -2004,7 +2004,7 @@ var Resource = function (param) {
 		/**
 		 * wait's until resource becomes UP or timeout is reached
 		 *
-		 * @returns true if became is available, false otherwise
+		 * @returns true if resource became or is available, false otherwise
 		 * @type Boolean
 		 */
 		waitForAvailable : function() {
@@ -2012,6 +2012,20 @@ var Resource = function (param) {
 			return common.waitFor(function() {
 				if (!_isAvailable()) {
 					common.info("Waiting for resource availability=UP");
+				} else { return true; }
+			});
+		},
+		/**
+		 * wait's until resource becomes DOWN or timeout is reached
+		 *
+		 * @returns true if resource became or is DOWN, false otherwise
+		 * @type Boolean
+		 */
+		waitForNotAvailable : function() {
+			common.trace("Resource("+_id+").waitForNotAvailable()");
+			return common.waitFor(function() {
+				if (_isAvailable()) {
+					common.info("Waiting for resource availability=DOWN");
 				} else { return true; }
 			});
 		},

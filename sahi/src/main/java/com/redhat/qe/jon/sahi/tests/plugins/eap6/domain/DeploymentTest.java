@@ -67,7 +67,7 @@ public class DeploymentTest extends AS7DomainTest {
 	@Test(groups = "deployment", dependsOnMethods="createDomainDeploymentWAR")
 	public void deployToServerGroup() {
 		Operations operations = controller.child(war).operations();
-		Operation op = operations.newOperation("Deploy to Server-Group");		
+		Operation op = operations.newOperation("Assign to Server-Group");		
 		sahiTasks.radio(serverGroup.getName()).check();		
 		sahiTasks.waitFor(waitTime);
 		op.assertRequiredInputs();
