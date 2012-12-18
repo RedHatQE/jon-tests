@@ -3,7 +3,7 @@ var propType=propType
 var configPropValue = propValue
 
 var common = new _common();
-var myResources = Inventory.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
+var myResources = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 var resource = myResources[0];
 
 var oldConfiguration = resource.getConfiguration();
