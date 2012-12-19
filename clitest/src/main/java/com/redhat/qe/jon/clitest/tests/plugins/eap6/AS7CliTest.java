@@ -57,17 +57,19 @@ public class AS7CliTest extends CliTest {
 
         }
 		checkRequiredProperties(
-			"agent.name","jon.agent.user","jon.agent.host","jon.agent.password",
-			"as7.standalone1.home","as7.domain.home",
+			"jon.agent.name","jon.agent.user","jon.agent.host","jon.agent.password",
+			"as7.standalone.home","as7.domain.home",
 			"jon.server.host","jon.server.user","jon.server.password"
 		);
-		agentName = System.getProperty("agent.name");
-		standalone1Home = System.getProperty("as7.standalone1.home");
-		standalone1HostName = System.getProperty("as7.standalone1.hostname");
+		String agentPass = System.getProperty("jon.agent.password","hudson");
+		String agentUser = System.getProperty("jon.agent.user","hudson");
+		agentName = System.getProperty("jon.agent.name");
+		standalone1Home = System.getProperty("as7.standalone.home");
+		standalone1HostName = System.getProperty("jon.agent.host");
 		domainHome = System.getProperty("as7.domain.home");
-		domainHostName = System.getProperty("as7.domain.hostname");
-		sshDomain = new AS7SSHClient(domainHome,"hudson",domainHostName,"hudson");
-		sshStandalone = new AS7SSHClient(standalone1Home,"hudson",standalone1HostName,"hudson");
+		domainHostName = System.getProperty("jon.agent.host");
+		sshDomain = new AS7SSHClient(domainHome,agentUser,domainHostName,agentPass);
+		sshStandalone = new AS7SSHClient(standalone1Home,agentUser,standalone1HostName,agentPass);
 		installRHQUser(sshDomain,null,"/domain/configuration/mgmt-users.properties");
 		installRHQUser(sshStandalone,null,"/standalone/configuration/mgmt-users.properties");
 		if (System.getProperty("jon.server.home","").equals("")) {
