@@ -481,7 +481,7 @@ public class Resource {
 	 * @param mustExist - if set to true this method will fail if this resource does not exist
 	 */
 	public void delete(boolean mustExist) {
-		if (mustExist && exists()) {
+		if (mustExist || exists()) {
 			delete();
 		}
 	}
