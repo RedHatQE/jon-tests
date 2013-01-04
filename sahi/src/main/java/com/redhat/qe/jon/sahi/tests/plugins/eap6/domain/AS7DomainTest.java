@@ -15,7 +15,7 @@ import com.redhat.qe.tools.checklog.LogFile;
 	logs={
 		@LogFile(refId="agent"),
 		@LogFile(refId="server"),
-		@LogFile(refId="agent",logFile="${as7.standalone1.home}/domain/log/host-controller.log")
+		@LogFile(refId="agent",id="domain",logFile="${as7.domain.home}/domain/log/host-controller.log")
 	}
 )
 public class AS7DomainTest extends AS7PluginSahiTestScript {
@@ -52,11 +52,11 @@ public class AS7DomainTest extends AS7PluginSahiTestScript {
 		 as7SahiTasks = new AS7PluginSahiTasks(sahiTasks);
 		 sshClient = sshDomain;
 		 mgmtClient = mgmtDomain;
-		 controller = new Resource(sahiTasks, System.getProperty("agent.name"), System.getProperty("as7.domain.controller.name"));
-		 hostController = controller.child(System.getProperty("as7.domain.host.name"));
-		 serverOne = controller.child(System.getProperty("as7.domain.host.server-one.name"));
-		 serverTwo = controller.child(System.getProperty("as7.domain.host.server-two.name"));
-		 serverThree = controller.child(System.getProperty("as7.domain.host.server-three.name"));
+		 controller = new Resource(sahiTasks, agentName, System.getProperty("as7.domain.controller.name", "EAP Domain Controller (0.0.0.0:8990)"));
+		 hostController = controller.child(System.getProperty("as7.domain.host.name", "master"));
+		 serverOne = controller.child(System.getProperty("as7.domain.host.server-one.name", "EAP server-one"));
+		 serverTwo = controller.child(System.getProperty("as7.domain.host.server-two.name", "EAP server-two"));
+		 serverThree = controller.child(System.getProperty("as7.domain.host.server-three.name", "EAP server-three"));
 		 as7SahiTasks.installRHQUser(controller,sshClient,mgmtClient,"/domain/configuration/mgmt-users.properties");		 
 	 }
 }

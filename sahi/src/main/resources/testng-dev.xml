@@ -21,7 +21,7 @@
 	 
 	     <test name="Standalone_InfinispanSubsystem">
         <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.InfinispanTest"/>                
+            <class name="com.redhat.qe.jon.sahi.base.inventory.EditorTest"/>                
         </classes>
     </test>
 	 
