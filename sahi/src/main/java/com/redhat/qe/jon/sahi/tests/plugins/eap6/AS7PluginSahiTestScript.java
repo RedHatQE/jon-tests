@@ -148,7 +148,6 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
 	    log.fine("[jon.server.home] detected : "+value);
 	    System.setProperty("jon.server.home", value);
 	}
-	new Resource(sahiTasks,agentName).importFromDiscoQueue(5000);
     }
 
     @AfterSuite(groups="teardown")

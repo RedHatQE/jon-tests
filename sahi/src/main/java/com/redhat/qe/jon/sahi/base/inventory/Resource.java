@@ -185,6 +185,24 @@ public class Resource {
 		}
 	}
 	/**
+	 * tries to fetch resource ID via REST API. This might be used as a very fast
+	 * check of resource existence in inventory
+	 * @return true if resource was found via REST API
+	 */
+	public boolean tryFetchId() {
+	    log.fine("Trying to fetch ID for resource "+toString());
+	    try {
+		if (HAVE_REST_API) {
+		    fetchId(true);
+		    return true;
+		}
+	    }
+	    catch (Exception ex) {
+		
+	    }
+	    return false;
+	}
+	/**
 	 * whis method checks whether {@link Resource#getId()} is null. 
 	 * If it is, it tries to get it using REST API. If this resource does not exist within RHQ 
 	 * ( is not found using REST API) no error is raised, but  {@link Resource#getId()} stays null

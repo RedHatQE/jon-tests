@@ -45,7 +45,10 @@ public class AS7StandaloneTest extends AS7PluginSahiTestScript {
 		 httpClient = httpStandalone;
 		 server = new Resource(sahiTasks, agentName, System.getProperty("as7.standalone.name","EAP (0.0.0.0:9990)"));
 		 server2 = new Resource(sahiTasks, agentName, System.getProperty("as7.standalone2.name","EAP (0.0.0.0:19990)"));
-		 as7SahiTasks.installRHQUser(server,sshClient,mgmtClient,"/standalone/configuration/mgmt-users.properties");		 
+		 as7SahiTasks.installRHQUser(server,sshClient,mgmtClient,"/standalone/configuration/mgmt-users.properties");
+		 if (!server.parent().tryFetchId()) {
+		     server.parent().importFromDiscoQueue(5000);
+		 }
 	 }
 	 
 

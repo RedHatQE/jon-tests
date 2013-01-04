@@ -57,6 +57,9 @@ public class AS7DomainTest extends AS7PluginSahiTestScript {
 		 serverOne = controller.child(System.getProperty("as7.domain.host.server-one.name", "EAP server-one"));
 		 serverTwo = controller.child(System.getProperty("as7.domain.host.server-two.name", "EAP server-two"));
 		 serverThree = controller.child(System.getProperty("as7.domain.host.server-three.name", "EAP server-three"));
-		 as7SahiTasks.installRHQUser(controller,sshClient,mgmtClient,"/domain/configuration/mgmt-users.properties");		 
+		 as7SahiTasks.installRHQUser(controller,sshClient,mgmtClient,"/domain/configuration/mgmt-users.properties");
+		 if (!controller.parent().tryFetchId()) {
+		     controller.parent().importFromDiscoQueue(5000);
+		 }
 	 }
 }
