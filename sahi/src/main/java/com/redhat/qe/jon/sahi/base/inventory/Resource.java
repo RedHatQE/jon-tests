@@ -290,7 +290,6 @@ public class Resource {
 			return null;
 		}
 		log.fine("Number of Platfoms(s): "+jsonArray.size());
-		Assert.assertTrue(jsonArray.size()>0, "Number of Platform(s) [>0] : "+jsonArray.size());
 		JSONObject jsonObject;
 		String platformId = null;
 		for(int i=0; i<jsonArray.size();i++){
