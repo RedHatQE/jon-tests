@@ -132,7 +132,7 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
 
         sshStandalone = new AS7SSHClient(System.getProperty("as7.standalone.home"),agentUser,agentHost,agentPass);
         sshStandalone2 = new AS7SSHClient(System.getProperty("as7.standalone2.home"),agent2User,agent2Host,agent2Pass);
-        sshDomain = new AS7SSHClient(System.getProperty("as7.domain.home"));
+        sshDomain = new AS7SSHClient(System.getProperty("as7.domain.home"),agentUser,agentHost,agentPass);
         
         httpStandalone = new HTTPClient(agentHost, 8080);
         httpStandalone2 = new HTTPClient(agent2Host, 8080);
