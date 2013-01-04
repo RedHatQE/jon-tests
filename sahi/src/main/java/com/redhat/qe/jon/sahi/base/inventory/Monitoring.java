@@ -27,6 +27,15 @@ public class Monitoring extends ResourceTab {
 	navigateUnderResource("Monitoring/Tables");
 	return new Tables(tasks);
     }
+    /**
+     * selects <b>Traits</b> subtab and returns helper object
+     * 
+     * @return tables subtab
+     */
+    public Tables traits() {
+	navigateUnderResource("Monitoring/Traits");
+	return new Tables(tasks);
+    }
 
     /**
      * selects <b>Schedules</b> subtab and returns helper object

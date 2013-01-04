@@ -43,6 +43,11 @@
             </run>
         </groups>
     </test>
+    <test name="DetectServerVersion">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.plugins.eap6.standalone.GetServerVersion"/>                
+        </classes>
+    </test>
     <!-- temporarily disabled
     <test name="Standalone_ConnectSecured">
         <classes>
