@@ -1343,7 +1343,6 @@ var Resource = function (param) {
 		var _defId = function() {
 			var criteria = common.createCriteria(new MeasurementDefinitionCriteria(),{resourceTypeId:_res.resourceType.id,displayName:_param.name});				
 			var mDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
-			println(mDefs);
 			if (mDefs.size()!=1) {
 				throw "Unable to retrieve measurement definition, this is a bug"
 			}
@@ -1366,9 +1365,13 @@ var Resource = function (param) {
 			getLiveValue : function() {
 				common.trace("Resource("+_res.id+").metrics.["+param.name+"].getLiveValue()");				
 				var defId = _defId();
-				var values = MeasurementDataManager.findLiveData(_res.id,[defId])
-				var value = values.get(0);
-				return String(value.value);
+				var values = MeasurementDataManager.findLiveData(_res.id,[defId]).toArray()
+				// values is returned as set
+				if (values.length>0) {
+					return String(values[0].value);
+				}
+				common.info("No live value retrieved!");
+				
 			},
 			/**
 			 * enables/disables metric and sets its collection interval

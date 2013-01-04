@@ -19,8 +19,7 @@ Some of bellow testing JS files expect named parameter called 'agent' to be pass
 It's because agent (a platform name) is dynamic, see com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest
 which does that magic.
 
- -->
- 
+ --> 
 <test name="Standalone_Discovery_StartCommand_Parameters">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.standalone.DiscoveryTest">	
@@ -66,7 +65,15 @@ which does that magic.
 		</class>
 	</classes>
 </test>
-
+<test name="Detect_ServerVersion">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.GetVersionTest">	
+			<methods>
+				<include name="getServerVersion"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
 <test name="Standalone_Deployment">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.standalone.DeploymentTest">
