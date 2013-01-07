@@ -78,7 +78,6 @@ public class AS7CliTest extends CliTest {
 		    log.fine("[jon.server.home] detected : "+value);
 		    System.setProperty("jon.server.home", value);
 		}
-		throw new RuntimeException("yes");
 	}
 	
 	/**
