@@ -14,8 +14,8 @@ import net.sf.sahi.client.ElementStub;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import com.redhat.qe.Assert;
 
+import com.redhat.qe.Assert;
 import com.redhat.qe.jon.common.util.HTTPClient;
 import com.redhat.qe.jon.common.util.RestClient;
 import com.redhat.qe.jon.common.util.RestClient.URIs;
@@ -23,7 +23,6 @@ import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
-import com.sun.jersey.api.client.WebResource;
 /**
  * this represents RHQ Resource. Each resource is defined by its path within inventory. 
  * Path starts with {@link Resource#getPlatform()} and ends with {@link Resource#getName()}
@@ -214,15 +213,13 @@ public class Resource {
 		
 		if (overwrite || this.id == null) {
 			//first we need to find current resource
-			String url = System.getProperty("jon.server.url")+"/rest/1";
-			RestClient rc = new RestClient();
-			WebResource res = rc.getWebResource(url, "rhqadmin", "rhqadmin");		
-			String platformId = findPlatformId(rc, res);
+			RestClient rc = new RestClient();		
+			String platformId = findPlatformId(rc);
 			if (platformId==null) {
 				throw new RuntimeException("Unable to find platform ID for resource "+this.toString());
 			}
 			try {
-				this.id = findResourceId(rc, res, platformId);
+				this.id = findResourceId(rc, platformId);
 				if (getId()!=null) {
 					idChache.put(toString(), getId());
 				}
@@ -247,29 +244,27 @@ public class Resource {
 		List<Resource> children = new ArrayList<Resource>();
 		
 		//first we need to find current resource
-		String url = System.getProperty("jon.server.url")+"/rest/1";
-		RestClient rc = new RestClient();
-		WebResource res = rc.getWebResource(url, "rhqadmin", "rhqadmin");		
-		String platformId = findPlatformId(rc, res);
+		RestClient rc = new RestClient();		
+		String platformId = findPlatformId(rc);
 		if (platformId==null) {
 			throw new RuntimeException("Unable to find platform ID of "+toString()+" using REST API");
 		}
 		
 		try {
-			String myId = findResourceId(rc, res, platformId);
-			return getChidrenRecursive(rc, res, myId, this);			
+			String myId = findResourceId(rc,  platformId);
+			return getChidrenRecursive(rc, myId, this);			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return children;
 	}
-	private List<Resource> getChidrenRecursive(RestClient rc, WebResource res, String myID, Resource current) throws Exception {
+	private List<Resource> getChidrenRecursive(RestClient rc, String myID, Resource current) throws Exception {
 		List<Resource> children = new ArrayList<Resource>();
-		for (Entry<String,String> entry : getChildren(rc, res, myID).entrySet()) {
+		for (Entry<String,String> entry : getChildren(rc, myID).entrySet()) {
 			Resource child = current.child(entry.getValue(),entry.getKey());
 			children.add(child);
-			children.addAll(getChidrenRecursive(rc, res, entry.getKey(), child));
+			children.addAll(getChidrenRecursive(rc, entry.getKey(), child));
 		}
 		return children;
 	}
@@ -279,8 +274,8 @@ public class Resource {
 	 * @param res
 	 * @return id of platform
 	 */
-	private String findPlatformId(com.redhat.qe.jon.common.util.RestClient rc, WebResource res) {
-		HashMap<String, Object> result = rc.getReponse(res, URIs.PLATFORMS.getUri()+".json");
+	private String findPlatformId(com.redhat.qe.jon.common.util.RestClient rc) {
+		Map<String, Object> result = rc.getResponse( URIs.PLATFORMS.getUri()+".json");
 		
 		JSONArray jsonArray = null;
 		try {
@@ -310,13 +305,13 @@ public class Resource {
 	 * @return ID of this resource
 	 * @throws Exception
 	 */
-	private String findResourceId(RestClient rc, WebResource res, String platformId) throws Exception {
+	private String findResourceId(RestClient rc, String platformId) throws Exception {
 		int pathIndex = 1;
 		String currentResource = platformId;
 		while (pathIndex<getPath().size()) {
 			String node = getPath().get(pathIndex);
 			boolean found = false;
-			for (Entry<String,String> entry : getChildren(rc, res, currentResource).entrySet()) {
+			for (Entry<String,String> entry : getChildren(rc, currentResource).entrySet()) {
 				if (entry.getValue().equals(node)) {
 					currentResource = entry.getKey();
 					pathIndex+=1;
@@ -340,9 +335,9 @@ public class Resource {
 	 * @return children of given resource (resourceId)
 	 * @throws Exception
 	 */
-	private Map<String,String> getChildren(RestClient rc, WebResource res,String resourceId) throws Exception {
+	private Map<String,String> getChildren(RestClient rc, String resourceId) throws Exception {
 		Map<String,String> children = new HashMap<String, String>();
-		HashMap<String, Object> result = rc.getReponse(res,"resource/"+resourceId+"/children.json");
+		Map<String, Object> result = rc.getResponse("resource/"+resourceId+"/children.json");
 		
 		JSONArray jsonArray = rc.getJSONArray((String)result.get("response.content"));		
 		

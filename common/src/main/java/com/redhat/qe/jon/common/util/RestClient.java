@@ -1,15 +1,24 @@
 package com.redhat.qe.jon.common.util;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -27,7 +36,7 @@ public class RestClient {
 	private static Logger _logger = Logger.getLogger(RestClient.class.getName());
 	
 	protected static Client client = null;
-	protected static WebResource webResource = null;
+	protected WebResource webResource = null;
 	protected static String RESPONSE_STATUS_CODE= "reposonse.status.code";
 	protected static String RESPONSE_STATUS_MESSAGE= "response.status.message";
 	protected static String RESPONSE_DATE= "reposnse.date";
@@ -51,6 +60,7 @@ public class RestClient {
 	
 	protected static String SERVER_URI ;
 	protected static String URI_PREFIX = "/rest/1"; 
+	
 	
 	public enum URIs
 	{
@@ -77,19 +87,57 @@ public class RestClient {
 			return (URI_PREFIX+uri);
 		}
 	}
+	public RestClient() {
+	    this("rhqadmin","rhqadmin");
+	}
+	
+	public RestClient(String username, String password) {
+	    SERVER_URI = System.getProperty("jon.server.url",null);
+	    if (SERVER_URI==null) {
+		String jonHost = System.getProperty("jon.server.host",null);
+		if (jonHost!=null) {
+		    SERVER_URI="http://"+jonHost+":7080";
+		}        		
+	    }
+	    _logger.fine("Creating REST Client instance "+SERVER_URI);	    
+	    _logger.fine("Detecting REST endpoint...");
+	    String auth = DatatypeConverter.printBase64Binary("rhqadmin:rhqadmin".getBytes());
+	    if (checkEndpoint(SERVER_URI+"/rest/1",auth)) {
+		URI_PREFIX= "/rest/1";
+	    }
+	    else if (checkEndpoint(SERVER_URI+"/rest",auth)) {
+		URI_PREFIX= "/rest";
+	    }
+	    this.webResource = getWebResource(RestClient.SERVER_URI+URI_PREFIX, username, password);
+	    
+	}
+	
+	private  boolean checkEndpoint(String endpoint, String auth) {
+		HttpURLConnection connection = null;
+		_logger.fine("Checking endpoint "+endpoint);		
+		try {
+			URL u = new URL(endpoint+"/status.json");			
+			connection = (HttpURLConnection) u.openConnection();
+			connection.setRequestProperty("Authorization", "Basic "+auth);
+			return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
+		} catch (MalformedURLException e1) {
+			throw new RuntimeException(e1);
+		} catch (ConnectException e) {
+			return false;
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
+		}
+	}
 	
 	public static String detectServerInstallDir() {
 	    try {
         	    RestClient self = new RestClient();
-        	    String jonUrl = System.getProperty("jon.server.url",null);
-        	    if (jonUrl==null) {
-        		String jonHost = System.getProperty("jon.server.host",null);
-        		if (jonHost!=null) {
-        		    jonUrl="http://"+jonHost+":7080";
-        		}        		
-        	    }
-        	    WebResource resource = self.getWebResource(jonUrl+URI_PREFIX, "rhqadmin", "rhqadmin");
-        	    HashMap<String, Object> result = self.getReponse(resource, URIs.STATUS.getUri()+".json");
+        	    Map<String, Object> result = self.getResponse(URIs.STATUS.getUri()+".json");
         	    JSONObject jsonObject = self.getJSONObject(""+result.get(RESPONSE_CONTENT));
         	    jsonObject = (JSONObject) jsonObject.get(STATUS_VALUES);
         	    return (String) jsonObject.get("SERVER_INSTALL_DIR");
@@ -125,9 +173,12 @@ public class RestClient {
 			webResource = client.resource(url);
 			return webResource;
 		}
-	}	
+	}
+	public Map<String,Object> getResponse(String url) {
+	    return getResponse(this.webResource, url);
+	}
 
-	public HashMap<String, Object> getReponse(WebResource webResource, String url){
+	public HashMap<String, Object> getResponse(WebResource webResource, String url){
 		_logger.info("URI: "+url);
         ClientResponse clientResponse = webResource.path(url).get(ClientResponse.class );
         HashMap<String, Object> response = new HashMap<String, Object>();
