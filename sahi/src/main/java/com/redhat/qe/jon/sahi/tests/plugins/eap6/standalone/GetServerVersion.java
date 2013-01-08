@@ -19,8 +19,8 @@ public class GetServerVersion extends AS7StandaloneTest {
 	    Monitoring monitoring = server.monitoring();
 	    monitoring.schedules().setInterval("Product Version", "1");
 	    monitoring.schedules().setInterval("Product Name", "1");
-	    log.info("Waiting 120s for [Product Version] trait to be measured");
-	    sahiTasks.waitFor(120 * 1000);
+	    log.info("Waiting 180s for [Product Version] trait to be measured");
+	    sahiTasks.waitFor(180 * 1000);
 	    String version = server.monitoring().traits().getMetricRowValue("Product Version", 1);
 	    String name = server.monitoring().traits().getMetricRowValue("Product Name", 1);
 	    version = name+" "+version;
