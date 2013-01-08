@@ -84,7 +84,7 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	public void takeScreenShot(ITestResult result){
 		try{
 			_logger.log(Level.INFO, "Taking screen shot...");
-			String fileDirPath = result.getTestContext().getOutputDirectory()+"/../html/";
+			String fileDirPath = new File(result.getTestContext().getOutputDirectory()).getParent()+"/html/";
 			if(new File(fileDirPath).mkdirs()){
 				_logger.log(Level.INFO, "Directory Created... : "+fileDirPath);
 			}else{
