@@ -53,6 +53,8 @@ subprojects {
             sysproperty(key:prop.key,value:prop.value)
             }
         }
+        # disable ReportNG escaping
+        sysproperty(key:"org.uncommons.reportng.escape-output",value:"false")
     }
   }
 	// we build/install also sources and javadocs to local mvn repo
