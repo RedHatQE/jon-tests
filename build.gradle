@@ -53,7 +53,7 @@ subprojects {
             sysproperty(key:prop.key,value:prop.value)
             }
         }
-        # disable ReportNG escaping
+        // disable ReportNG escaping
         sysproperty(key:"org.uncommons.reportng.escape-output",value:"false")
     }
   }
