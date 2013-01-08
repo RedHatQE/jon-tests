@@ -213,7 +213,7 @@ public class Resource {
 		
 		if (overwrite || this.id == null) {
 			//first we need to find current resource
-			RestClient rc = new RestClient();		
+			RestClient rc = RestClient.getDefault();		
 			String platformId = findPlatformId(rc);
 			if (platformId==null) {
 				throw new RuntimeException("Unable to find platform ID for resource "+this.toString());
@@ -244,7 +244,7 @@ public class Resource {
 		List<Resource> children = new ArrayList<Resource>();
 		
 		//first we need to find current resource
-		RestClient rc = new RestClient();		
+		RestClient rc = RestClient.getDefault();		
 		String platformId = findPlatformId(rc);
 		if (platformId==null) {
 			throw new RuntimeException("Unable to find platform ID of "+toString()+" using REST API");

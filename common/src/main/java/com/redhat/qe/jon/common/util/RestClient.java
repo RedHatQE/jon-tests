@@ -61,6 +61,7 @@ public class RestClient {
 	protected static String SERVER_URI ;
 	protected static String URI_PREFIX = "/rest/1"; 
 	
+	private static RestClient instance;
 	
 	public enum URIs
 	{
@@ -87,7 +88,7 @@ public class RestClient {
 			return (URI_PREFIX+uri);
 		}
 	}
-	public RestClient() {
+	private RestClient() {
 	    this("rhqadmin","rhqadmin");
 	}
 	
@@ -110,6 +111,16 @@ public class RestClient {
 	    }
 	    this.webResource = getWebResource(RestClient.SERVER_URI+URI_PREFIX, username, password);
 	    
+	}
+	/**
+	 * returns default (singleton) restcilent instance
+	 * @return
+	 */
+	public static RestClient getDefault() {
+	    if (instance == null) {
+		instance = new RestClient();
+	    }
+	    return instance;
 	}
 	
 	private  boolean checkEndpoint(String endpoint, String auth) {
@@ -136,7 +147,7 @@ public class RestClient {
 	
 	public static String detectServerInstallDir() {
 	    try {
-        	    RestClient self = new RestClient();
+        	    RestClient self = RestClient.getDefault();
         	    Map<String, Object> result = self.getResponse(URIs.STATUS.getUri()+".json");
         	    JSONObject jsonObject = self.getJSONObject(""+result.get(RESPONSE_CONTENT));
         	    jsonObject = (JSONObject) jsonObject.get(STATUS_VALUES);
