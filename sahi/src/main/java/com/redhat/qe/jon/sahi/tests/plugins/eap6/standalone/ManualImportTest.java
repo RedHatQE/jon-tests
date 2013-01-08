@@ -25,9 +25,9 @@ public class ManualImportTest extends AS7StandaloneTest {
 	@BeforeClass
 	protected void beforeClass() {
 		// uninventory original (autodetected) server
-		new Resource(sahiTasks,System.getProperty("agent.name"),System.getProperty("as7.standalone.name.original")).uninventory(false);
+		new Resource(sahiTasks,agentName,System.getProperty("as7.standalone.name.original")).uninventory(false);
 		// also uninventory manually imported server (could exist from passed test runs)
-		new Resource(sahiTasks,System.getProperty("agent.name"),System.getProperty("as7.standalone.name")).uninventory(false);
+		new Resource(sahiTasks,agentName,System.getProperty("as7.standalone.name")).uninventory(false);
 	}
 	
 	@Test
