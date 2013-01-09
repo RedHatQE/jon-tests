@@ -621,6 +621,10 @@ public class Resource {
 			tasks.link("Inventory").click();
 			tasks.cell("Discovery Queue").click();
 			tasks.waitFor(Timing.WAIT_TIME);
+			// sort by Discovery Time
+			tasks.cell("Discovery Time").click();
+			tasks.cell("Discovery Time").click();
+			
 			ElementStub elm = tasks.cell(agentName);
 			if (elm.exists()) {
 				elm.doubleClick();
