@@ -23,7 +23,7 @@ import com.redhat.qe.tools.checklog.LogFile;
 @CheckLog(enabled=false,
 	logs={
 		@LogFile(id="agent",user="${jon.agent.user}",pass="${jon.agent.password}",host="${jon.agent.host}",logFile="rhq-agent/logs/agent.log"),
-		@LogFile(id="server",user="${jon.server.user}",pass="${jon.server.password}",host="${jon.server.host}",logFile="${jon.server.home}/logs/rhq-server-log4j.log"),
+		@LogFile(id="server",user="${jon.server.user}",pass="${jon.server.password}",host="${jon.server.host}",logFile="${jon.server.home}/logs/rhq-server-log4j.log")
 	}	
 )
 public class AS7PluginSahiTestScript extends SahiTestScript {
