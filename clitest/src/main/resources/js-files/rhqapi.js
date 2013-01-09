@@ -526,7 +526,7 @@ var groups = (function() {
 
 	return {
 		/**
-		 * creates a org.rhq.domain.criteria.ResourceCriteria object based on
+		 * creates a org.rhq.domain.criteria.ResourceGroupCriteria object based on
 		 * given params
 		 *
 		 * @param {Obejct}
@@ -1540,6 +1540,42 @@ var Resource = function (param) {
 			}
 		}
 	};
+	var _checkOperationName = function(name){
+		// let's obtain operation definitions, so we can check operation name
+		var criteria = new ResourceTypeCriteria();
+		criteria.addFilterId(_find().get(0).resourceType.id);
+		criteria.fetchOperationDefinitions(true);
+		var resType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
+		var iter = resType.operationDefinitions.iterator();
+		// we put op names here in case invalid name is called
+		var ops="";
+		while(iter.hasNext()) {
+			var operationDefinition = iter.next();
+			ops+=operationDefinition.name+", ";
+			if (name==operationDefinition.name) {
+				return operationDefinition;	
+			}
+		}
+		throw "Operation name ["+name+"] is invalid for this resource, valid operation names are : " + ops;	
+	};
+	var _createOperationConfig = function(params, operationDefinition){
+		var configuration = null;
+		if (params || params == {}) {
+			configuration = common.hashAsConfiguration(params);
+		}
+		else if (operationDefinition.parametersConfigurationDefinition){
+			var template = operationDefinition.parametersConfigurationDefinition.defaultTemplate;
+			common.trace("Default template for parameters configuration definition" + template);
+			if (template) {
+				configuration = template.createConfiguration();
+			}
+		}
+		// if (configuration)
+		// pretty.print(configuration);
+		// println(common.objToString(common.configurationAsHash(configuration)));
+		
+		return configuration;
+	}
 
 
 	var _static =  {
@@ -1932,49 +1968,52 @@ var Resource = function (param) {
 		 * timeout is reached or operation finishes
 		 *
 		 * @param {String}
-		 *            name of operation
+		 *            name of operation (required)
 		 * @param {Object}
-		 *            params - hashmap for operation params (Configuration)
+		 *            params - hashmap for operation params (Configuration) (optional)
 		 * @returns
 		 */
 		invokeOperation : function(name,params) {
 			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
 			// let's obtain operation definitions, so we can check operation
-			// name and required params
-			var criteria = new ResourceTypeCriteria();
-			criteria.addFilterId(_find().get(0).resourceType.id);
-			criteria.fetchOperationDefinitions(true);
-			var resType = ResourceTypeManager.findResourceTypesByCriteria(criteria).get(0);
-			var iter = resType.operationDefinitions.iterator();
-			// we put op names here in case invalid name is called
-			var ops="";
-			while(iter.hasNext()) {
-				var op = iter.next();
-				ops+=op.name+", ";
-				if (name==op.name) {
-					var configuration = null;
-					if (params || params == {}) {
-						configuration = common.hashAsConfiguration(params);
-					}
-					else if (op.parametersConfigurationDefinition){
-						var template = op.parametersConfigurationDefinition.defaultTemplate;
-						common.trace("Default template for parameters configuration definition" + template);
-						if (template) {
-							configuration = template.createConfiguration();
-						}
-					}
-					// if (configuration)
-					// pretty.print(configuration);
-					// println(common.objToString(common.configurationAsHash(configuration)));
+			var op = _checkOperationName(name);
+			var configuration = _createOperationConfig(params,op);
+			_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,common.configurationAsHash(configuration));
 
-					_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,common.configurationAsHash(configuration));
+			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,configuration,null);
+			common.debug("Operation scheduled..");
+			return _waitForOperationResult(_id,resOpShedule);
+		},
+		/**
+		 * schedules operation on resource. In contrast to invokeOperation this is
+		 * not blocking (synchronous) operation.
+		 *
+		 * @param {String}
+		 *            name of operation (required)
+		 *            
+		 * @param {long} delay delay in seconds (required)
+		 * @param {long} repeatInterval repeatInterval in seconds (required)
+		 * @param {int} repeatCount repeatCount in seconds (required)
+		 * @param {Object}
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @returns
+		 */
+		scheduleOperation : function(name,delay,repeatInterval,repeatCount,opParams) {
+			common.trace("Resource("+_id+").scheduleOperation(name="+name+", delay="
+					+delay+", repeatInterval="+repeatInterval+", repeatCount="+repeatCount+
+					", opParams={"+common.objToString(opParams)+"})");
+			if(delay < 0){throw "Delay of scheduled operation must be >= 0 !!!";}
+			if(repeatInterval < 0){throw "Repeat interval of scheduled operation must be >= 0 !!!";}
+			if(repeatCount < 0){throw "Repeat count of scheduled operation must be >= 0 !!!";}
+			
+			// let's obtain operation definitions, so we can check operation
+			var op = _checkOperationName(name);
+			var configuration = _createOperationConfig(opParams,op);
+			_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,common.configurationAsHash(configuration));
 
-					var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,configuration,null);
-					common.debug("Operation scheduled..");
-					return _waitForOperationResult(_id,resOpShedule);
-				}
-			}
-			throw "Operation name ["+name+"] is invalid for this resource, valid operation names are : " + ops;
+			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,delay * 1000,
+					repeatInterval * 1000,repeatCount,0,configuration,null);
+			common.debug("Operation scheduled..");
 		},
 		/**
 		 * Waits until operation is finished or timeout is reached.
