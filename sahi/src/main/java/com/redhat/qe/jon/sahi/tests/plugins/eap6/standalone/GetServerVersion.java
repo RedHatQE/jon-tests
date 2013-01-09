@@ -24,9 +24,23 @@ public class GetServerVersion extends AS7StandaloneTest {
 	    String version = server.monitoring().traits().getMetricRowValue("Product Version", 1);
 	    String name = server.monitoring().traits().getMetricRowValue("Product Name", 1);
 	    version = name+" "+version;
-	    log.info("Detected versoin "+version);
-	    System.setProperty("rhq.build.version", System.getProperty("rhq.build.version", "")+" "+version);
-	    Reporter.log("<BR><b>"+version+"</b><br>");
+	    log.info("Detected version "+version);
+	    String buildVersion = System.getProperty("rhq.build.version", "");
+	    // we expect there is \n character within value of this property
+	    // we append EAP6 version just before \n character
+	    String[] parts = buildVersion.split("\n");
+	    StringBuilder newVersion = new StringBuilder();
+	    if (parts.length>1) {
+		parts[0] += " "+version;
+		for (String part : parts) {
+		    newVersion.append(part+"\n");
+		}
+	    }
+	    else {
+		newVersion.append(buildVersion+" "+version);
+	    }
+	    System.setProperty("rhq.build.version", newVersion.toString());
+	    Reporter.log("<BR><b>"+System.getProperty("rhq.build.version", "")+"</b><br>");
 	    
 	}
 }
