@@ -1804,7 +1804,7 @@ var Resource = function (param) {
 		 * @param {Object} params can contain following: -
 		 * <ul>
 		 * <li>name [String] (required)- name for a new resource child, name is optional when `content` is provided</li>
-		 * <li>type [String] (required) - resource type name to be created</li>
+		 * <li>type [String] (required) - resource type name to be created (exact name, not just filter)</li>
 		 * <li>config [Object] (optional) - configuration map for new resource, if not present, default is taken</li>
 		 * <li>pluginConfig [Object] (optional) - plugin configuration for new resource, if not present, default is taken (NOT YET IMPLEMENTED)</li>
 		 * <li>content [String] (optional) - absolute path for resource's content file (typical for deployments)</li>
@@ -1845,8 +1845,10 @@ var Resource = function (param) {
 			criteria.fetchPluginConfigurationDefinition(true);
 			var resTypes = ResourceTypeManager.findResourceTypesByCriteria(criteria);
 			var failed = resTypes.size() == 0;
+			var resType = null;
 			for (var i=0;i<resTypes.size();i++) {
 				if (resTypes.get(i).name == type) {
+					resType = resTypes.get(i);
 					failed = false;
 					break;
 				}
@@ -1860,7 +1862,6 @@ var Resource = function (param) {
 				}
 				throw "Invalid resource type [type="+type+"] valid type names are ["+types+"]";
 			}
-			var resType = resTypes.get(0);
 			var configuration =  new Configuration();
 		    if (config) {
 		    	configuration = common.hashAsConfiguration(config);
@@ -1878,7 +1879,7 @@ var Resource = function (param) {
 				common.debug("Reading file " + content + " ...");
 				var file = new java.io.File(content);
 				if (!file.exists()) {
-					throw "content parameter file does not exist!";
+					throw "content parameter file '" +content+ "' does not exist!";
 				}
 			    var inputStream = new java.io.FileInputStream(file);
 			    var fileLength = file.length();
@@ -1916,7 +1917,14 @@ var Resource = function (param) {
 				);
 			}
 			var pred = function() {
-				var histories = ResourceFactoryManager.findCreateChildResourceHistory(_id,startTime,new Date().getTime(),pageControl);
+				var actualDateMilis = new Date().getTime();
+				common.trace("Searching for CreateChildResourceHistory. Res id: "+_id+", startTime: "+new Date(startTime)+
+						", actualDateMilis: "+new Date(actualDateMilis));
+				var histories = ResourceFactoryManager.findCreateChildResourceHistory(_id,startTime,actualDateMilis,pageControl);
+				if(histories.size() == 0){
+					common.warn("No history found inside given range. The cause of this could be that time" +
+							" on machine witch CLI client and on machine with RHQ server is not synchronised.");
+				}
 				var current;
 				common.pageListToArray(histories).forEach(
 						function (x) {
