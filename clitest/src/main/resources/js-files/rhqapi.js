@@ -71,20 +71,32 @@ var _common = function() {
     var zeros = function(number) {if (number<10) { number = "0"+number;} return number;};
 		return zeros(now.getHours())+ ":"+zeros(now.getMinutes())+":"+zeros(now.getSeconds());
 	};
-	var _debug = function(message) {
-		if (typeof verbose == "number" && verbose>=1) {
-			_println(_time()+" [DEBUG] "+message);
-		}
-	};
+
 	var _trace = function(message) {
 		if (typeof verbose == "number" && verbose>=2) {
 			_println(_time()+" [TRACE] "+message);
+		}
+	};
+	
+	var _debug = function(message) {
+		if (typeof verbose == "number" && verbose>=1) {
+			_println(_time()+" [DEBUG] "+message);
 		}
 	};
 
 	var _info = function(message) {
 		if (typeof verbose == "number" && verbose>=0) {
 			_println(_time()+" [INFO] "+message);
+		}
+	};
+	var _warn = function(message) {
+		if (typeof verbose == "number" && verbose>=-1) {
+			_println(_time()+" [WARN] "+message);
+		}
+	};
+	var _error = function(message) {
+		if (typeof verbose == "number" && verbose>=-2) {
+			_println(_time()+" [ERROR] "+message);
 		}
 	};
 	// taken from CLI samples/utils.js
@@ -451,6 +463,8 @@ var _common = function() {
 			}
 			return result;
 		},
+		error : _error,
+		warn : _warn,
 		info : _info,
 		debug : _debug,
 		trace : _trace,
@@ -1921,6 +1935,7 @@ var Resource = function (param) {
 				common.trace("Searching for CreateChildResourceHistory. Res id: "+_id+", startTime: "+new Date(startTime)+
 						", actualDateMilis: "+new Date(actualDateMilis));
 				var histories = ResourceFactoryManager.findCreateChildResourceHistory(_id,startTime,actualDateMilis,pageControl);
+				//TODO check this on other relevant parts or use time from server
 				if(histories.size() == 0){
 					common.warn("No history found inside given range. The cause of this could be that time" +
 							" on machine witch CLI client and on machine with RHQ server is not synchronised.");
@@ -2121,7 +2136,7 @@ var Inventory = resources;
 Inventory.discoveryQueue = discoveryQueue;
 
 /**
- * verbosity, default 0 (0=INFO, 1=DEBUG,2=TRACE)
+ * verbosity, default 0 (-2=ERROR, -1=WARN, 0=INFO, 1=DEBUG, 2=TRACE)
  */
 var verbose = 0;
 /**
