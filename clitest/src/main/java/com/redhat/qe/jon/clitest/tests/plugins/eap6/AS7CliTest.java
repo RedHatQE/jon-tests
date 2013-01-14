@@ -16,6 +16,7 @@ import com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartConfig.ConfigFile
 import com.redhat.qe.jon.common.util.AS7DMRClient;
 import com.redhat.qe.jon.common.util.AS7SSHClient;
 import com.redhat.qe.jon.common.util.RestClient;
+import com.redhat.qe.jon.common.util.SSHClient;
 import com.redhat.qe.tools.checklog.CheckLog;
 import com.redhat.qe.tools.checklog.LogFile;
 
@@ -23,7 +24,7 @@ import com.redhat.qe.tools.checklog.LogFile;
 	enabled=false,
 	logs={
 		@LogFile(id="agent",user="${jon.agent.user}",pass="${jon.agent.password}",host="${jon.agent.host}",logFile="rhq-agent/logs/agent.log"),
-		@LogFile(id="server",user="${jon.server.user}",pass="${jon.server.password}",host="${jon.server.host}",logFile="${jon.server.home}/logs/rhq-server-log4j.log")
+		@LogFile(id="server",user="${jon.server.user}",pass="${jon.server.password}",host="${jon.server.host}",logFile="${jon.server.home}/logs/${jon.server.logfile}")
 	}	
 )
 public class AS7CliTest extends CliTest {
@@ -77,6 +78,16 @@ public class AS7CliTest extends CliTest {
 		    String value = RestClient.detectServerInstallDir();
 		    log.fine("[jon.server.home] detected : "+value);
 		    System.setProperty("jon.server.home", value);
+		}
+		// detect server log file
+		// default for RHQ < 4.6.0 or JON < 3.2.0 
+		log.fine("Auto-detecting [jon.server.logfile]");
+		System.setProperty("jon.server.logfile", "rhq-server-log4j.log");
+		SSHClient client = new SSHClient(System.getProperty("jon.server.user"),System.getProperty("jon.server.host"),System.getProperty("jon.server.password"));
+		
+		// for  RHQ >= 4.6.0 and or >= 3.2.0 
+		if( client.runAndWait("test -f "+System.getProperty("jon.server.home")+"/logs/server.log").getExitCode() == 0) {
+		    System.setProperty("jon.server.logfile", "server.log");
 		}
 	}
 	
@@ -136,7 +147,16 @@ public class AS7CliTest extends CliTest {
 		else {
 			cliArgs+= " agent="+agentName;
 		}
-		
+		// always add rhqapi.js as first dependency
+		// we're using public version from rhq-project/samples
+		//String rhqapi = "https://raw.github.com/rhq-project/samples/master/cli/rhqapi/rhqapi.js";
+		String rhqapi = "/js-files/rhqapi.js";
+		if (StringUtils.trimToNull(jsDepends)==null) {
+		    jsDepends = rhqapi;
+		}
+		else {
+		    jsDepends = rhqapi+","+jsDepends; 
+		}		
 		super.runJSfile(rhqTarget, cliUsername, cliPassword, jsFile, cliArgs,
 				expectedResult, makeFilure, jsDepends, resSrc, resDst);
 	}
@@ -173,6 +193,6 @@ public class AS7CliTest extends CliTest {
 		Assert.assertTrue(running, "Server process is running");
 		sshClient.runAndWait("netstat -pltn | grep java");
 		// do we run Domain or Standalone? we switch it by  by including eap6/{domain|standalone}/server.js
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/discoveryTest.js", null, start.getExpectedMessage()+",availability=UP", null,"rhqapi.js,eap6/"+serverType+"/server.js",null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/discoveryTest.js", null, start.getExpectedMessage()+",availability=UP", null,"eap6/"+serverType+"/server.js",null,null);
 	}
 }

@@ -1,4 +1,4 @@
-<suite name="RHQ CLI JS/JAVA AS7 Test">
+<suite name="RHQ CLI EAP6">
 
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->
@@ -18,6 +18,8 @@
 Some of bellow testing JS files expect named parameter called 'agent' to be passed. You may ask, why it is not here.
 It's because agent (a platform name) is dynamic, see com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest
 which does that magic.
+
+There's no need to add 'rhqapi.js' to 'js.depends' parameter when using  com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest
 
  --> 
 <test name="Standalone_Discovery_StartCommand_Parameters">
@@ -43,7 +45,6 @@ which does that magic.
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">	
 			<parameter name="js.file"  value="eap6/uninventoryServers.js"/>
-			<parameter name="js.depends" value="rhqapi.js" />
 			<parameter name="expected.result"  value="Login successful"/>
 			<parameter name="cli.args" value="--args-style=named discovery=yes" />
 			<methods>
@@ -54,11 +55,11 @@ which does that magic.
 </test>
 
 <!-- right after discovery tests we import our resources and the show can begin -->
-<test name="Import_Resources">
+<test name="Inventory_EAP_Servers">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="ImportResources.js"/>
-			<parameter name="expected.result"  value="Login successful,Resources are imported successfully"/>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">	
+			<parameter name="js.file"  value="eap6/inventoryServers.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
@@ -88,7 +89,7 @@ which does that magic.
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
 			<parameter name="js.file"  value="eap6/bundleDeploymentTest.js"/>
-			<parameter name="js.depends" value="rhqapi.js,eap6/standalone/server.js" />
+			<parameter name="js.depends" value="eap6/standalone/server.js" />
 			<parameter name="res.src" value="/bundles/bundle-war.zip,/bundles/bundle-war-new.zip" />
 			<parameter name="res.dst" value="/tmp/bundle-war.zip,/tmp/bundle-war-new.zip" />
 			<parameter name="cli.args" value="--args-style=named bundle=/tmp/bundle-war.zip bundle2=/tmp/bundle-war-new.zip" />
@@ -102,7 +103,7 @@ which does that magic.
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
 			<parameter name="js.file"  value="eap6/networkInterfacesTest.js"/>
-			<parameter name="js.depends" value="rhqapi.js,eap6/standalone/server.js" />
+			<parameter name="js.depends" value="eap6/standalone/server.js" />
 			<parameter name="cli.args" value="--args-style=named flag=SS" />
 			<methods>
 				<include name="runJSfile"></include>			
@@ -121,24 +122,26 @@ which does that magic.
 		</class>		
 	</classes>
 </test>
-
+<!-- 
+Temporary commented out - not yet implemented
 <test name="Domain_NetworkInterfaces">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
 			<parameter name="js.file"  value="eap6/networkInterfacesTest.js"/>
-			<parameter name="js.depends" value="rhqapi.js,eap6/domain/server.js" />
-			<parameter name="cli.args" value="--args-style=named flag=DC" />
+			<parameter name="js.depends" value="eap6/domain/server.js" />
+			<parameter name="cli.args" value="!fix here!args-style=named flag=DC" />
 			<methods>
 				<include name="runJSfile"></include>			
 			</methods>
 		</class>		
 	</classes>
 </test>
+ -->
 <test name="Domain_Host_NetworkInterfaces">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">
 			<parameter name="js.file"  value="eap6/networkInterfacesTest.js"/>
-			<parameter name="js.depends" value="rhqapi.js,eap6/domain/server.js" />
+			<parameter name="js.depends" value="eap6/domain/server.js" />
 			<parameter name="cli.args" value="--args-style=named flag=HC" />
 			<methods>
 				<include name="runJSfile"></include>			
@@ -148,23 +151,19 @@ which does that magic.
 </test>
 
 <!-- -->
-
-
-
-
 <!--  This case SHOULD BE LAST ONE -->
-
-<test name="Uninventory-Platforms">
+<test name="Uninventory_EAP_Servers_again">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="UninventoryResources.js"/>
-			<parameter name="js.depends" value="rhqapi.js" />
-			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
+		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest">	
+			<parameter name="js.file"  value="eap6/uninventoryServers.js"/>
+			<parameter name="expected.result"  value="Login successful"/>
+			<parameter name="cli.args" value="--args-style=named discovery=yes" />
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
 		</class>
 	</classes>
 </test>
+
 
 </suite>

@@ -23,7 +23,7 @@ public class GetVersionTest extends AS7CliTest {
 	@Test
 	public void getServerVersion() throws IOException, CliTasksException {
 	    String expected = "server=";
-	    runJSfile(null, "rhqadmin", "rhqadmin", "eap6/serverVersion.js", null, expected, null,"rhqapi.js,eap6/standalone/server.js",null,null);
+	    runJSfile(null, "rhqadmin", "rhqadmin", "js-files/eap6/serverVersion.js", null, expected, null,"eap6/standalone/server.js",null,null);
 	    Pattern regex = Pattern.compile("server=(.+?)$",Pattern.MULTILINE);
 	    Matcher m = regex.matcher(this.consoleOutput);
 	    if (m.find()) {

@@ -17,8 +17,10 @@
 	  	    <!--  use of our generic test class -->
 			<class name="com.redhat.qe.jon.clitest.tests.CliTest">
 				<!-- REQUIRED:  path to JS file 
-					JS file is treated as a java resource so this path MUST be absolute
-					or it can be URL 				
+					JS file is treated as a java resource within your test project
+					 - this path is absolute - such resource is looked up within <path>
+					 - this path is relative - such resource is looked-up within /js-files/<path> 
+					 - or it can be URL 				
 				 -->	
 				<parameter name="js.file"  value="/example_test.js"/>
 				

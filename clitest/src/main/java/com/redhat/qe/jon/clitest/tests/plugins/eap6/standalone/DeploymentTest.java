@@ -7,7 +7,15 @@ import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest;
-
+import com.redhat.qe.tools.checklog.CheckLog;
+import com.redhat.qe.tools.checklog.LogFile;
+@CheckLog(
+	enabled=true,
+	logs={
+		@LogFile(refId="server"),
+		@LogFile(refId="agent")
+	}
+)
 public class DeploymentTest extends AS7CliTest {
 
 	private final static String deploymentType = "Deployment";
@@ -38,15 +46,14 @@ public class DeploymentTest extends AS7CliTest {
 	
 	@Test(alwaysRun=true,dependsOnMethods={"deployWAR","redeployWAR"},priority=100)
 	public void undeployWAR() throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named deployment=/tmp/hello.war", null, null,"rhqapi.js,eap6/standalone/server.js",null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named deployment=/tmp/hello.war", null, null,"eap6/standalone/server.js",null,null);
 	}
 	
 	private void retrieveBackingContent(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/retrieveBackingContentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/standalone/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/retrieveBackingContentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"eap6/standalone/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
 	}
 	
 	private void createDeployment(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/standalone/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
-		
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"eap6/standalone/server.js","/deployments/"+srcWar,"/tmp/"+destWar);		
 	}
 }
