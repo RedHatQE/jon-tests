@@ -91,3 +91,15 @@ println("Get nonexistent user.");
 var user = users.getUser("incorrectName");
 assertTrue(user == null, "Nonexistent user was found!!");
 
+
+
+// cleaning
+println("Removing roles.");
+roles.deleteRole(guestRoleName);
+assertTrue(roles.getRole(guestRoleName) == null, guestRoleName + " role was removed but is still there!!");
+roles.deleteRole(bossRoleName);
+assertTrue(roles.getRole(bossRoleName) == null, bossRoleName + " role was removed but is still there!!");
+
+println("Removing user.");
+users.deleteUser(jramboName);
+assertTrue(users.getUser(jramboName) == null, jramboName + " user was removed but is still there!!");
