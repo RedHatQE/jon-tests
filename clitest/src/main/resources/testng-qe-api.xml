@@ -63,6 +63,18 @@
 	</classes>
 </test>
 
+<test name="users-roles-permissions">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="qe-api/users-roles-permissions.js"/>
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
 <test name="Inventory_Find">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
