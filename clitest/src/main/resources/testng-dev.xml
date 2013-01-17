@@ -18,9 +18,9 @@
 
 <test name="Test_Update_Configuration">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.coniguration.AgentConfiguration">	
+		<class name="com.redhat.qe.jon.clitest.metrics.ValidateMetric">	
 			<methods>
-				<include name="updateAgentConfigurationTest"></include>		
+				<include name="validateMetricTest"></include>		
 			</methods>
 		</class>
 	</classes>

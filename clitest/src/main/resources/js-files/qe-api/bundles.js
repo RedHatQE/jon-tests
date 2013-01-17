@@ -9,8 +9,9 @@ bundles.find().forEach(function(b){
 });
 assertTrue(bundles.find().length==0,"All bundles have been removed");
 
-println("Creating bundle from dist-file URL");
-bundles.createFromDistFile("http://git.engineering.redhat.com/?p=users/jweiss/automatjon.git;a=blob_plain;f=jon/clitest/resources/bundles/bundle.zip;hb=master");
+// commented out until we have some bundle available on any http location
+//println("Creating bundle from dist-file URL");
+//bundles.createFromDistFile("http://git.engineering.redhat.com/?p=users/jweiss/automatjon.git;a=blob_plain;f=jon/clitest/resources/bundles/bundle.zip;hb=master");
 
 
 println("Removing all existing bundles");

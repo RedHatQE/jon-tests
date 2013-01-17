@@ -22,7 +22,10 @@ subprojects {
 			"http://clojars.org/repo",
 			"http://download.java.net/maven/2/",
 			"http://repository.codehaus.org",
-			"http://snapshots.repository.codehaus.org"
+			"http://snapshots.repository.codehaus.org",
+			"http://repo1.maven.org/maven2/",
+                        "https://repository.jboss.org/nexus/content/groups/public-jboss/"
+			
 		].each { repo ->  
 			maven {
 				url repo
@@ -124,7 +127,7 @@ project(":common") {
 			"org.resteasy:jaxrs-api:1.0-beta-4",
 			"org.uncommons:reportng:1.1.3",
 			"org.apache.commons:commons-lang3:3.1",
-			files("lib/cajo.jar", "lib/ReportEngineClient.jar")
+			"com.report.engine:report-engine-client:0.0.1-SNAPSHOT"
 	}
 
 }

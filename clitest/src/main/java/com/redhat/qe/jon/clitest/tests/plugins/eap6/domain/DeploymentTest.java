@@ -7,7 +7,16 @@ import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.AS7CliTest;
+import com.redhat.qe.tools.checklog.CheckLog;
+import com.redhat.qe.tools.checklog.LogFile;
 
+@CheckLog(
+	enabled=true,
+	logs={
+		@LogFile(refId="server"),
+		@LogFile(refId="agent")
+	}
+)
 public class DeploymentTest extends AS7CliTest {
 
 	private final static String deploymentType = "DomainDeployment";
@@ -37,13 +46,13 @@ public class DeploymentTest extends AS7CliTest {
 	}
 	@Test(dependsOnMethods={"deployWAR"},priority=2)
 	public void deployToServerGroup() throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/domain/deployToServerGroupTest.js", "--args-style=named target=main-server-group deployment=/tmp/hello.war", null, null,"rhqapi.js,eap6/domain/server.js",null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/domain/deployToServerGroupTest.js", "--args-style=named target=main-server-group deployment=/tmp/hello.war", null, null,"eap6/domain/server.js",null,null);
 	}
 	
 	
 	@Test(alwaysRun=true,dependsOnMethods={"deployWAR","redeployWAR"},priority=100)
 	public void undeployWAR() throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named deployment=/tmp/hello.war", null, null,"rhqapi.js,eap6/domain/server.js",null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named deployment=/tmp/hello.war", null, null,"eap6/domain/server.js",null,null);
 	}
 
 
@@ -69,25 +78,25 @@ public class DeploymentTest extends AS7CliTest {
 	
 	@Test(alwaysRun=true,dependsOnMethods={"deployWARAsNewServerGroupChild","redeployWARAsNewServerGroupChild"},priority=100)
 	public void undeployWARAsNewServerGroupChild() throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named child=main-server-group deployment=/tmp/hello.war", null, null,"rhqapi.js,eap6/domain/server.js",null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/undeploymentTest.js", "--args-style=named child=main-server-group deployment=/tmp/hello.war", null, null,"eap6/domain/server.js",null,null);
 	}
 	
 	
 	
 	private void retrieveBackingContent(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/retrieveBackingContentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/domain/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/retrieveBackingContentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"eap6/domain/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
 	}
 	
 	private void createDeployment(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/domain/server.js","/deployments/"+srcWar,"/tmp/"+destWar);		
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named type="+deploymentType+" deployment=/tmp/"+destWar, expected, null,"eap6/domain/server.js","/deployments/"+srcWar,"/tmp/"+destWar);		
 	}
 	
 	private void createServerGroupDeployment(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named type=Deployment child=main-server-group deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/domain/server.js","/deployments/"+srcWar,"/tmp/"+destWar);		
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/deploymentTest.js", "--args-style=named type=Deployment child=main-server-group deployment=/tmp/"+destWar, expected, null,"eap6/domain/server.js","/deployments/"+srcWar,"/tmp/"+destWar);		
 	}
 	
 	private void retrieveBackingContentForServerGroupDeployment(String srcWar, String destWar, String expected) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/retrieveBackingContentTest.js", "--args-style=named child=main-server-group type=Deployment deployment=/tmp/"+destWar, expected, null,"rhqapi.js,eap6/domain/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
+		runJSfile(null, "rhqadmin", "rhqadmin", "eap6/retrieveBackingContentTest.js", "--args-style=named child=main-server-group type=Deployment deployment=/tmp/"+destWar, expected, null,"eap6/domain/server.js","/deployments/"+srcWar,"/tmp/"+destWar);
 	}
 	
 }

@@ -2,24 +2,26 @@
 
 
 importPlatformWithChildren();
-importPlatformWithoutChildren();
-importResource();
-
+//importPlatformWithoutChildren();
+//importResource();
+println("Waiting 5min after platform import")
+sleep(1000*60*5);
 
 function importPlatformWithChildren() {
 	sleep(15*1000); // wait 'till platform appears in disco-queue
-	var platforms = Inventory.discoveryQueue.listPlatforms();
+	var platforms = discoveryQueue.listPlatforms();
 	assertTrue(platforms.length>0,"There is at least one platform in discovery queue");
 	// using importPlatform, we import it including children resources (default)
-	var imported = Inventory.discoveryQueue.importPlatform(platforms[0].getProxy().getName());
+	var imported = discoveryQueue.importPlatform(platforms[0].getProxy().getName());
 	assertTrue(imported.exists(),"Imported platform exists in inventory");
 	// let's wait until our platform becomes available
 	imported.waitForAvailable();
 	assertTrue(imported.isAvailable(),"Imported platform is available");
 	assertTrue(imported.children().length>0,"At least 1 child resource was imported on platform");
 	// let's uninventory this platform
-	imported.uninventory();
-	assertFalse(imported.exists(),"Imported platform exists in inventory");
+	//imported.uninventory();
+	//assertFalse(imported.exists(),"Imported platform exists in inventory");
+	
 }
 
 

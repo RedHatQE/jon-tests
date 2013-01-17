@@ -7,18 +7,13 @@
 
 
 // jsdoc-toolkit takes care of generating documentation
-// please follow http://code.google.com/p/jsdoc-toolkit/wiki/TagReference for adding correct tags
+// please follow http://code.google.com/p/jsdoc-toolkit/wiki/TagReference for adding correct tag
 
 /**
  * print function that recognizes arrays and prints each item on new line
  */
 var p = function(object) {
-	if (object instanceof Array) {
-		object.forEach(function(x){println(x);});
-	}
-	else {
-		println(object);
-	}
+	println(new _common().objToString(object))
 };
 
 //Production steps of ECMA-262, Edition 5, 15.4.4.19
@@ -417,10 +412,68 @@ var _common = function() {
 
 
 	return {
-		objToString : function(obj) {
-			var str="";
-			for (var k in obj) {if (obj.hasOwnProperty(k)) str=str.concat(k+"="+obj[k]+",");}
-			return str.substring(0,str.length-1);
+		objToString : function(hash) {
+			output = "{";
+			if (!hash) {
+				return output;
+			}
+			for(key in hash) {
+				if (!hash.hasOwnProperty(key)) {
+					continue;
+				}
+				value = hash[key];
+
+				output+= (function(parent, key, value) {
+					function isArray(obj) {
+						return typeof(obj) == 'object' && (obj instanceof Array);
+					}
+
+					function isHash(obj) {
+						return typeof(obj) == 'object' && !(obj instanceof Array);
+					}
+
+					function isPrimitive(obj) {
+						return typeof(obj) != 'object' || obj == null || (obj instanceof Boolean  || obj instanceof Number || obj instanceof String);
+					}
+					var me = arguments.callee;
+
+					var prop = null;
+
+					if (isPrimitive(value)) {
+						if (value instanceof Number || value instanceof Boolean) {						
+							prop = key+":"+value;
+						}
+						else {
+							prop = key+":\'"+value+"\'";
+						}
+					} else if (isArray(value)) {
+						prop = key+":[";
+						for(var i = 0; i < value.length; ++i) {						
+							var v = value[i];
+							if (v != null) {
+								prop += me(prop, "", v)+",";
+							}												
+						}
+						prop+=prop.substring(0,prop.length-1)+"]"
+					} else if (isHash(value)) {
+						prop = "{";
+						for(var i in value) {
+							var v = value[i];
+							prop+= me(prop, i, v)+",";
+						}
+						prop+=prop.substring(0,prop.length-1)+"}"
+					}
+					else {
+						println("it is unkonwn");
+						println(typeof value);
+						println(value);
+						return;
+					}
+					return prop;
+				})(output, key, value)+",";
+			}
+
+			return output.substring(0,output.length-1)+"}";
 		},
 		pageListToArray : function(pageList) {
 			var resourcesArray = new Array();
@@ -526,10 +579,245 @@ var _common = function() {
 			}
 			return criteria;
 		},
+		createSubject : function(subject,params,shortcutFunc){
+			params = params || {};
+			if (!subject) {
+				throw "Subject object must be defined!";
+			}
+			for (var k in params) {
+			    // use hasOwnProperty to filter out keys from the
+				// Object.prototype
+			    if (params.hasOwnProperty(k)) {
+			    	if (shortcutFunc) {
+				    	var shortcutExpr = shortcutFunc(k,params[k]);
+				    	if (shortcutExpr) {
+				    		// shortcut func returned something so we can eval
+							// it and skip normal processing for this property
+				    		eval("subject."+shortcutExpr);
+				    		continue;
+				    	}
+			    	}
+			        var key = k[0].toUpperCase()+k.substring(1);
+			        var func = eval("subject.set"+key);
+			        if (typeof func !== "undefined") {
+			        	func.call(subject,params[k]);
+			        }
+			        else {
+			        	var names = "";
+			        	subject.getClass().getMethods().forEach( function (m) {
+			        		if (m.getName().startsWith("set")) {
+			        		 var name = m.getName().substring(3);
+			        		 names+=name.substring(0,1).toLowerCase()+name.substring(1)+", ";
+			        		}
+			        	});
+			        	throw "Parameter ["+k+"] is not valid setter name, valid are : "+names;
+			        }
+			    }
+			}
+			return subject;
+		},
+		createRole : function(role,params,shortcutFunc){
+			params = params || {};
+			if (!role) {
+				throw "Role object must be defined!";
+			}
+			for (var k in params) {
+			    // use hasOwnProperty to filter out keys from the
+				// Object.prototype
+			    if (params.hasOwnProperty(k)) {
+			    	if (shortcutFunc) {
+				    	var shortcutExpr = shortcutFunc(k,params[k]);
+				    	if (shortcutExpr) {
+				    		// shortcut func returned something so we can eval
+							// it and skip normal processing for this property
+				    		eval("role."+shortcutExpr);
+				    		continue;
+				    	}
+			    	}
+			        var key = k[0].toUpperCase()+k.substring(1);
+			        var func = eval("role.set"+key);
+			        if (typeof func !== "undefined") {
+			        	func.call(role,params[k]);
+			        }
+			        else {
+			        	var names = "";
+			        	role.getClass().getMethods().forEach( function (m) {
+			        		if (m.getName().startsWith("set")) {
+			        		 var name = m.getName().substring(3);
+			        		 names+=name.substring(0,1).toLowerCase()+name.substring(1)+", ";
+			        		}
+			        	});
+			        	throw "Parameter ["+k+"] is not valid setter name, valid are : "+names;
+			        }
+			    }
+			}
+			return role;
+		}
 	};
 };
+//roles
 
+/**
+ * @namespace provides access to roles
+ */
+var roles = (function() {
+	var common = new _common();
+	
+	var _findRoles = function(params){
+		common.trace("roles.findRoles("+common.objToString(params) +")");
+		var criteria = common.createCriteria(new RoleCriteria(),params);
+		criteria.clearPaging();
+		var roles = RoleManager.findRolesByCriteria(criteria);
 
+		return common.pageListToArray(roles);		
+	}
+	
+	var _getRole = function(roleName){
+		common.trace("roles.getRole("+roleName +")");
+		
+		var roles = _findRoles({name:roleName});
+
+		for(i in roles){
+			if(roles[i].getName() == roleName){
+				common.debug("Role " + roleName+ " found.");
+				return roles[i];
+			}
+		}
+		
+		common.debug("Role " + roleName+ " not found.");
+		return null;
+	}
+	
+	
+	
+	return {
+		createRole : function(params){
+			params = params || {};
+			common.trace("roles.createRole("+common.objToString(params) +")");
+			var rawRole = common.createRole(new Role,params);
+			var role = RoleManager.createRole(rawRole);
+
+			return role;
+		},
+		deleteRole : function(roleName){
+			common.trace("roles.deleteRole("+roleName +")");
+			var role = _getRole(roleName);
+			if(role){
+				RoleManager.deleteRoles([role.getId()]);
+			}
+		},
+		getRole : _getRole,
+		findRoles : _findRoles,
+		printAllPermissions : function(){
+			var perms = Permission.values();
+			for(i in perms){
+				println("Permission name: " + perms[i] + ", target: " + perms[i].getTarget());
+			}
+		}
+	}
+	
+}) ();
+
+// users
+
+/**
+ * @namespace provides access to users
+ */
+var users = (function() {
+	var common = new _common();
+	
+	var _findUsers = function(params){
+		common.trace("users.findUsers("+common.objToString(params) +")");
+		var criteria = common.createCriteria(new SubjectCriteria(),params);
+		criteria.clearPaging();
+		var users = SubjectManager.findSubjectsByCriteria(criteria);
+		common.trace("Nuber of found users: " + users.size());
+		
+		return common.pageListToArray(users)
+	}
+	
+	var _getUser = function(userName){
+		common.trace("users.getUser("+userName +")");
+		var users = _findUsers({name:userName});
+
+		for(i in users){
+			if(users[i].getName() == userName){
+				common.debug("User " + userName+ " found.");
+				return users[i];
+			}
+		}
+		
+		common.debug("User " + userName+ " not found.");
+		return null;
+	}
+	
+	return {
+		addUser : function(params,password){
+			params = params || {};
+			common.trace("users.addUser("+common.objToString(params) +")");
+			if(!password){
+				throw ("Password is expected for a new user.");
+			}
+			var rawSubject = common.createSubject(new Subject,params);
+			var subject = SubjectManager.createSubject(rawSubject);
+			SubjectManager.createPrincipal(subject.getName(),password);
+
+			return subject;
+		},
+		deleteUser : function(userName){
+			common.trace("users.deleteUser("+userName +")");
+			var user = _getUser(userName);
+			if(user){
+				SubjectManager.deleteSubjects([user.getId()]);
+			}
+		},
+		findUsers : _findUsers,
+		getUser : _getUser,
+		getAllUsers : function(){
+			common.trace("users.getAllUsers()");
+			var criteria = new SubjectCriteria();
+			criteria.clearPaging();
+			var users = SubjectManager.findSubjectsByCriteria(criteria);
+
+			return common.pageListToArray(users)
+		},
+		assignRolesToUser : function(userName, roleNames){
+			common.trace("users.assignRolesToUser("+userName+", "+ roleNames +" )");
+			if(!userName){
+				throw "User name must be passed when adding roles to the user.";
+			}
+			var user = _getUser(userName);
+			if(user){
+				var rolesIds = new Array();
+				var j = 0;
+				for(i in roleNames){
+					role = roles.getRole(roleNames[i]);
+					if(role){
+						common.trace("Adding found role " + role);
+						rolesIds[j] = role.getId();
+						j++;
+					}else{
+						common.debug("Role " + roleNames[i]+ " not found!!");
+					}
+				}
+				RoleManager.addRolesToSubject(user.getId(),rolesIds);
+			}else{
+				common.debug("No role assigned, user " + userName + " not found!!");
+			}
+		},
+		getAllAssignedRolesForUser : function(userName){
+			common.trace("users.getAllAssignedRolesForUser("+userName+")");
+			var user = _getUser(userName);
+			
+			if(user){
+				return common.pageListToArray(RoleManager.findSubjectAssignedRoles(user.getId(),PageControl.getUnlimitedInstance())); 
+			}
+			
+			return null;
+		}
+	}
+	
+}) ();
 // resource groups
 
 /**
@@ -1522,7 +1810,7 @@ var Resource = function (param) {
 				if (histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
 					return histories.get(0);
 				}
-				common.info("Operation in progress..");
+				common.debug("Operation in progress..");
 			};
 		};
 		common.debug("Waiting for result..");
@@ -1706,13 +1994,14 @@ var Resource = function (param) {
 				common.debug("Resource deletion finished with status : "+result.status);
 			}
 			if (result && result.status == DeleteResourceStatus.SUCCESS) {
+				common.debug("Resource was removed from inventory");
 				return true;
 			}
 			if (!result) {
 				common.info("Resource deletion still in progress, giving up...");
 				return false;
 			}
-			common.debug("Resource deletion failed, reason : "+result.errorMessage);
+			common.info("Resource deletion failed, reason : "+result.errorMessage);
 			return false;
 		},
 		/**
@@ -1785,6 +2074,9 @@ var Resource = function (param) {
 			common.debug("Configuration update finished with status : "+update.status);
 			if (update.status == ConfigurationUpdateStatus.FAILURE) {
 				common.info("Resource configuration update failed : "+update.errorMessage);
+			}
+			else if (update.status == ConfigurationUpdateStatus.SUCCESS) {
+				common.info("Resource configuration was updated");
 			}
 			return update.status == ConfigurationUpdateStatus.SUCCESS;
 		},
@@ -1972,6 +2264,9 @@ var Resource = function (param) {
 					common.info("Resource child was successfully created, but it's autodiscovery timed out!");
 					return;
 				}
+				else {
+					common.info("Resource child was successfully created");
+				}
 				return resources.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey})[0];
 			}
 			common.debug("Resource creation failed, reason : "+result.errorMessage);
@@ -1994,7 +2289,13 @@ var Resource = function (param) {
 		 *            name of operation (required)
 		 * @param {Object}
 		 *            params - hashmap for operation params (Configuration) (optional)
-		 * @returns
+		 * @type {Object}
+		 * @returns javascript object (hashmap) with following keys:
+		 * <ul>
+		 * <li>status {String} - operation status<li>
+		 * <li>error {String} - operation error message</li>
+		 * <li>result {Object} -  result configuration</li>
+		 * <ul>
 		 */
 		invokeOperation : function(name,params) {
 			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
@@ -2004,8 +2305,13 @@ var Resource = function (param) {
 			_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,common.configurationAsHash(configuration));
 
 			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,configuration,null);
-			common.debug("Operation scheduled..");
-			return _waitForOperationResult(_id,resOpShedule);
+			common.info("Operation ["+name+"] scheduled");
+			var result = _waitForOperationResult(_id,resOpShedule);
+			var ret = {}
+			ret.status = String(result.status)
+			ret.error = String(result.errorMessage)
+			ret.result = common.configurationAsHash(result.results,op.resultsConfigurationDefinition);
+			return ret;
 		},
 		/**
 		 * schedules operation on resource. In contrast to invokeOperation this is
@@ -2036,7 +2342,7 @@ var Resource = function (param) {
 
 			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,delay * 1000,
 					repeatInterval * 1000,repeatCount,0,configuration,null);
-			common.debug("Operation scheduled..");
+			common.info("Operation scheduled");
 		},
 		/**
 		 * Waits until operation is finished or timeout is reached.
@@ -2090,7 +2396,7 @@ var Resource = function (param) {
 			common.trace("Resource("+_id+").waitForNotAvailable()");
 			return common.waitFor(function() {
 				if (_isAvailable()) {
-					common.info("Waiting for resource availability=DOWN");
+					common.debug("Waiting for resource availability=DOWN");
 				} else { return true; }
 			});
 		},
@@ -2116,6 +2422,9 @@ var Resource = function (param) {
 			);
 			common.debug("Waiting 5s for sync..");
 			sleep(5*1000);
+			if (result) {
+				common.info("Resource was removed from inventory");
+			}
 			return result;
 		}
 	};

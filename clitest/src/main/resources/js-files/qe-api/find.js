@@ -1,13 +1,13 @@
 findInvalidParamValue();
 findInvalidParam();
 findInvalidParamAmongValidParams();
-findWitoutParams();
+//findWitoutParams();
 findSamples();
 
 function findInvalidParamValue() {
 	var exception;
 	try {
-		Inventory.find({"available":"TYPO"});
+		resources.find({"available":"TYPO"});
 	}
 	catch (exc) {
 		println(exc);
@@ -20,7 +20,7 @@ function findInvalidParamValue() {
 function findInvalidParam() {
 	var exception;
 	try {
-		Inventory.find({"foo":"bar"});
+		resources.find({"foo":"bar"});
 	}
 	catch (exc) {
 		println(exc);
@@ -34,7 +34,7 @@ function findInvalidParam() {
 function findInvalidParamAmongValidParams() {
 	var exception;
 	try {
-		Inventory.find({"foo":"bar","id":12345});
+		resources.find({"foo":"bar","id":12345});
 	}
 	catch (exc) {
 		println(exc);
@@ -46,18 +46,19 @@ function findInvalidParamAmongValidParams() {
 }
 
 function findWitoutParams() {
-	var size = Inventory.find().length;
-	var size2 = Inventory.find({}).length;
+	var size = resources.find().length;
+	var size2 = resources.find({}).length;
 	assertTrue(size==size2,"Both find() and find({}) must return same results");
 }
 
 function findSamples() {
-	Inventory.find({availability:"UP",category:"SERVER"});
-	Inventory.find({availability:"up",category:"server"});
-	Inventory.find({parentResourceId:123,name:"foo"});
-	Inventory.find({resourceTypeName:"JBoss AS7 Standalone Server"});
-	Inventory.find({type:"JBoss AS7 Standalone Server"}); // type is equivalent to resourceTypeName
-	Inventory.find({ids:[1,2,3]});
+	resources.find({availability:"UP",category:"SERVER"});
+	resources.find({availability:"up",category:"server"});
+	resources.find({parentResourceId:123,name:"foo"});
+	resources.find({resourceTypeName:"JBoss AS7 Standalone Server"});
+	resources.find({type:"JBoss AS7 Standalone Server"}); // type is equivalent to resourceTypeName
+	resources.find({ids:[1,2,3]});
+	resources.find({ids:1});
 }
 
 
