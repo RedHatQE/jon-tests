@@ -4,7 +4,8 @@
 importPlatformWithChildren();
 //importPlatformWithoutChildren();
 //importResource();
-
+println("Waiting 5min after platform import")
+sleep(1000*60*5);
 
 function importPlatformWithChildren() {
 	sleep(15*1000); // wait 'till platform appears in disco-queue
@@ -20,6 +21,7 @@ function importPlatformWithChildren() {
 	// let's uninventory this platform
 	//imported.uninventory();
 	//assertFalse(imported.exists(),"Imported platform exists in inventory");
+	
 }
 
 

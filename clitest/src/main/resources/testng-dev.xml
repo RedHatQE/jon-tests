@@ -18,9 +18,9 @@
 
 <test name="Test_Update_Configuration">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.plugins.eap6.GetVersionTest">	
+		<class name="com.redhat.qe.jon.clitest.metrics.ValidateMetric">	
 			<methods>
-				<include name="getServerVersion"></include>		
+				<include name="validateMetricTest"></include>		
 			</methods>
 		</class>
 	</classes>
