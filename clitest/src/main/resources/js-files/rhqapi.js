@@ -7,18 +7,13 @@
 
 
 // jsdoc-toolkit takes care of generating documentation
-// please follow http://code.google.com/p/jsdoc-toolkit/wiki/TagReference for adding correct tags
+// please follow http://code.google.com/p/jsdoc-toolkit/wiki/TagReference for adding correct tag
 
 /**
  * print function that recognizes arrays and prints each item on new line
  */
 var p = function(object) {
-	if (object instanceof Array) {
-		object.forEach(function(x){println(x);});
-	}
-	else {
-		println(object);
-	}
+	println(new _common().objToString(object))
 };
 
 //Production steps of ECMA-262, Edition 5, 15.4.4.19
@@ -417,10 +412,68 @@ var _common = function() {
 
 
 	return {
-		objToString : function(obj) {
-			var str="";
-			for (var k in obj) {if (obj.hasOwnProperty(k)) str=str.concat(k+"="+obj[k]+",");}
-			return str.substring(0,str.length-1);
+		objToString : function(hash) {
+			output = "{";
+			if (!hash) {
+				return output;
+			}
+			for(key in hash) {
+				if (!hash.hasOwnProperty(key)) {
+					continue;
+				}
+				value = hash[key];
+
+				output+= (function(parent, key, value) {
+					function isArray(obj) {
+						return typeof(obj) == 'object' && (obj instanceof Array);
+					}
+
+					function isHash(obj) {
+						return typeof(obj) == 'object' && !(obj instanceof Array);
+					}
+
+					function isPrimitive(obj) {
+						return typeof(obj) != 'object' || obj == null || (obj instanceof Boolean  || obj instanceof Number || obj instanceof String);
+					}
+					var me = arguments.callee;
+
+					var prop = null;
+
+					if (isPrimitive(value)) {
+						if (value instanceof Number || value instanceof Boolean) {						
+							prop = key+":"+value;
+						}
+						else {
+							prop = key+":\'"+value+"\'";
+						}
+					} else if (isArray(value)) {
+						prop = key+":[";
+						for(var i = 0; i < value.length; ++i) {						
+							var v = value[i];
+							if (v != null) {
+								prop += me(prop, "", v)+",";
+							}												
+						}
+						prop+=prop.substring(0,prop.length-1)+"]"
+					} else if (isHash(value)) {
+						prop = "{";
+						for(var i in value) {
+							var v = value[i];
+							prop+= me(prop, i, v)+",";
+						}
+						prop+=prop.substring(0,prop.length-1)+"}"
+					}
+					else {
+						println("it is unkonwn");
+						println(typeof value);
+						println(value);
+						return;
+					}
+					return prop;
+				})(output, key, value)+",";
+			}
+
+			return output.substring(0,output.length-1)+"}";
 		},
 		pageListToArray : function(pageList) {
 			var resourcesArray = new Array();
@@ -1757,7 +1810,7 @@ var Resource = function (param) {
 				if (histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
 					return histories.get(0);
 				}
-				common.info("Operation in progress..");
+				common.debug("Operation in progress..");
 			};
 		};
 		common.debug("Waiting for result..");
@@ -1941,13 +1994,14 @@ var Resource = function (param) {
 				common.debug("Resource deletion finished with status : "+result.status);
 			}
 			if (result && result.status == DeleteResourceStatus.SUCCESS) {
+				common.debug("Resource was removed from inventory");
 				return true;
 			}
 			if (!result) {
 				common.info("Resource deletion still in progress, giving up...");
 				return false;
 			}
-			common.debug("Resource deletion failed, reason : "+result.errorMessage);
+			common.info("Resource deletion failed, reason : "+result.errorMessage);
 			return false;
 		},
 		/**
@@ -2020,6 +2074,9 @@ var Resource = function (param) {
 			common.debug("Configuration update finished with status : "+update.status);
 			if (update.status == ConfigurationUpdateStatus.FAILURE) {
 				common.info("Resource configuration update failed : "+update.errorMessage);
+			}
+			else if (update.status == ConfigurationUpdateStatus.SUCCESS) {
+				common.info("Resource configuration was updated");
 			}
 			return update.status == ConfigurationUpdateStatus.SUCCESS;
 		},
@@ -2207,6 +2264,9 @@ var Resource = function (param) {
 					common.info("Resource child was successfully created, but it's autodiscovery timed out!");
 					return;
 				}
+				else {
+					common.info("Resource child was successfully created");
+				}
 				return resources.find({parentResourceId:_id,resourceTypeId:resType.id,resourceKey:result.newResourceKey})[0];
 			}
 			common.debug("Resource creation failed, reason : "+result.errorMessage);
@@ -2229,7 +2289,13 @@ var Resource = function (param) {
 		 *            name of operation (required)
 		 * @param {Object}
 		 *            params - hashmap for operation params (Configuration) (optional)
-		 * @returns
+		 * @type {Object}
+		 * @returns javascript object (hashmap) with following keys:
+		 * <ul>
+		 * <li>status {String} - operation status<li>
+		 * <li>error {String} - operation error message</li>
+		 * <li>result {Object} -  result configuration</li>
+		 * <ul>
 		 */
 		invokeOperation : function(name,params) {
 			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
@@ -2239,8 +2305,13 @@ var Resource = function (param) {
 			_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,common.configurationAsHash(configuration));
 
 			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,configuration,null);
-			common.debug("Operation scheduled..");
-			return _waitForOperationResult(_id,resOpShedule);
+			common.info("Operation ["+name+"] scheduled");
+			var result = _waitForOperationResult(_id,resOpShedule);
+			var ret = {}
+			ret.status = String(result.status)
+			ret.error = String(result.errorMessage)
+			ret.result = common.configurationAsHash(result.results,op.resultsConfigurationDefinition);
+			return ret;
 		},
 		/**
 		 * schedules operation on resource. In contrast to invokeOperation this is
@@ -2271,7 +2342,7 @@ var Resource = function (param) {
 
 			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,delay * 1000,
 					repeatInterval * 1000,repeatCount,0,configuration,null);
-			common.debug("Operation scheduled..");
+			common.info("Operation scheduled");
 		},
 		/**
 		 * Waits until operation is finished or timeout is reached.
@@ -2325,7 +2396,7 @@ var Resource = function (param) {
 			common.trace("Resource("+_id+").waitForNotAvailable()");
 			return common.waitFor(function() {
 				if (_isAvailable()) {
-					common.info("Waiting for resource availability=DOWN");
+					common.debug("Waiting for resource availability=DOWN");
 				} else { return true; }
 			});
 		},
@@ -2351,6 +2422,9 @@ var Resource = function (param) {
 			);
 			common.debug("Waiting 5s for sync..");
 			sleep(5*1000);
+			if (result) {
+				common.info("Resource was removed from inventory");
+			}
 			return result;
 		}
 	};
