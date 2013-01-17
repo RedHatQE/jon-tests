@@ -21,7 +21,7 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 /**
- * @author jkandasa (Jeeva Kandasamy)
+ * @author jkandasa (Jeeva Kandasamy), ahovsepy
  * @since Dec 20, 2011
  */
 
@@ -48,6 +48,7 @@ public class RestClient extends TestScript {
 	protected static String PARENT_ID = "parentId";
 	protected static String ID = "id";
 	protected static String NAME = "name";
+	protected static String RESOURCE_NAME = "resourceName";
 
 	// Status.json page keys
 	protected static String STATUS_VALUES = "values";
@@ -58,15 +59,31 @@ public class RestClient extends TestScript {
 	protected static String URI_PREFIX = "/rest/1";
 
 	public enum URIs {
+		ROOT_URI("/"),
+		INDEX("/index"),
 		STATUS("/status"), 
 		GROUP("/group"), 
 		ALERT("/alert"), 
-		ALERT_DEFINATION("alert/definition"), 
-		USER_FAVORITES_RESOURCE("user/favorites/resource"), 
+		ALERT_DEFINATION("/alert/definition"), 
+		ALERT_DEFINATIONS("/alert/definitions"),
+		ALERT_COUNT("/alert/count"),
+		ALERT_SENDERS("/alert/senders"),
+		ALERT_SENDER_NAME("/alert/sender/@@senderName@@"),
+		EVENT_SOURCES("/event/@@id@@/sources"),
+		EVENT_DEFINITIONS("/event/@@id@@/definitions"),
+		USER_FAVORITES_RESOURCE("/user/favorites/resource"), 
+		USER_FAVORITES_GROUP("/user/favorites/group"),
 		PLATFORMS("/resource/platforms"), 
+		PLATFORM_BY_ID("/resource/@@id@@"), 
+		RESOURCE("/resource"),
+		RESOURCE_ALERTS("/resource/@@id@@/alerts"),
+		RESOURCE_AVAILABILITY("/resource/@@id@@/availability"),
+		RESOURCE_AVAILABILITY_HISTORY("/resource/@@id@@/availability/history"),
+		RESOURCE_SCHEDULES("/resource/@@id@@/schedules"),
 		OPERATION_DEFINITION("/operation/definition/@@id@@"), 
 		OPERATION_DEFINITIONS("/operation/definitions"), 
 		METRIC_DATA("/metric/data/@@id@@"),
+		METRIC_SCHEDULE("/metric/schedule/@@id@@"),
 		SCHEDULES("/resource/@@id@@/schedules"),
 		CHILDREN_RESOURCE("/resource/@@id@@/children");
 

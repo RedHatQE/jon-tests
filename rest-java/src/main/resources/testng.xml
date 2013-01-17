@@ -66,11 +66,150 @@
 		</classes>
   	</test>
   	
+  		<test name="Visit Platforms By Id">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getPlatformById"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="get Resource By Platform Name">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getResourceByPlatformName"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	  <test name="get Resource By Platform Name And Category">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getResourceByPlatformNameAndCategory"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	
+  	<test name="get Resource By Category">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getResourcesByCategory"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	
+  	
+  	<test name="get Resource By Paging">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getResourceByPaging"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	
+  <test name="get Platform Xml">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getPlatformXml"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>	
+  	
    <test name="Validate Children">
   	  	<classes>
 			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
 			<methods>
 				<include name="validateChildren"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	
+  	
+     <test name="get Alerts For Resources">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAlertsForResources"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  		
+  	  <test name="get Schedules For Resources">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getSchedulesForResources"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+	  <test name="get Availability For Resources">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAvailabilityForResources"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	
+  	<test name="get Availability History For Resources">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAvailabilityHistoryForResources"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  		
+  		
+  	<test name="get Root URI">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getRootURI"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	
+  	<test name="get Json PWrapper">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getJsonPWrapper"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="verify AS Server Presence">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="verifyASServerPresence"></include>
 			</methods>
 			</class>
 		</classes>
@@ -120,6 +259,156 @@
 			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
 			<methods>
 				<include name="visitAlerts"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="Redirect From Definition">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="testRedirectFromDefinition"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="Alert Definitions">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAlertDefinitions"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="Alert Count">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAlertCount"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="AlertSender">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAlertSender"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="AlertSender_DirectEmails">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAlertSender_DirectEmails"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="AlertSender_Mobicents">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAlertSender_Mobicents"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="AlertSender_NotExisting">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getAlertSender_NotExisting"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="get Event Sources">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getEventSources"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  		<test name="get Event Definitions">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getEventDefinitions"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="get Group">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getGroup"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="get Group With Params">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getGroupWithParams"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="get Metrics Schedule">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getMetricsSchedule"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="get Metrics Schedule By Id">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getMetricsScheduleById"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="get Favorite Resources">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getFavoriteResources"></include>
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	<test name="get Favorite Groups">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
+			<methods>
+				<include name="getFavoriteGroups"></include>
 			</methods>
 			</class>
 		</classes>
