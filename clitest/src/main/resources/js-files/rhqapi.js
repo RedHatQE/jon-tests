@@ -422,8 +422,8 @@ var _common = function() {
 					continue;
 				}
 				value = hash[key];
-
-				output+= (function(parent, key, value) {
+				
+				var rep = (function(parent, key, value) {
 					function isArray(obj) {
 						return typeof(obj) == 'object' && (obj instanceof Array);
 					}
@@ -438,30 +438,44 @@ var _common = function() {
 					var me = arguments.callee;
 
 					var prop = null;
-
+					if (typeof value == "function") {
+						return;
+					}
+					var kkey = "";
+					if (key != "") {
+						kkey=key+":";
+					}
 					if (isPrimitive(value)) {
+						
 						if (value instanceof Number || value instanceof Boolean) {						
-							prop = key+":"+value;
+							prop = kkey+value;
 						}
 						else {
-							prop = key+":\'"+value+"\'";
+							prop = kkey+"\'"+value+"\'";
 						}
+						
 					} else if (isArray(value)) {
-						prop = key+":[";
+						prop = kkey+"[";
 						for(var i = 0; i < value.length; ++i) {						
 							var v = value[i];
 							if (v != null) {
-								prop += me(prop, "", v)+",";
+								var repr = me(prop, "", v)
+								if (repr) {
+								  prop += repr+",";	
+								}
 							}												
 						}
-						prop+=prop.substring(0,prop.length-1)+"]"
+						prop=prop.substring(0,prop.length-1)+"]"
 					} else if (isHash(value)) {
-						prop = "{";
+						prop = kkey+"{";
 						for(var i in value) {
 							var v = value[i];
-							prop+= me(prop, i, v)+",";
+							var repr = me(prop, i, v)
+							if (repr) {
+							  prop += repr+",";	
+							}
 						}
-						prop+=prop.substring(0,prop.length-1)+"}"
+						prop=prop.substring(0,prop.length-1)+"}"
 					}
 					else {
 						println("it is unkonwn");
@@ -470,7 +484,11 @@ var _common = function() {
 						return;
 					}
 					return prop;
-				})(output, key, value)+",";
+				})(output, key, value)
+				
+				if (rep) {
+					output+=rep+",";
+				}
 			}
 
 			return output.substring(0,output.length-1)+"}";
