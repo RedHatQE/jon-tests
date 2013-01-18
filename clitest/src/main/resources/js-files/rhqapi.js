@@ -413,28 +413,37 @@ var _common = function() {
 
 	return {
 		objToString : function(hash) {
-			output = "{";
-			if (!hash) {
-				return output;
+			
+			function isArray(obj) {
+				return typeof(obj) == 'object' && (obj instanceof Array);
 			}
+
+			function isHash(obj) {
+				return typeof(obj) == 'object' && !(obj instanceof Array);
+			}
+
+			function isPrimitive(obj) {
+				return typeof(obj) != 'object' || obj == null || (obj instanceof Boolean  || obj instanceof Number || obj instanceof String);
+			}
+			function isJavaObject(obj) {
+				return typeof(obj) == 'object' && typeof(obj.getClass) != 'undefined'
+			}
+						
+			if (!hash) {
+				return hash;
+			}
+			// process only hashes, everything else is "just" string
+			if (!isHash(hash)) {
+				return String(hash);
+			}
+			output = "{";
 			for(key in hash) {
 				if (!hash.hasOwnProperty(key)) {
 					continue;
 				}
 				value = hash[key];
-				
 				var rep = (function(parent, key, value) {
-					function isArray(obj) {
-						return typeof(obj) == 'object' && (obj instanceof Array);
-					}
-
-					function isHash(obj) {
-						return typeof(obj) == 'object' && !(obj instanceof Array);
-					}
-
-					function isPrimitive(obj) {
-						return typeof(obj) != 'object' || obj == null || (obj instanceof Boolean  || obj instanceof Number || obj instanceof String);
-					}
+					
 					var me = arguments.callee;
 
 					var prop = null;
@@ -445,8 +454,7 @@ var _common = function() {
 					if (key != "") {
 						kkey=key+":";
 					}
-					if (isPrimitive(value)) {
-						
+					if (isPrimitive(value)) {						
 						if (value instanceof Number || value instanceof Boolean) {						
 							prop = kkey+value;
 						}
@@ -454,10 +462,13 @@ var _common = function() {
 							prop = kkey+"\'"+value+"\'";
 						}
 						
-					} else if (isArray(value)) {
+					} else if (isJavaObject(value)) {
+						prop = kkey+String(value);
+					} 					
+					else if (isArray(value)) {
 						prop = kkey+"[";
 						for(var i = 0; i < value.length; ++i) {						
-							var v = value[i];
+							var v = value[i];							
 							if (v != null) {
 								var repr = me(prop, "", v)
 								if (repr) {

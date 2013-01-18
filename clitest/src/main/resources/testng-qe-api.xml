@@ -37,7 +37,7 @@
 
 <test name="Inventory_Import">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
 			<parameter name="js.file"  value="qe-api/import.js"/>
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
@@ -73,7 +73,7 @@
 
 <test name="Resource_CreateChild">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
 			<parameter name="js.file"  value="qe-api/resource_createChild.js"/>
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<parameter name="res.src" value="/deployments/hello1.war" />
@@ -88,7 +88,7 @@
 
 <test name="Resource_Configuration">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
 			<parameter name="js.file"  value="qe-api/resource_configuration.js"/>
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
@@ -100,7 +100,7 @@
 
 <test name="Resource_InvokeOperation">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
 			<parameter name="js.file"  value="qe-api/resource_invokeOperation.js"/>
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
@@ -111,7 +111,7 @@
 </test>
 <test name="Resource_scheduleOperation">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
 			<parameter name="js.file"  value="qe-api/resource_scheduleOperation.js"/>
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 			<methods>
@@ -122,7 +122,7 @@
 </test>
 <test name="Bundles">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
 			<parameter name="js.file"  value="qe-api/bundles.js"/>
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 				<parameter name="res.src" value="/bundles/bundle.zip,/bundles/bundle-incomplete.zip" />
