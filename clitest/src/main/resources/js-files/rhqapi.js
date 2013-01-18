@@ -493,6 +493,15 @@ var _common = function() {
 
 			return output.substring(0,output.length-1)+"}";
 		},
+		arrayToSet : function(array){
+			var hashSet = new java.util.HashSet();
+			if(array){
+				for(i in array){
+					hashSet.add(array[i]);
+				}
+			}
+			return hashSet;
+		},
 		pageListToArray : function(pageList) {
 			var resourcesArray = new Array();
 		    var i = 0;
@@ -634,7 +643,7 @@ var _common = function() {
 			}
 			return subject;
 		},
-		createRole : function(role,params,shortcutFunc){
+		createRole : function(role,params){
 			params = params || {};
 			if (!role) {
 				throw "Role object must be defined!";
@@ -643,15 +652,6 @@ var _common = function() {
 			    // use hasOwnProperty to filter out keys from the
 				// Object.prototype
 			    if (params.hasOwnProperty(k)) {
-			    	if (shortcutFunc) {
-				    	var shortcutExpr = shortcutFunc(k,params[k]);
-				    	if (shortcutExpr) {
-				    		// shortcut func returned something so we can eval
-							// it and skip normal processing for this property
-				    		eval("role."+shortcutExpr);
-				    		continue;
-				    	}
-			    	}
 			        var key = k[0].toUpperCase()+k.substring(1);
 			        var func = eval("role.set"+key);
 			        if (typeof func !== "undefined") {
@@ -673,6 +673,40 @@ var _common = function() {
 		}
 	};
 };
+
+
+
+var permissions = (function(){
+	var common = new _common();
+	
+	var _globalPNat = Permission.GLOBAL_ALL.toArray();
+	var _resourcePNat = Permission.RESOURCE_ALL.toArray() ;
+	
+	var _allGlobalP = new Array();
+	var _allResourceP = new Array();
+	
+	for(i in _globalPNat){
+		_allGlobalP[i] = _globalPNat[i].toString();
+	}
+	
+	for(i in _resourcePNat){
+		_allResourceP[i] = _resourcePNat[i].toString();
+	}
+	
+	var _allP = _allGlobalP.concat(_allResourceP); 
+
+	return{
+		all : _allP,
+		allGlobal : _allGlobalP,
+		allResource : _allResourceP,
+		printAllPermissions : function(){
+			var perms = Permission.values();
+			for(i in perms){
+				println("Permission name: " + perms[i] + ", target: " + perms[i].getTarget());
+			}
+		}
+	}
+}) ();
 //roles
 
 /**
@@ -682,21 +716,21 @@ var roles = (function() {
 	var common = new _common();
 	
 	var _findRoles = function(params){
-		common.trace("roles.findRoles("+common.objToString(params) +")");
+		common.debug("Searching for roles '"+common.objToString(params) +"'");
 		var criteria = common.createCriteria(new RoleCriteria(),params);
 		criteria.clearPaging();
 		var roles = RoleManager.findRolesByCriteria(criteria);
 
-		return common.pageListToArray(roles);		
+		return common.pageListToArray(roles).map(function(x){return new Role(x);});		
 	}
 	
 	var _getRole = function(roleName){
-		common.trace("roles.getRole("+roleName +")");
+		common.debug("Searching for role with name '"+roleName +"'");
 		
 		var roles = _findRoles({name:roleName});
 
 		for(i in roles){
-			if(roles[i].getName() == roleName){
+			if(roles[i].name == roleName){
 				common.debug("Role " + roleName+ " found.");
 				return roles[i];
 			}
@@ -711,30 +745,65 @@ var roles = (function() {
 	return {
 		createRole : function(params){
 			params = params || {};
-			common.trace("roles.createRole("+common.objToString(params) +")");
-			var rawRole = common.createRole(new Role,params);
+			common.info("Creating a new role with following parameters: '"+common.objToString(params) +"'");
+			if(params.permissions){
+				var permSet = new java.util.HashSet();
+				for(i in params.permissions){
+					try
+					{
+						permSet.add(Permission.valueOf(params.permissions[i]));
+					} catch (exc) {
+						throw "'" + params.permissions[i]+"', permission name is not correct!";
+					}
+				}
+				params.permissions = permSet;
+			}
+			var rawRole = common.createRole(new org.rhq.core.domain.authz.Role,params);
 			var role = RoleManager.createRole(rawRole);
 
-			return role;
+			return new Role(role);
 		},
-		deleteRole : function(roleName){
-			common.trace("roles.deleteRole("+roleName +")");
-			var role = _getRole(roleName);
-			if(role){
-				RoleManager.deleteRoles([role.getId()]);
+		deleteRoles : function(roleNames){
+			common.info("Removing roles with following names: '"+common.objToString(roleNames) +"'");
+			if(typeof roleNames == 'string'){
+				roleNames = [roleNames]
+			}
+			var role;
+			for(i in roleNames){
+				role = _getRole(roleNames[i]);
+				if(role){
+					RoleManager.deleteRoles([role.id]);
+				}
 			}
 		},
 		getRole : _getRole,
-		findRoles : _findRoles,
-		printAllPermissions : function(){
-			var perms = Permission.values();
-			for(i in perms){
-				println("Permission name: " + perms[i] + ", target: " + perms[i].getTarget());
-			}
-		}
+		findRoles : _findRoles
 	}
 	
 }) ();
+
+var Role = function(nativeRole){
+	var common = new _common();
+	nativeRole = nativeRole || {};
+	common.debug("Creating an abstract role: " + nativeRole);
+	
+	var _nativeRole = nativeRole;
+	var _name = _nativeRole.getName();
+	var _id = _nativeRole.getId();
+	
+	return{
+		name : _name,
+		id : _id,
+		nativeObj : _nativeRole,
+		getPermissions : function(){
+			var permissSet = _nativeRole.getPermissions();
+			
+			return permissSet.toArray();
+		}
+	}
+	
+	
+};
 
 // users
 
@@ -745,21 +814,20 @@ var users = (function() {
 	var common = new _common();
 	
 	var _findUsers = function(params){
-		common.trace("users.findUsers("+common.objToString(params) +")");
+		common.debug("Searching for users with following params: '"+common.objToString(params) +"'");
 		var criteria = common.createCriteria(new SubjectCriteria(),params);
 		criteria.clearPaging();
 		var users = SubjectManager.findSubjectsByCriteria(criteria);
-		common.trace("Nuber of found users: " + users.size());
 		
-		return common.pageListToArray(users)
+		return common.pageListToArray(users).map(function(x){return new User(x);});
 	}
 	
 	var _getUser = function(userName){
-		common.trace("users.getUser("+userName +")");
+		common.debug("Searching for user with name: '"+userName +"'");
 		var users = _findUsers({name:userName});
 
 		for(i in users){
-			if(users[i].getName() == userName){
+			if(users[i].name == userName){
 				common.debug("User " + userName+ " found.");
 				return users[i];
 			}
@@ -772,70 +840,99 @@ var users = (function() {
 	return {
 		addUser : function(params,password){
 			params = params || {};
-			common.trace("users.addUser("+common.objToString(params) +")");
+			common.info("Adding following user: '"+common.objToString(params) +"'");
 			if(!password){
 				throw ("Password is expected for a new user.");
+			}
+			var roleNames = params.roles;
+			
+			if(params.roles){
+				var rolesSet = new java.util.HashSet();
+				for(i in params.roles){
+					if(roles.getRole(params.roles[i])){
+						rolesSet.add(roles.getRole(params.roles[i]).nativeObj);
+					}else{
+						throw "'"+params.roles[i]+"' role, not found!!" 
+					}
+				
+				}
+				params.roles = rolesSet;
 			}
 			var rawSubject = common.createSubject(new Subject,params);
 			var subject = SubjectManager.createSubject(rawSubject);
 			SubjectManager.createPrincipal(subject.getName(),password);
+			
+			var user = new User(subject);
+			if(roleNames){
+				user.assignRoles(roleNames);
+			}
 
-			return subject;
+			return user;
 		},
-		deleteUser : function(userName){
-			common.trace("users.deleteUser("+userName +")");
-			var user = _getUser(userName);
-			if(user){
-				SubjectManager.deleteSubjects([user.getId()]);
+		deleteUsers : function(userNames){
+			common.info("Removing users with following names: '"+common.objToString(userNames) +"'");
+			if(typeof userNames == 'string'){
+				userNames = [userNames]
+			}
+			var user;
+			for(i in userNames){
+				user = _getUser(userNames[i]);
+				if(user){
+					SubjectManager.deleteSubjects([user.id]);
+				}
 			}
 		},
 		findUsers : _findUsers,
 		getUser : _getUser,
 		getAllUsers : function(){
-			common.trace("users.getAllUsers()");
-			var criteria = new SubjectCriteria();
-			criteria.clearPaging();
-			var users = SubjectManager.findSubjectsByCriteria(criteria);
+			common.debug("Gettign all users");
 
-			return common.pageListToArray(users)
-		},
-		assignRolesToUser : function(userName, roleNames){
-			common.trace("users.assignRolesToUser("+userName+", "+ roleNames +" )");
-			if(!userName){
-				throw "User name must be passed when adding roles to the user.";
-			}
-			var user = _getUser(userName);
-			if(user){
-				var rolesIds = new Array();
-				var j = 0;
-				for(i in roleNames){
-					role = roles.getRole(roleNames[i]);
-					if(role){
-						common.trace("Adding found role " + role);
-						rolesIds[j] = role.getId();
-						j++;
-					}else{
-						common.debug("Role " + roleNames[i]+ " not found!!");
-					}
-				}
-				RoleManager.addRolesToSubject(user.getId(),rolesIds);
-			}else{
-				common.debug("No role assigned, user " + userName + " not found!!");
-			}
-		},
-		getAllAssignedRolesForUser : function(userName){
-			common.trace("users.getAllAssignedRolesForUser("+userName+")");
-			var user = _getUser(userName);
-			
-			if(user){
-				return common.pageListToArray(RoleManager.findSubjectAssignedRoles(user.getId(),PageControl.getUnlimitedInstance())); 
-			}
-			
-			return null;
+			return _findUsers({});
 		}
 	}
 	
 }) ();
+
+var User = function(nativeSubject){
+	var common = new _common();
+	nativeSubject = nativeSubject || {};
+	common.debug("Creating following abstract user: " + nativeSubject );
+	
+	var _id = nativeSubject.getId();
+	var _name = nativeSubject.getName();
+	
+	return{
+		id : _id,
+		name : _name,
+		getAllAssignedRoles : function(){
+			common.debug("Searching for assigned roles to user '"+_name+"'");
+			var natRoles = RoleManager.findSubjectAssignedRoles(_id,PageControl.getUnlimitedInstance());
+			
+			return common.pageListToArray(natRoles).map(function(x){return new Role(x);});
+		},
+		assignRoles : function(roleNames){
+			common.info("Assigning following roles '"+ common.objToString(roleNames) +"', to user '"+_name+"'");
+
+			if(typeof roleNames == 'string'){
+				roleNames = [roleNames];
+			}
+			var rolesIds = new Array();
+			var j = 0;
+			var role;
+			for(i in roleNames){
+				role = roles.getRole(roleNames[i]);
+				if(role){
+					common.debug("Adding found role " + role);
+					rolesIds[j] = role.id;
+					j++;
+				}else{
+					common.debug("Role " + roleNames[i]+ " not found!!");
+				}
+			}
+			RoleManager.addRolesToSubject(_id,rolesIds);
+		}
+	}
+};
 // resource groups
 
 /**
