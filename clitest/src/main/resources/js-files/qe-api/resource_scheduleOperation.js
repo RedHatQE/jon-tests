@@ -2,7 +2,7 @@
 // for operations we need higher timeout
 var timeout = 600; //seconds
 
-var platforms = Inventory.platforms();
+var platforms = resources.platforms({name:agent});
 assertTrue(platforms.length>0,"At least 1 platform is requred to run this test");
 var platform = platforms[0];
 
