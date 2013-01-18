@@ -726,7 +726,6 @@ var roles = (function() {
 	
 	var _getRole = function(roleName){
 		common.debug("Searching for role with name '"+roleName +"'");
-		
 		var roles = _findRoles({name:roleName});
 
 		for(i in roles){
@@ -739,8 +738,6 @@ var roles = (function() {
 		common.debug("Role " + roleName+ " not found.");
 		return null;
 	}
-	
-	
 	
 	return {
 		createRole : function(params){
@@ -764,10 +761,10 @@ var roles = (function() {
 			return new Role(role);
 		},
 		deleteRoles : function(roleNames){
-			common.info("Removing roles with following names: '"+common.objToString(roleNames) +"'");
 			if(typeof roleNames == 'string'){
 				roleNames = [roleNames]
 			}
+			common.info("Removing roles with following names: '"+common.objToString(roleNames) +"'");
 			var role;
 			for(i in roleNames){
 				role = _getRole(roleNames[i]);
@@ -870,10 +867,11 @@ var users = (function() {
 			return user;
 		},
 		deleteUsers : function(userNames){
-			common.info("Removing users with following names: '"+common.objToString(userNames) +"'");
 			if(typeof userNames == 'string'){
 				userNames = [userNames]
 			}
+			common.info("Removing users with following names: '"+common.objToString(userNames) +"'");
+			
 			var user;
 			for(i in userNames){
 				user = _getUser(userNames[i]);
@@ -904,6 +902,7 @@ var User = function(nativeSubject){
 	return{
 		id : _id,
 		name : _name,
+		//nativeObj : nativeSubject,
 		getAllAssignedRoles : function(){
 			common.debug("Searching for assigned roles to user '"+_name+"'");
 			var natRoles = RoleManager.findSubjectAssignedRoles(_id,PageControl.getUnlimitedInstance());
@@ -926,7 +925,7 @@ var User = function(nativeSubject){
 					rolesIds[j] = role.id;
 					j++;
 				}else{
-					common.debug("Role " + roleNames[i]+ " not found!!");
+					common.info("Role " + roleNames[i]+ " not found!!");
 				}
 			}
 			RoleManager.addRolesToSubject(_id,rolesIds);
