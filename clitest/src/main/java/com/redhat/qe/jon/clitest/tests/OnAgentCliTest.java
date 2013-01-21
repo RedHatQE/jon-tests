@@ -25,7 +25,6 @@ public class OnAgentCliTest extends CliTest {
 	agentName = System.getProperty("jon.agent.name");
     }
 
-    @Override
     public void runJSfile(String rhqTarget, String cliUsername,
 	    String cliPassword, String jsFile, String cliArgs,
 	    String expectedResult, String makeFilure, String jsDepends,
@@ -36,5 +35,7 @@ public class OnAgentCliTest extends CliTest {
 	} else {
 	    cliArgs += " agent=" + agentName;
 	}
+	super.runJSfile(rhqTarget, cliUsername, cliPassword, jsFile, cliArgs,
+		expectedResult, makeFilure, jsDepends, resSrc, resDst);
     }
 }
