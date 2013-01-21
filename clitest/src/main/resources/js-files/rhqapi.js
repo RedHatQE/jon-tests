@@ -1773,10 +1773,17 @@ var Resource = function (param) {
 		var _defId = function() {
 			var criteria = common.createCriteria(new MeasurementDefinitionCriteria(),{resourceTypeId:_res.resourceType.id,displayName:_param.name});				
 			var mDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
-			if (mDefs.size()!=1) {
+			var index = -1
+			for (i=0;i<mDefs.size();i++) {
+				if (mDefs.get(i).displayName == _param.name) {
+					index = i;
+					break;
+				}
+			}
+			if (index == -1) {
 				throw "Unable to retrieve measurement definition, this is a bug"
 			}
-			return mDefs.get(0).id;
+			return mDefs.get(index).id;
 		};
 		return {
 			/**
@@ -1806,7 +1813,7 @@ var Resource = function (param) {
 			/**
 			 * enables/disables metric and sets its collection interval
 			 * @param enabled {Boolean} - enable or disable metric
-			 * @param interval {Number} - optinally set collection interval
+			 * @param interval {Number} - optinally set collection interval (seconds)
 			 */
 			set : function(enabled,interval) {
 				common.trace("Resource("+_res.id+").metrics.["+param.name+"].set(enabled="+enabled+",interval="+interval+")");
