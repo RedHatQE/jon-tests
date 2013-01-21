@@ -619,100 +619,58 @@ var _common = function() {
 			    }
 			}
 			return criteria;
-		},
-		createSubject : function(subject,params,shortcutFunc){
-			params = params || {};
-			if (!subject) {
-				throw "Subject object must be defined!";
-			}
-			for (var k in params) {
-			    // use hasOwnProperty to filter out keys from the
-				// Object.prototype
-			    if (params.hasOwnProperty(k)) {
-			    	if (shortcutFunc) {
-				    	var shortcutExpr = shortcutFunc(k,params[k]);
-				    	if (shortcutExpr) {
-				    		// shortcut func returned something so we can eval
-							// it and skip normal processing for this property
-				    		eval("subject."+shortcutExpr);
-				    		continue;
-				    	}
-			    	}
-			        var key = k[0].toUpperCase()+k.substring(1);
-			        var func = eval("subject.set"+key);
-			        if (typeof func !== "undefined") {
-			        	func.call(subject,params[k]);
-			        }
-			        else {
-			        	var names = "";
-			        	subject.getClass().getMethods().forEach( function (m) {
-			        		if (m.getName().startsWith("set")) {
-			        		 var name = m.getName().substring(3);
-			        		 names+=name.substring(0,1).toLowerCase()+name.substring(1)+", ";
-			        		}
-			        	});
-			        	throw "Parameter ["+k+"] is not valid setter name, valid are : "+names;
-			        }
-			    }
-			}
-			return subject;
-		},
-		createRole : function(role,params){
-			params = params || {};
-			if (!role) {
-				throw "Role object must be defined!";
-			}
-			for (var k in params) {
-			    // use hasOwnProperty to filter out keys from the
-				// Object.prototype
-			    if (params.hasOwnProperty(k)) {
-			        var key = k[0].toUpperCase()+k.substring(1);
-			        var func = eval("role.set"+key);
-			        if (typeof func !== "undefined") {
-			        	func.call(role,params[k]);
-			        }
-			        else {
-			        	var names = "";
-			        	role.getClass().getMethods().forEach( function (m) {
-			        		if (m.getName().startsWith("set")) {
-			        		 var name = m.getName().substring(3);
-			        		 names+=name.substring(0,1).toLowerCase()+name.substring(1)+", ";
-			        		}
-			        	});
-			        	throw "Parameter ["+k+"] is not valid setter name, valid are : "+names;
-			        }
-			    }
-			}
-			return role;
 		}
 	};
 };
 
 
-
+/**
+ * @namespace provides access to all available permissions
+ */
 var permissions = (function(){
-	var common = new _common();
-	
+	// get an array of native permissions
 	var _globalPNat = Permission.GLOBAL_ALL.toArray();
 	var _resourcePNat = Permission.RESOURCE_ALL.toArray() ;
 	
 	var _allGlobalP = new Array();
 	var _allResourceP = new Array();
 	
+	// fill array with javascript strings 
 	for(i in _globalPNat){
-		_allGlobalP[i] = _globalPNat[i].toString();
+		// make sure we have javascript string
+		_allGlobalP[i] = String(_globalPNat[i].toString());
+	}
+	for(i in _resourcePNat){
+		// make sure we have javascript string
+		_allResourceP[i] = String(_resourcePNat[i].toString());
 	}
 	
-	for(i in _resourcePNat){
-		_allResourceP[i] = _resourcePNat[i].toString();
-	}
 	
 	var _allP = _allGlobalP.concat(_allResourceP); 
 
 	return{
+		/** 
+		 * All available permission names
+		 * @public
+		 * @type Array all permission names
+		 */
 		all : _allP,
+		/** 
+		 * All available global (global permissions do not apply to specific resources in groups) permission names
+		 * @public
+		 * @type Array all global permission names
+		 */
 		allGlobal : _allGlobalP,
+		/** 
+		 * All available resource (resource permissions apply only to the resources in the role's groups) permission names
+		 * @public
+		 * @type Array all resource permission names
+		 */
 		allResource : _allResourceP,
+		/** 
+		 * Prints names and types of all permissions 
+		 * @public
+		 */
 		printAllPermissions : function(){
 			var perms = Permission.values();
 			for(i in perms){
@@ -721,6 +679,8 @@ var permissions = (function(){
 		}
 	}
 }) ();
+
+
 //roles
 
 /**
@@ -728,6 +688,45 @@ var permissions = (function(){
  */
 var roles = (function() {
 	var common = new _common();
+	
+	// all valid accepted parameters
+	var _validParams = ["description","name","permissions"];
+	/** 
+	 * Checks if given parameter is part of valid parameters, throw an error message otherwise 
+	 * @private
+	 * @param {string} param parameter to check
+	 * @throws parameter is not valid
+	 */
+	var _checkParam = function(param){
+		if(_validParams.indexOf(param) == -1){
+        	throw "Parameter ["+param+"] is not valid, valid are : "+_validParams.valueOf();
+		}
+	};
+	/** 
+	 * Sets up given native Role according to given parameters 
+	 * @private
+	 * @param {org.rhq.core.domain.authz.Role} natRole native role to set up
+	 * @param {Object} params
+	 * @returns {org.rhq.core.domain.authz.Role} prepared native role
+	 * @throws some of given parameters are not valid
+	 */
+	var _setUpNatRole = function(natRole,params){
+		for (var k in params) {
+		    // use hasOwnProperty to filter out keys from the
+			// Object.prototype
+		    if (params.hasOwnProperty(k)) {
+		    	_checkParam(k);
+		        var key = k[0].toUpperCase()+k.substring(1);
+	        	var func = eval("natRole.set"+key);
+	        	if(typeof func == "undefined"){
+		        	throw "Given parameter '"+key+"' is not defined on org.rhq.core.domain.authz.Role object";
+		        }
+	        	func.call(natRole,params[k]);
+		    }
+		}
+		
+		return natRole;
+	};
 	
 	var _findRoles = function(params){
 		common.debug("Searching for roles '"+common.objToString(params) +"'");
@@ -754,9 +753,18 @@ var roles = (function() {
 	}
 	
 	return {
+		/** 
+		 * Creates a new role acorrding to given parameters.
+		 * @public
+		 * @param {Object} params - see roles.validParams for available params.
+		 * @example roles.createRole({name: "boss",description:"Role with all permissions.",permissions:permissions.all });
+		 * @returns {Role} a newly created role
+		 */
 		createRole : function(params){
 			params = params || {};
 			common.info("Creating a new role with following parameters: '"+common.objToString(params) +"'");
+			
+			// check permission names and prepare hash set with native permissions
 			if(params.permissions){
 				var permSet = new java.util.HashSet();
 				for(i in params.permissions){
@@ -769,11 +777,18 @@ var roles = (function() {
 				}
 				params.permissions = permSet;
 			}
-			var rawRole = common.createRole(new org.rhq.core.domain.authz.Role,params);
+			
+			var rawRole = _setUpNatRole(new org.rhq.core.domain.authz.Role,params);
 			var role = RoleManager.createRole(rawRole);
 
 			return new Role(role);
 		},
+		/** 
+		 * Deletes given roles.
+		 * @public
+		 * @param {Array} roleNames - array with names of roles to delete
+		 * @example roles.deleteRoles(["boss","guest"]);
+		 */
 		deleteRoles : function(roleNames){
 			if(typeof roleNames == 'string'){
 				roleNames = [roleNames]
@@ -787,12 +802,36 @@ var roles = (function() {
 				}
 			}
 		},
+		/** 
+		 * Gets a given role. Returns found role or null.
+		 * @public
+		 * @param {string} roleName - name of the role
+		 * @returns {Role} a found role
+		 */
 		getRole : _getRole,
-		findRoles : _findRoles
+		/** 
+		 * Finds all roles according to given parameters.
+		 * @public
+		 * @param {Object} params -  see RoleCriteria.addFilter[param] methods for available params
+		 * @returns  Array of found roles.
+		 * @type Roles[]
+		 */
+		findRoles : _findRoles,
+		/**
+		 * All valid accepted parameters
+		 * @public
+		 */
+		validParams : _validParams
 	}
 	
 }) ();
 
+/**
+ * Creates a new instance of Role
+ * @class
+ * @constructor
+ * @param nativeRole {org.rhq.core.domain.authz.Role} native role
+ */
 var Role = function(nativeRole){
 	var common = new _common();
 	nativeRole = nativeRole || {};
@@ -805,15 +844,23 @@ var Role = function(nativeRole){
 	return{
 		name : _name,
 		id : _id,
+		/**
+		 * Native role which this object abstracts.
+		 * @public
+		 * @returns {org.rhq.core.domain.authz.Role} native role
+		 */
 		nativeObj : _nativeRole,
+		/**
+		 * Gets array of all permissions this Role has.
+		 * @public
+		 * @returns {Array}
+		 */
 		getPermissions : function(){
 			var permissSet = _nativeRole.getPermissions();
 			
 			return permissSet.toArray();
 		}
 	}
-	
-	
 };
 
 // users
@@ -824,6 +871,44 @@ var Role = function(nativeRole){
 var users = (function() {
 	var common = new _common();
 	
+	// all valid accepted parameters
+	var _validParams = ["department","emailAddress","factive","firstName","lastName","name","phoneNumber","roles"];
+	/** 
+	 * Checks if given parameter is part of valid parameters, throw an error message otherwise 
+	 * @private
+	 * @param {string} param parameter to check
+	 * @throws parameter is not valid
+	 */
+	var _checkParam = function(param){
+		if(_validParams.indexOf(param) == -1){
+        	throw "Parameter ["+param+"] is not valid, valid are : "+_validParams.valueOf();
+		}
+	};
+	/** 
+	 * Sets up given native Subject according to given parameters 
+	 * @private
+	 * @param {org.rhq.core.domain.auth.Subject} subject native subject to set up
+	 * @param {Object} params
+	 * @returns {org.rhq.core.domain.auth.Subject} prepared native subject
+	 * @throws some of given parameters are not valid
+	 */
+	var _setUpSubject = function(subject,params){
+		for (var k in params) {
+		    // use hasOwnProperty to filter out keys from the
+			// Object.prototype
+		    if (params.hasOwnProperty(k)) {
+		    	_checkParam(k);
+		        var key = k[0].toUpperCase()+k.substring(1);
+		        var func = eval("subject.set"+key);
+		        if(typeof func == "undefined"){
+		        	throw "Given parameter '"+key+"' is not defined on Subject object";
+		        }
+		        func.call(subject,params[k]);
+		    }
+		}
+		
+		return subject;
+	}
 	var _findUsers = function(params){
 		common.debug("Searching for users with following params: '"+common.objToString(params) +"'");
 		var criteria = common.createCriteria(new SubjectCriteria(),params);
@@ -849,27 +934,26 @@ var users = (function() {
 	}
 	
 	return {
+		/** 
+		 * Creates a new user acorrding to given parameters.
+		 * @public
+		 * @param {Object} params - see users.validParams for available params.
+		 * @param {string} password 
+		 * @example users.addUser({firstName:"John",lastName:"Rambo",name:"jrambo",password:"passw",roles:["boss","admin"]);
+		 * @returns {User} a newly created user
+		 */
 		addUser : function(params,password){
 			params = params || {};
 			common.info("Adding following user: '"+common.objToString(params) +"'");
 			if(!password){
 				throw ("Password is expected for a new user.");
 			}
-			var roleNames = params.roles;
 			
-			if(params.roles){
-				var rolesSet = new java.util.HashSet();
-				for(i in params.roles){
-					if(roles.getRole(params.roles[i])){
-						rolesSet.add(roles.getRole(params.roles[i]).nativeObj);
-					}else{
-						throw "'"+params.roles[i]+"' role, not found!!" 
-					}
-				
-				}
-				params.roles = rolesSet;
-			}
-			var rawSubject = common.createSubject(new Subject,params);
+			var roleNames = params.roles;
+			// fill it with native type, given roles will be added later using RoleManager
+			params.roles = new java.util.HashSet();
+		
+			var rawSubject = _setUpSubject(new Subject,params);
 			var subject = SubjectManager.createSubject(rawSubject);
 			SubjectManager.createPrincipal(subject.getName(),password);
 			
@@ -880,6 +964,12 @@ var users = (function() {
 
 			return user;
 		},
+		/** 
+		 * Deletes given user.
+		 * @public
+		 * @param {Array} userNames - array with names of users to delete
+		 * @example users.deleteUsers(["jrambo"]);
+		 */
 		deleteUsers : function(userNames){
 			if(typeof userNames == 'string'){
 				userNames = [userNames]
@@ -894,17 +984,48 @@ var users = (function() {
 				}
 			}
 		},
+		/** 
+		 * Finds all users according to given parameters.
+		 * @public
+		 * @param {Object} params -  see SubjectCriteria.addFilter[param] methods for available params
+		 * @returns  Array of found users.
+		 * @type Users[]
+		 */
 		findUsers : _findUsers,
+		/** 
+		 * Gets a given user. Returns found user or null.
+		 * @public
+		 * @param {string} userName - name of the user
+		 * @returns {User} a found user
+		 */
 		getUser : _getUser,
+		/**
+		 * Gets all available users.
+		 * @public
+		 * @returns  Array of found users.
+		 * @type Users[]
+		 */
 		getAllUsers : function(){
 			common.debug("Gettign all users");
 
 			return _findUsers({});
-		}
+		},
+		/**
+		 * All valid accepted parameters
+		 * @public
+		 */
+		validParams : _validParams
+		
 	}
 	
 }) ();
 
+/**
+ * Creates a new instance of User
+ * @class
+ * @constructor
+ * @param nativeRole {org.rhq.core.domain.authz.Subject} native subject
+ */
 var User = function(nativeSubject){
 	var common = new _common();
 	nativeSubject = nativeSubject || {};
@@ -916,13 +1037,29 @@ var User = function(nativeSubject){
 	return{
 		id : _id,
 		name : _name,
-		//nativeObj : nativeSubject,
+		/**
+		 * Native subject which this object abstracts.
+		 * @public
+		 * @returns {org.rhq.core.domain.authz.Subject} native subject
+		 */
+		nativeObj : nativeSubject,
+		/**
+		 * Gets all roles assigned to this user.
+		 * @public
+		 * @returns  Array of found roles.
+		 * @type Roles[]
+		 */
 		getAllAssignedRoles : function(){
 			common.debug("Searching for assigned roles to user '"+_name+"'");
 			var natRoles = RoleManager.findSubjectAssignedRoles(_id,PageControl.getUnlimitedInstance());
 			
 			return common.pageListToArray(natRoles).map(function(x){return new Role(x);});
 		},
+		/**
+		 * Assigns given roles to this user.
+		 * @public 
+		 * @param {Array} roleNames array of names of roles which will be assigned to this user
+		 */
 		assignRoles : function(roleNames){
 			common.info("Assigning following roles '"+ common.objToString(roleNames) +"', to user '"+_name+"'");
 

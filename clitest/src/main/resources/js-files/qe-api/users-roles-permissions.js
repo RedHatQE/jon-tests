@@ -72,9 +72,6 @@ println("Creating a user with empty password.");
 println(expectException(users.addUser,[{firstName:"John",lastName:"Rambo",name:"jrambo",
 	department:"Green berets",emailAddress:"hell@hell.com",factive:true}]));
 
-println("Creating a user " + jramboName + " with incorrect role");
-println(expectException(users.addUser,[{firstName:"John",lastName:"Rambo",name:jramboName,
-	department:"Green berets",emailAddress:"hell@hell.com",factive:true,roles:["incorrect"]},"password"]));
 
 // creating user with defined role
 println("Creating a user " + jramboName + " with " +bossRoleName+ " role");
