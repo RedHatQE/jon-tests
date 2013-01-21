@@ -120,6 +120,17 @@
 		</class>
 	</classes>
 </test>
+<test name="Groups">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="qe-api/groups.js"/>
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />				
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
 <test name="Bundles">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
@@ -127,17 +138,6 @@
 			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
 				<parameter name="res.src" value="/bundles/bundle.zip,/bundles/bundle-incomplete.zip" />
 				<parameter name="res.dst" value="/tmp/bundle.zip,/tmp/bundle-incomplete.zip" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="Groups">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="qe-api/groups.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />				
 			<methods>
 				<include name="runJSfile"></include>		
 			</methods>
