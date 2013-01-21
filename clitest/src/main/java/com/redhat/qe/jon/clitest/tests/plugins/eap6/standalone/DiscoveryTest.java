@@ -31,35 +31,35 @@ public class DiscoveryTest extends AS7CliTest {
 	public Object[][] createStartupConfigurations() {
 		List<ServerStartConfig> configs = new ArrayList<ServerStartConfig>();
 		// listen on all intefraces (currently default .. it is safe to keep this test as first)
-		configs.add(new ServerStartConfig("standalone.sh", "hostname=0.0.0.0"));
+		configs.add(new ServerStartConfig("standalone.sh", "hostname:'0.0.0.0'"));
 		// listen on localhost
-		configs.add(new ServerStartConfig("standalone.sh -bmanagement localhost", "hostname=localhost"));
+		configs.add(new ServerStartConfig("standalone.sh -bmanagement localhost", "hostname:'localhost'"));
 		configs.add(new ServerStartConfig(
 				"standalone.sh -c=standalone-full.xml",
-				"hostXmlFileName=standalone-full.xml")
+				"hostXmlFileName:'standalone-full.xml'")
 		);
 		// listen on IPv6 all localhost
-		configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -bmanagement ::1", "hostname=::1"));
+		configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -bmanagement ::1", "hostname:'::1'"));
 		// BZ 820570
 		configs.add(new ServerStartConfig(
 			"standalone.sh -P file://${HOME}/"+sshClient.getAsHome()+"/bin/props.properties",
-			"port=29990",
+			"port:'29990'",
 			"echo \"jboss.management.http.port=29990\" > bin/props.properties")
 		);		
 		// listen on IPv6 all interfaces
-		configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -bmanagement ::", "hostname=::"));
+		configs.add(new ServerStartConfig("standalone.sh -Djava.net.preferIPv4Stack=false -bmanagement ::", "hostname:'::'"));
 		// listen on particular port
-		configs.add(new ServerStartConfig("standalone.sh -Djboss.management.http.port=29990","port=29990"));
+		configs.add(new ServerStartConfig("standalone.sh -Djboss.management.http.port=29990","port:'29990'"));
 		// start with port offset we assume default http management port is 9990
-		configs.add(new ServerStartConfig("standalone.sh -Djboss.socket.binding.port-offset=1000","port=10990"));
+		configs.add(new ServerStartConfig("standalone.sh -Djboss.socket.binding.port-offset=1000","port:'10990'"));
 		configs.add(new ServerStartConfig(
 				"standalone.sh --server-config=standalone-full.xml",
-				"hostXmlFileName=standalone-full.xml")
+				"hostXmlFileName:'standalone-full.xml'")
 		);
 		// BZ 820570
 		configs.add(new ServerStartConfig(
 				"standalone.sh --properties file://${HOME}/"+sshClient.getAsHome()+"/props.properties",
-			"port=10990",
+			"port:'10990'",
 			"echo \"jboss.socket.binding.port-offset=1000\" > props.properties")
 		);		
 		// override config dir
@@ -71,12 +71,12 @@ public class DiscoveryTest extends AS7CliTest {
 		// BZ 820570 using relative path
 		configs.add(new ServerStartConfig(
 			"standalone.sh -P=props.properties",
-			"port=10990",
+			"port:'10990'",
 			"echo \"jboss.socket.binding.port-offset=1000\" > bin/props.properties")
 		);
 		configs.add(new ServerStartConfig(
 				"standalone.sh -Djboss.server.default.config=standalone-full.xml",
-				"hostXmlFileName=standalone-full.xml")
+				"hostXmlFileName:'standalone-full.xml'")
 		);
 		// override basedir
 		configs.add(new ServerStartConfig(
@@ -87,7 +87,7 @@ public class DiscoveryTest extends AS7CliTest {
 		// start in full profile - more ways doing it
 		configs.add(new ServerStartConfig(
 				"standalone.sh -c=standalone-full.xml",
-				"hostXmlFileName=standalone-full.xml")
+				"hostXmlFileName:'standalone-full.xml'")
 		);
 
 		
