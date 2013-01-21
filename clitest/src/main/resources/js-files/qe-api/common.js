@@ -13,6 +13,8 @@ println(common.objToString({a:"a",b:["1","3",{c:["4"]}],d:{e:"xxx"}}));
 println(common.objToString({name: "name",description:"role with all permissions.",permissions:Permission.GLOBAL_ALL }))
 println(common.objToString({permissions:Permission.GLOBAL_ALL }))
 println(common.objToString({a:"b",c:{d:"e"}}))
+println(common.objToString({}))
+println(common.objToString({permissions:permissions.all}))
 
 // wait with globaly (previously) defined timeout
 common.waitFor(function(){});

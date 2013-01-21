@@ -410,25 +410,21 @@ var _common = function() {
 		return original;
 	};
 
-
 	return {
 		objToString : function(hash) {
-			
 			function isArray(obj) {
-				return typeof(obj) == 'object' && (obj instanceof Array);
+				return typeof (obj) == 'object' && (obj instanceof Array);
 			}
-
 			function isHash(obj) {
-				return typeof(obj) == 'object' && !(obj instanceof Array);
+				return typeof (obj) == 'object' && !(obj instanceof Array);
 			}
 
 			function isPrimitive(obj) {
-				return typeof(obj) != 'object' || obj == null || (obj instanceof Boolean  || obj instanceof Number || obj instanceof String);
+				return typeof (obj) != 'object' || obj == null || (obj instanceof Boolean || obj instanceof Number || obj instanceof String);
 			}
 			function isJavaObject(obj) {
-				return typeof(obj) == 'object' && typeof(obj.getClass) != 'undefined'
+				return typeof (obj) == 'object' && typeof (obj.getClass) != 'undefined'
 			}
-						
 			if (!hash) {
 				return hash;
 			}
@@ -436,73 +432,79 @@ var _common = function() {
 			if (!isHash(hash)) {
 				return String(hash);
 			}
-			output = "{";
-			for(key in hash) {
+			output = "";
+			for (key in hash) {
 				if (!hash.hasOwnProperty(key)) {
 					continue;
 				}
-				value = hash[key];
-				var rep = (function(parent, key, value) {
-					
+				var valueStr = (function(key, value) {
+
 					var me = arguments.callee;
 
 					var prop = null;
 					if (typeof value == "function") {
 						return;
 					}
+					// if non-empty key was passed we are going to print this
+					// element as key:<something>
+					// otherwise there's no key to print
 					var kkey = "";
 					if (key != "") {
-						kkey=key+":";
+						kkey = key + ":";
 					}
-					if (isPrimitive(value)) {						
-						if (value instanceof Number || value instanceof Boolean) {						
-							prop = kkey+value;
+					if (isPrimitive(value)) {
+						// primitive types
+						if (value instanceof Number || value instanceof Boolean) {
+							prop = kkey + value;
+						} else {
+							prop = kkey + "\'" + value + "\'";
 						}
-						else {
-							prop = kkey+"\'"+value+"\'";
-						}
-						
+
 					} else if (isJavaObject(value)) {
-						prop = kkey+String(value);
-					} 					
-					else if (isArray(value)) {
-						prop = kkey+"[";
-						for(var i = 0; i < value.length; ++i) {						
-							var v = value[i];							
-							if (v != null) {
-								var repr = me(prop, "", v)
-								if (repr) {
-								  prop += repr+",";	
-								}
-							}												
-						}
-						prop=prop.substring(0,prop.length-1)+"]"
-					} else if (isHash(value)) {
-						prop = kkey+"{";
-						for(var i in value) {
+						// java object - should't be here
+						prop = kkey + String(value);
+					} else if (isArray(value)) {
+						// by printing array we deeper (passing empty key)
+						prop = kkey + "[";
+						for ( var i = 0; i < value.length; ++i) {
 							var v = value[i];
-							var repr = me(prop, i, v)
-							if (repr) {
-							  prop += repr+",";	
+							if (v != null) {
+								var repr = me("", v)
+								if (repr) {
+									// only if value was printed to something
+									prop += repr + ",";
+								}
 							}
 						}
-						prop=prop.substring(0,prop.length-1)+"}"
-					}
-					else {
+						// trim last ','
+						prop = prop.substring(0, prop.length - 1) + "]"
+					} else if (isHash(value)) {
+						// printing hash, again we go deeper
+						prop = kkey + "{";
+						for ( var i in value) {
+							var v = value[i];
+							var repr = me(i, v)
+							if (repr) {
+								prop += repr + ",";
+							}
+						}
+						prop = prop.substring(0, prop.length - 1) + "}"
+					} else {
+						// this code should not be reached
 						println("it is unkonwn");
 						println(typeof value);
 						println(value);
 						return;
 					}
 					return prop;
-				})(output, key, value)
-				
-				if (rep) {
-					output+=rep+",";
+				})(key, hash[key])
+
+				if (valueStr) {
+					output += valueStr + ",";
 				}
 			}
-
-			return output.substring(0,output.length-1)+"}";
+			output = output.substring(0, output.length - 1);
+			return "{"+output+"}";
 		},
 		arrayToSet : function(array){
 			var hashSet = new java.util.HashSet();
