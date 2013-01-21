@@ -7,7 +7,7 @@ var content = deployment;
 // bind input parameters
 var platform = agent;
 
-var eap = getEap(platform)
+var eap = getEAP(platform)
 
 
 println("Create [Network Interface] child - new resource without backed content");

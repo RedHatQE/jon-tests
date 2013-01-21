@@ -1,7 +1,7 @@
 /**
  * @overview this library tries to be synchronous and high-level API built on top of standard RHQ remote API
  * @name RHQ API
- * @version 0.1
+ * @version 0.2
  * @author Libor Zoubek (lzoubek@redhat.com), Filip Brychta (fbrychta@redhat.com)
  */
 
@@ -10,7 +10,8 @@
 // please follow http://code.google.com/p/jsdoc-toolkit/wiki/TagReference for adding correct tag
 
 /**
- * print function that recognizes arrays and prints each item on new line
+ * print function that recognizes arrays or JS objects (hashes) and prints each item on new line,
+ * it produces JSON-like output (but NOT JSON)
  */
 var p = function(object) {
 	println(new _common().objToString(object))
@@ -367,7 +368,7 @@ var _common = function() {
 					}
 
 					if (propDef==null) {
-						common.debug("Unable to get PropertyDefinition for key="+key);
+						_debug("Unable to get PropertyDefinition for key="+key);
 						return;
 					}
 					// process all 3 possible types
