@@ -1103,7 +1103,7 @@ var groups = (function() {
 		 */
 		createCriteria : function(params) {
 			params = params || {};
-			common.trace("groups.createCriteria("+common.objToString(params) +")");
+			common.debug("groups.createCriteria("+common.objToString(params) +")");
 			var criteria = common.createCriteria(new ResourceGroupCriteria(),params, function (key,value) {
 				if (key=="category") { return "addFilterExplicitResourceCategory(ResourceCategory."+value.toUpperCase();}
 			});
@@ -1122,7 +1122,7 @@ var groups = (function() {
 		 */
 		find : function(params) {
 			params = params || {};
-			common.trace("groups.find("+common.objToString(params)+")");
+			common.debug("groups.find("+common.objToString(params)+")");
 			var criteria = groups.createCriteria(params);
 			var result = ResourceGroupManager.findResourceGroupsByCriteria(criteria);
 			common.debug("Found "+result.size()+" groups ");
@@ -1138,6 +1138,7 @@ var groups = (function() {
 	 */
 		create : function(name,children) {
 			children = children || [];
+			common.info("Creating a group '" + name + "', with following children: '" + common.objToString(children) + "'");
 			var rg = new ResourceGroup(name);
 			// detect whether all resources are same type
 			var resType = null;
@@ -1166,12 +1167,13 @@ var groups = (function() {
  */
 var ResGroup = function(param) {
 	var common = new _common();
-	common.trace("new ResGroup("+param+")");
+	common.debug("new ResGroup("+param+")");
 	if (!param) {
 		throw "either number or org.rhq.core.domain.resource.ResourceGroup parameter is required";
 	}
 	var _id = param.id;
 	var _obj = param;
+	var _name = param.name;
     /**
 	 * @lends ResGroup.prototype
 	 */
@@ -1196,8 +1198,8 @@ var ResGroup = function(param) {
 		/**
 		 * removes this resource group
 		 */
-    remove : function() {
-			common.trace("ResGroup("+_id+").remove()");
+		remove : function() {
+			common.info("Removing a group with name '" + _name + "'");
 			ResourceGroupManager.deleteResourceGroup(_id);
 		},
 		/**
