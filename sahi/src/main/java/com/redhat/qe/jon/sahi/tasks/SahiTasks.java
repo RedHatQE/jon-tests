@@ -476,6 +476,11 @@ public class SahiTasks extends ExtendedSahi {
         this.textbox("SearchPatternField").setValue(searchName + "=" + compGroupName);
         this.cell("name").click();
     }
+    
+    public void enterValueToSerachText(String searchName, String searchValue) {
+        this.textbox("SearchPatternField").setValue(searchName + "==" + searchValue);
+        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
+    }
 
     // ***************************************************************************
     // Dashboard
@@ -2108,4 +2113,17 @@ public class SahiTasks extends ExtendedSahi {
     	this.cell("Yes").near(this.cell("No")).click(); 
     	return this.link(templateName.trim()).exists();
     }
+    
+	public void servicesSearchBy(String key, String value) {
+		this.link("Inventory").click();
+		this.waitFor(5000);
+		Assert.assertTrue(this.link("Inventory").exists());
+		this.cell("Services").click();
+		this.waitFor(5000);
+		checkSearchBox();
+		enterValueToSerachText("version", "2");
+		this.textbox("SearchPatternField").keyDown(13, 13);
+		this.textbox("SearchPatternField").keyUp(13, 13);
+		this.waitFor(5000);
+	}
 }
