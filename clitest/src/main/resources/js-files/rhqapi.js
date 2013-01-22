@@ -1,7 +1,7 @@
 /**
  * @overview this library tries to be synchronous and high-level API built on top of standard RHQ remote API
  * @name RHQ API
- * @version 0.1
+ * @version 0.2
  * @author Libor Zoubek (lzoubek@redhat.com), Filip Brychta (fbrychta@redhat.com)
  */
 
@@ -10,7 +10,8 @@
 // please follow http://code.google.com/p/jsdoc-toolkit/wiki/TagReference for adding correct tag
 
 /**
- * print function that recognizes arrays and prints each item on new line
+ * print function that recognizes arrays or JS objects (hashes) and prints each item on new line,
+ * it produces JSON-like output (but NOT JSON)
  */
 var p = function(object) {
 	println(new _common().objToString(object))
@@ -367,7 +368,7 @@ var _common = function() {
 					}
 
 					if (propDef==null) {
-						common.debug("Unable to get PropertyDefinition for key="+key);
+						_debug("Unable to get PropertyDefinition for key="+key);
 						return;
 					}
 					// process all 3 possible types
@@ -410,70 +411,110 @@ var _common = function() {
 		return original;
 	};
 
-
 	return {
 		objToString : function(hash) {
-			output = "{";
-			if (!hash) {
-				return output;
+			function isArray(obj) {
+				return typeof (obj) == 'object' && (obj instanceof Array);
 			}
-			for(key in hash) {
+			function isHash(obj) {
+				return typeof (obj) == 'object' && !(obj instanceof Array);
+			}
+
+			function isPrimitive(obj) {
+				return typeof (obj) != 'object' || obj == null || (obj instanceof Boolean || obj instanceof Number || obj instanceof String);
+			}
+			function isJavaObject(obj) {
+				return typeof (obj) == 'object' && typeof (obj.getClass) != 'undefined'
+			}
+			if (!hash) {
+				return hash;
+			}
+			// process only hashes, everything else is "just" string
+			if (!isHash(hash)) {
+				return String(hash);
+			}
+			output = "";
+			for (key in hash) {
 				if (!hash.hasOwnProperty(key)) {
 					continue;
 				}
-				value = hash[key];
+				var valueStr = (function(key, value) {
 
-				output+= (function(parent, key, value) {
-					function isArray(obj) {
-						return typeof(obj) == 'object' && (obj instanceof Array);
-					}
-
-					function isHash(obj) {
-						return typeof(obj) == 'object' && !(obj instanceof Array);
-					}
-
-					function isPrimitive(obj) {
-						return typeof(obj) != 'object' || obj == null || (obj instanceof Boolean  || obj instanceof Number || obj instanceof String);
-					}
 					var me = arguments.callee;
 
 					var prop = null;
-
+					if (typeof value == "function") {
+						return;
+					}
+					// if non-empty key was passed we are going to print this
+					// element as key:<something>
+					// otherwise there's no key to print
+					var kkey = "";
+					if (key != "") {
+						kkey = key + ":";
+					}
 					if (isPrimitive(value)) {
-						if (value instanceof Number || value instanceof Boolean) {						
-							prop = key+":"+value;
+						// primitive types
+						if (value instanceof Number || value instanceof Boolean) {
+							prop = kkey + value;
+						} else {
+							prop = kkey + "\'" + value + "\'";
 						}
-						else {
-							prop = key+":\'"+value+"\'";
-						}
+
+					} else if (isJavaObject(value)) {
+						// java object - should't be here
+						prop = kkey + String(value);
 					} else if (isArray(value)) {
-						prop = key+":[";
-						for(var i = 0; i < value.length; ++i) {						
+						// by printing array we deeper (passing empty key)
+						prop = kkey + "[";
+						for ( var i = 0; i < value.length; ++i) {
 							var v = value[i];
 							if (v != null) {
-								prop += me(prop, "", v)+",";
-							}												
+								var repr = me("", v)
+								if (repr) {
+									// only if value was printed to something
+									prop += repr + ",";
+								}
+							}
 						}
-						prop+=prop.substring(0,prop.length-1)+"]"
+						// trim last ','
+						prop = prop.substring(0, prop.length - 1) + "]"
 					} else if (isHash(value)) {
-						prop = "{";
-						for(var i in value) {
+						// printing hash, again we go deeper
+						prop = kkey + "{";
+						for ( var i in value) {
 							var v = value[i];
-							prop+= me(prop, i, v)+",";
+							var repr = me(i, v)
+							if (repr) {
+								prop += repr + ",";
+							}
 						}
-						prop+=prop.substring(0,prop.length-1)+"}"
-					}
-					else {
+						prop = prop.substring(0, prop.length - 1) + "}"
+					} else {
+						// this code should not be reached
 						println("it is unkonwn");
 						println(typeof value);
 						println(value);
 						return;
 					}
 					return prop;
-				})(output, key, value)+",";
-			}
+				})(key, hash[key])
 
-			return output.substring(0,output.length-1)+"}";
+				if (valueStr) {
+					output += valueStr + ",";
+				}
+			}
+			output = output.substring(0, output.length - 1);
+			return "{"+output+"}";
+		},
+		arrayToSet : function(array){
+			var hashSet = new java.util.HashSet();
+			if(array){
+				for(i in array){
+					hashSet.add(array[i]);
+				}
+			}
+			return hashSet;
 		},
 		pageListToArray : function(pageList) {
 			var resourcesArray = new Array();
@@ -578,83 +619,68 @@ var _common = function() {
 			    }
 			}
 			return criteria;
-		},
-		createSubject : function(subject,params,shortcutFunc){
-			params = params || {};
-			if (!subject) {
-				throw "Subject object must be defined!";
-			}
-			for (var k in params) {
-			    // use hasOwnProperty to filter out keys from the
-				// Object.prototype
-			    if (params.hasOwnProperty(k)) {
-			    	if (shortcutFunc) {
-				    	var shortcutExpr = shortcutFunc(k,params[k]);
-				    	if (shortcutExpr) {
-				    		// shortcut func returned something so we can eval
-							// it and skip normal processing for this property
-				    		eval("subject."+shortcutExpr);
-				    		continue;
-				    	}
-			    	}
-			        var key = k[0].toUpperCase()+k.substring(1);
-			        var func = eval("subject.set"+key);
-			        if (typeof func !== "undefined") {
-			        	func.call(subject,params[k]);
-			        }
-			        else {
-			        	var names = "";
-			        	subject.getClass().getMethods().forEach( function (m) {
-			        		if (m.getName().startsWith("set")) {
-			        		 var name = m.getName().substring(3);
-			        		 names+=name.substring(0,1).toLowerCase()+name.substring(1)+", ";
-			        		}
-			        	});
-			        	throw "Parameter ["+k+"] is not valid setter name, valid are : "+names;
-			        }
-			    }
-			}
-			return subject;
-		},
-		createRole : function(role,params,shortcutFunc){
-			params = params || {};
-			if (!role) {
-				throw "Role object must be defined!";
-			}
-			for (var k in params) {
-			    // use hasOwnProperty to filter out keys from the
-				// Object.prototype
-			    if (params.hasOwnProperty(k)) {
-			    	if (shortcutFunc) {
-				    	var shortcutExpr = shortcutFunc(k,params[k]);
-				    	if (shortcutExpr) {
-				    		// shortcut func returned something so we can eval
-							// it and skip normal processing for this property
-				    		eval("role."+shortcutExpr);
-				    		continue;
-				    	}
-			    	}
-			        var key = k[0].toUpperCase()+k.substring(1);
-			        var func = eval("role.set"+key);
-			        if (typeof func !== "undefined") {
-			        	func.call(role,params[k]);
-			        }
-			        else {
-			        	var names = "";
-			        	role.getClass().getMethods().forEach( function (m) {
-			        		if (m.getName().startsWith("set")) {
-			        		 var name = m.getName().substring(3);
-			        		 names+=name.substring(0,1).toLowerCase()+name.substring(1)+", ";
-			        		}
-			        	});
-			        	throw "Parameter ["+k+"] is not valid setter name, valid are : "+names;
-			        }
-			    }
-			}
-			return role;
 		}
 	};
 };
+
+
+/**
+ * @namespace provides access to all available permissions
+ */
+var permissions = (function(){
+	// get an array of native permissions
+	var _globalPNat = Permission.GLOBAL_ALL.toArray();
+	var _resourcePNat = Permission.RESOURCE_ALL.toArray() ;
+	
+	var _allGlobalP = new Array();
+	var _allResourceP = new Array();
+	
+	// fill array with javascript strings 
+	for(i in _globalPNat){
+		// make sure we have javascript string
+		_allGlobalP[i] = String(_globalPNat[i].toString());
+	}
+	for(i in _resourcePNat){
+		// make sure we have javascript string
+		_allResourceP[i] = String(_resourcePNat[i].toString());
+	}
+	
+	
+	var _allP = _allGlobalP.concat(_allResourceP); 
+
+	return{
+		/** 
+		 * All available permission names
+		 * @public
+		 * @type Array all permission names
+		 */
+		all : _allP,
+		/** 
+		 * All available global (global permissions do not apply to specific resources in groups) permission names
+		 * @public
+		 * @type Array all global permission names
+		 */
+		allGlobal : _allGlobalP,
+		/** 
+		 * All available resource (resource permissions apply only to the resources in the role's groups) permission names
+		 * @public
+		 * @type Array all resource permission names
+		 */
+		allResource : _allResourceP,
+		/** 
+		 * Prints names and types of all permissions 
+		 * @public
+		 */
+		printAllPermissions : function(){
+			var perms = Permission.values();
+			for(i in perms){
+				println("Permission name: " + perms[i] + ", target: " + perms[i].getTarget());
+			}
+		}
+	}
+}) ();
+
+
 //roles
 
 /**
@@ -663,22 +689,60 @@ var _common = function() {
 var roles = (function() {
 	var common = new _common();
 	
+	// all valid accepted parameters
+	var _validParams = ["description","name","permissions"];
+	/** 
+	 * Checks if given parameter is part of valid parameters, throw an error message otherwise 
+	 * @private
+	 * @param {string} param parameter to check
+	 * @throws parameter is not valid
+	 */
+	var _checkParam = function(param){
+		if(_validParams.indexOf(param) == -1){
+        	throw "Parameter ["+param+"] is not valid, valid are : "+_validParams.valueOf();
+		}
+	};
+	/** 
+	 * Sets up given native Role according to given parameters 
+	 * @private
+	 * @param {org.rhq.core.domain.authz.Role} natRole native role to set up
+	 * @param {Object} params
+	 * @returns {org.rhq.core.domain.authz.Role} prepared native role
+	 * @throws some of given parameters are not valid
+	 */
+	var _setUpNatRole = function(natRole,params){
+		for (var k in params) {
+		    // use hasOwnProperty to filter out keys from the
+			// Object.prototype
+		    if (params.hasOwnProperty(k)) {
+		    	_checkParam(k);
+		        var key = k[0].toUpperCase()+k.substring(1);
+	        	var func = eval("natRole.set"+key);
+	        	if(typeof func == "undefined"){
+		        	throw "Given parameter '"+key+"' is not defined on org.rhq.core.domain.authz.Role object";
+		        }
+	        	func.call(natRole,params[k]);
+		    }
+		}
+		
+		return natRole;
+	};
+	
 	var _findRoles = function(params){
-		common.trace("roles.findRoles("+common.objToString(params) +")");
+		common.debug("Searching for roles '"+common.objToString(params) +"'");
 		var criteria = common.createCriteria(new RoleCriteria(),params);
 		criteria.clearPaging();
 		var roles = RoleManager.findRolesByCriteria(criteria);
 
-		return common.pageListToArray(roles);		
+		return common.pageListToArray(roles).map(function(x){return new Role(x);});		
 	}
 	
 	var _getRole = function(roleName){
-		common.trace("roles.getRole("+roleName +")");
-		
+		common.debug("Searching for role with name '"+roleName +"'");
 		var roles = _findRoles({name:roleName});
 
 		for(i in roles){
-			if(roles[i].getName() == roleName){
+			if(roles[i].name == roleName){
 				common.debug("Role " + roleName+ " found.");
 				return roles[i];
 			}
@@ -688,35 +752,116 @@ var roles = (function() {
 		return null;
 	}
 	
-	
-	
 	return {
+		/** 
+		 * Creates a new role acorrding to given parameters.
+		 * @public
+		 * @param {Object} params - see roles.validParams for available params.
+		 * @example roles.createRole({name: "boss",description:"Role with all permissions.",permissions:permissions.all });
+		 * @returns {Role} a newly created role
+		 */
 		createRole : function(params){
 			params = params || {};
-			common.trace("roles.createRole("+common.objToString(params) +")");
-			var rawRole = common.createRole(new Role,params);
+			common.info("Creating a new role with following parameters: '"+common.objToString(params) +"'");
+			
+			// check permission names and prepare hash set with native permissions
+			if(params.permissions){
+				var permSet = new java.util.HashSet();
+				for(i in params.permissions){
+					try
+					{
+						permSet.add(Permission.valueOf(params.permissions[i]));
+					} catch (exc) {
+						throw "'" + params.permissions[i]+"', permission name is not correct!";
+					}
+				}
+				params.permissions = permSet;
+			}
+			
+			var rawRole = _setUpNatRole(new org.rhq.core.domain.authz.Role,params);
 			var role = RoleManager.createRole(rawRole);
 
-			return role;
+			return new Role(role);
 		},
-		deleteRole : function(roleName){
-			common.trace("roles.deleteRole("+roleName +")");
-			var role = _getRole(roleName);
-			if(role){
-				RoleManager.deleteRoles([role.getId()]);
+		/** 
+		 * Deletes given roles.
+		 * @public
+		 * @param {Array} roleNames - array with names of roles to delete
+		 * @example roles.deleteRoles(["boss","guest"]);
+		 */
+		deleteRoles : function(roleNames){
+			if(typeof roleNames == 'string'){
+				roleNames = [roleNames]
+			}
+			common.info("Removing roles with following names: '"+common.objToString(roleNames) +"'");
+			var role;
+			for(i in roleNames){
+				role = _getRole(roleNames[i]);
+				if(role){
+					RoleManager.deleteRoles([role.id]);
+				}
 			}
 		},
+		/** 
+		 * Gets a given role. Returns found role or null.
+		 * @public
+		 * @param {string} roleName - name of the role
+		 * @returns {Role} a found role
+		 */
 		getRole : _getRole,
+		/** 
+		 * Finds all roles according to given parameters.
+		 * @public
+		 * @param {Object} params -  see RoleCriteria.addFilter[param] methods for available params
+		 * @returns  Array of found roles.
+		 * @type Roles[]
+		 */
 		findRoles : _findRoles,
-		printAllPermissions : function(){
-			var perms = Permission.values();
-			for(i in perms){
-				println("Permission name: " + perms[i] + ", target: " + perms[i].getTarget());
-			}
-		}
+		/**
+		 * All valid accepted parameters
+		 * @public
+		 */
+		validParams : _validParams
 	}
 	
 }) ();
+
+/**
+ * Creates a new instance of Role
+ * @class
+ * @constructor
+ * @param nativeRole {org.rhq.core.domain.authz.Role} native role
+ */
+var Role = function(nativeRole){
+	var common = new _common();
+	nativeRole = nativeRole || {};
+	common.debug("Creating an abstract role: " + nativeRole);
+	
+	var _nativeRole = nativeRole;
+	var _name = _nativeRole.getName();
+	var _id = _nativeRole.getId();
+	
+	return{
+		name : _name,
+		id : _id,
+		/**
+		 * Native role which this object abstracts.
+		 * @public
+		 * @returns {org.rhq.core.domain.authz.Role} native role
+		 */
+		nativeObj : _nativeRole,
+		/**
+		 * Gets array of all permissions this Role has.
+		 * @public
+		 * @returns {Array}
+		 */
+		getPermissions : function(){
+			var permissSet = _nativeRole.getPermissions();
+			
+			return permissSet.toArray();
+		}
+	}
+};
 
 // users
 
@@ -726,22 +871,59 @@ var roles = (function() {
 var users = (function() {
 	var common = new _common();
 	
+	// all valid accepted parameters
+	var _validParams = ["department","emailAddress","factive","firstName","lastName","name","phoneNumber","roles"];
+	/** 
+	 * Checks if given parameter is part of valid parameters, throw an error message otherwise 
+	 * @private
+	 * @param {string} param parameter to check
+	 * @throws parameter is not valid
+	 */
+	var _checkParam = function(param){
+		if(_validParams.indexOf(param) == -1){
+        	throw "Parameter ["+param+"] is not valid, valid are : "+_validParams.valueOf();
+		}
+	};
+	/** 
+	 * Sets up given native Subject according to given parameters 
+	 * @private
+	 * @param {org.rhq.core.domain.auth.Subject} subject native subject to set up
+	 * @param {Object} params
+	 * @returns {org.rhq.core.domain.auth.Subject} prepared native subject
+	 * @throws some of given parameters are not valid
+	 */
+	var _setUpSubject = function(subject,params){
+		for (var k in params) {
+		    // use hasOwnProperty to filter out keys from the
+			// Object.prototype
+		    if (params.hasOwnProperty(k)) {
+		    	_checkParam(k);
+		        var key = k[0].toUpperCase()+k.substring(1);
+		        var func = eval("subject.set"+key);
+		        if(typeof func == "undefined"){
+		        	throw "Given parameter '"+key+"' is not defined on Subject object";
+		        }
+		        func.call(subject,params[k]);
+		    }
+		}
+		
+		return subject;
+	}
 	var _findUsers = function(params){
-		common.trace("users.findUsers("+common.objToString(params) +")");
+		common.debug("Searching for users with following params: '"+common.objToString(params) +"'");
 		var criteria = common.createCriteria(new SubjectCriteria(),params);
 		criteria.clearPaging();
 		var users = SubjectManager.findSubjectsByCriteria(criteria);
-		common.trace("Nuber of found users: " + users.size());
 		
-		return common.pageListToArray(users)
+		return common.pageListToArray(users).map(function(x){return new User(x);});
 	}
 	
 	var _getUser = function(userName){
-		common.trace("users.getUser("+userName +")");
+		common.debug("Searching for user with name: '"+userName +"'");
 		var users = _findUsers({name:userName});
 
 		for(i in users){
-			if(users[i].getName() == userName){
+			if(users[i].name == userName){
 				common.debug("User " + userName+ " found.");
 				return users[i];
 			}
@@ -752,72 +934,155 @@ var users = (function() {
 	}
 	
 	return {
+		/** 
+		 * Creates a new user acorrding to given parameters.
+		 * @public
+		 * @param {Object} params - see users.validParams for available params.
+		 * @param {string} password 
+		 * @example users.addUser({firstName:"John",lastName:"Rambo",name:"jrambo",password:"passw",roles:["boss","admin"]);
+		 * @returns {User} a newly created user
+		 */
 		addUser : function(params,password){
 			params = params || {};
-			common.trace("users.addUser("+common.objToString(params) +")");
+			common.info("Adding following user: '"+common.objToString(params) +"'");
 			if(!password){
 				throw ("Password is expected for a new user.");
 			}
-			var rawSubject = common.createSubject(new Subject,params);
+			
+			var roleNames = params.roles;
+			// fill it with native type, given roles will be added later using RoleManager
+			params.roles = new java.util.HashSet();
+		
+			var rawSubject = _setUpSubject(new Subject,params);
 			var subject = SubjectManager.createSubject(rawSubject);
 			SubjectManager.createPrincipal(subject.getName(),password);
-
-			return subject;
-		},
-		deleteUser : function(userName){
-			common.trace("users.deleteUser("+userName +")");
-			var user = _getUser(userName);
-			if(user){
-				SubjectManager.deleteSubjects([user.getId()]);
+			
+			var user = new User(subject);
+			if(roleNames){
+				user.assignRoles(roleNames);
 			}
-		},
-		findUsers : _findUsers,
-		getUser : _getUser,
-		getAllUsers : function(){
-			common.trace("users.getAllUsers()");
-			var criteria = new SubjectCriteria();
-			criteria.clearPaging();
-			var users = SubjectManager.findSubjectsByCriteria(criteria);
 
-			return common.pageListToArray(users)
+			return user;
 		},
-		assignRolesToUser : function(userName, roleNames){
-			common.trace("users.assignRolesToUser("+userName+", "+ roleNames +" )");
-			if(!userName){
-				throw "User name must be passed when adding roles to the user.";
+		/** 
+		 * Deletes given user.
+		 * @public
+		 * @param {Array} userNames - array with names of users to delete
+		 * @example users.deleteUsers(["jrambo"]);
+		 */
+		deleteUsers : function(userNames){
+			if(typeof userNames == 'string'){
+				userNames = [userNames]
 			}
-			var user = _getUser(userName);
-			if(user){
-				var rolesIds = new Array();
-				var j = 0;
-				for(i in roleNames){
-					role = roles.getRole(roleNames[i]);
-					if(role){
-						common.trace("Adding found role " + role);
-						rolesIds[j] = role.getId();
-						j++;
-					}else{
-						common.debug("Role " + roleNames[i]+ " not found!!");
-					}
+			common.info("Removing users with following names: '"+common.objToString(userNames) +"'");
+			
+			var user;
+			for(i in userNames){
+				user = _getUser(userNames[i]);
+				if(user){
+					SubjectManager.deleteSubjects([user.id]);
 				}
-				RoleManager.addRolesToSubject(user.getId(),rolesIds);
-			}else{
-				common.debug("No role assigned, user " + userName + " not found!!");
 			}
 		},
-		getAllAssignedRolesForUser : function(userName){
-			common.trace("users.getAllAssignedRolesForUser("+userName+")");
-			var user = _getUser(userName);
-			
-			if(user){
-				return common.pageListToArray(RoleManager.findSubjectAssignedRoles(user.getId(),PageControl.getUnlimitedInstance())); 
-			}
-			
-			return null;
-		}
+		/** 
+		 * Finds all users according to given parameters.
+		 * @public
+		 * @param {Object} params -  see SubjectCriteria.addFilter[param] methods for available params
+		 * @returns  Array of found users.
+		 * @type Users[]
+		 */
+		findUsers : _findUsers,
+		/** 
+		 * Gets a given user. Returns found user or null.
+		 * @public
+		 * @param {string} userName - name of the user
+		 * @returns {User} a found user
+		 */
+		getUser : _getUser,
+		/**
+		 * Gets all available users.
+		 * @public
+		 * @returns  Array of found users.
+		 * @type Users[]
+		 */
+		getAllUsers : function(){
+			common.debug("Gettign all users");
+
+			return _findUsers({});
+		},
+		/**
+		 * All valid accepted parameters
+		 * @public
+		 */
+		validParams : _validParams
+		
 	}
 	
 }) ();
+
+/**
+ * Creates a new instance of User
+ * @class
+ * @constructor
+ * @param nativeRole {org.rhq.core.domain.authz.Subject} native subject
+ */
+var User = function(nativeSubject){
+	var common = new _common();
+	nativeSubject = nativeSubject || {};
+	common.debug("Creating following abstract user: " + nativeSubject );
+	
+	var _id = nativeSubject.getId();
+	var _name = nativeSubject.getName();
+	
+	return{
+		id : _id,
+		name : _name,
+		/**
+		 * Native subject which this object abstracts.
+		 * @public
+		 * @returns {org.rhq.core.domain.authz.Subject} native subject
+		 */
+		nativeObj : nativeSubject,
+		/**
+		 * Gets all roles assigned to this user.
+		 * @public
+		 * @returns  Array of found roles.
+		 * @type Roles[]
+		 */
+		getAllAssignedRoles : function(){
+			common.debug("Searching for assigned roles to user '"+_name+"'");
+			var natRoles = RoleManager.findSubjectAssignedRoles(_id,PageControl.getUnlimitedInstance());
+			
+			return common.pageListToArray(natRoles).map(function(x){return new Role(x);});
+		},
+		/**
+		 * Assigns given roles to this user.
+		 * @public 
+		 * @param {Array} roleNames array of names of roles which will be assigned to this user
+		 */
+		assignRoles : function(roleNames){
+			common.info("Assigning following roles '"+ common.objToString(roleNames) +"', to user '"+_name+"'");
+
+			if(typeof roleNames == 'string'){
+				roleNames = [roleNames];
+			}
+			var rolesIds = new Array();
+			var j = 0;
+			var role;
+			for(i in roleNames){
+				role = roles.getRole(roleNames[i]);
+				if(role){
+					common.debug("Adding found role " + role);
+					rolesIds[j] = role.id;
+					j++;
+				}else{
+					common.info("Role " + roleNames[i]+ " not found!!");
+				}
+			}
+			RoleManager.addRolesToSubject(_id,rolesIds);
+		}
+	}
+};
 // resource groups
 
 /**
@@ -1645,10 +1910,17 @@ var Resource = function (param) {
 		var _defId = function() {
 			var criteria = common.createCriteria(new MeasurementDefinitionCriteria(),{resourceTypeId:_res.resourceType.id,displayName:_param.name});				
 			var mDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
-			if (mDefs.size()!=1) {
+			var index = -1
+			for (i=0;i<mDefs.size();i++) {
+				if (mDefs.get(i).displayName == _param.name) {
+					index = i;
+					break;
+				}
+			}
+			if (index == -1) {
 				throw "Unable to retrieve measurement definition, this is a bug"
 			}
-			return mDefs.get(0).id;
+			return mDefs.get(index).id;
 		};
 		return {
 			/**
@@ -1678,7 +1950,7 @@ var Resource = function (param) {
 			/**
 			 * enables/disables metric and sets its collection interval
 			 * @param enabled {Boolean} - enable or disable metric
-			 * @param interval {Number} - optinally set collection interval
+			 * @param interval {Number} - optinally set collection interval (seconds)
 			 */
 			set : function(enabled,interval) {
 				common.trace("Resource("+_res.id+").metrics.["+param.name+"].set(enabled="+enabled+",interval="+interval+")");

@@ -5,10 +5,11 @@
 */
 
 
-// Step 1
+// Step 1 - obtain rhqagent resource
 
-// obtain any RHQ Agent resource
-var agents = Inventory.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
+var platform = agent
+
+var agents = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent",parentResourceName:platform});
 assertTrue(agents.length>0,"At least one RHQ Agent resource was found in inventory");
 var agent = agents[0];
 

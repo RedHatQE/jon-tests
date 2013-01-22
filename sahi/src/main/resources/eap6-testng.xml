@@ -4,8 +4,9 @@
   		<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found 
   		<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
 		-->
-  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<!-- Listener to send report to Report Engine Server --> 
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
+
   	  	<!-- Listener to clear pop-up's if any and take screenshots on test failure-->
     	<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" />
   	</listeners>

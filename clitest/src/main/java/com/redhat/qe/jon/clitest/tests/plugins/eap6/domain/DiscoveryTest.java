@@ -31,16 +31,16 @@ public class DiscoveryTest extends AS7CliTest {
 	public Object[][] createStartupConfigurations() {
 		List<ServerStartConfig> configs = new ArrayList<ServerStartConfig>();
 
-		configs.add(new ServerStartConfig("domain.sh", "hostname=0.0.0.0"));
+		configs.add(new ServerStartConfig("domain.sh", "hostname:'0.0.0.0'"));
 
 		configs.add(new ServerStartConfig(
 				"domain.sh -Djboss.host.default.config=host2.xml",
-				"hostXmlFileName=host2.xml",
+				"hostXmlFileName:'host2.xml'",
 				"cp domain/configuration/host.xml domain/configuration/host2.xml")
 		);
 		
-		configs.add(new ServerStartConfig("domain.sh -bmanagement localhost", "hostname=localhost"));
-		configs.add(new ServerStartConfig("domain.sh -Djboss.management.http.port=19998", "port=19998"));
+		configs.add(new ServerStartConfig("domain.sh -bmanagement localhost", "hostname:'localhost'"));
+		configs.add(new ServerStartConfig("domain.sh -Djboss.management.http.port=19998", "port:'19998'"));
 		
 		Object[][] output = new Object[configs.size()][];
 		for (int i=0;i<configs.size();i++) {

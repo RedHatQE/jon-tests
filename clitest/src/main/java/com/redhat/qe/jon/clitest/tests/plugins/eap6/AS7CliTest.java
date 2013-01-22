@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeSuite;
 
 import com.redhat.qe.Assert;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.tests.OnAgentCliTest;
 import com.redhat.qe.jon.clitest.tests.plugins.eap6.ServerStartConfig.ConfigFile;
 import com.redhat.qe.jon.common.util.AS7DMRClient;
 import com.redhat.qe.jon.common.util.AS7SSHClient;
@@ -27,9 +27,8 @@ import com.redhat.qe.tools.checklog.LogFile;
 		@LogFile(id="server",user="${jon.server.user}",pass="${jon.server.password}",host="${jon.server.host}",logFile="${jon.server.home}/logs/${jon.server.logfile}")
 	}	
 )
-public class AS7CliTest extends CliTest {
+public class AS7CliTest extends OnAgentCliTest {
 
-	protected static String agentName;
 	protected static String standalone1Home;
 	protected static String standalone1HostName;
 	protected static String domainHome;
@@ -38,7 +37,7 @@ public class AS7CliTest extends CliTest {
 	protected static AS7SSHClient sshDomain;
 	protected static AS7SSHClient sshStandalone;
 	
-	@BeforeSuite
+	@BeforeSuite()
 	public void loadEap6Properties() {
 		try {
             System.getProperties().load(new FileInputStream(new File(System.getProperty("eap6plugin.configfile"))));
@@ -57,14 +56,16 @@ public class AS7CliTest extends CliTest {
             }
 
         }
+		
+		// note that jon.agent.name property is not checked here, because we extend OnAgentCliTest class
 		checkRequiredProperties(
-			"jon.agent.name","jon.agent.user","jon.agent.host","jon.agent.password",
+			"jon.agent.user","jon.agent.host","jon.agent.password",
 			"as7.standalone.home","as7.domain.home",
 			"jon.server.host","jon.server.user","jon.server.password"
 		);
 		String agentPass = System.getProperty("jon.agent.password","hudson");
 		String agentUser = System.getProperty("jon.agent.user","hudson");
-		agentName = System.getProperty("jon.agent.name");
+
 		standalone1Home = System.getProperty("as7.standalone.home");
 		standalone1HostName = System.getProperty("jon.agent.host");
 		domainHome = System.getProperty("as7.domain.home");
@@ -141,12 +142,6 @@ public class AS7CliTest extends CliTest {
 			String expectedResult, String makeFilure, String jsDepends,
 			String resSrc, String resDst) throws IOException, CliTasksException {
 		
-		if (StringUtils.trimToNull(cliArgs)==null) {
-			cliArgs = "--args-style=named agent="+agentName;
-		}
-		else {
-			cliArgs+= " agent="+agentName;
-		}
 		// always add rhqapi.js as first dependency
 		// we're using public version from rhq-project/samples
 		//String rhqapi = "https://raw.github.com/rhq-project/samples/master/cli/rhqapi/rhqapi.js";

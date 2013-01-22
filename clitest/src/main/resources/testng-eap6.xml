@@ -1,7 +1,7 @@
 <suite name="RHQ CLI EAP6">
 
   	<listeners>
-  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<!-- Listener to send report to Report Engine Server  	  	--> 
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
   	  	<listener class-name="com.redhat.qe.tools.checklog.CheckLogTestNGListener" />
   	</listeners>
