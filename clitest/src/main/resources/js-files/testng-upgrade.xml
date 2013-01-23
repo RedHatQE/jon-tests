@@ -1,0 +1,29 @@
+<suite name="JON upgrade tests">
+
+  	<listeners>
+  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<!--  <listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />  -->
+  	</listeners>
+
+	<!--  default user/pass to run all CLI tests -->
+	<parameter name="cli.username"  value="rhqadmin"/>
+	<parameter name="cli.password"  value="rhqadmin"/>
+	
+	<!-- if any of comma-separated messages is found in CLI outout - test fails -->
+	<parameter name="make.failure"  value="Login failed:,No such file or directory"/>
+	
+	<test name="prepareComplexSetup">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+				<parameter name="js.file"  value="upgrade/prepareComplexSetup.js"/>
+				<parameter name="js.depends" value="rhqapi.js" />
+				<parameter name="res.src" value="/deployments/hello1.war,/bundles/bundle.zip" />
+				<parameter name="res.dst" value="/tmp/hello1.war,/tmp/bundle.zip" />
+				<parameter name="cli.args" value="--args-style=named deploymentWar=/tmp/hello1.war" />
+				<methods>
+					<include name="runJSfile"></include>		
+				</methods>
+			</class>
+		</classes>
+	</test>
+</suite>
