@@ -2122,8 +2122,8 @@ public class SahiTasks extends ExtendedSahi {
 		this.waitFor(5000);
 		checkSearchBox();
 		enterValueToSerachText("version", "2");
-		this.textbox("SearchPatternField").keyDown(13, 13);
-		this.textbox("SearchPatternField").keyUp(13, 13);
+/*		this.textbox("SearchPatternField").keyDown(13, 13);
+		this.textbox("SearchPatternField").keyUp(13, 13);*/
 		this.waitFor(5000);
 	}
 }
