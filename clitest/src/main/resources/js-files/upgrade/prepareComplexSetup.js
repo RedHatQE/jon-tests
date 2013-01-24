@@ -5,7 +5,7 @@
  * January 7, 2013        
  **/
 var common = new _common();
-verbose = 0;
+verbose = 2;
 
 
 var numberOfAgents =1;
