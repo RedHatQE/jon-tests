@@ -305,6 +305,23 @@
 		</classes>
 		
 	</test>
+	
+	<test name="Permissions Test">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.PermissionsTest">
+			<methods>
+				<include name="checkManageSecurity"></include>
+				<include name="checkManageInventory"></include>
+				<include name="checkManageRespository"></include>
+				<include name="checkViewUsers"></include>
+				<include name="checkManageSettings"></include>
+				<include name="checkManageBundles"></include>
+				<include name="checkGroupsPermission"></include>
+			</methods>
+			</class>
+		</classes>
+		
+	</test>
 	<test name="Alert Definition Template">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AlertDefinitionTemplateTest">

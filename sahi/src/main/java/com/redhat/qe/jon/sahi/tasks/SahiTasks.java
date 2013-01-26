@@ -2126,4 +2126,353 @@ public class SahiTasks extends ExtendedSahi {
 		this.textbox("SearchPatternField").keyUp(13, 13);*/
 		this.waitFor(5000);
 	}
+	
+	 public void createGroupWithAllResources(String groupPanelName, String groupName, String groupDesc) {
+	        this.link("Inventory").click();
+	        this.waitFor(5000);
+	        this.cell(groupPanelName).click();
+	        this.cell("New").click();
+	        this.textbox("name").setValue(groupName);
+	        this.textarea("description").setValue(groupDesc);
+	        this.cell("Next").click();
+	        this.image("right_all.png").click();
+	        this.cell("Finish").click();
+	    }
+	    public void  removeResourcesFromGroup(String groupPanelName, String groupName){
+			this.link("Inventory").click();
+			this.waitFor(5000);
+			this.cell(groupPanelName).click();
+			this.link(groupName).click();
+			this.image("Inventory_grey_16.png").click();
+			this.cell("Update Membership...").click();
+			this.image("left_all.png").click();
+			this.cell("Save").click();
+	    }
+	    
+	    public void createRoleWithPermissions(String roleName, String desc, String compGroupName, String searchTestuser, String [] permissions) {
+	        this.link("Administration").click();
+	        this.cell("Roles").click();
+	        this.cell("New").click();
+	        this.textbox("name").setValue(roleName);
+	        this.textbox("description").setValue(desc);
+	        if (permissions != null){
+	        	for (int i =0; i< permissions.length ;i++ ){
+	        		this.div(permissions[i]).click();
+	        		this.image("unchecked.png").click();
+	        	}
+	        }
+	        this.cell("Resource Groups").click();
+	        this.div(compGroupName).click();
+	        this.image("right.png").click();
+	        this.cell("Users").click();
+	        this.div(searchTestuser).click();
+	        this.image("right.png").click();
+	        this.cell("Save").click();
+	    }
+	    
+	    public void removePermissionsFromRole(String roleName, String desc, String compGroupName, String searchTestuser, String [] permissions){
+	    	this.link("Administration").click();
+	        this.cell("Roles").click();
+	        this.link(roleName).click();
+	        this.textbox("name").setValue(roleName);
+	        this.textbox("description").setValue(desc);
+	        if (permissions != null){
+	        	for (int i =0; i< permissions.length ;i++ ){
+	        		this.div(permissions[i]).click();
+	        	}
+	        }
+	        this.image("checked.png").click();
+	        this.cell("Save").click();
+	    }
+
+	    
+	public void checkManageSecurity(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
+
+		createUser(searchTestuser, password, firstName, secondName, emailId);
+		createGroup("All Groups", compTestGroup, desc);
+		String [] permissions = new String [] {"Manage Security"};
+		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+
+		// login with created user
+		relogin(searchTestuser, password);
+		// go to Administration-->Users
+		this.link("Administration").click();
+		this.cell("Users").click();
+		this.link("rhqadmin").click();
+		this.waitFor(5000);
+		Assert.assertTrue(this.cell("Cancel").exists());
+		Assert.assertTrue(this.password("password").exists());
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		// remove manage security permission
+		removePermissionsFromRole(roleName, desc, compTestGroup,
+				searchTestuser, permissions);
+		// login with created user
+		relogin(searchTestuser, password);
+		this.link("Administration").click();
+		this.cell("Users").click();
+		this.link("rhqadmin").click();
+		this.waitFor(5000);
+		Assert.assertFalse(this.cell("Cancel").exists());
+		Assert.assertFalse(this.password("password").exists());
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		deleteUser(searchTestuser);
+		deleteRole(roleName);
+		deleteGroup("All Groups", compTestGroup);
+
+	}
+	
+	public void checkManageInventory(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
+
+		createUser(searchTestuser, password, firstName, secondName, emailId);
+		createGroupWithAllResources("All Groups", compTestGroup, desc);
+		String [] permissions = new String [] {"Manage Inventory"};
+		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+		
+		// login with created user
+		relogin(searchTestuser, password);
+		// go to Administration-->Users
+		this.link("Inventory").click();
+		this.waitFor(2000);
+		this.cell("Discovery Queue").click();
+		Assert.assertTrue(this.span("Discovery Queue").exists());
+		this.cell("Servers").click();
+		this.cell("RHQ Agent").click();
+		this.cell("Disable").click();
+		this.cell("Yes").click();
+		this.cell("RHQ Agent").click();
+		this.cell("Enable").click();
+		this.cell("Yes").click();
+//		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+//		// remove manage security permission
+		removePermissionsFromRole(roleName, desc, compTestGroup,
+				searchTestuser, permissions);
+		// login with created user
+		relogin(searchTestuser, password);
+		this.link("Inventory").click();
+		this.waitFor(2000);
+		this.cell("Discovery Queue").click();
+		Assert.assertFalse(this.span("Discovery Queue").exists());
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		deleteUser(searchTestuser);
+		deleteRole(roleName);
+		deleteGroup("All Groups", compTestGroup);
+	}
+	
+	public void createTestRepo(String testRepoName){
+		this.link("Administration").click();
+		this.cell("Repositories").click();
+		this.submit("CREATE NEW").click();
+		this.textbox("createRepoDetailsForm:name").setValue(testRepoName);
+	//	this.checkbox("createRepoDetailsForm:isPrivate").uncheck();
+		this.select("createRepoDetailsForm:j_id13").click();
+		this.option("--None--").click();
+		this.submit("SAVE").click();
+	}
+	public void deleteTestRepo(String testRepoName){
+		this.link("Administration").click();
+		this.cell("Repositories").click();
+		this.checkbox("selectedRepos").near(this.link("testRepo")).click();
+		this.submit("DELETE SELECTED").click();
+	}
+	
+	public void checkManageRespository(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
+		
+		createUser(searchTestuser, password, firstName, secondName, emailId);
+		createGroupWithAllResources("All Groups", compTestGroup, desc);
+		String [] permissions = new String [] {"Manage Repositories"};
+		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+		
+		//create test repo
+		String testReponame="testRepo";
+		createTestRepo(testReponame);
+		
+		// login with created user
+		relogin(searchTestuser, password);
+		
+		// go to Administration-->Users
+		this.link("Administration").click();
+		this.waitFor(2000);
+		this.cell("Content Sources").click();
+		this.waitFor(2000);
+		Assert.assertTrue(this.submit("CREATE NEW").exists());
+		this.link("Administration").click();
+		this.waitFor(2000);
+		this.cell("Repositories").click();
+		this.waitFor(2000);
+		Assert.assertTrue(this.link(testReponame).exists());
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		// remove manage security permission
+		removePermissionsFromRole(roleName, desc, compTestGroup,
+				searchTestuser, permissions);
+		// login with created user
+		relogin(searchTestuser, password);
+		this.link("Administration").click();
+		this.waitFor(2000);
+		this.cell("Content Sources").click();
+		this.waitFor(2000);
+		Assert.assertFalse(this.button("CREATE NEW").exists());
+		this.cell("Repositories").click();
+		this.waitFor(2000);
+		Assert.assertFalse(this.link(testReponame).exists());
+				
+//		 login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		deleteTestRepo(testReponame);
+		deleteUser(searchTestuser);
+		deleteRole(roleName);
+		deleteGroup("All Groups", compTestGroup);
+	}
+
+	public void checkViewUsers(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
+		
+		createUser(searchTestuser, password, firstName, secondName, emailId);
+		createGroup("All Groups", compTestGroup, desc);
+		String [] permissions = new String [] {"View Users"};
+		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, null); //this is the default role creation wich has View Users checked
+		
+		// login with created user
+		relogin(searchTestuser, password);
+		
+		// go to Administration-->Users
+		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+		Assert.assertTrue(this.link(searchTestuser).exists());
+		Assert.assertTrue(this.link("rhqadmin").exists());
+		this.link(searchTestuser).click();
+		Assert.assertTrue(this.password("password").exists());
+		Assert.assertTrue(this.span("Edit User ["+searchTestuser+"]").exists());
+		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+		this.link("rhqadmin").click();
+		Assert.assertFalse(this.password("password").exists());
+		Assert.assertTrue(this.span("View User [rhqadmin]").exists());
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		// remove manage security permission
+		removePermissionsFromRole(roleName, desc, compTestGroup,
+				searchTestuser, permissions);
+		// login with created user
+		relogin(searchTestuser, password);
+		
+		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+		Assert.assertTrue(this.link(searchTestuser).exists());
+		Assert.assertFalse(this.link("rhqadmin").exists());
+		this.link(searchTestuser).click();
+		Assert.assertTrue(this.password("password").exists());
+		Assert.assertTrue(this.span("Edit User ["+searchTestuser+"]").exists());
+		
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		deleteUser(searchTestuser);
+		deleteGroup("All Groups", compTestGroup);
+		deleteRole(roleName);
+	}
+	public void checkManageSettings(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
+	
+		createUser(searchTestuser, password, firstName, secondName, emailId);
+		createGroup("All Groups", compTestGroup, desc);
+		
+		String [] permissions = new String [] {"Manage Settings"};
+		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+		
+		// login with created user
+		relogin(searchTestuser, password);
+		
+		// go to Administration-->Users
+		this.link("Administration").click();
+		Assert.assertTrue(this.cell("System Settings").exists());
+		this.cell("System Settings").click();
+		Assert.assertTrue(this.cell("Server Local Time :").exists());
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		// remove manage security permission
+		removePermissionsFromRole(roleName, desc, compTestGroup,
+				searchTestuser, permissions);
+		// login with created user
+		relogin(searchTestuser, password);
+		this.link("Administration").click();
+		Assert.assertTrue(this.cell("System Settings").exists());
+		this.cell("System Settings").click();
+		Assert.assertFalse(this.cell("Server Local Time :").exists());
+		
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		deleteUser(searchTestuser);
+		deleteGroup("All Groups", compTestGroup);
+		deleteRole(roleName);
+	}
+
+	public void checkManageBundles(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
+	
+		createUser(searchTestuser, password, firstName, secondName, emailId);
+		createGroup("All Groups", compTestGroup, desc);
+		String [] permissions = new String [] {"Manage Bundles"};
+		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+		
+		// login with created user
+		relogin(searchTestuser, password);
+		
+		// go to Bundles
+		this.link("Bundles").click();
+		this.cell("New").click();
+		Assert.assertTrue(this.cell("Next").exists());
+		this.cell("Cancel").click();
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		// remove manage security permission
+		removePermissionsFromRole(roleName, desc, compTestGroup,
+				searchTestuser, permissions);
+		// login with created user
+		relogin(searchTestuser, password);
+		// go to Bundles
+		this.link("Bundles").click();
+		this.cell("New").click();
+		Assert.assertFalse(this.cell("Next").exists());
+		
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		deleteUser(searchTestuser);
+		deleteGroup("All Groups", compTestGroup);
+		deleteRole(roleName);
+	}
+
+	public void checkGroupsPermission(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
+		
+		createUser(searchTestuser, password, firstName, secondName, emailId);
+		createGroupWithAllResources("All Groups", compTestGroup, desc);
+		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, null); //this is the default role creation wich has View Users checked
+		
+		// login with created user
+		relogin(searchTestuser, password);
+		
+		// go to Administration-->Users
+		this.link("Inventory").click();
+		this.waitFor(2000);
+		this.cell("Servers").click();
+		this.waitFor(2000);
+		Assert.assertTrue(this.div("RHQ Agent").exists());
+				
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		// remove resources from group
+		removeResourcesFromGroup("All Groups", compTestGroup);
+		// login with created user
+		relogin(searchTestuser, password);
+
+		this.link("Inventory").click();
+		this.waitFor(2000);
+		this.cell("Servers").click();
+		this.waitFor(2000);
+		Assert.assertFalse(this.div("RHQ Agent").exists());
+		
+		// login with rhqadmin user
+		relogin("rhqadmin", "rhqadmin");
+		deleteUser(searchTestuser);
+		deleteGroup("All Groups", compTestGroup);
+		deleteRole(roleName);
+	}
+
 }
