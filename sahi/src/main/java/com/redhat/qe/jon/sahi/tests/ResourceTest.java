@@ -50,10 +50,10 @@ public class ResourceTest extends SahiTestScript{
 		sahiTasks.navigateToAllGroups();
 	}
 	@DataProvider (name="roleUserAndGroupCreationData")
-	public Object[][] userCreationWithRoleData() {
+	public static Object[][] userCreationWithRoleData() {
 		return TestNGUtils.convertListOfListsTo2dArray(userRoleAndGroupData());
 	}
-	public List<List<Object>> userRoleAndGroupData() {
+	public static List<List<Object>> userRoleAndGroupData() {
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
 		data.add(Arrays.asList(new Object[]{"search testuser", "password","jboss","operations","test@redhat.com","search Test Role1", 			"Description", "testCompGroup", "name"}));
 		return data;
