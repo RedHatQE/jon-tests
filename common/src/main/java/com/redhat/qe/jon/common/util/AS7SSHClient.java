@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.common.util;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +18,10 @@ public class AS7SSHClient extends SSHClient {
 	public AS7SSHClient(String asHome, String user,String host, String pass) {
 		super(user,host,pass);
 		this.asHome = asHome;
+	}
+	public AS7SSHClient(String asHome, String user,String host, File keyFile, String pass) {
+	    super(user,host,keyFile,pass);
+	    this.asHome = asHome;
 	}
 	/**
 	 * gets AS7/EAP home dir

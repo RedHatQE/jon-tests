@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.common.util;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -20,6 +21,7 @@ public class SSHClient implements ICommandRunner {
 	private final String user;
 	private final String host;
 	private final String pass;
+	private final File keyFile;
 	protected static final Logger log = Logger.getLogger(SSHClient.class.getName());
 
 	public SSHClient(String user, String host, String pass) {		
@@ -27,6 +29,20 @@ public class SSHClient implements ICommandRunner {
 		this.user = user;
 		this.host  = host;
 		this.pass = pass;
+		this.keyFile = null;
+	}
+	/**
+	 * 
+	 * @param user
+	 * @param host
+	 * @param keyFile
+	 * @param pass password to unlock private key
+	 */
+	public SSHClient(String user, String host, File keyFile, String pass) {
+	    this.user = user;
+	    this.host = host;
+	    this.keyFile = keyFile;
+	    this.pass = pass;
 	}
 	public String getHost() {
 		return host;
@@ -36,6 +52,9 @@ public class SSHClient implements ICommandRunner {
 	}
 	public String getPass() {
 		return pass;
+	}
+	public File getKeyFile() {
+	    return keyFile;
 	}
 	public SSHCommandRunner getSshCommandRunner() {
 		return sshCommandRunner;
@@ -57,7 +76,12 @@ public class SSHClient implements ICommandRunner {
         connection = new Connection(host, 22);
 		try {
 			connection.connect();
-			connection.authenticateWithPassword(user, pass);
+			if (this.keyFile==null) {
+			    connection.authenticateWithPassword(user, pass);
+			}
+			else {
+			    connection.authenticateWithPublicKey(user, keyFile, pass);
+			}
 			sshCommandRunner = new SSHCommandRunner(connection, null);
 			scpClient = new SCPClient(connection);
 		} catch (IOException e) {
