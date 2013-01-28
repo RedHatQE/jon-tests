@@ -12,7 +12,6 @@ import com.redhat.qe.jon.common.util.AS7SSHClient;
 import com.redhat.qe.jon.common.util.HTTPClient;
 import com.redhat.qe.jon.common.util.RestClient;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
-import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.tools.checklog.CheckLog;
 import com.redhat.qe.tools.checklog.LogFile;
 
@@ -112,10 +111,13 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         String agentHost = System.getProperty("jon.agent.host", "localhost");
         String agentUser = System.getProperty("jon.agent.user", "hudson");
         String agentPass = System.getProperty("jon.agent.password", "hudson");
+        String agentKeyFile = System.getProperty("jon.agent.privatekey");
+        
         
         String agent2Host = System.getProperty("jon.agent2.host", "localhost");
         String agent2User = System.getProperty("jon.agent2.user", "hudson");
         String agent2Pass = System.getProperty("jon.agent2.password", "hudson");
+        String agent2KeyFile = System.getProperty("jon.agent.privatekey");
         
         MGMT_PORT_STANDALONE = 9999;
         MGMT_HOST_STANDALONE = agentHost;
@@ -123,16 +125,30 @@ public class AS7PluginSahiTestScript extends SahiTestScript {
         MGMT_HOST_STANDALONE2 = agent2Host;
         MGMT_PORT_DOMAIN = 8999;
         MGMT_HOST_DOMAIN = agentHost;
-
         
         
         mgmtStandalone = new AS7DMRClient(MGMT_HOST_STANDALONE, MGMT_PORT_STANDALONE);
         mgmtStandalone2 = new AS7DMRClient(MGMT_HOST_STANDALONE2, MGMT_PORT_STANDALONE2);
         mgmtDomain = new AS7DMRClient(MGMT_HOST_DOMAIN, MGMT_PORT_DOMAIN);
-
-        sshStandalone = new AS7SSHClient(System.getProperty("as7.standalone.home"),agentUser,agentHost,agentPass);
-        sshStandalone2 = new AS7SSHClient(System.getProperty("as7.standalone2.home"),agent2User,agent2Host,agent2Pass);
-        sshDomain = new AS7SSHClient(System.getProperty("as7.domain.home"),agentUser,agentHost,agentPass);
+        
+        if (agentKeyFile!=null) {
+            log.info("Using private key SSH authentication [jon.agent.privatekey="+agent2KeyFile+"]");
+            sshStandalone = new AS7SSHClient(System.getProperty("as7.standalone.home"),agentUser,agentHost,new File(agentKeyFile),agentPass);
+            sshDomain = new AS7SSHClient(System.getProperty("as7.domain.home"),agentUser,agentHost,new File(agentKeyFile),agentPass);
+        }
+        else {
+            log.info("Using private password authentication [jon.agent.privatekey] not set");
+            sshStandalone = new AS7SSHClient(System.getProperty("as7.standalone.home"),agentUser,agentHost,agentPass);
+            sshDomain = new AS7SSHClient(System.getProperty("as7.domain.home"),agentUser,agentHost,agentPass); 
+        }
+        
+        if (agent2KeyFile!=null) {
+            sshStandalone2 = new AS7SSHClient(System.getProperty("as7.standalone2.home"),agent2User,agent2Host,new File(agent2KeyFile),agent2Pass);
+        }
+        else {
+            sshStandalone2 = new AS7SSHClient(System.getProperty("as7.standalone2.home"),agent2User,agent2Host,agent2Pass); 
+        }
+        
         
         httpStandalone = new HTTPClient(agentHost, 8080);
         httpStandalone2 = new HTTPClient(agent2Host, 8080);
