@@ -652,19 +652,20 @@ var permissions = (function(){
 		/** 
 		 * All available permission names
 		 * @public
-		 * @type Array all permission names
+		 * @type String[]
+		 * @returns Array of all permission names
 		 */
 		all : _allP,
 		/** 
 		 * All available global (global permissions do not apply to specific resources in groups) permission names
 		 * @public
-		 * @type Array all global permission names
+		 * @type String[]
 		 */
 		allGlobal : _allGlobalP,
 		/** 
 		 * All available resource (resource permissions apply only to the resources in the role's groups) permission names
 		 * @public
-		 * @type Array all resource permission names
+		 * @type String[]
 		 */
 		allResource : _allResourceP,
 		/** 
@@ -805,23 +806,27 @@ var roles = (function() {
 		/** 
 		 * Gets a given role. Returns found role or null.
 		 * @public
+		 * @function
 		 * @param {string} roleName - name of the role
-		 * @returns {Role} a found role
+		 * @returns {Role} a found role or null
 		 */
 		getRole : _getRole,
 		/** 
 		 * Finds all roles according to given parameters.
 		 * @public
+		 * @function
 		 * @param {Object} params -  see RoleCriteria.addFilter[param] methods for available params
 		 * @returns  Array of found roles.
-		 * @type Roles[]
+		 * @type Role[]
 		 */
 		findRoles : _findRoles,
 		/**
-		 * All valid accepted parameters
+		 * Prints all valid accepted parameters
 		 * @public
 		 */
-		validParams : _validParams
+		printValidParams : function(){
+			println("Parameter names: " + _validParams.valueOf());
+		}
 	}
 	
 }) ();
@@ -841,17 +846,31 @@ var Role = function(nativeRole){
 	var _name = _nativeRole.getName();
 	var _id = _nativeRole.getId();
 	
+	/**
+	 * @lends Role.prototype
+	 */
 	return{
+		/**
+		 * Name of this role
+		 * @public
+		 * @field
+		 */
 		name : _name,
+		/**
+		 * Id of this role
+		 * @public
+		 * @field
+		 */
 		id : _id,
 		/**
 		 * Native role which this object abstracts.
 		 * @public
-		 * @returns {org.rhq.core.domain.authz.Role} native role
+		 * @field
+		 * @type org.rhq.core.domain.authz.Role
 		 */
 		nativeObj : _nativeRole,
 		/**
-		 * Gets array of all permissions this Role has.
+		 * Returns array of all permissions this Role has.
 		 * @public
 		 * @returns {Array}
 		 */
@@ -967,7 +986,7 @@ var users = (function() {
 		/** 
 		 * Deletes given user.
 		 * @public
-		 * @param {Array} userNames - array with names of users to delete
+		 * @param {String[]} userNames - array with names of users to delete
 		 * @example users.deleteUsers(["jrambo"]);
 		 */
 		deleteUsers : function(userNames){
@@ -987,6 +1006,7 @@ var users = (function() {
 		/** 
 		 * Finds all users according to given parameters.
 		 * @public
+		 * @function
 		 * @param {Object} params -  see SubjectCriteria.addFilter[param] methods for available params
 		 * @returns  Array of found users.
 		 * @type Users[]
@@ -995,15 +1015,17 @@ var users = (function() {
 		/** 
 		 * Gets a given user. Returns found user or null.
 		 * @public
+		 * @function
 		 * @param {string} userName - name of the user
-		 * @returns {User} a found user
+		 * @returns {User} a found user or null
 		 */
 		getUser : _getUser,
 		/**
 		 * Gets all available users.
 		 * @public
+		 * @function
 		 * @returns  Array of found users.
-		 * @type Users[]
+		 * @type User[]
 		 */
 		getAllUsers : function(){
 			common.debug("Gettign all users");
@@ -1011,10 +1033,12 @@ var users = (function() {
 			return _findUsers({});
 		},
 		/**
-		 * All valid accepted parameters
+		 * Prints all valid accepted parameters
 		 * @public
 		 */
-		validParams : _validParams
+		printValidParams : function(){
+			println("Parameter names: " + _validParams.valueOf());
+		}
 		
 	}
 	
@@ -1034,20 +1058,34 @@ var User = function(nativeSubject){
 	var _id = nativeSubject.getId();
 	var _name = nativeSubject.getName();
 	
+	/**
+	 * @lends User.prototype
+	 */
 	return{
+		/**
+		 * Id of this user
+		 * @public
+		 * @field
+		 */
 		id : _id,
+		/**
+		 * Name of this user
+		 * @public
+		 * @field
+		 */
 		name : _name,
 		/**
 		 * Native subject which this object abstracts.
 		 * @public
-		 * @returns {org.rhq.core.domain.authz.Subject} native subject
+		 * @field
+		 * @type org.rhq.core.domain.authz.Subject
 		 */
 		nativeObj : nativeSubject,
 		/**
 		 * Gets all roles assigned to this user.
 		 * @public
 		 * @returns  Array of found roles.
-		 * @type Roles[]
+		 * @type Role[]
 		 */
 		getAllAssignedRoles : function(){
 			common.debug("Searching for assigned roles to user '"+_name+"'");
@@ -1058,7 +1096,7 @@ var User = function(nativeSubject){
 		/**
 		 * Assigns given roles to this user.
 		 * @public 
-		 * @param {Array} roleNames array of names of roles which will be assigned to this user
+		 * @param {String[]} roleNames array of names of roles which will be assigned to this user
 		 */
 		assignRoles : function(roleNames){
 			common.info("Assigning following roles '"+ common.objToString(roleNames) +"', to user '"+_name+"'");
@@ -1180,7 +1218,7 @@ var ResGroup = function(param) {
 	return {
 		/**
 		 * gets ID of this group
-		 * @fiels
+		 * @field
 		 */
 		id : _id,
 		/**
