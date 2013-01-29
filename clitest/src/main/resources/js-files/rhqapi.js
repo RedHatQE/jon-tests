@@ -1241,13 +1241,15 @@ var ResGroup = function(param) {
 			ResourceGroupManager.deleteResourceGroup(_id);
 		},
 		/**
-		 * get resources contained in this group (NOT YET IMPLEMENTED)
+		 * get resources contained in this group
 		 * @param params - you can filter child resources same way as in {@link resources.find()} function
 		 * @returns array of resources
 		 * @type Resrouce[]
 		 */
 		resources : function(params) {
-			// TODO implement
+			params = params || {};
+			params.explicitGroupIds = [_id];
+			return resources.find(params);
 		},
 	}
 };
@@ -2788,6 +2790,11 @@ if (typeof exports !== "undefined") {
 	exports.bundles = bundles;
 	exports.groups = groups;
 	exports.Resource = Resource;
+	exports.roles = roles;
+	exports.Role = Role;
+	exports.users = users;
+	exports.User = User;
+	exports.permissions = permissions;
   exports.initialize = initialize;
 }
 
