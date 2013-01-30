@@ -2791,9 +2791,7 @@ if (typeof exports !== "undefined") {
 	exports.groups = groups;
 	exports.Resource = Resource;
 	exports.roles = roles;
-	exports.Role = Role;
 	exports.users = users;
-	exports.User = User;
 	exports.permissions = permissions;
   exports.initialize = initialize;
 }
