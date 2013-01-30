@@ -38,7 +38,7 @@
   	  	<classes>
 			<class name="com.redhat.qe.jon.rest.tests.RestTest">		
 			<methods>
-				<include name="testTest"></include>
+				<include name="validateMetricData"></include>
 			</methods>
 			</class>
 		</classes>

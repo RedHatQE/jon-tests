@@ -488,14 +488,17 @@ public class RestTest extends RestClient{
 		result = this.getReponse(webResource, URIs.SCHEDULES.getUri().replace("@@id@@", resourceId)+".json", null);
 		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
 		
-		//get second schedule
+		//get schedule
 		jsonArray = this.getJSONArray(""+result.get(RESPONSE_CONTENT));
-		jsonObject = (JSONObject) jsonArray.get(1);
-		this.printKeyValue(jsonObject);
-		String  scheduleId = ""+jsonObject.get(SCHEDULE_ID);
-		
-		result = this.getReponse(webResource, URIs.METRIC_DATA.getUri().replace("@@id@@", scheduleId), null);
-		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
+		for(int i = 0; i<jsonArray.size(); i++){
+			jsonObject = (JSONObject) jsonArray.get(i);
+			if(jsonObject.get("links")!= null && jsonObject.get("links").toString().contains("metric/data")){
+				String scheduleId =  ""+jsonObject.get(SCHEDULE_ID);
+				result = this.getReponse(webResource, URIs.METRIC_DATA.getUri().replace("@@id@@", scheduleId), null);
+				Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
+				
+			}
+		}
 	 
 	}
 
@@ -515,22 +518,27 @@ public class RestTest extends RestClient{
 		result = this.getReponse(webResource, URIs.SCHEDULES.getUri().replace("@@id@@", resourceId)	+ ".json", null);
 		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
 
-		// get second schedule
-		jsonArray = this.getJSONArray("" + result.get(RESPONSE_CONTENT));
-		jsonObject = (JSONObject) jsonArray.get(1);
-		this.printKeyValue(jsonObject);
-		String scheduleId = "" + jsonObject.get(SCHEDULE_ID);
+		// get schedule
+		for(int i = 0; i<jsonArray.size(); i++){
+			jsonObject = (JSONObject) jsonArray.get(i);
+			if(jsonObject.get("links")!= null && jsonObject.get("links").toString().contains("metric/data")){
+				String scheduleId =  ""+jsonObject.get(SCHEDULE_ID);
+				
+				// create query param for start end times, dataPoints and hideEmpty
+				// params
+				MultivaluedMap queryParam = new MultivaluedMapImpl();
+				boolean hideEmpty = false;
+				queryParam.add("hideEmpty", ""+hideEmpty);
+				queryParam.add("dataPoints", "60");
 
-		// create query param for start end times, dataPoints and hideEmpty
-		// params
-		MultivaluedMap queryParam = new MultivaluedMapImpl();
-		boolean hideEmpty = false;
-		queryParam.add("hideEmpty", ""+hideEmpty);
-		queryParam.add("dataPoints", "60");
+				result = this.getReponse(webResource, URIs.METRIC_DATA.getUri()
+						.replace("@@id@@", scheduleId), queryParam);
+				Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
+				
+			}
+		}
 
-		result = this.getReponse(webResource, URIs.METRIC_DATA.getUri()
-				.replace("@@id@@", scheduleId), queryParam);
-		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
+		
 
 	}
 	@Test (groups="restClientJava")
