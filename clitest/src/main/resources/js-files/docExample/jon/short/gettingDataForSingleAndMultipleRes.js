@@ -58,7 +58,7 @@ criteria.addFilterResourceTypeName('JBossAS Server');
 
 var jbossServers = ResourceManager.findResourcesByCriteria(criteria).toArray();
 
-assertTrue(jbossServers.length > 0, "No jBoss server found!!");
+assertTrue(jbossServers.length > 0, "No JBossAS5 server found!!");
 
 // restart the resources
 for( a in jbossServers ) {

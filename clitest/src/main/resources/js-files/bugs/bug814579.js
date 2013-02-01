@@ -3,6 +3,8 @@ criteria.addFilterResourceTypeName('JBossAS Server');
 criteria.fetchChildResources(true);
 
 var resources = ResourceManager.findResourcesByCriteria(criteria);
+assertTrue(resources.size()> 0, "There is no resource of JBossAS Server type imported!!");
+
 var resource = resources.get(0);
 
 var childResources = resource.childResources;

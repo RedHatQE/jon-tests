@@ -1,5 +1,5 @@
 /**
- * This imports RHQ agent and invokes promt command 'discovery'
+ * This imports RHQ agent and invokes promt command 'discovery -f'
  **/
 
 
@@ -39,10 +39,10 @@ common.info("Agent is imported and available");
 
 // invoke 'discovery' prompt command
 common.info("Invoking discovery scan...");
-var history = agent.invokeOperation("executePromptCommand",{command:"discovery"});
+var history = agent.invokeOperation("executePromptCommand",{command:"discovery -f"});
 
 // check result of operation
-assertTrue(history.getStatus() == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.getStatus() + ", error message: " + history.getErrorMessage());
+assertTrue(history.status == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.status + ", error message: " + history.error);
 
 // find all imported RHQ agents
 function findAgents(){

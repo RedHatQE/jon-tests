@@ -47,8 +47,8 @@ criteria.addFilterResourceTypeName('JBossAS Server');
 //criteria.addFilterAgentName('localhost.localdomain') //TODO
 resources = ResourceManager.findResourcesByCriteria(criteria);
 
-common.info("Checking that JBossAS Server is imported...");
-assertTrue(resources.size()> 0, "There is no JBossAS Server imported!!");
+common.info("Checking that at least one resource of JBossAS Server type is imported...");
+assertTrue(resources.size()> 0, "There is no resource of JBossAS Server type imported!!");
 
 
 
