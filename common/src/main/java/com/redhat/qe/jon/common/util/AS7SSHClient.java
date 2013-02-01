@@ -63,7 +63,7 @@ public class AS7SSHClient extends SSHClient {
 	public void stop() {
 		String pids = null;
         if (serverConfig != null) {
-            pids = runAndWait("ps ax | grep "+asHome+" | grep + '-c "+  serverConfig +"' | grep java | grep -v bash | awk '{print $1}'").getStdout();
+            pids = runAndWait("ps ax | grep "+asHome+" | grep + "+  serverConfig +" | grep java | grep -v bash | awk '{print $1}'").getStdout();
         } else {
             pids = runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash | awk '{print $1}'").getStdout();
         }
@@ -79,7 +79,7 @@ public class AS7SSHClient extends SSHClient {
 	 */
 	public boolean isRunning() {
         if (serverConfig != null) {
-            return runAndWait("ps ax | grep "+asHome+" | grep + '-c "+ serverConfig +"' | grep java | grep -v bash").getStdout().contains(asHome);
+            return runAndWait("ps ax | grep "+asHome+" | grep + "+ serverConfig +" | grep java | grep -v bash").getStdout().contains(asHome);
         } else {
 		    return runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);
         }
