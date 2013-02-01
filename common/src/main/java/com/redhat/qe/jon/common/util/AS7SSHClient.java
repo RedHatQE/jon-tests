@@ -9,6 +9,7 @@ import java.util.Date;
 
 public class AS7SSHClient extends SSHClient {
 
+    private String serverConfig; // allows to recognize the correct AS7 server process
 	private final String asHome;
 	private static final SimpleDateFormat sdfServerLog = new SimpleDateFormat("HH:mm:ss");
 	public AS7SSHClient(String asHome) {
@@ -23,6 +24,11 @@ public class AS7SSHClient extends SSHClient {
 	    super(user,host,keyFile,pass);
 	    this.asHome = asHome;
 	}
+    public AS7SSHClient(String asHome, String serverConfig, String user,String host, File keyFile, String pass) {
+        super(user,host,keyFile,pass);
+        this.asHome = asHome;
+        this.serverConfig = serverConfig;
+    }
 	/**
 	 * gets AS7/EAP home dir
 	 * @return AS7/EAP home dir
@@ -42,7 +48,7 @@ public class AS7SSHClient extends SSHClient {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		start(script);		
+		start(script);
 	}
 	/**
 	 * starts server
@@ -55,7 +61,12 @@ public class AS7SSHClient extends SSHClient {
 	 * stops server by killing it
 	 */
 	public void stop() {
-		String pids = runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash | awk '{print $1}'").getStdout();
+		String pids = null;
+        if (serverConfig != null) {
+            pids = runAndWait("ps ax | grep "+asHome+" | grep + '-c "+  serverConfig +"' | grep java | grep -v bash | awk '{print $1}'").getStdout();
+        } else {
+            pids = runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash | awk '{print $1}'").getStdout();
+        }
 		if (pids!=null && pids.length()>0) {
 			for (String pid : pids.split("\n")) {
 				runAndWait("kill -9 "+pid);
@@ -67,10 +78,14 @@ public class AS7SSHClient extends SSHClient {
 	 * @return true if server process is running
 	 */
 	public boolean isRunning() {
-		return runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);
+        if (serverConfig != null) {
+            return runAndWait("ps ax | grep "+asHome+" | grep + '-c "+ serverConfig +"' | grep java | grep -v bash").getStdout().contains(asHome);
+        } else {
+		    return runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);
+        }
 	}
 	/**
-	 * 
+	 *
 	 * @param logFile relative path located in {@link AS7SSHClient#getAsHome()} to server's boot.log logFile
 	 * @return server startup time by parsing 1st line of it's log file
 	 */
@@ -82,6 +97,6 @@ public class AS7SSHClient extends SSHClient {
 			throw new RuntimeException("Unable to determine server startup time", e);
 		}
 	}
-	
-	
+
+
 }
