@@ -1,4 +1,4 @@
-package com.redhat.qe.jon.clitest.tests.coniguration;
+package com.redhat.qe.jon.clitest.tests.configuration;
 
 import java.io.IOException;
 import java.util.ArrayList;

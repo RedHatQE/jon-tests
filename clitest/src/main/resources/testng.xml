@@ -633,7 +633,7 @@
 
 <test name="Test_Update_Configuration">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.coniguration.AgentConfiguration">	
+		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
 			<methods>
 				<include name="updateAgentConfigurationTest"></include>		
 			</methods>
