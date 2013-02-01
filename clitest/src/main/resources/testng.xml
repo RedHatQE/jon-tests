@@ -28,20 +28,6 @@
 	</classes>
 </test>
 
-<!-- Remove all the platforms before starting CLI test, This will help to validate import resource CLI test -->
-<test name="Uninventory-Platforms-Start">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="UninventoryResources.js"/>
-			<parameter name="js.depends" value="rhqapi.js" />
-			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
 <test name="Import-Resources">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
@@ -642,8 +628,8 @@
 
 
 <!--RHQ Resource  Configuration Update -->
-
-<test name="Test_Update_Configuration">
+<!-- temp disabled, this test caused null values in .java/.userPrefs/rhq-agent/default/prefs.xml, fixing...-->
+<!--test name="Test_Update_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
 			<methods>
@@ -651,11 +637,7 @@
 			</methods>
 		</class>
 	</classes>
-</test>
-
-
-
-
+</test -->>
 
 
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
@@ -871,7 +853,8 @@
 
 <!--  This case SHOULD BE LAST ONE or before the one -->
 <!--  Doing inventory and Uninventory for N number times -->
-<test name="InventoryConsistency">
+<!-- temp disabled because of https://bugzilla.redhat.com/show_bug.cgi?id=830158 -->
+<!--test name="InventoryConsistency">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.InventoryConsistencyTest">
                         <methods>
@@ -879,8 +862,7 @@
                         </methods>
                 </class>
         </classes>
-</test>
-
+</test -->
 
 <!--  This case SHOULD BE LAST ONE -->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation -->
