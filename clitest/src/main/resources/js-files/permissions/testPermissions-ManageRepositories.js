@@ -211,6 +211,7 @@ function verifyManageRepositoryPermission(logedInUser, bool, repoId) {
 
 	try {
 		var pgc = new PageControl();
+		var logedInUser = SubjectManager.login(userName, password);
 		var repoCount = RepoManager.findRepos(logedInUser, pgc);
 		println("repoCount first....  "+repoCount.size());
 		
@@ -236,20 +237,31 @@ function verifyManageRepositoryPermission(logedInUser, bool, repoId) {
 			
 		}
 	}
-
 	catch (err) {
-		//command will be un-commented as soon as bug# is fixed.
-//		if(err.message.toString().indexOf("Only repository managers can search for packages across all repos")!=-1){
-//			count= count+1;
-//			println("counter");
-//		}
-		if (err.message.toString().indexOf(
-				"Manage Repositories permission doesnt work correctly!!" != -1) || count>1) {
-			println("Manage Repositories permission doesnt work correctly!!");
+		var  goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> "+bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> "+err.toString());
+		assertTrue(!bool);
+		assertTrue(err.message.toString().indexOf(
+				"Manage Repositories permission doesnt work correctly") != -1) ;
+			goToFinally = false;
+		}
+		finally {
+			if(goToFinally){
+				
+				// call delete role function
+				deleteRole(roleIds);
 
+				// call delete user
+				deleteUser(userIds);
+
+				//call delete repositories
+				RepoManager.deleteRepo(newRepo1.getId());
+				RepoManager.deleteRepo(newRepo2.getId());
+				RepoManager.deleteRepo(newRepo3.getId());
+				
+			}
 		}
 		
-
-	}
 
 }

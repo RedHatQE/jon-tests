@@ -283,7 +283,6 @@ function createResourceGroup(resourceGroupName) {
 			.createResourceGroup(resourceGroup);
 	var resourceCriteria = new ResourceCriteria();
 	var resources = ResourceManager.findResourcesByCriteria(resourceCriteria);
-
 	var i = 0;
 	for (i = 0; i < resources.size(); i++) {
 		resourceIds.push(resources.get(i).getId());
@@ -335,15 +334,32 @@ function verifySubscribeToRepoPermission(logedInUser,rrepoIds,resource,  bool) {
 		RepoManager.subscribeResourceToRepos(logedInUser,resource.id, repoIds);
 		RepoManager.unsubscribeResourceFromRepos(logedInUser,resource.getId(), repoIds);
 		
-		if(!bool) println("manage Content permissions doesnt work correctly!!");
+	
+}catch (err) {
+	var  goToFinally = true;
+	println("BOOL >>>>>>>>>>>>>>>>>> "+bool);
+	println("ERROR >>>>>>>>>>>>>>>>>> "+err.toString());
+	assertTrue(!bool);
+	assertTrue(err.toString().indexOf("does not have permission to subscribe this resource to repos") != -1) ;
+		goToFinally = false;
+	}
+	finally {
+		if(goToFinally){
+			
+			// call delete role function
+			deleteRole(roleIds);
 
-	} catch (err) {
-		count = count + 1;
-		if (err.toString().indexOf("does not have permission to unsubscribe this resource from repositories") != -1 && bool )
-			println("manage Content permissions doesnt work correctly!!");
+			// call delete user
+			deleteUser(userIds);
 
-		} 
-
+			// call delete resource group
+			deleteResourceGroup(resourceGroup.getId());
+			
+			//removeBundle version
+			BundleManager.deleteBundleVersion(bundleVersion.getId(), true);
+			
+		}
+	}
 }
 
 

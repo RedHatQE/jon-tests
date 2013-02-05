@@ -173,30 +173,38 @@ function deleteUser(userIds) {
  */
 function verifyViewUsersPermission(logedInUser, bool) {
 
-try {
+	try {
 
-var sc = new SubjectCriteria();
-var userCount = SubjectManager.findSubjectsByCriteria(logedInUser, sc);
+		var sc = new SubjectCriteria();
+		var userCount = SubjectManager.findSubjectsByCriteria(logedInUser, sc);
 
+		if (bool) {
+			assertTrue(userCount.size() > 1,
+					"View Users permission doesnt work correctly!!");
+		} else {
+			assertTrue(userCount.size() == 1,
+					"View Users permission doesnt work correctly!!");
+		}
+	} catch (err) {
+		var goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> " + bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> " + err.toString());
+		assertTrue(!bool);
+		assertTrue(err.message.toString().indexOf(
+				"View Users permission doesnt work correctly") != -1);
+		goToFinally = false;
+	} finally {
+		if (goToFinally) {
 
-	if(bool){
-		assertTrue(userCount.size() > 1, "View Users permission doesnt work correctly!!");
-	  } else {
-		 assertTrue(userCount.size() == 1, "View Users permission doesnt work correctly!!");
-                 }
-    } catch(err) {
- 	if (err.message.toString().indexOf("View Users permission doesnt work correctly!!") !=-1) {
-	    	println("View Users permission doesnt work correctly!!");
-       
-	   } 
-        //call delete role function
-	deleteRole(roleIds);
+			// call delete role function
+			deleteRole(roleIds);
 
-	//call delete user
-	deleteUser(userIds);
-      
-      } 
-	 
+			// call delete user
+			deleteUser(userIds);
+
+			// call delete resource group
+			deleteResourceGroup(resourceGroup.getId());
+
+		}
+	}
 }
-
- 

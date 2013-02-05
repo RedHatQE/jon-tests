@@ -74,7 +74,7 @@ addRoleToUser(userIds[0], roleIds);
 var logedInUser = SubjectManager.login(userName, password);
 //verify bundle permissions
 
-verifyManageBundlePermission(logedInUser);
+verifyManageBundlePermission(logedInUser, true);
 
 //verify manage bundle permission not granted
 //update Role 
@@ -84,7 +84,7 @@ addRoleToUser(userIds[0], roleIds);
 //log in with creted user 
 var logedInUser = SubjectManager.login(userName, password);
 //verify manage bundle permission 
-verifyManageBundlePermission(logedInUser);
+verifyManageBundlePermission(logedInUser, false);
 
 //call delete role function
 deleteRole(roleIds);
@@ -188,7 +188,7 @@ function deleteUser(userIds) {
  *  @param -  logedInUser, bool - view User permission Activated/Inactivated (boolean)
  *  @return - 
  */
-function verifyManageBundlePermission(logedInUser) {
+function verifyManageBundlePermission(logedInUser, bool) {
 
 	try {
 		//create Bundle version
@@ -197,12 +197,28 @@ function verifyManageBundlePermission(logedInUser) {
 		//removeBundle version
 		BundleManager.deleteBundleVersion(bundleVersion.getId(), true);
 
-	} catch (err) {
-		count = count + 1;
-		if (err.message.toString().indexOf("Wrapped org.rhq.enterprise.server.authz.PermissionException: [Warning] Subject ["+ userName + "] is not authorized for [MANAGE_BUNDLE]") != -1	|| count > 1) {
-			println("Manage Bundle permission doesnt work correctly!!");
+	}catch (err) {
+		var  goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> "+bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> "+err.toString());
+		assertTrue(!bool);
+		assertTrue(err.message.toString().indexOf("Subject ["+ userName + "] is not authorized for [MANAGE_BUNDLE]") != -1) ;
+			goToFinally = false;
 		}
+		finally {
+			if(goToFinally){
+				
+				// call delete role function
+				deleteRole(roleIds);
 
-	}
+				// call delete user
+				deleteUser(userIds);
+
+				// call delete resource group
+				deleteResourceGroup(resourceGroup.getId());
+				
+				
+			}
+		}
 
 }

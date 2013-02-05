@@ -203,6 +203,8 @@ function createResourceGroup(resourceGroupName) {
 	var resourceGroupManager = ResourceGroupManager
 			.createResourceGroup(resourceGroup);
 	var resourceCriteria = new ResourceCriteria();
+	resourceCriteria.addFilterResourceTypeName("POSTGRES PLUGIN");
+	resourceCriteria.addFilterResourceTypeName("RHQAGENT PLUGIN");
 	var resources = ResourceManager.findResourcesByCriteria(resourceCriteria);
 
 	var i = 0;

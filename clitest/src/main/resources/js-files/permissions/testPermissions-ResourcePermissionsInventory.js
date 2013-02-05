@@ -257,23 +257,30 @@ function verifyManageResourcesPermission(logedInUser, bool) {
 		var resource = ResourceManager.findResourcesByCriteria(logedInUser,
 				new ResourceCriteria()).get(0);
 		resource.setName(testResourceName);
-		ResourceManager.updateResource(logedInUser, resources);
+		ResourceManager.updateResource(logedInUser, resource);
 
-		assertTrue(length > 1,	"No resource is visible");
+		assertTrue(length > 1, "No resource is visible");
 		println("length is ... " + length);
 	} catch (err) {
-		if (err.message.toString().indexOf(
-				"You do not have permission to modify Resource with id") != -1
-				&& bool) {
-			println("Resource permissions Modify resources (Inventory) permission doesnt work correctly!!!!!");
+		var goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> " + bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> " + err.toString());
+		assertTrue(!bool);
+		assertTrue(err.message.toString().indexOf(
+				"You do not have permission to modify Resource with id") != -1);
+		goToFinally = false;
+	} finally {
+		if (goToFinally) {
+
+			// call delete role function
+			deleteRole(roleIds);
+
+			// call delete user
+			deleteUser(userIds);
+
+			// call delete resource group
+			deleteResourceGroup(resourceGroup.getId());
 
 		}
-//else if (err.message
-//				.toString()
-//				.indexOf(
-//						"Resource permissions Modify resources (Inventory) permission doesnt work correctly!!" != -1)) {
-//			println("Resource permissions Modify resources (Inventory) permission doesnt work correctly!!!!!");
-//		}
-
 	}
 }

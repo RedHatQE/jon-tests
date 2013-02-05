@@ -199,6 +199,7 @@ function createResourceGroup(resourceGroupName) {
 	var resourceGroupManager = ResourceGroupManager
 			.createResourceGroup(resourceGroup);
 	var resourceCriteria = new ResourceCriteria();
+	resourceCriteria.addFilterResourceTypeName("RHQ Agent");
 	var resources = ResourceManager.findResourcesByCriteria(resourceCriteria);
 
 	var i = 0;
@@ -252,16 +253,33 @@ try{
 	var resourceCriteria = new ResourceCriteria();
 	resourceCriteria.addFilterResourceTypeName("RHQ Agent");
 	resourceCriteria.addFilterName("RHQ Agent");
-	var resource = ResourceManager.findResourcesByCriteria(logedInUser, resourceCriteria).get(0);
-	assertTrue(resources.size() == 1, "incorrect resource is taken");
+	var resource = ResourceManager.findResourcesByCriteria(logedInUser, resourceCriteria);
+	assertTrue(resource.size() == 1, "incorrect resource is taken");
 	var configuration = new Configuration();
 	configuration.setSimpleValue("changesOnly", true);
-	OperationManager.scheduleResourceOperation(logedInUser,resrouce.getId(), "executeAvailabilityScan", 1.0, 1.0, 1, 20, configuration, "descr");
+	OperationManager.scheduleResourceOperation(logedInUser,resource.get(0).getId(), "executeAvailabilityScan", 1.0, 1.0, 1, 20, configuration, "descr");
 
-} catch(err){ if(err.toString().indexOf("[Warning] org.rhq.enterprise.server.exception.ScheduleException: org.rhq.enterprise.server.authz.PermissionException: User [" + userName + "] does not have permission to control resource"  ) != -1 && bool)
-	println("Resource Control permissions doesnt work correctly!!");
 }
+catch (err) {
+	var goToFinally = true;
+	println("BOOL >>>>>>>>>>>>>>>>>> " + bool);
+	println("ERROR >>>>>>>>>>>>>>>>>> " + err.toString());
+	assertTrue(!bool);
+	assertTrue(err.toString().indexOf("User [" + userName + "] does not have permission to control resource"  ) != -1);
+	goToFinally = false;
+} finally {
+	if (goToFinally) {
 
+		// call delete role function
+		deleteRole(roleIds);
 
+		// call delete user
+		deleteUser(userIds);
+		
+		//call delete resource group 
+		deleteResourceGroup(resourceGroup.getId());
+
+	}
+}
 }
 

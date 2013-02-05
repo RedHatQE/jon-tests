@@ -44,7 +44,7 @@ addRoleToUser(userIds[0], roleIds);
 var logedInUser = SubjectManager.login(userName, password);
 // verify bundle permissions
 var count = 0;
-verifyManageSettingsPermission(logedInUser);
+verifyManageSettingsPermission(logedInUser, true);
 
 // verify manage Settings permission not granted
 // update Role
@@ -54,7 +54,7 @@ addRoleToUser(userIds[0], roleIds);
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
 // verify manage Settings permission
-verifyManageSettingsPermission(logedInUser);
+verifyManageSettingsPermission(logedInUser, false);
 
 // call delete role function
 deleteRole(roleIds);
@@ -174,7 +174,7 @@ function deleteUser(userIds) {
  *            logedInUser
  * @return -
  */
-function verifyManageSettingsPermission(logedInUser) {
+function verifyManageSettingsPermission(logedInUser, bool) {
 
 	try {
 
@@ -182,13 +182,21 @@ function verifyManageSettingsPermission(logedInUser) {
 	}
 
 	catch (err) {
+		var goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> " + bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> " + err.toString());
+		assertTrue(!bool);
+		assertTrue(err.message.toString().indexOf("Subject [" + userName + "] is not authorized for [MANAGE_SETTINGS]") != -1);
+		goToFinally = false;
+	} finally {
+		if (goToFinally) {
 
-		count = count + 1;
-		if (err.message.toString().indexOf("Wrapped org.rhq.enterprise.server.authz.PermissionException: [Warning] Subject ["+ userName	+ "] is not authorized for [MANAGE_SETTINGS]") != -1 || count > 1) {
-			println("Manage Settings permission doesnt work correctly!!");
+			// call delete role function
+			deleteRole(roleIds);
+
+			// call delete user
+			deleteUser(userIds);
 
 		}
-
 	}
-
 }

@@ -199,9 +199,9 @@ function addResourceGroupToRole(role, groupIds) {
 function createResourceGroup(resourceGroupName) {
 
 	var resourceGroup = new ResourceGroup(resourceGroupName);
-	var resourceGroupManager = ResourceGroupManager
-			.createResourceGroup(resourceGroup);
+	var resourceGroupManager = ResourceGroupManager.createResourceGroup(resourceGroup);
 	var resourceCriteria = new ResourceCriteria();
+	resourceCriteria.addFilterResourceTypeName("Postgres Server");
 	var resources = ResourceManager.findResourcesByCriteria(resourceCriteria);
 
 	var i = 0;
@@ -257,27 +257,24 @@ function verifyCreateChildResourcePermission(logedInUser, bool) {
 		var resource = ResourceManager
 				.findResourcesByCriteria(resourceCriteria).get(0);
 
-		ResourceFactoryManager.createResource(logedInUser, resource.getId(),
+		 ResourceFactoryManager.createResource(logedInUser, resource.getId(),
 				resource.getId(), childResourceName, new Configuration(),
 				new Configuration(), 22);
 	
 	
 
 		} catch (err) {
-		//println("EXCEPTION  >>>>>>>>>>>>>>>>>>>>  " + err.toString());
-		
-		if (err.toString().indexOf("[Warning] User ["+ userName + "] does not have permission to create a child resource") != -1
-				&& !bool) {
-			println("User [" + userName
-					+ "] does not have permission to create a child resource");
-		} else
-			var goToFinally = true;
-
+			var  goToFinally = true;
+			println("BOOL >>>>>>>>>>>>>>>>>> "+bool);
+			println("ERROR >>>>>>>>>>>>>>>>>> "+err.toString());
+		assertTrue(!bool);
+		assertTrue(err.toString().indexOf("User ["+ userName +"] does not have permission to create a child resource for resource") != -1);
+		goToFinally = false;
 	}
 	finally {
-	//	println("BOOL  >>>>>>>>>>>>>>>>>>>>>>>> " + bool);
 		if(goToFinally){
-			// call delete role function
+			
+			 call delete role function
 			deleteRole(roleIds);
 
 			// call delete user

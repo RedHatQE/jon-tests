@@ -248,13 +248,32 @@ function deleteUser(userIds) {
  */
 function verifyManageMeasurementsPermission(logedInUser, bool) {
 
-try{
-	var mesSched = MeasurementScheduleManager.findSchedulesByCriteria(logedInuser, msc).get(0);
-	mesSched.setEnabled(true);
-	MeasurementScheduleManager.updateSchedule(logedInuser,mesSched);
-} catch(err){ if(err.toString().indexOf("[Warning] User["+ userName +"] does not have permission to view measurementSchedule") != -1 && bool)
-	println("Measurement permissions doesnt work correctly!!");
-}
+	try {
+		
+		var mesSched = MeasurementScheduleManager.findSchedulesByCriteria(logedInUser, new MeasurementScheduleCriteria()).get(0);
+		mesSched.setEnabled(true);
+		MeasurementScheduleManager.updateSchedule(logedInUser, mesSched);
+
+	} catch (err) {
+		var goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> " + bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> " + err.toString());
+		assertTrue(!bool);
+		assertTrue(err.message.toString().indexOf("User["+ userName + "] does not have permission to view measurementSchedule") != -1);
+		goToFinally = false;
+	} finally {
+		if (goToFinally) {
+
+			// call delete role function
+			deleteRole(roleIds);
+
+			// call delete user
+			deleteUser(userIds);
+			
+			//call delete resource group 
+			deleteResourceGroup(resourceGroup.getId());
+		}
+	}
 
 
 }

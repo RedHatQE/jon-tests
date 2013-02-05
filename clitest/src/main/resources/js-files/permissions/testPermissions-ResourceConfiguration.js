@@ -199,6 +199,7 @@ function createResourceGroup(resourceGroupName) {
 	var resourceGroupManager = ResourceGroupManager
 			.createResourceGroup(resourceGroup);
 	var resourceCriteria = new ResourceCriteria();
+	resourceCriteria.addFilterResourceTypeName("RHQ Agent");
 	var resources = ResourceManager.findResourcesByCriteria(resourceCriteria);
 
 	var i = 0;
@@ -248,15 +249,36 @@ function deleteUser(userIds) {
  */
 function verifyResourceConfigurationPermission(logedInUser, bool) {
 
-try{
-	var resource = ResourceManager.findResourcesByCriteria(logedInUser, new ResourceCriteria()).get(0);
-	assertTrue(resources.size() > 1, "There are no resourcesavailable");
-	ConfigurationManager.updateResourceConfiguration(resource.getId(), resource.resourceConfiguration);
+	try {
+		var resourceCriteria = new ResourceCriteria();
+		resourceCriteria.addFilterResourceTypeName("RHQ Agent");
+		resourceCriteria.addFilterName("RHQ Agent");
+		var resource = ResourceManager.findResourcesByCriteria(logedInUser,	resourceCriteria);
+		assertTrue(resource.size() >= 1, "There are no resources available");
+		ConfigurationManager.updateResourceConfiguration(logedInUser, resource.get(0).getId(),resource.get(0).resourceConfiguration);
 
-} catch(err){ if(err.toString().indexOf("[Warning] User[name=" + userName + "] does not have the permission to update configuration") != -1 && bool)
-	println("Resource Configuration permissions doesnt work correctly!!");
-}
+	} catch (err) {
+		var goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> " + bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> " + err.toString());
+		assertTrue(!bool);
+		assertTrue(err//
+				.toString()
+				.indexOf("User[name="+ userName +"] does not have the permission to update configuration") != -1);
+		goToFinally = false;
+	} finally {
+		if (goToFinally) {
 
+			// call delete role function
+			deleteRole(roleIds);
 
+			// call delete user
+			deleteUser(userIds);
+			
+			//call delete resource group 
+			deleteResourceGroup(resourceGroup.getId());
+
+		}
+	}
 }
 

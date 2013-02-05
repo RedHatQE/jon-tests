@@ -252,7 +252,7 @@ function deleteUser(userIds) {
  *            Activated/Inactivated (boolean)
  * @return -
  */
-function verifyResourcesVisible(logedInUser, bool) {
+	function verifyResourcesVisible(logedInUser, bool) {
 	try {
 		var length = ResourceManager.findResourcesByCriteria(logedInUser,
 				new ResourceCriteria()).size();
@@ -263,10 +263,24 @@ function verifyResourcesVisible(logedInUser, bool) {
 			assertTrue(length == 0, "incorrect resources visible");
 		}
 	} catch (err) {
-		if (err.message.toString().indexOf("resources visible") != -1) {
-			println("Resource group in roles doesnt work correctly!!!!!");
+		var goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> " + bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> " + err.toString());
+		assertTrue(!bool);
+		assertTrue(err.message.toString().indexOf("resources visible") != -1);
+		goToFinally = false;
+	} finally {
+		if (goToFinally) {
+
+			// call delete role function
+			deleteRole(roleIds);
+
+			// call delete user
+			deleteUser(userIds);
+
+			// call delete resource group
+			deleteResourceGroup(resourceGroup.getId());
 
 		}
-
 	}
 }

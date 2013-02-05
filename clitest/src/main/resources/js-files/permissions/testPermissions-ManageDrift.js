@@ -196,9 +196,9 @@ function addResourceGroupToRole(role, groupIds) {
 function createResourceGroup(resourceGroupName) {
 
 	var resourceGroup = new ResourceGroup(resourceGroupName);
-	var resourceGroupManager = ResourceGroupManager
-			.createResourceGroup(resourceGroup);
+	var resourceGroupManager = ResourceGroupManager.createResourceGroup(resourceGroup);
 	var resourceCriteria = new ResourceCriteria();
+	resourceCriteria.addFilterResourceTypeName("Linux");
 	var resources = ResourceManager.findResourcesByCriteria(resourceCriteria);
 
 	var i = 0;
@@ -318,12 +318,29 @@ try{
 	if(!bool) { throw new DriftException();
 		println("manage drift permissions doesnt work correctly_____!!!!");
 	}
-} catch(err){ //bug#864870
-//	if(err.toString().indexOf("[Warning] User [" + userName + "] does not have permission to manage drift"  ) != -1 && bool)
-	if(err.toString().indexOf("lacks MANAGE_DRIFT"  ) != -1 && bool)
-		println("manage drift permissions doesnt work correctly!!");
 }
+catch (err) {
+	var  goToFinally = true;
+	println("BOOL >>>>>>>>>>>>>>>>>> "+bool);
+	println("ERROR >>>>>>>>>>>>>>>>>> "+err.toString());
+	assertTrue(!bool);
+	assertTrue(err.toString().indexOf("lacks MANAGE_DRIFT ") != -1) ;
+		goToFinally = false;
+	}
+	finally {
+		if(goToFinally){
+			
+			// call delete role function
+			deleteRole(roleIds);
 
+			// call delete user
+			deleteUser(userIds);
+
+			// call delete resource group
+			deleteResourceGroup(resourceGroup.getId());
+			
+		}
+	}
 
 }
 

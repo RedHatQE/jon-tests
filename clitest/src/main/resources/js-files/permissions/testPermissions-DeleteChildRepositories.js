@@ -199,6 +199,7 @@ function createResourceGroup(resourceGroupName) {
 	var resourceGroupManager = ResourceGroupManager
 			.createResourceGroup(resourceGroup);
 	var resourceCriteria = new ResourceCriteria();
+	resourceCriteria.addFilterResourceTypeName("Postgres Server");
 	var resources = ResourceManager.findResourcesByCriteria(resourceCriteria);
 
 	var i = 0;
@@ -249,6 +250,7 @@ function deleteUser(userIds) {
 function verifyDeleteChildResourcePermission(logedInUser, bool) {
 
 try{
+	
 	var resourceCriteria = new ResourceCriteria();
 	resourceCriteria.addFilterResourceTypeName("POSTGRES SERVER");
 	var resource = ResourceManager.findResourcesByCriteria(resourceCriteria).get(0);
@@ -277,9 +279,30 @@ try{
 	DiscoveryBoss.importResources(resourcesArray);
 	
 	
-} catch(err){ if(err.toString().indexOf(" [Warning] You do not have permission to uninventory resource") != -1 && !bool)
-	println("Delete Child resource permissions doesnt work correctly!!");
 }
+	catch (err) {
+		var  goToFinally = true;
+		println("BOOL >>>>>>>>>>>>>>>>>> "+bool);
+		println("ERROR >>>>>>>>>>>>>>>>>> "+err.toString());
+		assertTrue(!bool);
+		assertTrue(err.toString().indexOf("You do not have permission to uninventory resource") != -1);
+		goToFinally = false;
+	}
+	finally {
+		if(goToFinally){
+			
+			// call delete role function
+			deleteRole(roleIds);
+
+			// call delete user
+			deleteUser(userIds);
+
+			// call delete resource group
+			deleteResourceGroup(resourceGroup.getId());
+
+			
+		}
+	}
 
 
 }
