@@ -260,12 +260,34 @@ function verifyCreateChildResourcePermission(logedInUser, bool) {
 		ResourceFactoryManager.createResource(logedInUser, resource.getId(),
 				resource.getId(), childResourceName, new Configuration(),
 				new Configuration(), 22);
+	
+	
 
-	} catch (err) {
-		count = count + 1;
-		if (err.toString().indexOf("[Warning] User [" + userName + "] does not have permission to create a child resource") != -1 && bool )
-			println("Create Child resource permissions doesnt work correctly!!");
+		} catch (err) {
+		//println("EXCEPTION  >>>>>>>>>>>>>>>>>>>>  " + err.toString());
+		
+		if (err.toString().indexOf("[Warning] User ["+ userName + "] does not have permission to create a child resource") != -1
+				&& !bool) {
+			println("User [" + userName
+					+ "] does not have permission to create a child resource");
+		} else
+			var goToFinally = true;
 
-		} 
+	}
+	finally {
+	//	println("BOOL  >>>>>>>>>>>>>>>>>>>>>>>> " + bool);
+		if(goToFinally){
+			// call delete role function
+			deleteRole(roleIds);
+
+			// call delete user
+			deleteUser(userIds);
+
+			// call delete resource group
+			deleteResourceGroup(resourceGroup.getId());
+
+			
+		}
+	}
 
 }
