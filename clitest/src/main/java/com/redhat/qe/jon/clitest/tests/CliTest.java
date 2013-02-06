@@ -2,11 +2,15 @@ package com.redhat.qe.jon.clitest.tests;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -51,6 +55,36 @@ public class CliTest extends CliTestScript{
 			this.cliPassword = cliPassword;
 	}
 	
+	private URL findResource(String path) {
+	    try {
+		_logger.fine("Looking up resource "+path);
+		if (path.startsWith("/")) {
+		    // we have to strip starting "/" because otherwise getClassLoader().getResources(path) finds nothing
+		    path = path.substring(1);
+		}
+		Enumeration<URL> resources = getClass().getClassLoader().getResources(path);		
+		URL candidate = null;
+		if (!resources.hasMoreElements()) {
+		    return null;
+		}
+		while (resources.hasMoreElements()) {
+		    URL el = resources.nextElement();
+		    _logger.fine("Found "+el.getFile());
+		    if (new File(el.getFile()).exists()) {
+			candidate = el;
+		    }
+		}
+		if (candidate==null) {
+		    candidate = getClass().getClassLoader().getResources(path).nextElement();
+		}
+		_logger.fine("Returning "+candidate.getFile()); 
+		return candidate; 
+		
+	    } catch (IOException e) {
+		return null;
+	    }
+	}
+	
 	private String getResourceFileName(String path) throws CliTasksException {
 		if (path.startsWith("http://") || path.startsWith("https://")) {
 			try {
@@ -72,24 +106,35 @@ public class CliTest extends CliTestScript{
 		    }
 		}
 		URL resource = null;
-		if (!path.startsWith("/")) {
-			_logger.fine("Appending / to resource path");
-			resource = CliTest.class.getResource("/"+path);
-			if (resource==null) {
-				_logger.fine("Appending /js-files/ to resource path");
-				resource = getClass().getResource("/js-files/"+path);	
-			}
-			if (resource==null) {
-				throw new RuntimeException("Unable to retrieve either [/"+path+"] or [/js-files/"+path+"] resource on classpath!");
-			}
-		}
-		else {
-			resource = getClass().getResource(path);
+		resource = findResource(path);
+		if (resource==null) {
+			_logger.fine("Appending js-files/ to resource path");
+			resource = findResource("js-files/"+path);	
 		}
 		if (resource==null) {
-			throw new RuntimeException("Unable to retrieve ["+path+"] resource on classpath!");
+			throw new RuntimeException("Unable to retrieve either ["+path+"] or [js-files/"+path+"] resource on classpath!");
 		}
-		return resource.getFile();
+		if (new File(resource.getFile()).exists()) {
+		    return resource.getFile();
+		}
+		try {
+		    _logger.fine("Copying resource "+resource.getFile()+" from JAR");
+		    File file = File.createTempFile("temp", ".tmp");
+		    InputStream is = resource.openStream();
+		    OutputStream os = new FileOutputStream(file);
+		    final byte[] buf = new byte[1024];
+		    int len = 0;
+		    while ((len = is.read(buf)) > 0) {
+		        os.write(buf, 0, len);
+		    }
+		    is.close();
+		    os.close();
+		    return file.getAbsolutePath();
+		}
+		catch (IOException ex) {
+		    throw new RuntimeException("Unable to copy ["+path+"] resource from classpath!");
+		}
+		
 	}
 	
 	
@@ -207,11 +252,11 @@ public class CliTest extends CliTestScript{
 				cliTasks.runCommand("wget -nv "+src+" -O "+destDir+"/"+dst.getName()+" 2>&1");
 			}
 			else {
-				URL resource = CliTest.class.getResource(src);
+				String resource = getResourceFileName(src);
 				if (resource==null) {
 					throw new CliTasksException("Resource file "+src+" does not exist!");
 				}
-				cliTasks.copyFile(resource.getPath(), destDir,dst.getName());
+				cliTasks.copyFile(resource, destDir,dst.getName());
 			}
 		}
 	}
