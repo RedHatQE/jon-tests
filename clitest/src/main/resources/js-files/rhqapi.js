@@ -274,30 +274,33 @@ var _common = function() {
 				var representation = null;
 
 				if (prop instanceof PropertySimple) {
-					if (propDef && propDef instanceof PropertyDefinitionSimple) {
-						// TODO implement all propertySimple types ..
-						if (propDef.getType() == PropertySimpleType.BOOLEAN) {
-                            if (prop.booleanValue !=null) {
-                                if (prop.booleanValue == false) {
-                                	representation = false;
-                                }
-                                else {
-                                	representation = true;
-                                }
-                            }
-                        }
-						else if (propDef.getType() == PropertySimpleType.DOUBLE
-								|| propDef.getType() == PropertySimpleType.INTEGER
-								|| propDef.getType() == PropertySimpleType.LONG
-								|| propDef.getType() == PropertySimpleType.FLOAT
-								) {
-							representation = Number(prop.doubleValue);
-						} else {
+					// we don't want to represent null values as string 'null'
+					if(prop.stringValue != 'null'){
+						if (propDef && propDef instanceof PropertyDefinitionSimple) {
+							// TODO implement all propertySimple types ..
+							if (propDef.getType() == PropertySimpleType.BOOLEAN) {
+	                            if (prop.booleanValue !=null) {
+	                                if (prop.booleanValue == false) {
+	                                	representation = false;
+	                                }
+	                                else {
+	                                	representation = true;
+	                                }
+	                            }
+	                        }
+							else if (propDef.getType() == PropertySimpleType.DOUBLE
+									|| propDef.getType() == PropertySimpleType.INTEGER
+									|| propDef.getType() == PropertySimpleType.LONG
+									|| propDef.getType() == PropertySimpleType.FLOAT
+									) {
+								representation = Number(prop.doubleValue);
+							} else {
+								representation = String(prop.stringValue);
+							}
+						}
+						else {
 							representation = String(prop.stringValue);
 						}
-					}
-					else {
-						representation = String(prop.stringValue);
 					}
 				} else if (prop instanceof PropertyList) {
 					representation = [];
@@ -355,6 +358,7 @@ var _common = function() {
 				(function (parent,definition,key,value) {
 					var propDef = null;
 					var prop = null;
+					
 					// decide which type of property are we working with
 					if (definition instanceof PropertyDefinitionMap) {
 						// println("DEF is map");
@@ -367,27 +371,28 @@ var _common = function() {
 						propDef = definition.getPropertyDefinitions().get(key);
 					}
 
+					// ignore properties which don't have property definition (this is legal state)
 					if (propDef==null) {
-						_debug("Unable to get PropertyDefinition for key="+key);
+						common.warn("Unable to get PropertyDefinition for key="+key);
 						return;
 					}
 					// process all 3 possible types
 					if (propDef instanceof PropertyDefinitionSimple) {
+						//common.trace("applyConfiguration(), creating simple property");
 						prop = new PropertySimple(key, null);
 
 						if (value!=null) {
 							prop = new PropertySimple(key, new java.lang.String(value));
 						}
-							// println("it's simple! "+prop);
 					} else if (propDef instanceof PropertyDefinitionList) {
+						//common.trace("applyConfiguration(), creating list property");
 						prop = new PropertyList(key);
-						// println("it's list! "+prop);
 						for(var i = 0; i < value.length; ++i) {
 							arguments.callee(prop,propDef,"",value[i]);
 						}
 					} else if (propDef instanceof PropertyDefinitionMap) {
+						//common.trace("applyConfiguration(), creating map property");
 						prop = new PropertyMap(propDef.name);
-						// println("it's map! "+prop);
 						for (var i in value) {
 							if (value.hasOwnProperty(i)) {
 								arguments.callee(prop,propDef,i,value[i]);
@@ -395,9 +400,8 @@ var _common = function() {
 						}
 					}
 					else {
-						common.info("Unkonwn property definition! this is a bug");
 						pretty.print(propDef);
-						return
+						throw ("Unkonwn property definition! this is a bug, see above which property definition was passed");
 					}
 					// now we update our Configuration node
 					if (parent instanceof PropertyList) {
@@ -408,6 +412,7 @@ var _common = function() {
 				}) (original,definition,k,values[k]);
 			}
 		}
+
 		return original;
 	};
 
@@ -2392,6 +2397,7 @@ var Resource = function (param) {
 			else if (update.status == ConfigurationUpdateStatus.SUCCESS) {
 				common.info("Resource configuration was updated");
 			}
+			
 			return update.status == ConfigurationUpdateStatus.SUCCESS;
 		},
 		/**

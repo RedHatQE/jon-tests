@@ -32,11 +32,13 @@ agentConfig = agent.getConfiguration();
 println(typeof agentConfig["rhq.agent.server-auto-detection"]);
 println(typeof agentConfig["rhq.agent.wait-for-server-at-startup-msecs"]);
 println(typeof agentConfig["rhq.agent.data-directory"]);
+println(typeof agentConfig["rhq.communications.connector.security.keystore.type"]);
 
 //assert correct value types were retrieved
 assertTrue(typeof agentConfig["rhq.agent.server-auto-detection"] == "boolean","Boolean value type has been retrieved");
 assertTrue(typeof agentConfig["rhq.agent.wait-for-server-at-startup-msecs"] == "number","Integer value type has been retrieved");
 assertTrue(typeof agentConfig["rhq.agent.data-directory"] == "string","String value type has been retrieved");
+assertTrue(agentConfig["rhq.communications.connector.security.keystore.type"] == null,"Null has been retrieved");
 
 // assert configuration was updated
 assertTrue(agentConfig["rhq.agent.server-auto-detection"] == true,"Boolean config value has been updated");
