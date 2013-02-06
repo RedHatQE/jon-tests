@@ -417,6 +417,18 @@
                 </class>
         </classes>
 </test>
+<!-- blocked by https://bugzilla.redhat.com/show_bug.cgi?id=907897-->
+<test name="Bug907897">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="bugs/bug907897.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
 
 
 <!-- 	
