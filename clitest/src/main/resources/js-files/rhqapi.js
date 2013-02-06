@@ -275,7 +275,7 @@ var _common = function() {
 
 				if (prop instanceof PropertySimple) {
 					// we don't want to represent null values as string 'null'
-					if(prop.stringValue != 'null'){
+					if(prop.stringValue != null){
 						if (propDef && propDef instanceof PropertyDefinitionSimple) {
 							// TODO implement all propertySimple types ..
 							if (propDef.getType() == PropertySimpleType.BOOLEAN) {
@@ -382,6 +382,9 @@ var _common = function() {
 						prop = new PropertySimple(key, null);
 
 						if (value!=null) {
+							if(value == 'null'){
+								common.warn("Adding property '"+ key +"' with null value as a string");
+							}
 							prop = new PropertySimple(key, new java.lang.String(value));
 						}
 					} else if (propDef instanceof PropertyDefinitionList) {
