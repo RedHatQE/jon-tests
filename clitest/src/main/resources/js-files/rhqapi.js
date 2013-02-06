@@ -429,7 +429,7 @@ var _common = function() {
 			}
 
 			function isPrimitive(obj) {
-				return typeof (obj) != 'object' || obj == null || (obj instanceof Boolean || obj instanceof Number || obj instanceof String);
+				return typeof (obj) != 'object' || obj == null || obj instanceof Number || obj instanceof String || obj instanceof Boolean;
 			}
 			function isJavaObject(obj) {
 				return typeof (obj) == 'object' && typeof (obj.getClass) != 'undefined'
@@ -462,11 +462,11 @@ var _common = function() {
 						kkey = key + ":";
 					}
 					if (isPrimitive(value)) {
-						// primitive types
-						if (value instanceof Number || value instanceof Boolean) {
-							prop = kkey + value;
-						} else {
+						// put strings into quotes
+						if (typeof value == "string" || value instanceof String) {
 							prop = kkey + "\'" + value + "\'";
+						} else {
+							prop = kkey + value;
 						}
 
 					} else if (isJavaObject(value)) {

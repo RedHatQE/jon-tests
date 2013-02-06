@@ -6,11 +6,13 @@ println(common.objToString(null));
 println(common.objToString(false));
 println(common.objToString(4));
 println(common.objToString("hello"));
+println(common.objToString(new String("helloObj")));
+println(common.objToString(new Number("5")));
 println(common.objToString());
 println(common.objToString([]));
 println(common.objToString(["2",1]));
-println(common.objToString({a:"a",b:["1","3",{c:["4"]}],d:{e:"xxx"}}));
-println(common.objToString({name: "name",description:"role with all permissions.",permissions:Permission.GLOBAL_ALL }))
+println(common.objToString({a:"a",b:["1","3",{c:["4"]}],d:{e:"xxx",f:6,g:new String("helloObj"),h:new Number("5")}}));
+println(common.objToString({name: "name",description:"role with all permissions.",permissions:Permission.GLOBAL_ALL,nullValue:null }))
 println(common.objToString({permissions:Permission.GLOBAL_ALL }))
 println(common.objToString({a:"b",c:{d:"e"}}))
 println(common.objToString({}))
