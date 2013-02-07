@@ -29,7 +29,7 @@ var history = ResourceFactoryManager.deleteResource(res.get(0).id)
 var pageControl = new PageControl(0,1);
 var pred = function() {
     var histories = ResourceFactoryManager.findDeleteChildResourceHistory(parentId,startTime,new Date().getTime(),pageControl);
-    var current;
+    var current = null;
     common.pageListToArray(histories).forEach(
             function (x) {
                 if (x.id==history.id && x.status != DeleteResourceStatus.IN_PROGRESS) {

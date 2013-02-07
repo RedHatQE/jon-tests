@@ -180,7 +180,6 @@
 	</classes>
 </test>
 
-<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899 -->
 <test name="viewingResConfSettings">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
@@ -471,7 +470,6 @@
         </classes>
 </test>
 
-<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899 -->
 <test name="proxyExample">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">

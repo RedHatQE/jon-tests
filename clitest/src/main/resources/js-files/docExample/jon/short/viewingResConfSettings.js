@@ -4,7 +4,6 @@
  * June 17, 2012        
  **/
 
-// NOTE - currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=815899
 
 
 var verbose = 10; // logging level 
@@ -19,7 +18,8 @@ var resources = ResourceManager.findResourcesByCriteria(criteria);
 
 assertTrue(resources.size() > 0, "No RHQ Agent found in inventory!!");
 
-var conf = ConfigurationManager.getResourceConfiguration(resources.get(0).id);
+// NOTE - changed because of bug https://bugzilla.redhat.com/show_bug.cgi?id=815899
+var conf = ConfigurationManager.getLiveResourceConfiguration(resources.get(0).id,false);
 
 assertNotNull(conf, "Returned configuration is null");
 

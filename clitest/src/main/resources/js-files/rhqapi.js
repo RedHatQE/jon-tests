@@ -2364,6 +2364,7 @@ var Resource = function (param) {
 		 * @type Boolean
 		 */
 		updateConfiguration : function(params) {
+			common.info("Updating configuration of resource with id: " + _id);
 			common.trace("Resource("+_id+").updateConfiguration("+common.objToString(params)+")");
 			params = params || {};
 			common.debug("Retrieving configuration and configuration definition");
