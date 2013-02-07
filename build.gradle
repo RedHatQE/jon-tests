@@ -59,6 +59,35 @@ subprojects {
         // disable ReportNG escaping
         sysproperty(key:"org.uncommons.reportng.escape-output",value:"false")
     }
+    if ( System.properties["code.coverage"] ) {
+      logger.info("Gathering jacoco results")
+      ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
+      def agentDump="$buildDir/reports/jon.agent.exec"
+      def serverDump="$buildDir/reports/jon.server.exec"
+      def mergedDump="$buildDir/reports/jacoco.exec"
+      if ( System.properties["jon.agent.jacoco.port"] && System.properties["jon.agent.host"] ) {
+        ant.dump(
+          address:System.properties["jon.agent.host"],
+          port:System.properties["jon.agent.jacoco.port"],
+          reset:true,
+          destfile:"$agentDump")
+      }   
+      if ( System.properties["jon.server.jacoco.port"] && System.properties["jon.server.host"] ) {
+        ant.dump(
+          address:System.properties["jon.server.host"],
+          port:System.properties["jon.server.jacoco.port"],
+          reset:true,
+          destfile:"$serverDump")
+      }   
+      if ( !new File(agentDump).exists() && !new File(serverDump).exists()) {
+        logger.info("Code coverage dumps not gathered, you need to specify [jon.agent.host, jon.agent.jacoco.port] and/or [jon.server.host, jon.server.jacoco.port] system properties")
+        return
+      }
+      // let's merge dumps 
+      ant.merge(destfile:"$mergedDump") {
+        fileset(dir:"$buildDir/reports",includes:"*.exec")
+      }
+    }
   }
 	// we build/install also sources and javadocs to local mvn repo
 	task sourcesJar (type: Jar, dependsOn:classes) {
@@ -127,6 +156,7 @@ project(":common") {
 			"org.resteasy:jaxrs-api:1.0-beta-4",
 			"org.uncommons:reportng:1.1.3",
 			"org.apache.commons:commons-lang3:3.1",
+      "org.jacoco:org.jacoco.ant:0.6.2.201302030002",
 			"com.report.engine:report-engine-client:0.0.1-SNAPSHOT"
 	}
 
