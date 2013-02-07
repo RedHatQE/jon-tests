@@ -373,28 +373,28 @@ var _common = function() {
 
 					// ignore properties which don't have property definition (this is legal state)
 					if (propDef==null) {
-						common.warn("Unable to get PropertyDefinition for key="+key);
+						_warn("Unable to get PropertyDefinition for key="+key);
 						return;
 					}
 					// process all 3 possible types
 					if (propDef instanceof PropertyDefinitionSimple) {
-						//common.trace("applyConfiguration(), creating simple property");
+						// _trace("applyConfiguration(), creating simple property");
 						prop = new PropertySimple(key, null);
 
 						if (value!=null) {
 							if(value == 'null'){
-								common.warn("Adding property '"+ key +"' with null value as a string");
+								_warn("Adding property '"+ key +"' with null value as a string");
 							}
 							prop = new PropertySimple(key, new java.lang.String(value));
 						}
 					} else if (propDef instanceof PropertyDefinitionList) {
-						//common.trace("applyConfiguration(), creating list property");
+						// _trace("applyConfiguration(), creating list property");
 						prop = new PropertyList(key);
 						for(var i = 0; i < value.length; ++i) {
 							arguments.callee(prop,propDef,"",value[i]);
 						}
 					} else if (propDef instanceof PropertyDefinitionMap) {
-						//common.trace("applyConfiguration(), creating map property");
+						// _trace("applyConfiguration(), creating map property");
 						prop = new PropertyMap(propDef.name);
 						for (var i in value) {
 							if (value.hasOwnProperty(i)) {
