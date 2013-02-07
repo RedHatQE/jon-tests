@@ -2,7 +2,7 @@
 	
   	<listeners>
   		<!-- Listener to send report to Report Engine Server -->
-  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener" />
+  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineTestNGListner" />
 		<!-- Listener to clear pop-up's if any on test failure-->
     	<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" />
   	</listeners>
