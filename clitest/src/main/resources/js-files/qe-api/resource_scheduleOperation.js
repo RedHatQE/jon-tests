@@ -36,3 +36,28 @@ platform.scheduleOperation("discovery",0,0,0);
 println("Schedule operation that has optional parameters");
 platform.scheduleOperation("discovery",0,0,0,{detailedDiscovery:false});
 
+
+// cron expressions
+// incorrect
+println("Schedule operation with empty cron expression");
+println(expectException(platform.scheduleOperationUsingCron,["discovery"]));
+
+println("Schedule operation with invalid cron expression");
+println(expectException(platform.scheduleOperationUsingCron,["discovery","3 2 3"]));
+
+println("Schedule operation with invalid cron expression");
+println(expectException(platform.scheduleOperationUsingCron,["discovery","3 2 3 4"]));
+
+println("Schedule operation with invalid cron expression");
+println(expectException(platform.scheduleOperationUsingCron,["discovery","0 d 10 * * ? *"]));
+
+println("Schedule operation with invalid cron expression");
+println(expectException(platform.scheduleOperationUsingCron,["discovery","0 15 10 f * ?"]));
+
+
+// correct
+println("Schedule operation that has optional parameters, without passing any using cron");
+platform.scheduleOperationUsingCron("discovery","0 5 10 * * ? *");
+
+println("Schedule operation that has optional parameters using cron");
+platform.scheduleOperationUsingCron("discovery","5 5 10 * * ?",{detailedDiscovery:false});

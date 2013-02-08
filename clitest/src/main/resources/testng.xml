@@ -404,7 +404,7 @@
                 </class>
         </classes>
 </test>
-<!-- blocked by https://bugzilla.redhat.com/show_bug.cgi?id=906754-->
+<!-- fixed -->
 <test name="Bug906754">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">

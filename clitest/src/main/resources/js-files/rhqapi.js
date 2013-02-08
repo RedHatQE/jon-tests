@@ -2666,7 +2666,31 @@ var Resource = function (param) {
 
 			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,delay * 1000,
 					repeatInterval * 1000,repeatCount,0,configuration,null);
-			common.info("Operation scheduled");
+			common.info("Operation '"+name+"' scheduled");
+		},
+		/**
+		 * schedules operation on resource using crone expression. In contrast to invokeOperation this is 
+		 * not blocking (synchronous) operation.
+		 *
+		 * @param {String}
+		 *            name of operation (required)
+		 *            
+		 * @param {String} cronExpression delay in seconds (required)
+		 * @param {Object}
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @returns
+		 */
+		scheduleOperationUsingCron : function(name,cronExpression,opParams) {
+			common.trace("Resource("+_id+").scheduleOperationUsingCron(name="+name+", cronExpression="+cronExpression+
+					", opParams={"+common.objToString(opParams)+"})");
+			
+			// let's obtain operation definitions, so we can check operation
+			var op = _checkOperationName(name);
+			var configuration = _createOperationConfig(opParams,op);
+			_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,common.configurationAsHash(configuration));
+			
+			var resOpShedule = OperationManager.scheduleResourceOperationUsingCron(_id,name,cronExpression,0,configuration,null);
+			common.info("Operation '"+name+"' scheduled");
 		},
 		/**
 		 * Waits until operation is finished or timeout is reached.
