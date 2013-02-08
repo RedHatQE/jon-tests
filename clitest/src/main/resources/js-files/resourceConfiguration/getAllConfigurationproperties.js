@@ -14,10 +14,10 @@ writeIntoFile(configs);
  */
 function getConfigurationsArray() {
 
-//	 var myResources = resources.find({});
-	var myResources = resources.find({
-		resourceTypeName : "RHQ Agent"
-	});
+	 var myResources = resources.find({});
+//	var myResources = resources.find({
+//		resourceTypeName : "RHQ Agent"
+//	});
 
 	var configs = new Array();
 
@@ -33,9 +33,11 @@ function getConfigurationsArray() {
 
 			for ( var j = 0; j < values.length; j++) {
 				if (keySet[j] != null && values[j].getStringValue() != null) {
+					if(values[j].getStringValue() != "" &&  keySet[j] != ""){
 					configs.push("--args-style=named  prop=" + keySet[j]
 							+ "  propType=bool propValue="
 							+ values[j].getStringValue() + " resourceId="+resource.id);
+					}
 				}
 			}
 		}
@@ -52,11 +54,11 @@ function getConfigurationsArray() {
  */
 function writeIntoFile(configs) {
 
-	var file = new java.io.File("/tmp/filename.txt");
+	var file = new java.io.File("/tmp/resourceProperties.txt");
 	// if file doesnt exists, then create it
-	if (!file.exists()) {
+//	if (!file.exists()) {
 		file.createNewFile();
-	}
+//	}
 	var fw = new java.io.FileWriter(file.getAbsoluteFile());
 	var bw = new java.io.BufferedWriter(fw);
 

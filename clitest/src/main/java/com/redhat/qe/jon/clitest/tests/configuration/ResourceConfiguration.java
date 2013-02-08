@@ -5,6 +5,8 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class ResourceConfiguration extends ConfigurationCliTest {
 	@BeforeClass()
 	public void beforeClass() throws IOException, CliTasksException {
 		// run getAllConfigurationProperties
-//		getAllConfigurationProperties();
+		getAllConfigurationProperties();
 	}
 
 	private static String[] readDataFromFile() {
@@ -29,7 +31,7 @@ public class ResourceConfiguration extends ConfigurationCliTest {
 		try {
 			// Open the file that is the first
 			// command line parameter
-			FileInputStream fstream = new FileInputStream("/tmp/filename.txt");
+			FileInputStream fstream = new FileInputStream("/tmp/resourceProperties.txt");
 			// Get the object of DataInputStream
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -75,4 +77,5 @@ public class ResourceConfiguration extends ConfigurationCliTest {
 		log.info("Starting server with default (none) parameters");
 		// sshClient.restart("domain.sh");
 	}
+	
 }
