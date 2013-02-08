@@ -18,12 +18,13 @@
 
 <test name="Test_Update_Configuration">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.metrics.ValidateMetric">	
+		<class name="com.redhat.qe.jon.clitest.tests.configuration.ResourceConfiguration">	
 			<methods>
-				<include name="validateMetricTest"></include>		
+				<include name="updateResourceConfigurationTest"></include>		
 			</methods>
 		</class>
 	</classes>
 </test>
+
 
 </suite>

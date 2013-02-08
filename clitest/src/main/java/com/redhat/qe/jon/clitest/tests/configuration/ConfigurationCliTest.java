@@ -18,7 +18,28 @@ public class  ConfigurationCliTest extends CliTest {
 				
 		runJSfile(null, "rhqadmin", "rhqadmin", "resourceConfiguration/testUpdateConfiguration.js", config ,null, null, "rhqapi.js", null, null);
 	}
-
-
+	
+	/**
+	 * 
+	 * @param configs
+	 * @throws IOException
+	 * @throws CliTasksException
+	 */
+	protected void getAllConfigurationProperties() throws IOException, CliTasksException {
+				
+		runJSfile(null, "rhqadmin", "rhqadmin", "resourceConfiguration/getAllConfigurationproperties.js", null ,null, null, "rhqapi.js", null, null);
+	}
+	
+	/**
+	 * 
+	 * @param configs
+	 * @throws IOException
+	 * @throws CliTasksException
+	 */
+	protected void updateResourceConfiguration(String config) throws IOException, CliTasksException {
+		
+		runJSfile(null, "rhqadmin", "rhqadmin", "resourceConfiguration/updateResourceConfiguration.js", config ,null, null, "rhqapi.js", null, null);
+	}
+	
 
 }
