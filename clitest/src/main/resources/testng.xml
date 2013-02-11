@@ -604,37 +604,7 @@
                 </class>
         </classes>
 </test>
-<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
-<test name="test_LargeBundleDeploy">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="test_LargeBundleDeploy.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <parameter name="res.src" value="/bundles/byebye.war" />
-						<parameter name="res.dst" value="/tmp/byebye.war" />
-						<parameter name="cli.args" value="--args-style=named bundle=/tmp/byebye.war" />
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
 
-<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
-<test name="test_LargeWarDeploy.js">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="test_LargeWarDeploy.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <parameter name="res.src" value="/bundles/byebye.war" />
-						<parameter name="res.dst" value="/tmp/byebye.war" />
-						<parameter name="cli.args" value="--args-style=named bundle=/tmp/byebye.war" />
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
 
 
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
@@ -883,6 +853,37 @@
 	</classes>
 </test>
 
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
+<test name="test_LargeBundleDeploy">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="test_LargeBundleDeploy.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <parameter name="res.src" value="/bundles/byebye.war" />
+						<parameter name="res.dst" value="/tmp/byebye.war" />
+						<parameter name="cli.args" value="--args-style=named bundle=/tmp/byebye.war" />
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
+<test name="test_LargeWarDeploy.js">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="test_LargeWarDeploy.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <parameter name="res.src" value="/bundles/byebye.war" />
+						<parameter name="res.dst" value="/tmp/byebye.war" />
+						<parameter name="cli.args" value="--args-style=named bundle=/tmp/byebye.war" />
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
 
 
 <!--  This case SHOULD BE LAST ONE or before the one -->
