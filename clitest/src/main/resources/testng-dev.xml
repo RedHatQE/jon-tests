@@ -16,7 +16,21 @@
 
 
 
-<test name="Test_Update_Configuration">
+<test name="Test_Get_All_ConfigurationsProperties">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/getAllConfigurationproperties.js"/>
+                        <parameter name="js.depends" value="rhqapi.js" />
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+
+<!-- test name="Test_Update_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.ResourceConfiguration">	
 			<methods>
@@ -24,7 +38,7 @@
 			</methods>
 		</class>
 	</classes>
-</test>
+</test -->
 
 
 </suite>
