@@ -21,7 +21,7 @@ public class ResourceConfiguration extends ConfigurationCliTest {
 	@BeforeClass()
 	public void beforeClass() throws IOException, CliTasksException {
 		// run getAllConfigurationProperties
-		getAllConfigurationProperties();
+		//getAllConfigurationProperties();
 	}
 
 	private static String[] readDataFromFile() {
