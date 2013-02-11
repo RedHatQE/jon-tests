@@ -274,7 +274,7 @@ function verifyCreateChildResourcePermission(logedInUser, bool) {
 	finally {
 		if(goToFinally){
 			
-			 call delete role function
+			 //call delete role function
 			deleteRole(roleIds);
 
 			// call delete user
