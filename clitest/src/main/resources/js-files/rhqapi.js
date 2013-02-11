@@ -1220,6 +1220,14 @@ var ResGroup = function(param) {
 	var _id = param.id;
 	var _obj = param;
 	var _name = param.name;
+	var _getCategory = function(){
+		return _obj.getGroupCategory();
+	}
+	var _resources = function(params){
+		params = params || {};
+		params.explicitGroupIds = [_id];
+		return resources.find(params);
+	}
     /**
 	 * @lends ResGroup.prototype
 	 */
@@ -1253,12 +1261,42 @@ var ResGroup = function(param) {
 		 * @param params - you can filter child resources same way as in {@link resources.find()} function
 		 * @returns array of resources
 		 * @type Resrouce[]
+		 * @function
 		 */
-		resources : function(params) {
-			params = params || {};
-			params.explicitGroupIds = [_id];
-			return resources.find(params);
-		},
+		resources : _resources,
+		/**
+		 * schedules operation on this group using cron expression. In contrast to invokeOperation this is 
+		 * not blocking (synchronous) operation.
+		 *
+		 * @param {String}
+		 *            name of operation (required)
+		 *            
+		 * @param {String} cronExpression (required)
+		 * @param {Object}
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @example allAgents.scheduleOperationUsingCron("executeAvailabilityScan","5 5 5 * * ?",{changesOnly:false});
+		 */
+		scheduleOperationUsingCron : function(name,cronExpression,opParams) {
+			common.trace("Group("+_id+").scheduleOperationUsingCron(name="+name+", cronExpression="+cronExpression+
+					", opParams={"+common.objToString(opParams)+"})");
+			if(_getCategory() == GroupCategory.MIXED ){
+				throw "It's not possible to invoke operation on MIXED group!!"
+			}
+			
+			// get resources in this group
+			var groupRes = _resources();
+			if(groupRes.length == 0){
+				throw "It's not possible to invoke operation on empty group!!"
+			}
+			
+			var res = groupRes[0];
+			// check that operation is correct and get operation configuration
+			var conf = res.checkOperation(name,opParams);
+			
+			var opShedule = OperationManager.scheduleGroupOperationUsingCron(_id, null, true, name, common.hashAsConfiguration(conf), 
+					cronExpression, 0, null)
+			common.info("Group operation '"+name+"' scheduled on '"+_name+"'");
+		}
 	}
 };
 
@@ -2649,7 +2687,6 @@ var Resource = function (param) {
 		 * @param {int} repeatCount repeatCount in seconds (required)
 		 * @param {Object}
 		 *            opParams - hashmap for operation params (Configuration) (optional)
-		 * @returns
 		 */
 		scheduleOperation : function(name,delay,repeatInterval,repeatCount,opParams) {
 			common.trace("Resource("+_id+").scheduleOperation(name="+name+", delay="
@@ -2675,10 +2712,9 @@ var Resource = function (param) {
 		 * @param {String}
 		 *            name of operation (required)
 		 *            
-		 * @param {String} cronExpression delay in seconds (required)
+		 * @param {String} cronExpression (required)
 		 * @param {Object}
 		 *            opParams - hashmap for operation params (Configuration) (optional)
-		 * @returns
 		 */
 		scheduleOperationUsingCron : function(name,cronExpression,opParams) {
 			common.trace("Resource("+_id+").scheduleOperationUsingCron(name="+name+", cronExpression="+cronExpression+
@@ -2703,6 +2739,24 @@ var Resource = function (param) {
 		 * @function
 		 */
 		waitForOperationResult : _waitForOperationResult,
+		/**
+		 * Checks that given operation with given parameters is valid on this resource.
+		 * Default parameters are used when ommited.
+		 *
+		 * @param {String}
+		 *            name of operation (required)
+		 *            
+		 * @param {Object}
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @returns checked configuration
+		 */
+		checkOperation : function(name, opParams){
+			var op = _checkOperationName(name);
+			var configuration = _createOperationConfig(opParams,op);
+			var confAsHash = common.configurationAsHash(configuration);
+			_checkRequiredConfigurationParams(op.parametersConfigurationDefinition,confAsHash);
+			return confAsHash;
+		},
 		/**
 		 * checks whether resource exists in inventory
 		 *
