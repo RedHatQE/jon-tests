@@ -130,6 +130,17 @@
 		</class>
 	</classes>
 </test>
+<test name="Group_scheduleOperation">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
+			<parameter name="js.file"  value="qe-api/group_scheduleOperation.js"/>
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
 <test name="Groups">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
