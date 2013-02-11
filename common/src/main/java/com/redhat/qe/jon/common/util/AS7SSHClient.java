@@ -63,9 +63,9 @@ public class AS7SSHClient extends SSHClient {
 	public void stop() {
 		String pids = null;
         if (serverConfig != null) {
-            pids = runAndWait("ps ax | grep "+asHome+" | grep "+  serverConfig +" | grep java | grep -v bash | awk '{print $1}'").getStdout();
+            pids = runAndWait("ps -ef | grep "+asHome+" | grep "+  serverConfig +" | grep java | grep -v bash | awk '{print $2}'").getStdout();
         } else {
-            pids = runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash | awk '{print $1}'").getStdout();
+            pids = runAndWait("ps -ef | grep "+asHome+" | grep java | grep -v bash | awk '{print $2}'").getStdout();
         }
 		if (pids!=null && pids.length()>0) {
 			for (String pid : pids.split("\n")) {
@@ -79,9 +79,9 @@ public class AS7SSHClient extends SSHClient {
 	 */
 	public boolean isRunning() {
         if (serverConfig != null) {
-            return runAndWait("ps ax | grep "+asHome+" | grep "+ serverConfig +" | grep java | grep -v bash").getStdout().contains(asHome);
+            return runAndWait("ps -ef | grep "+asHome+" | grep "+ serverConfig +" | grep java | grep -v bash").getStdout().contains(asHome);
         } else {
-		    return runAndWait("ps ax | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);
+		    return runAndWait("ps -ef | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);
         }
 	}
 	/**
