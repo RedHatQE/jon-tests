@@ -637,18 +637,6 @@
 </test>
 
 
-<!--RHQ Resource  Configuration Update -->
-<test name="Test_Update_Agent_Configuration">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
-			<methods>
-				<include name="updateAgentConfigurationTest"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
 <test name="testPermissions-CreateChildRepositories">
         <classes>
@@ -878,6 +866,17 @@
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.ResourceConfiguration">	
 			<methods>
 				<include name="updateResourceConfigurationTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+<!--RHQ Resource  Configuration Update -->
+<test name="Test_Update_Agent_Configuration">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
+			<methods>
+				<include name="updateAgentConfigurationTest"></include>		
 			</methods>
 		</class>
 	</classes>
