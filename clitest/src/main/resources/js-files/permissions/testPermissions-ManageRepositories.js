@@ -52,13 +52,13 @@ var newRepo1 = RepoManager.createRepo(repo1);
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
 // create Repo with newly created user
-createRepository(repoName2,logedInUser, false, false);
+var newRepo2 = createRepository(repoName2,logedInUser, false, false);
 
 // create private repository with LogedInUser //***************************
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
 // create Repo with newly created user
-createRepository(repoName3,logedInUser, true, true);
+var newRepo3 = createRepository(repoName3,logedInUser, true, true);
 
 // verify repository permissions
 verifyManageRepositoryPermission(logedInUser, true, newRepo3.getId());
@@ -71,7 +71,7 @@ addRoleToUser(userIds[0], roleIds);
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
 // create Repo with newly created user
-createRepository(repoName3,logedInUser, true, true);
+var newRepo3 = createRepository(repoName3,logedInUser, true, true);
 // verify manage repository permission
 verifyManageRepositoryPermission(logedInUser, false, newRepo3.getId());
 
@@ -146,7 +146,7 @@ function createRepository(reponame, logedInUserName, isPrivate, isOwner) {
 			deleteUser(userIds);
 		}
 	}
-
+return newRepo;
 }
 
 
