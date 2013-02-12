@@ -73,7 +73,7 @@ function getChildResources(resId){
 
 function deployNewWar(){
     //TODO parametrize this
-    var fileName = "byebye.war";
+    var fileName = "rh_dep1.war";
     
     var appTypeName = "Deployment";
     var pluginName = "JBossAS7";

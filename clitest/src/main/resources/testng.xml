@@ -861,7 +861,7 @@
                         <parameter name="expected.result"  value="Login successful"/>
                         <parameter name="res.src" value="/bundles/byebye.war" />
 						<parameter name="res.dst" value="/tmp/byebye.war" />
-						<parameter name="cli.args" value="--args-style=named bundle=/tmp/byebye.war" />
+						<parameter name="cli.args" value="--args-style=named bundle=/tmp/large_bundle.zip" />
                         <methods>
                                 <include name="runJSfile"></include>
                         </methods>
@@ -877,7 +877,7 @@
                         <parameter name="expected.result"  value="Login successful"/>
                         <parameter name="res.src" value="/bundles/byebye.war" />
 						<parameter name="res.dst" value="/tmp/byebye.war" />
-						<parameter name="cli.args" value="--args-style=named bundle=/tmp/byebye.war" />
+						<parameter name="cli.args" value="--args-style=named bundle=/tmp/rh_dep1.war" />
                         <methods>
                                 <include name="runJSfile"></include>
                         </methods>

@@ -57,26 +57,13 @@ var jbossType = resourcesTypeArray[0];
 
 assertTrue(jbossType != null, "No JBossAS 7 found!!");
 
-//assertTrue(jbossType);
-
-
-//deployLargeBundle();
-
-//functions
-
-//function deployLargeBundle(){
-
 println("entered deploy large bunlde function...");
 println("recipe ..." + recipeString1);
 var bundleVersion = BundleManager.createBundleVersionViaRecipe(recipeString1);
 sleep(2000);
 println("bundleVersion   " + bundleVersion);
 
-//var archiveDir = "../../bundle/";
-//var largeFileName = "tikal-bugzilla-bundle-standalone.zip";
-var fileName = "byebye.war";
-
-
+var fileName = "large_bundle.zip";
 
 // read bundleFile 
     var file = new java.io.File(filePath);
@@ -91,18 +78,6 @@ var bundleFile = BundleManager.addBundleFileViaByteArray(bundleVersion.id, fileN
 sleep(1000);
 ////var bundleFile = BundleManager.addBundleFile(10061,"tikal-bugzilla-bundle-standalone.zip", "1.0", null, inputStream);
 
-
-
-////create resource group
-////var rgc = new ResourceGroupCriteria();
-
-////var rsGroupCriteria= rgc.addFilterBundleTargetableOnly(true);
-////rgc.addFilterGroupCategory(GroupCategory.COMPATIBLE);
-
-////ResourceGroupManager.findResourceGroupsByCriteria(rgc);
-
-
-////var rt =  new ResourceType("name",  "test", ResourceCategory.PLATFORM, null);
 
 var resourceGroup = new ResourceGroup("resGroup1", jbossType);
 sleep(2000);
