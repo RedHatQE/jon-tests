@@ -61,7 +61,9 @@ var logedInUser = SubjectManager.login(userName, password);
 var newRepo3 = createRepository(repoName3,logedInUser, true, true);
 
 // verify repository permissions
+
 verifyManageRepositoryPermission(logedInUser, true, newRepo3.getId());
+
 
 // verify manage repository permission not granted
 // update Role
@@ -127,24 +129,29 @@ function createRepository(reponame, logedInUserName, isPrivate, isOwner) {
 			repo.setOwner(logedInUserName);
 		}
 		var newRepo = RepoManager.createRepo(logedInUser, repo);
+		
 	} catch (err) {
 		var goToFinally = true;
+		
 		if (err.message.toString().indexOf("Can't find method") != -1) {
-			goToFinally = false;
+			println("Subject bug is still visible");
 		}
 	} finally {
 		if (goToFinally) {
-			// call delete repositories
-			RepoManager.deleteRepo(newRepo1.getId());
-			RepoManager.deleteRepo(newRepo2.getId());
-			RepoManager.deleteRepo(newRepo3.getId());
-
 			// call delete role function
 			deleteRole(roleIds);
 
 			// call delete user
 			deleteUser(userIds);
+			
+			// call delete repositories
+			RepoManager.deleteRepo(newRepo1.getId());
+			RepoManager.deleteRepo(newRepo2.getId());
+			RepoManager.deleteRepo(newRepo3.getId());
+
+			
 		}
+		
 	}
 return newRepo;
 }
