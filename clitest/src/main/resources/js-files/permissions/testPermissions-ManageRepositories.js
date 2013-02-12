@@ -52,18 +52,14 @@ var newRepo1 = RepoManager.createRepo(repo1);
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
 // create Repo with newly created user
-var repo2 = new Repo(repoName2);
-var newRepo2 = RepoManager.createRepo(logedInUser, repo2);
-
+createRepository(repoName2,logedInUser, false, false);
 
 // create private repository with LogedInUser //***************************
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
 // create Repo with newly created user
-var repo3 = new Repo(repoName3);
-repo3.setPrivate(true);
-repo3.setOwner(logedInUser);
-var newRepo3 = RepoManager.createRepo(logedInUser, repo3);
+createRepository(repoName3,logedInUser, true, true);
+
 // verify repository permissions
 verifyManageRepositoryPermission(logedInUser, true, newRepo3.getId());
 
@@ -75,10 +71,7 @@ addRoleToUser(userIds[0], roleIds);
 // log in with creted user
 var logedInUser = SubjectManager.login(userName, password);
 // create Repo with newly created user
-var repo3 = new Repo(repoName3);
-repo3.setPrivate(true);
-repo3.setOwner(logedInUser);
-var newRepo3 = RepoManager.createRepo(logedInUser, repo3);
+createRepository(repoName3,logedInUser, true, true);
 // verify manage repository permission
 verifyManageRepositoryPermission(logedInUser, false, newRepo3.getId());
 
@@ -114,6 +107,48 @@ function createRoleWithPermission(roleName, roleDescription, permissions) {
 
 	return roleNew;
 }
+
+/**
+ * Function create repository
+ * 
+ * @param -     reponame, logedInUserName, isPrivate ,isOwner-bool
+ * @return -
+ */
+
+function createRepository(reponame, logedInUserName, isPrivate, isOwner) {
+
+	try {
+		var repo = new Repo(reponame);
+
+		if (isPrivate) {
+			repo.setPrivate(true);
+		}
+		if (isOwner) {
+			repo.setOwner(logedInUserName);
+		}
+		var newRepo = RepoManager.createRepo(logedInUser, repo);
+	} catch (err) {
+		var goToFinally = true;
+		if (err.message.toString().indexOf("Can't find method") != -1) {
+			goToFinally = false;
+		}
+	} finally {
+		if (goToFinally) {
+			// call delete repositories
+			RepoManager.deleteRepo(newRepo1.getId());
+			RepoManager.deleteRepo(newRepo2.getId());
+			RepoManager.deleteRepo(newRepo3.getId());
+
+			// call delete role function
+			deleteRole(roleIds);
+
+			// call delete user
+			deleteUser(userIds);
+		}
+	}
+
+}
+
 
 /**
  * Function create user

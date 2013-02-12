@@ -15,6 +15,17 @@
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
 
+<test name="testPermissions-ManageRepositories">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="permissions/testPermissions-ManageRepositories.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
 
 <test name="Test_Get_All_ConfigurationsProperties">
         <classes>
