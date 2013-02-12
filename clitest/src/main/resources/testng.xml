@@ -817,6 +817,19 @@
         </classes>
 </test>
 
+<test name="schedule_Management_For_RHQ_Agent">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="scheduleManagementForRHQAgent.js"/>
+                        <parameter name="js.depends" value="rhqapi.js" />
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
 <!--RHQ Resource  Configuration Update -->
 <test name="Test_Update_Agent_Configuration">
   	<classes>

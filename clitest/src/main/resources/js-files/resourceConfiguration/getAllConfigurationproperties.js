@@ -5,6 +5,7 @@ var configs = getConfigurationsArray();
 //write config data into file
 writeIntoFile(configs);
 
+
 /**
  * Function - get Configurations array for all resources
  * 
@@ -14,10 +15,31 @@ writeIntoFile(configs);
  */
 function getConfigurationsArray() {
 
-	 var myResources = resources.find({});
-//	var myResources = resources.find({
-//		resourceTypeName : "RHQ Agent"
-//	});
+//	 var myResources = resources.find({});
+	
+	var jBossTypeName = "JBossAS";
+	var agentTypeName = "RHQ Agent";
+	var serverResources =  resources.find({category:"SERVER"});
+	var platformResources =  resources.find({category:"PLATFORM"});
+	var jbossResources =  resources.find({resourceTypeName:jBossTypeName});
+	var userResource = resources.find({type:"User"});
+	var capabilityResources =  resources.find({resourceTypeName:"Capability"});
+	var compatibleResources =  resources.find({resourceTypeName:"Compatible"});
+	var agetnResource = resources.find({resourceTypeName: agentTypeName});
+	var asResources =  resources.find({resourceTypeName:"AS"});
+	var sessionResources =  resources.find({resourceTypeName:"Session"});
+	var deployResources =  resources.find({type:"Deploy"});
+	
+	var myResources = serverResources.concat(agetnResource);
+	var myResources = myResources.concat(platformResources);
+	var myResources = myResources.concat(jbossResources);
+	var myResources = myResources.concat(capabilityResources);
+	var myResources = myResources.concat(compatibleResources);
+	var myResources = myResources.concat(userResource);
+	var myResources = myResources.concat(asResources);
+	var myResources = myResources.concat(sessionResources);
+	var myResources = myResources.concat(deployResources);
+	
 
 	var configs = new Array();
 
@@ -42,6 +64,7 @@ function getConfigurationsArray() {
 			}
 		}
 	}
+	println("configs "+configs.length);
 	return configs;
 }
 
