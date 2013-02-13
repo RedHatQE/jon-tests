@@ -866,6 +866,19 @@
 	</classes>
 </test>
 
+<test name="JbossAs7_Plugin_Configuration">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="testJbossAs7PluginConfiguration.js"/>
+                        <parameter name="js.depends" value="rhqapi.js" />
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
 <test name="test_LargeBundleDeploy">
         <classes>
