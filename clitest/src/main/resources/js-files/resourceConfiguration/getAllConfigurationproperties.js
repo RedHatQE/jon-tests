@@ -54,7 +54,7 @@ function getConfigurationsArray() {
 			var values = oldConfiguration.simpleProperties.values().toArray();
 
 			for ( var j = 0; j < values.length; j++) {
-				if (keySet[j] != null && values[j].getStringValue() != null && values[j].getStringValue().indexof(",") == -1) {
+				if (keySet[j] != null && values[j].getStringValue() != null && values[j].getStringValue().indexOf(",") == -1) {
 					if(values[j].getStringValue() != "" &&  keySet[j] != ""){
 					configs.push("--args-style=named  prop=" + keySet[j]
 							+ "  propType=bool propValue="
