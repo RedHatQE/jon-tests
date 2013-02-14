@@ -2474,5 +2474,44 @@ public class SahiTasks extends ExtendedSahi {
 		deleteGroup("All Groups", compTestGroup);
 		deleteRole(roleName);
 	}
+	
+	
+	
+	public void createDriftDefinitionTemplate(String name) {
+		this.link("Administration").click();
+		Assert.assertTrue(this.cell("Drift Definition Templates").exists());
+		this.cell("Drift Definition Templates").click();
+		this.image("edit.png").near(this.div("Linux")).click();
+		this.cell("New").click();
+		this.cell("Next").click();
+		this.textbox("name").setValue(name);
+		this.cell("Finish").click();
+	}
+	
+	public void editDriftDefinitionTemplate(String name) {
+		this.link("Administration").click();
+		Assert.assertTrue(this.cell("Drift Definition Templates").exists());
+		this.cell("Drift Definition Templates").click();
+		this.image("edit.png").near(this.div("Linux")).click();
+		this.link(name).click();
+		this.textbox("interval").setValue("123456");
+		this.cell("Save").click();
+		Assert.assertTrue(this.cell("Drift template updated and changes pushed to attached definitions.").exists());
+		
+	}
+	
+	public void deleteDriftDefinitionTemplate(String name) {
+		this.link("Administration").click();
+		Assert.assertTrue(this.cell("Drift Definition Templates").exists());
+		this.cell("Drift Definition Templates").click();
+		this.image("edit.png").near(this.div("Linux")).click();
+		this.image("availability_green_16.png").near(this.cell(name)).click();
+		this.cell("Delete").click();
+		this.cell("Yes").click();
+		Assert.assertFalse(this.cell(name).exists());
+		
+	}
+	
+	
 
 }

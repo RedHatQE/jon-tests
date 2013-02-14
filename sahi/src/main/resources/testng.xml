@@ -333,6 +333,19 @@
 		
 	</test>
 	
+	  <test name="Drift Definition Template">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.DriftDefinitionTemplateTest">
+			<methods>
+				 <include name="createDriftDefinitionTemplate"></include> 
+				 <include name="editDriftDefinitionTemplate"></include> 
+				 <include name="deleteDriftDefinitionTemplate"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+	
 	 <test name="GuiLogoutTest">
   	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
