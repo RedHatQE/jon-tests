@@ -366,7 +366,6 @@ public class RestTest extends RestClient{
 		
 	/**
 	 * recursively checks all resources of platform and prints our AS server Id
-	 * @param platformId
 	 * @throws ParseException
 	 */
 	

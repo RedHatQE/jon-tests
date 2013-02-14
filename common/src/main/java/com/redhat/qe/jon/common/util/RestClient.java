@@ -113,8 +113,8 @@ public class RestClient {
 	    
 	}
 	/**
-	 * returns default (singleton) restcilent instance
-	 * @return
+	 * returns default (singleton) RestClient instance
+	 * @return default RestClient instance
 	 */
 	public static RestClient getDefault() {
 	    if (instance == null) {
