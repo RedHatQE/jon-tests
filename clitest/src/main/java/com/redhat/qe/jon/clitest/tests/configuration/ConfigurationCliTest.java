@@ -21,7 +21,6 @@ public class  ConfigurationCliTest extends CliTest {
 	
 	/**
 	 * 
-	 * @param configs
 	 * @throws IOException
 	 * @throws CliTasksException
 	 */
