@@ -156,7 +156,8 @@ project(":common") {
 			"org.resteasy:jaxrs-api:1.0-beta-4",
 			"org.uncommons:reportng:1.1.3",
 			"org.apache.commons:commons-lang3:3.1",
-      "org.jacoco:org.jacoco.ant:0.6.2.201302030002",
+//      "org.jacoco:org.jacoco.ant:0.6.2.201302030002",
+      "org.jacoco:org.jacoco.ant:0.5.10.201208310627",
 			"com.report.engine:report-engine-client:0.0.3"
 	}
 
@@ -217,4 +218,31 @@ task docs(type: Javadoc) {
 		group("SAHI EAP6 Tests", ["com.redhat.qe.jon.sahi.tests.plugins.eap6*"])
 	}
     	title = "JON QE Automation API & tests"
+}
+task jacocoreport () << {
+  ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
+  if (System.properties["classes.dir"] 
+      && System.properties["jacoco.dump.dir"] 
+      && System.properties["report.name"]
+      && System.properties["output.dir"]
+    ) {
+    logger.info("Merging all dumps")
+    def mergedDump = "$buildDir/jacoco.exec"
+    ant.merge(destfile:"$mergedDump") {
+      fileset(dir:System.properties["jacoco.dump.dir"],includes:"*.exec")
+    }
+    ant.report() {
+      executiondata() {file(file:"$mergedDump")}
+      structure(name:System.properties["report.name"]) {
+        classfiles() {
+          fileset(dir:System.properties["classes.dir"])
+        }
+      }
+      html(destdir:"$buildDir/"+System.properties["output.dir"])
+    }
+      
+  }
+  else {
+    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir report.name output.dir]")
+  }
 }
