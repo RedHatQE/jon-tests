@@ -856,7 +856,7 @@
         </classes>
 </test>
 
-<test name="Test_Update_Resource_Configuration">
+<!--test name="Test_Update_Resource_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.ResourceConfiguration">	
 			<methods>
@@ -864,7 +864,7 @@
 			</methods>
 		</class>
 	</classes>
-</test>
+</test -->
 
 <test name="check_AS7_Deployment_Directory">
         <classes>
