@@ -220,19 +220,16 @@ task docs(type: Javadoc) {
     	title = "JON QE Automation API & tests"
 }
 task jacocoreport () << {
-  ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
   if (System.properties["classes.dir"] 
       && System.properties["jacoco.dump.dir"] 
       && System.properties["report.name"]
       && System.properties["output.dir"]
     ) {
-    logger.info("Merging all dumps")
-    def mergedDump = "$buildDir/jacoco.exec"
-    ant.merge(destfile:"$mergedDump") {
-      fileset(dir:System.properties["jacoco.dump.dir"],includes:"*.exec")
-    }
+    ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
     ant.report() {
-      executiondata() {file(file:"$mergedDump")}
+      executiondata() {
+          fileset(dir:System.properties["jacoco.dump.dir"],includes:"**/*.exec")
+      }
       structure(name:System.properties["report.name"]) {
         classfiles() {
           fileset(dir:System.properties["classes.dir"])
@@ -240,7 +237,6 @@ task jacocoreport () << {
       }
       html(destdir:"$buildDir/"+System.properties["output.dir"])
     }
-      
   }
   else {
     throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir report.name output.dir]")
