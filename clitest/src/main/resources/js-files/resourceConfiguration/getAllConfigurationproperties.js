@@ -45,23 +45,38 @@ function getConfigurationsArray() {
 
 	for ( var i = 0; i < myResources.length; i++) {
 		var resource = myResources[i];
-		var oldConfiguration = ConfigurationManager
-				.getLiveResourceConfiguration(resource.id, false);
+		var oldConfiguration = resource.getConfiguration();
+//		var oldConfiguration = ConfigurationManager
+//				.getLiveResourceConfiguration(resource.id, false);
 		if (oldConfiguration != null) {
 			
-			var keySet = oldConfiguration.simpleProperties.keySet().toArray();
-
-			var values = oldConfiguration.simpleProperties.values().toArray();
-
-			for ( var j = 0; j < values.length; j++) {
-				if (keySet[j] != null && values[j].getStringValue() != null && values[j].getStringValue().indexOf(",") == -1) {
-					if(values[j].getStringValue() != "" &&  keySet[j] != ""){
-					configs.push("--args-style=named  prop=" + keySet[j]
+			for(key in oldConfiguration) {
+				if (!oldConfiguration.hasOwnProperty(key)) {
+					continue;
+				}
+				value = oldConfiguration[key];
+				if (key != null && value != null && value.toString().indexOf(",") == -1) {
+					if(value.toString() != "" &&  key != ""){
+					configs.push("--args-style=named  prop=" + key
 							+ "  propType=bool propValue="
-							+ values[j].getStringValue() + " resourceId="+resource.id);
+							+ value + " resourceId="+resource.id);
 					}
 				}
 			}
+				
+//			var keySet = oldConfiguration.simpleProperties.keySet().toArray();
+
+//			var values = oldConfiguration.simpleProperties.values().toArray();
+
+//			for ( var j = 0; j < values.length; j++) {
+//				if (keySet[j] != null && values[j].getStringValue() != null && values[j].getStringValue().indexOf(",") == -1) {
+//					if(values[j].getStringValue() != "" &&  keySet[j] != ""){
+//					configs.push("--args-style=named  prop=" + keySet[j]
+//							+ "  propType=bool propValue="
+//							+ values[j].getStringValue() + " resourceId="+resource.id);
+//					}
+//				}
+//			}
 		}
 	}
 	println("configs "+configs.length);

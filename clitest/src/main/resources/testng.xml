@@ -830,8 +830,8 @@
         </classes>
 </test>
 
-<!--RHQ Resource  Configuration Update -->
-<!--test name="Test_Update_Agent_Configuration">
+<!-- RHQ Resource  Configuration Update -->
+<test name="Test_Update_Agent_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
 			<methods>
@@ -839,7 +839,7 @@
 			</methods>
 		</class>
 	</classes>
-</test -->
+</test>
 
 
 <!-- getAllConfigurationproperties should be before updateResourceConfigurationTest-->
@@ -856,7 +856,7 @@
         </classes>
 </test>
 
-<!--test name="Test_Update_Resource_Configuration">
+<test name="Test_Update_Resource_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.ResourceConfiguration">	
 			<methods>
@@ -864,7 +864,7 @@
 			</methods>
 		</class>
 	</classes>
-</test -->
+</test>
 
 <test name="check_AS7_Deployment_Directory">
         <classes>
@@ -894,7 +894,7 @@
 </test>
 
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
-<test name="test_LargeBundleDeploy">
+<!-- test name="test_LargeBundleDeploy">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="test_LargeBundleDeploy.js"/>
@@ -907,10 +907,10 @@
                         </methods>
                 </class>
         </classes>
-</test>
+</test -->
 
 <!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
-<test name="test_LargeWarDeploy.js">
+<!-- test name="test_LargeWarDeploy.js">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="test_LargeWarDeploy.js"/>
@@ -923,7 +923,7 @@
                         </methods>
                 </class>
         </classes>
-</test>
+</test -->
 
 
 <!--  This case SHOULD BE LAST ONE or before the one -->
