@@ -19,7 +19,7 @@ for (i = 0 ; i < as7Resource.length; i++ ) {
 
 	var resource = as7Resource[i];
 	//update as7 plugin user property
-	updateAS7PluginConfig(resource, "user", "rhqadmin2");
+//	updateAS7PluginConfig(resource, "user", "rhqadmin2");
 	updateAS7PluginConfig(resource, "user", "rhqadmin");
 	
 	//verify as7 plugin config data

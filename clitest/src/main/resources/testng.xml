@@ -831,7 +831,7 @@
 </test>
 
 <!-- RHQ Resource  Configuration Update -->
-<test name="Test_Update_Agent_Configuration">
+<!-- test name="Test_Update_Agent_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
 			<methods>
@@ -839,11 +839,11 @@
 			</methods>
 		</class>
 	</classes>
-</test>
+</test -->
 
 
 <!-- getAllConfigurationproperties should be before updateResourceConfigurationTest-->
-<test name="Test_Get_All_ConfigurationsProperties">
+<!-- test name="Test_Get_All_ConfigurationsProperties">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="resourceConfiguration/getAllConfigurationproperties.js"/>
@@ -854,9 +854,9 @@
                         </methods>
                 </class>
         </classes>
-</test>
+</test -->
 
-<test name="Test_Update_Resource_Configuration">
+<!-- test name="Test_Update_Resource_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.ResourceConfiguration">	
 			<methods>
@@ -864,7 +864,7 @@
 			</methods>
 		</class>
 	</classes>
-</test>
+</test -->
 
 <test name="check_AS7_Deployment_Directory">
         <classes>
