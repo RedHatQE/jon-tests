@@ -37,7 +37,13 @@ public class RestTest extends RestClient{
 	
 	@BeforeClass
 	public void loadRequiredValues(){
-		SERVER_URI = System.getenv().get("SERVER_URL");
+	    	String server = System.getenv().get("SERVER_URL");
+	    	if (server == null || "".equals(server)) {
+	    	    SERVER_URI = System.getProperty("jon.server.url");
+	    	}
+	    	else {
+	    	    SERVER_URI = System.getenv().get("SERVER_URL");
+	    	}
 
 	}
 	@Parameters({ "rest.username", "rest.password", "test.type" })

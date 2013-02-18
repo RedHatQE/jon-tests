@@ -219,11 +219,11 @@ task docs(type: Javadoc) {
 	}
     	title = "JON QE Automation API & tests"
 }
-task jacocoreport () << {
+task jacocoreport() << {
   if (System.properties["classes.dir"] 
       && System.properties["jacoco.dump.dir"] 
-      && System.properties["report.name"]
       && System.properties["output.dir"]
+      && System.properties["report.name"]
     ) {
     ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
     ant.report() {
@@ -231,14 +231,59 @@ task jacocoreport () << {
           fileset(dir:System.properties["jacoco.dump.dir"],includes:"**/*.exec")
       }
       structure(name:System.properties["report.name"]) {
-        classfiles() {
-          fileset(dir:System.properties["classes.dir"])
+        group(name:"Plugins") {
+          classfiles() {
+            fileset(dir:System.properties["classes.dir"]) {
+              include(name:"modules/plugins/**/target/classes/org/rhq/**")
+              include(name:"modules/plugins/**/target/generated-classes/org/rhq/**")
+            }
+          }
+        }
+        group(name:"Core") {
+          classfiles() {
+            fileset(dir:System.properties["classes.dir"]) {
+              include(name:"modules/core/**/target/classes/org/rhq/**")
+              include(name:"modules/core/**/target/generated-classes/org/rhq/**")
+            }
+          }
+        }
+        group(name:"Enterprise") {
+          classfiles() {
+            fileset(dir:System.properties["classes.dir"]) {
+              include(name:"modules/enterprise/**/target/classes/org/rhq/**")
+              include(name:"modules/enterprise/**/target/generated-classes/org/rhq/**")
+            }
+          }
+        }
+        group(name:"GUI") {
+          classfiles() {
+            fileset(dir:System.properties["classes.dir"]) {
+              include(name:"modules/enterprise/gui/**/target/classes/org/rhq/**")
+              include(name:"modules/enterprise/gui/**/target/generated-classes/org/rhq/**")
+            }
+          }
+        }
+        group(name:"Miscellaneous") {
+          classfiles() {
+            fileset(dir:System.properties["classes.dir"]) {
+              include(name:"modules/**/target/classes/org/rhq/**")
+              include(name:"modules/**/target/generated-classes/org/rhq/**")
+              include(name:"modules/plugins/**/target/classes/org/rhq/**")
+              include(name:"modules/plugins/**/target/generated-classes/org/rhq/**")
+              include(name:"modules/core/**/target/classes/org/rhq/**")
+              include(name:"modules/core/**/target/generated-classes/org/rhq/**")
+              include(name:"modules/enterprise/gui/**/target/classes/org/rhq/**")
+              include(name:"modules/enterprise/gui/**/target/generated-classes/org/rhq/**")
+            }
+          }
         }
       }
       html(destdir:"$buildDir/"+System.properties["output.dir"])
+      // xml(destfile:"$buildDir/"+System.properties["output.dir"]+"/coverage-report.xml")
+      // csv(destfile:"$buildDir/"+System.properties["output.dir"]+"/coverage-report.csv")
     }
   }
   else {
-    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir report.name output.dir]")
+    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir output.dir report.name]")
   }
 }
