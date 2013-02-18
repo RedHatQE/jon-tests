@@ -28,7 +28,7 @@ public class AgentConfiguration  extends ConfigurationCliTest {
 			configs.add("--args-style=named  prop=rhq.communications.multicast-detector.enabled propType=bool propValue=true");
 			configs.add("--args-style=named  prop=rhq.communications.multicast-detector.default-time-delay propType=string propValue=4888");
 			configs.add("--args-style=named  prop=rhq.communications.multicast-detector.heartbeat-time-delay propType=string propValue=11111");
-			configs.add("--args-style=named  prop=rhq.communications.multicast-detector.multicast-address propType=string propValue=10.10.10.10");
+//			configs.add("--args-style=named  prop=rhq.communications.multicast-detector.multicast-address propType=string propValue=10.10.10.10");
 			configs.add("--args-style=named  prop=rhq.communications.multicast-detector.port propType=string propValue=11111");
 			configs.add("--args-style=named  prop=rhq.agent.client.queue-size propType=string propValue=25000");
 			configs.add("--args-style=named  prop=rhq.agent.client.queue-throttling propType=string propValue=102:1002");
@@ -37,15 +37,15 @@ public class AgentConfiguration  extends ConfigurationCliTest {
 			configs.add("--args-style=named  prop=rhq.agent.client.server-polling-interval-msecs propType=string propValue=48888");
 			configs.add("--args-style=named  prop=rhq.agent.test-failover-list-at-startup propType=bool propValue=true");
 			configs.add("--args-style=named  prop=rhq.agent.client.command-timeout-msecs propType=string propValue=7");
-			configs.add("--args-style=named  prop=rhq.agent.client.command-spool-file.name propType=string propValue=some-incorrect.param");
+			configs.add("--args-style=named  prop=rhq.agent.client.command-spool-file.name propType=string propValue=command-spool-test.dat");
 			configs.add("--args-style=named  prop=rhq.agent.client.command-spool-file.params propType=string propValue=10000099:75");
 			configs.add("--args-style=named  prop=rhq.agent.client.command-spool-file.compressed propType=bool propValue=true");
 			configs.add("--args-style=named  prop=rhq.agent.primary-server-switchover-check-interval-msecs propType=string propValue=3598765");
 			configs.add("--args-style=named  prop=rhq.agent.register-with-server-at-startup propType=bool propValue=true");
 			configs.add("--args-style=named  prop=rhq.communications.remote-stream-max-idle-time-msecs propType=string propValue=299988");
-			configs.add("--args-style=named  prop=rhq.agent.server.bind-address propType=string propValue=10.10.10.10");
-			configs.add("--args-style=named  prop=rhq.agent.server.bind-port propType=string propValue=7088");
-			configs.add("--args-style=named  prop=rhq.agent.server.transport-params propType=string propValue=some/incorrect/param");
+//			configs.add("--args-style=named  prop=rhq.agent.server.bind-address propType=string propValue=10.10.10.10");
+			configs.add("--args-style=named  prop=rhq.agent.server.bind-port propType=string propValue=7080");
+			configs.add("--args-style=named  prop=rhq.agent.server.transport-params propType=string propValue=/jboss-remoting-servlet-invoker/ServerInvokerServlet");
 			configs.add("--args-style=named  prop=rhq.agent.server.transport  propType=string propValue=socket");
 			configs.add("--args-style=named  prop=rhq.communications.connector.bind-port propType=string propValue=1234");
 			configs.add("--args-style=named  prop=rhq.communications.connector.transport propType=string propValue=sslsocket");
