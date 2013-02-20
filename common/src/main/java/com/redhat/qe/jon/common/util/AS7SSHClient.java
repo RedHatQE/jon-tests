@@ -62,26 +62,44 @@ public class AS7SSHClient extends SSHClient {
 	 */
 	public void stop() {
 		String pids = null;
-        if (serverConfig != null) {
-            pids = runAndWait("ps -ef | grep "+asHome+" | grep "+  serverConfig +" | grep java | grep -v bash | awk '{print $2}'").getStdout();
+        String grepFiltering = getGrepFiltering();
+
+        if (isJpsSupported()) {
+            pids = runAndWait("jps -mlvV || $JAVA_HOME/bin/jps | " + grepFiltering + " | awk '{print $1}'").getStdout();
         } else {
-            pids = runAndWait("ps -ef | grep "+asHome+" | grep java | grep -v bash | awk '{print $2}'").getStdout();
+            pids = runAndWait("ps -ef | " +  grepFiltering + " | awk '{print $2}'").getStdout();
         }
+
 		if (pids!=null && pids.length()>0) {
 			for (String pid : pids.split("\n")) {
 				runAndWait("kill -9 "+pid);
 			}
 		}
 	}
+
+    private String getGrepFiltering() {
+        String grepFiltering = "";
+        if (serverConfig != null) {
+            grepFiltering = "grep "+asHome+" | grep "+serverConfig+" | grep java | grep -v bash | grep -v -w grep";
+        } else {
+            grepFiltering = "grep "+asHome+" | grep java | grep -v bash | grep -v -w grep";
+        }
+        return grepFiltering;
+    }
+
+    private boolean isJpsSupported() {
+        return runAndWait("jps &>/dev/null || $JAVA_HOME/bin/jps &>/dev/null").getExitCode().intValue() == 0;
+    }
 	/**
 	 * check whether EAP server is running
 	 * @return true if server process is running
 	 */
 	public boolean isRunning() {
-        if (serverConfig != null) {
-            return runAndWait("ps -ef | grep "+asHome+" | grep "+ serverConfig +" | grep java | grep -v bash").getStdout().contains(asHome);
+        String grepFiltering = getGrepFiltering();
+        if (isJpsSupported()) {
+            return runAndWait("jps -mlvV || $JAVA_HOME/bin/jps | " + grepFiltering).getStdout().contains(asHome);
         } else {
-		    return runAndWait("ps -ef | grep "+asHome+" | grep java | grep -v bash").getStdout().contains(asHome);
+            return runAndWait("ps -ef | " +  grepFiltering).getStdout().contains(asHome);
         }
 	}
 	/**
