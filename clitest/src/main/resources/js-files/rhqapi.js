@@ -371,7 +371,13 @@ var _common = function() {
 						propDef = definition.getPropertyDefinitions().get(key);
 					}
 
-					// ignore properties which don't have property definition (this is legal state)
+					// this handles cases when we have property map, and it's children do not have configDefinition
+					// so there may be just key/values
+
+					if (propDef==null && parent instanceof PropertyMap) {
+						propDef = new PropertyDefinitionSimple(key,"",false,PropertySimpleType.STRING);
+					}
+					// ignore properties which don't have property definition (this is legal state)	// ignore properties which don't have property definition (this is legal state)
 					if (propDef==null) {
 						_warn("Unable to get PropertyDefinition for key="+key);
 						return;

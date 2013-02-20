@@ -55,11 +55,17 @@ function getConfigurationsArray() {
 					continue;
 				}
 				value = oldConfiguration[key];
-				if (key != null && value != null && value.toString().indexOf(",") == -1) {
-					if(value.toString() != "" &&  key != ""){
-					configs.push("--args-style=named  prop=" + key
-							+ "  propType=bool propValue="
-							+ value + " resourceId="+resource.id);
+				if (key != null && value != null
+						&& value.toString().indexOf(",") == -1
+						&& value.toString().indexOf("$") == -1
+						&& value.toString().indexOf(" ") == -1
+						&& value.toString().indexOf("[") == -1
+						&& value.toString().indexOf("]") == -1
+						&& value.toString().indexOf(";") == -1) {
+					if (value.toString() != "" && key != "") {
+						configs.push("--args-style=named  prop=" + key
+								+ " propValue=" + value + " resourceId="
+								+ resource.id);
 					}
 				}
 			}
