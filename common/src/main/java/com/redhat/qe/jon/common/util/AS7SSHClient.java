@@ -65,7 +65,7 @@ public class AS7SSHClient extends SSHClient {
         String grepFiltering = getGrepFiltering();
 
         if (isJpsSupported()) {
-            pids = runAndWait("jps -mlvV || $JAVA_HOME/bin/jps | " + grepFiltering + " | awk '{print $1}'").getStdout();
+            pids = runAndWait("{ jps -mlvV || $JAVA_HOME/bin/jps; } | " + grepFiltering + " | awk '{print $1}'").getStdout();
         } else {
             pids = runAndWait("ps -ef | " +  grepFiltering + " | awk '{print $2}'").getStdout();
         }
@@ -97,7 +97,7 @@ public class AS7SSHClient extends SSHClient {
 	public boolean isRunning() {
         String grepFiltering = getGrepFiltering();
         if (isJpsSupported()) {
-            return runAndWait("jps -mlvV || $JAVA_HOME/bin/jps | " + grepFiltering).getStdout().contains(asHome);
+            return runAndWait("{ jps -mlvV || $JAVA_HOME/bin/jps; } | " + grepFiltering).getStdout().contains(asHome);
         } else {
             return runAndWait("ps -ef | " +  grepFiltering).getStdout().contains(asHome);
         }
