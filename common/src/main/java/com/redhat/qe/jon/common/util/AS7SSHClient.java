@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.common.util;
 
+import com.redhat.qe.tools.SSHCommandResult;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -88,7 +90,14 @@ public class AS7SSHClient extends SSHClient {
     }
 
     private boolean isJpsSupported() {
-        return runAndWait("jps &>/dev/null || $JAVA_HOME/bin/jps &>/dev/null").getExitCode().intValue() == 0;
+        SSHCommandResult res = runAndWait("jps &>/dev/null || $JAVA_HOME/bin/jps &>/dev/null");
+        int exitCode = res.getExitCode().intValue();
+        if (exitCode != 0) {
+            log.warning("jps is not supported on the host: " + getHost());
+            log.finer(res.toString());
+        }
+
+        return res.getExitCode().intValue() == 0;
     }
 	/**
 	 * check whether EAP server is running
