@@ -67,7 +67,7 @@ public class AS7SSHClient extends SSHClient {
         String grepFiltering = getGrepFiltering();
 
         if (isJpsSupported()) {
-            pids = runAndWait("{ jps -mlvV || $JAVA_HOME/bin/jps; } | " + grepFiltering + " | awk '{print $1}'").getStdout();
+            pids = runAndWait(getJpsCommand() + " | " + grepFiltering + " | awk '{print $1}'").getStdout();
         } else {
             pids = runAndWait("ps -ef | " +  grepFiltering + " | awk '{print $2}'").getStdout();
         }
@@ -89,24 +89,46 @@ public class AS7SSHClient extends SSHClient {
         return grepFiltering;
     }
 
-    private boolean isJpsSupported() {
-        SSHCommandResult res = runAndWait("jps &>/dev/null || $JAVA_HOME/bin/jps &>/dev/null");
-        int exitCode = res.getExitCode().intValue();
-        if (exitCode != 0) {
-            log.warning("jps is not supported on the host: " + getHost());
-            log.finer(res.toString());
-        }
+    /**
+     * checks if jps is supported on the remote machine
+     * @return true if jps command is available on the remote machine, false otherwise
+     */
+    public boolean isJpsSupported() {
+
+        SSHCommandResult res = runAndWait("jps &>/dev/null || $JAVA_HOME/bin/jps &>/dev/null || "+getJavaHome()+"/bin/jps -mlvV &>/dev/null");
 
         return res.getExitCode().intValue() == 0;
     }
+
+    /**
+     *
+     * @return value of JAVA_HOME sys environment, if not set, empty string is returned
+     */
+    public String getJavaHome() {
+        // there is great chance, that the path to JAVA_HOME on this machine would be also valid in the other machine
+        String javaHome = System.getenv("JAVA_HOME");
+        if (javaHome == null) {
+            javaHome = "";
+        }
+        return javaHome;
+    }
+
+    /**
+     * @return jps command which takes into account JAVA_HOME env variable
+     */
+    public String getJpsCommand() {
+        return "{ jps -mlvV || $JAVA_HOME/bin/jps -mlvV || "+getJavaHome()+"/bin/jps -mlvV; }";
+    }
+
 	/**
 	 * check whether EAP server is running
 	 * @return true if server process is running
 	 */
 	public boolean isRunning() {
         String grepFiltering = getGrepFiltering();
+
         if (isJpsSupported()) {
-            return runAndWait("{ jps -mlvV || $JAVA_HOME/bin/jps; } | " + grepFiltering).getStdout().contains(asHome);
+            return runAndWait(getJpsCommand() + " | " + grepFiltering).getStdout().contains(asHome);
         } else {
             return runAndWait("ps -ef | " +  grepFiltering).getStdout().contains(asHome);
         }
