@@ -180,8 +180,8 @@ public class CliTest extends CliTestScript{
 			}
 			_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
 		}
-
-		String command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+";"+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName;
+		// workaround #913135 for JON 3.2 ALPHA build !!!! export RHQ_CLI_ADDITIONAL_JAVA_OPTS=-Drhq.client.version-check=false;
+		String command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; export RHQ_CLI_ADDITIONAL_JAVA_OPTS=-Drhq.client.version-check=false; "+CliTest.cliShLocation+" -s "+CliTest.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName;
 		if(cliArgs != null){
 			command +=" "+cliArgs;
 		}
