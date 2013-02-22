@@ -74,7 +74,10 @@ public class AS7DMRClient {
 	}
 	
 	public void close() {
-		try {
+		if (client==null) {
+		    return;
+		}
+	    	try {
 			log.fine("Releasing managementClient resources...");
 			client.close();
 		} catch (IOException e) {
