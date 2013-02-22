@@ -134,15 +134,24 @@ public class AS7SSHClient extends SSHClient {
         }
 	}
 	/**
-	 *
-	 * @param logFile relative path located in {@link AS7SSHClient#getAsHome()} to server's boot.log logFile
+	 * @param logFile relative path located in {@link AS7SSHClient#getAsHome()} to server's log with boot information (for 6.0.x it is boot.log, for 6.1.x standalone mode it is server.log) logFile
 	 * @return server startup time by parsing 1st line of it's log file
 	 */
 	public Date getStartupTime(String logFile) {
-		String dateStr = runAndWait("head -n1 "+asHome+"/"+logFile+" | awk -F, '{print $1}' ").getStdout().trim();
-		try {
-			return sdfServerLog.parse(dateStr);
-		} catch (ParseException e) {
+        String dateStringFilteringCommand = "";
+        if (logFile.endsWith("server.log")) {
+            dateStringFilteringCommand += "grep \\[org\\.jboss\\.modules\\]" +asHome+"/"+logFile +" | tail -n1 | awk -F , '{print $1}'";
+        } else {
+             dateStringFilteringCommand += "head -n1 "+asHome+"/"+logFile+" | awk -F, '{print $1}' ";
+        }
+        String dateStr = runAndWait(dateStringFilteringCommand).getStdout().trim();
+        try {
+            if (dateStr.isEmpty() && logFile.endsWith("boot.log")) { // done for managing that boot.log information are put in server.log since EAP 6.1 and boot.log no longer exists
+                return getStartupTime(logFile.replace("boot.log", "server.log"));
+            } else {
+                return sdfServerLog.parse(dateStr);
+            }
+        } catch (ParseException e) {
 			throw new RuntimeException("Unable to determine server startup time", e);
 		}
 	}
