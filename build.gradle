@@ -236,6 +236,7 @@ task jacocoreport() << {
             fileset(dir:System.properties["classes.dir"]) {
               include(name:"modules/plugins/**/target/classes/org/rhq/**")
               include(name:"modules/plugins/**/target/generated-classes/org/rhq/**")
+              exclude(name:"**/*Test*")
             }
           }
         }
@@ -244,6 +245,7 @@ task jacocoreport() << {
             fileset(dir:System.properties["classes.dir"]) {
               include(name:"modules/core/**/target/classes/org/rhq/**")
               include(name:"modules/core/**/target/generated-classes/org/rhq/**")
+              exclude(name:"**/*Test*")
             }
           }
         }
@@ -252,6 +254,8 @@ task jacocoreport() << {
             fileset(dir:System.properties["classes.dir"]) {
               include(name:"modules/enterprise/**/target/classes/org/rhq/**")
               include(name:"modules/enterprise/**/target/generated-classes/org/rhq/**")
+              exclude(name:"**/*Test*")
+              exclude(name:"modules/enterprise/gui**")
             }
           }
         }
@@ -260,6 +264,7 @@ task jacocoreport() << {
             fileset(dir:System.properties["classes.dir"]) {
               include(name:"modules/enterprise/gui/**/target/classes/org/rhq/**")
               include(name:"modules/enterprise/gui/**/target/generated-classes/org/rhq/**")
+              exclude(name:"**/*Test*")
             }
           }
         }
@@ -268,12 +273,13 @@ task jacocoreport() << {
             fileset(dir:System.properties["classes.dir"]) {
               include(name:"modules/**/target/classes/org/rhq/**")
               include(name:"modules/**/target/generated-classes/org/rhq/**")
-              include(name:"modules/plugins/**/target/classes/org/rhq/**")
-              include(name:"modules/plugins/**/target/generated-classes/org/rhq/**")
-              include(name:"modules/core/**/target/classes/org/rhq/**")
-              include(name:"modules/core/**/target/generated-classes/org/rhq/**")
-              include(name:"modules/enterprise/gui/**/target/classes/org/rhq/**")
-              include(name:"modules/enterprise/gui/**/target/generated-classes/org/rhq/**")
+              exclude(name:"modules/plugins/**/target/classes/org/rhq/**")
+              exclude(name:"modules/plugins/**/target/generated-classes/org/rhq/**")
+              exclude(name:"modules/core/**/target/classes/org/rhq/**")
+              exclude(name:"modules/core/**/target/generated-classes/org/rhq/**")
+              exclude(name:"modules/enterprise/**/target/classes/org/rhq/**")
+              exclude(name:"modules/enterprise/**/target/generated-classes/org/rhq/**")
+              exclude(name:"**.*Test*")
             }
           }
         }
