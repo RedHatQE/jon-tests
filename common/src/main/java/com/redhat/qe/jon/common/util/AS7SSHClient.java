@@ -140,7 +140,7 @@ public class AS7SSHClient extends SSHClient {
 	public Date getStartupTime(String logFile) {
         String dateStringFilteringCommand = "";
         if (logFile.endsWith("server.log")) {
-            dateStringFilteringCommand += "grep '\\[org\\.jboss\\.modules\\]' " +asHome+"/"+logFile +" | tail -1 | awk -F , '{print $1}'";
+            dateStringFilteringCommand += "grep '\\[org\\.jboss\\.modules\\]' " +asHome+"/"+logFile +" | tail -1 | awk -F, '{print $1}'";
         } else {
              dateStringFilteringCommand += "head -n1 "+asHome+"/"+logFile+" | awk -F, '{print $1}' ";
         }
