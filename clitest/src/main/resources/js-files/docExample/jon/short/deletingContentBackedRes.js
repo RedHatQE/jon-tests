@@ -39,8 +39,14 @@ var pred = function() {
     );
     return current;
 };
+timeout = 240  // timeout for operations set to 4 minutes
 var result = common.waitFor(pred);
-assertTrue(result && result.status == DeleteResourceStatus.SUCCESS, "Deleting resource failed!!");
+timeout = 120  // timeout back to default
+
+if(result == null){
+	throw "Deleting resource failed!!";
+}
+assertTrue(result.status == DeleteResourceStatus.SUCCESS, "Deleting resource failed!!");
 
 common.info("Checking that resource was removed from inventory...");
 // check that resource is not in inventory

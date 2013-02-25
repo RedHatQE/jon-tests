@@ -10,6 +10,7 @@
 
 var verbose = 3; // logging level
 var common = new _common(); // object with common methods
+timeout = 240  // timeout for operations set to 4 minutes
 
 var platforms = findPlatforms();
 if(platforms.length == 0){
@@ -40,6 +41,7 @@ common.info("Agent is imported and available");
 // invoke 'discovery' prompt command
 common.info("Invoking discovery scan...");
 var history = agent.invokeOperation("executePromptCommand",{command:"discovery -f"});
+timeout = 120  // timeout back to default
 
 // check result of operation
 assertTrue(history.status == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.status + ", error message: " + history.error);

@@ -13,12 +13,27 @@ var common = new _common(); // object with common methods
 // 1.1 setting basic search criteria
 var criteria = new ResourceCriteria();
 criteria.clearPaging(); // this clears the 200 item page size to return all entries
-var resources = ResourceManager.findResourcesByCriteria(criteria);
+var res = ResourceManager.findResourcesByCriteria(criteria);
 
+// invoke discovery scan to have more resources in inventory
+if(res.size() < 200){
+	var agents = Inventory.find({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
+    var agent = agents[0];
+    // invoke 'discovery' prompt command
+    common.info("Invoking discovery scan...");
+    timeout = 240  // timeout for operations set to 4 minutes
+    var history = agent.invokeOperation("executePromptCommand",{command:"discovery -f"});
+    timeout = 120  // timeout back to default
+
+    // check result of operation
+    assertTrue(history.status == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.status + ", error message: " + history.error);
+}
+
+res = ResourceManager.findResourcesByCriteria(criteria);
 common.info("Checking that number of returned resources is > 200...");
-assertTrue(resources.size() > 200, "Number of resources is "+ resources.size() + " but more than 200 is expected!!");
+assertTrue(res.size() > 200, "Number of resources is "+ res.size() + " but more than 200 is expected!!");
 
-common.info("All found resources: [#"+resources.size()+"]");
+common.info("All found resources: [#"+res.size()+"]");
 //pretty.print(resources);
 
 
@@ -27,7 +42,7 @@ common.info("All found resources: [#"+resources.size()+"]");
 // 1.2 Using Sorting
 criteria = new ResourceCriteria();
 criteria.addSortPluginName(PageOrdering.ASC);
-resources = ResourceManager.findResourcesByCriteria(criteria);
+res = ResourceManager.findResourcesByCriteria(criteria);
 /**
  * Should be translated to this:
 SELECT r
@@ -36,7 +51,7 @@ WHERE ( r.inventoryStatus = InventoryStatus.COMMITTED )
 ORDER BY r.resourceType.plugin ASC
 */
 
-checkOrderByPluginName(resources);
+checkOrderByPluginName(res);
 
 
 
@@ -45,23 +60,23 @@ checkOrderByPluginName(resources);
 criteria = new ResourceCriteria();
 criteria.addFilterResourceTypeName('JBossAS Server');
 //criteria.addFilterAgentName('localhost.localdomain') //TODO
-resources = ResourceManager.findResourcesByCriteria(criteria);
+res = ResourceManager.findResourcesByCriteria(criteria);
 
 common.info("Checking that at least one resource of JBossAS Server type is imported...");
-assertTrue(resources.size()> 0, "There is no resource of JBossAS Server type imported!!");
+assertTrue(res.size()> 0, "There is no resource of JBossAS Server type imported!!");
 
 
 
 
 // 1.4 fetching associations
-resource = resources.get(0);
+resource = res.get(0);
 
 common.info("Checking that no child resource was returned (lazy loading)");
-assertTrue(resource.childResources == null, "Not null was returned -> some children resources were returned");
+assertTrue(resource.childres == null, "Not null was returned -> some children resources were returned");
 
 criteria.fetchChildResources(true);
-resources = ResourceManager.findResourcesByCriteria(criteria);
-resource = resources.get(0);
+res = ResourceManager.findResourcesByCriteria(criteria);
+resource = res.get(0);
 
 common.info("Fetching of child resources enabled, checking child resourcess..");
 assertNotNull(resource.childResources,"No child resource found!!");
@@ -84,10 +99,10 @@ assertTrue(pageNumber == 0, "Page number is " + pageNumber + ", but 0 was expect
 
 criteria.setPaging(0,100);
 
-resources = ResourceManager.findResourcesByCriteria(criteria);
+res = ResourceManager.findResourcesByCriteria(criteria);
 
 common.info("Checking changed page size...");
-assertTrue(resources.size() == 100, "Number of resources is " + resources.size() + ", but 100 was expected!!");
+assertTrue(res.size() == 100, "Number of resources is " + res.size() + ", but 100 was expected!!");
 
 
 
@@ -105,11 +120,11 @@ function getPluginName(resource){
 /**
  * Go throught given list and check that resources are ordered by plugin name.
  */
-function checkOrderByPluginName(resources){
+function checkOrderByPluginName(res){
     common.info("Checking order of given resources by plugin name...");
-    for(i=0;i<resources.size()-1;i++){
-        first = getPluginName(resources.get(i));
-        second = getPluginName(resources.get(i+1));
+    for(i=0;i<res.size()-1;i++){
+        first = getPluginName(res.get(i));
+        second = getPluginName(res.get(i+1));
         assertTrue(first <= second, "Not ordered by plugin name, "+ first + "is not <= " + second);
     }
 }

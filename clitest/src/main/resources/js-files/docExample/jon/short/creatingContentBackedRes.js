@@ -117,15 +117,23 @@ if( myResources != null ) {
             );
             return current;
         };
-
+        
+        
         var result = common.waitFor(pred);
+        if(result == null){
+        	throw "Creating the new EAR resource failed!!";
+        }
+     
         common.debug("Child resource creation status : " + result.status);
-        assertTrue(result && result.status == CreateResourceStatus.SUCCESS," Creating the new EAR resource failed!!Status: " +result.status +" Error message: " + result.getErrorMessage());
+        
+        assertTrue(result.status == CreateResourceStatus.SUCCESS," Creating the new EAR resource failed!!Status: " +result.status +" Error message: " + result.getErrorMessage());
 
+        timeout = 240  // timeout for operations set to 4 minutes
         // wait for discovery
         var discovered = common.waitFor(function() {return Inventory.find({name:packageName}).length == 1;});
         assertTrue(discovered, "Resource child was successfully created, but wasn't autodiscovery during timeout!");
-            
+        timeout = 120  // timeout back to default
+        
         // check that new resource is available
         res = Inventory.find({name:packageName}); 
         assertTrue(res.length > 0, packageName + " resource not found!!");
