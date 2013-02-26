@@ -504,6 +504,19 @@
 		***********************************************************************************************
 -->
 
+<test name="OperationSchedulingOnResourceUsingCron">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="operations/resourceOpScheduling.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <parameter name="js.depends" value="rhqapi.js" />
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
 <test name="roles">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
