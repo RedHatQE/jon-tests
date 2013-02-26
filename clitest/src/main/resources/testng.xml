@@ -258,6 +258,19 @@
 	</classes>
 </test>
 
+<test name="retrievingResultsOperation">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="docExample/jon/short/retrievingResultsOperation.js"/>
+                        <parameter name="expected.result"  value="Login successful,init"/>
+                        <parameter name="js.depends" value="rhqapi.js" />
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
 <test name="viewingOpHistory">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
