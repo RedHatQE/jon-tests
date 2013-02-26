@@ -224,6 +224,18 @@
 		</classes>
 	</test>
 
+	<test name="SubNavigationMenuTests">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.SubNavigationMenuTests">
+			<methods>
+				<include name="subNavigationMenuLinksExist"></include>
+				<include name="checkAutoGroupSubnavigation"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
+  	
 	<test name="Administration JSP page validation">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AdministrationPages">

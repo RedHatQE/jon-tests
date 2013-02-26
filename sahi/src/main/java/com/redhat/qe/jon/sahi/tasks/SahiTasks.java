@@ -263,6 +263,14 @@ public class SahiTasks extends ExtendedSahi {
         Assert.assertTrue(this.link("Help").exists());
         Assert.assertTrue(this.link("Logout").exists());
     }
+    
+	public void scondLevelMandatoryMenuLinksExist() {
+
+		Assert.assertTrue(this.cell("Summary").exists());
+		Assert.assertTrue(this.cell("Inventory").exists());
+		Assert.assertTrue(this.cell("Alerts").exists());
+		Assert.assertTrue(this.cell("Monitoring").exists());
+	}
 
     // ***************************************************************************
     // Users and Groups
@@ -482,6 +490,40 @@ public class SahiTasks extends ExtendedSahi {
         this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
     }
 
+    
+    public void checkPlatform(){
+    	this.link("Inventory").click();
+    	Assert.assertTrue(this.cell("Platforms").exists());
+    	this.cell("Platforms").click();
+    	Assert.assertTrue(this.div("Linux").exists());
+    	this.div("Linux").doubleClick();
+    	
+    }
+    
+    
+    public void checkAutoGroupResourceMenues(){
+    	this.link("Inventory").click();
+    	Assert.assertTrue(this.cell("Platforms").exists());
+    	this.cell("Platforms").click();
+    	Assert.assertTrue(this.div("Linux").exists());
+    	this.div("Linux").doubleClick();
+    	Assert.assertTrue(this.image("folder_group_closed.png[0]").exists());
+    	Assert.assertTrue(this.image("folder_group_closed.png[1]").exists());
+    	Assert.assertTrue(this.image("folder_group_closed.png[2]").exists());
+    	scondLevelMandatoryMenuLinksExist();
+    	this.image("folder_group_closed.png[2]").click();
+    	this.image("folder_group_closed.png[1]").click();
+    	this.image("folder_group_closed.png[0]").click();
+    	this.cell("Alerts").click();
+    	this.cell("CPUs").click();
+    	Assert.assertTrue(this.cell("tabTitleSelected").near(this.cell("Alerts")).exists());
+    	this.cell("File Systems").click();
+    	Assert.assertTrue(this.cell("tabTitleSelected").near(this.cell("Alerts")).exists());
+    	this.cell("CPUs").click();
+    	Assert.assertTrue(this.cell("tabTitleSelected").near(this.cell("Alerts")).exists());
+    	
+    }
+    
     // ***************************************************************************
     // Dashboard
     // ***************************************************************************
@@ -2475,7 +2517,9 @@ public class SahiTasks extends ExtendedSahi {
 		deleteRole(roleName);
 	}
 	
-	
+	//*************************************************************************************
+    //* Drift Definition Template
+    //*************************************************************************************	
 	
 	public void createDriftDefinitionTemplate(String name) {
 		this.link("Administration").click();
