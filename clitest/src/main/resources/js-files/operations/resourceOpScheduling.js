@@ -102,6 +102,9 @@ assertTrue(scheduledOp.size() == 0,"Incorrect number of scheduled operations, ex
 var expectedCountOfOp = (activeMinutes +1) * 6;
 opHistory = getResOpHistory(platform.id);
 
+for(i=0;i<opHistory.size();i++){
+	pretty.print(opHistory.get(i));
+}
 assertTrue(opHistory.size() == expectedCountOfOp,"Incorrect number of operations in history, expected: "+expectedCountOfOp+
 		", actual: "+opHistory.size());
 
@@ -121,32 +124,3 @@ for(i=0;i<opHistory.size();i++){
 		//	+expectedLaunch+", actual: "+createdTime);
 }
 
-
-
-/**
- * 
- * Functions
- */
-function getResOpHistory(resourceId){
-	var resOpHistCri = new ResourceOperationHistoryCriteria();
-	resOpHistCri.addFilterResourceIds(resourceId);
-	resOpHistCri.fetchResults(true);
-	
-	return OperationManager.findResourceOperationHistoriesByCriteria(resOpHistCri);
-}
-
-function deleteAllOperationHistory(resourceId){
-	var opHist = getResOpHistory(resourceId);
-	for(i = 0; i<opHist.size();i++){
-		common.debug("Deleting operation history with id: " +opHist.get(i).getId()+", on resource: " + resourceId);
-		OperationManager.deleteOperationHistory(opHist.get(i).getId(),false);
-	}
-}
-
-function deleteAllScheduledOp(resourceId){
-	var schedules = OperationManager.findScheduledResourceOperations(resourceId);
-	for(i = 0; i<schedules.size();i++){
-		common.debug("Deleting operation schedule with job id: " +schedules.get(i).getJobId()+", on resource: " + resourceId);
-		OperationManager.unscheduleResourceOperation(schedules.get(i).getJobId(),resourceId);
-	}
-}

@@ -509,7 +509,19 @@
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
                         <parameter name="js.file"  value="operations/resourceOpScheduling.js"/>
                         <parameter name="expected.result"  value="Login successful"/>
-                        <parameter name="js.depends" value="rhqapi.js" />
+                        <parameter name="js.depends" value="rhqapi.js,operations/common.js" />
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+<test name="OperationSchedulingOnGroupUsingCron">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="operations/groupOpScheduling.js"/>
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <parameter name="js.depends" value="rhqapi.js,operations/common.js" />
                         <methods>
                                 <include name="runJSfile"></include>
                         </methods>
