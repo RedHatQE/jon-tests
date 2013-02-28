@@ -203,7 +203,7 @@ public class AS7DMRClient {
 	 * @param address
 	 * @param operation
 	 * @param params
-	 * @return true if operation was successfull
+	 * @return true if operation was successful
 	 */
 	public boolean executeOperationVoid(String address, String operation,
 			String... params) {
@@ -304,6 +304,13 @@ public class AS7DMRClient {
 			e.printStackTrace();
 		}
 	}
+    
+	/**
+	 * returns true if resource on given address is present (returns some value when calling `read-resource` operation on it)
+	 */
+        public boolean isResourcePresent(String address) {
+        	return executeOperationVoid(address, "read-resource",  new String[]{});
+        }
 
 	/**
 	 * asserts whether given resource is/is not present on server
