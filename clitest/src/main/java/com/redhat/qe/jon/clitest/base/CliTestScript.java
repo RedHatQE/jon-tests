@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.clitest.base;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +14,9 @@ import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
 import com.redhat.qe.jon.common.TestScript;
+
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 
 /**
@@ -42,8 +46,18 @@ public abstract class CliTestScript extends TestScript{
 			// auto-install and setup cli executable
 			// download from target server
 			CliTasks.getCliTasks().runCommand("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
+
 			// detect CLI_HOME from zip content
-			String cliHome = CliTasks.getCliTasks().runCommand("zip -sf rhq-cli.zip | head -n2 | grep cli").trim();
+            ZipFile zipFile = new ZipFile("rhq-cli.zip");
+            Enumeration zipEntries = zipFile.entries();
+            String cliHome;
+            if (zipEntries.hasMoreElements()) {     // first entry should be always the top directory, replacing by it platform dependent code: cliHome = CliTasks.getCliTasks().runCommand("zip -sf rhq-cli.zip | head -n2 | grep cli").trim();
+                cliHome = ((ZipEntry)zipEntries.nextElement()).getName();
+            } else {
+                throw new CliTasksException("rhq-cli.zip is not a valid zip archive or is empty");
+            }
+
+
 			CliTest.cliShLocation = cliHome+"bin/rhq-cli.sh";
 			// unzip CLI
 			CliTasks.getCliTasks().runCommand("rm -rf "+cliHome+" && unzip rhq-cli.zip; rm -f rhq-cli.zip");
