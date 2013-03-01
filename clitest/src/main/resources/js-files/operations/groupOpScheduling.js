@@ -107,7 +107,7 @@ for(i in agents){
 	for(k=0;k<opHistory.size();k++){
 		op = opHistory.get(k);
 		// check status
-		assertTrue(op.getStatus() == "Success","Unsuccessful status: "+op.getStatus()+", with error msg: "+op.getErrorMessage);
+		assertTrue(op.getStatus() == "Success","Unsuccessful status: "+op.getStatus()+", with error msg: "+op.getErrorMessage());
 		// check that operation was created at correct time
 		createdTime = new Date(op.getCreatedTime());
 		cmpTimesWithTolerance(createdTime,new Date(firstOpCreatedTimeMilis + k*10000),900);

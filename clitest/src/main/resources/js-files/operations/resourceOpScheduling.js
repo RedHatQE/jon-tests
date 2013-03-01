@@ -114,7 +114,7 @@ for(i=0;i<opHistory.size();i++){
 	createdTime = new Date(op.getCreatedTime());
 	common.info("Checking operation created at: " + createdTime);
 	
-	assertTrue(op.getStatus() == "Success","Unsuccessful status: "+op.getStatus()+", with error msg: "+op.getErrorMessage);
+	assertTrue(op.getStatus() == "Success","Unsuccessful status: "+op.getStatus()+", with error msg: "+op.getErrorMessage());
 	processCount = op.getResults().get("processList").getList().size();
 	// this is just for making sure that operation returned some result
 	assertTrue(processCount >50,"Returned processList contains less processes than expected, expected: >50, actual: "+processCount);
