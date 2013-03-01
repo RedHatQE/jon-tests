@@ -15,7 +15,7 @@ function getResOpHistory(resourceId){
 
 function deleteAllOperationHistory(resourceId){
 	var opHist = getResOpHistory(resourceId);
-	for(i = 0; i<opHist.size();i++){
+	for(var i = 0; i<opHist.size();i++){
 		common.debug("Deleting operation history with id: " +opHist.get(i).getId()+", on resource: " + resourceId);
 		OperationManager.deleteOperationHistory(opHist.get(i).getId(),false);
 	}
@@ -23,7 +23,7 @@ function deleteAllOperationHistory(resourceId){
 
 function deleteAllScheduledOp(resourceId){
 	var schedules = OperationManager.findScheduledResourceOperations(resourceId);
-	for(i = 0; i<schedules.size();i++){
+	for(var i = 0; i<schedules.size();i++){
 		common.debug("Deleting operation schedule with job id: " +schedules.get(i).getJobId()+", on resource: " + resourceId);
 		OperationManager.unscheduleResourceOperation(schedules.get(i).getJobId(),resourceId);
 	}
@@ -31,7 +31,7 @@ function deleteAllScheduledOp(resourceId){
 
 function deleteAllScheduledOpOnGroup(groupId){
 	var schedules = OperationManager.findScheduledGroupOperations(groupId);
-	for(i = 0; i<schedules.size();i++){
+	for(var i = 0; i<schedules.size();i++){
 		common.debug("Deleting operation schedule with job id: " +schedules.get(i).getJobId()+", on group: " + groupId);
 		OperationManager.unscheduleGroupOperation(schedules.get(i).getJobId(),groupId);
 	}
