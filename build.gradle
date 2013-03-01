@@ -225,6 +225,11 @@ task jacocoreport() << {
       && System.properties["output.dir"]
       && System.properties["report.name"]
     ) {
+    if (!System.properties["sources.dir"]) {
+      logger.info("Property [sources.dir] not defined, coverage report will not include covered lines of code")
+      // set it to some value
+      System.properties["sources.dir"] = ""
+    }
     ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
     ant.report() {
       executiondata() {
@@ -239,6 +244,12 @@ task jacocoreport() << {
               exclude(name:"**/*Test*")
             }
           }
+          sourcefiles() {
+            dirset(dir:System.properties["sources.dir"]) {
+              include(name:"**/src/main/java")
+              include(name:"**/target/generated-sources/**")
+            }
+          }
         }
         group(name:"Core") {
           classfiles() {
@@ -246,6 +257,12 @@ task jacocoreport() << {
               include(name:"modules/core/**/target/classes/org/rhq/**")
               include(name:"modules/core/**/target/generated-classes/org/rhq/**")
               exclude(name:"**/*Test*")
+            }
+          }
+          sourcefiles() {
+            dirset(dir:System.properties["sources.dir"]) {
+              include(name:"**/src/main/java")
+              include(name:"**/target/generated-sources/**")
             }
           }
         }
@@ -258,6 +275,12 @@ task jacocoreport() << {
               exclude(name:"modules/enterprise/gui**")
             }
           }
+          sourcefiles() {
+            dirset(dir:System.properties["sources.dir"]) {
+              include(name:"**/src/main/java")
+              include(name:"**/target/generated-sources/**")
+            }
+          }
         }
         group(name:"GUI") {
           classfiles() {
@@ -265,6 +288,12 @@ task jacocoreport() << {
               include(name:"modules/enterprise/gui/**/target/classes/org/rhq/**")
               include(name:"modules/enterprise/gui/**/target/generated-classes/org/rhq/**")
               exclude(name:"**/*Test*")
+            }
+          }
+          sourcefiles() {
+            dirset(dir:System.properties["sources.dir"]) {
+              include(name:"**/src/main/java")
+              include(name:"**/target/generated-sources/**")
             }
           }
         }
@@ -282,6 +311,12 @@ task jacocoreport() << {
               exclude(name:"**.*Test*")
             }
           }
+          sourcefiles() {
+            dirset(dir:System.properties["sources.dir"]) {
+              include(name:"**/src/main/java")
+              include(name:"**/target/generated-sources/**")
+            }
+          }
         }
       }
       html(destdir:"$buildDir/"+System.properties["output.dir"])
@@ -290,6 +325,6 @@ task jacocoreport() << {
     }
   }
   else {
-    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir output.dir report.name]")
+    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir output.dir report.name], optionally [sources.dir]")
   }
 }
