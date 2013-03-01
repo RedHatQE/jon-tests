@@ -5,8 +5,10 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -144,6 +146,29 @@ public class RestClient {
 			}
 		}
 	}
+	/**
+	 * 
+	 * @return list of platform names imported to inventory
+	 * @throws Exception
+	 */
+        public static List<String> getPlatformNames() throws Exception {
+        	List<String> ret = new ArrayList<String>();
+        	RestClient self = RestClient.getDefault();
+        	Map<String, Object> result = self.getResponse(URIs.PLATFORMS.getUri() + ".json");
+        	JSONArray jsonArray = null;
+        	try {
+        	    jsonArray = self.getJSONArray((String) result.get("response.content"));
+        	} catch (ParseException e) {
+        	    e.printStackTrace();
+        	    return ret;
+        	}
+        	for (int i = 0; i < jsonArray.size(); i++) {
+        	    JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+        	    String platform = jsonObject.get("resourceName").toString();
+        	    ret.add(platform);
+        	}
+        	return ret;
+        }
 	
 	public static String detectServerInstallDir() {
 	    try {
