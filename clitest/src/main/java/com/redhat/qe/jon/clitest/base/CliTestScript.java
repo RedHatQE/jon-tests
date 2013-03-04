@@ -46,18 +46,8 @@ public abstract class CliTestScript extends TestScript{
 			// auto-install and setup cli executable
 			// download from target server
 			CliTasks.getCliTasks().runCommand("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
-
 			// detect CLI_HOME from zip content
-            ZipFile zipFile = new ZipFile("rhq-cli.zip");
-            Enumeration zipEntries = zipFile.entries();
-            String cliHome;
-            if (zipEntries.hasMoreElements()) {     // first entry should be always the top directory, replacing by it platform dependent code: cliHome = CliTasks.getCliTasks().runCommand("zip -sf rhq-cli.zip | head -n2 | grep cli").trim();
-                cliHome = ((ZipEntry)zipEntries.nextElement()).getName();
-            } else {
-                throw new CliTasksException("rhq-cli.zip is not a valid zip archive or is empty");
-            }
-
-
+			String cliHome = CliTasks.getCliTasks().runCommand("unzip -l rhq-cli.zip | head -n4 | tail -1 | grep cli | awk '{print $4}'").trim();
 			CliTest.cliShLocation = cliHome+"bin/rhq-cli.sh";
 			// unzip CLI
 			CliTasks.getCliTasks().runCommand("rm -rf "+cliHome+" && unzip rhq-cli.zip; rm -f rhq-cli.zip");
