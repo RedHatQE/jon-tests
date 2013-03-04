@@ -249,7 +249,7 @@ public class Resource {
 	    }
 	    RestClient rc = RestClient.getDefault();
 	    Map<String, Object> result = rc.getResponse("resource/"+this.getId()+".json");
-	    JSONObject jsonObject = (JSONObject) result.get("response.content");
+	    JSONObject jsonObject = rc.getJSONObject((String)result.get("response.content"));
 	    String typeName = jsonObject.get("typeName").toString();
 	    this.setResourceType(typeName);
 	}
