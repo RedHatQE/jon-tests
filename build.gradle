@@ -230,6 +230,13 @@ task jacocoreport() << {
       // set it to some value
       System.properties["sources.dir"] = ""
     }
+    def agentPlugins = ["**"]
+    if (System.properties["only.jon.plugins"] && System.properties["only.jon.plugins"] == "true") {
+      logger.info("Only JON agent plugins will be included")
+      agentPlugins = ["ant-bundle","apache","database","iis","jmx","platform","postgres","script","rhq-agent"]
+      def pluginPacks = ["jboss-as","jboss-as-5","jboss-as-7","jboss-cache","jboss-cache-v3"]
+      agentPlugins = agentPlugins + pluginPacks
+    }
     ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
     ant.report() {
       executiondata() {
@@ -239,8 +246,10 @@ task jacocoreport() << {
         group(name:"Plugins") {
           classfiles() {
             fileset(dir:System.properties["classes.dir"]) {
-              include(name:"modules/plugins/**/target/classes/org/rhq/**")
-              include(name:"modules/plugins/**/target/generated-classes/org/rhq/**")
+              for (def plugin : agentPlugins) {
+                include(name:"modules/plugins/$plugin/target/classes/org/rhq/**")
+                include(name:"modules/plugins/$plugin/target/generated-classes/org/rhq/**")
+              }
               exclude(name:"**/*Test*")
             }
           }
@@ -325,6 +334,6 @@ task jacocoreport() << {
     }
   }
   else {
-    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir output.dir report.name], optionally [sources.dir]")
+    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir output.dir report.name], optionally [sources.dir only.jon.plugins]")
   }
 }
