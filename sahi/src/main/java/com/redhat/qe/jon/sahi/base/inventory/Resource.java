@@ -41,6 +41,7 @@ public class Resource {
 	private final boolean isPlatform;
 	private final SahiTasks tasks;
 	private String id;
+	private String resourceType;
 	private static final Logger log = Logger.getLogger(Resource.class.getName());
 	/**
 	 * this value says, whether RHQ REST API will be used to get resource IDs and thus faster
@@ -64,6 +65,12 @@ public class Resource {
 	}
 	public Resource(String id,SahiTasks tasks, String... path) {
 		this(id,tasks,Arrays.asList(path));
+	}
+	public void setResourceType(String resourceType) {
+	    this.resourceType = resourceType;
+	}
+	public String getResourceType() {
+	    return resourceType;
 	}
 	/**
 	 * creates new instance of resource, no actions (navigation etc) are performed
@@ -233,6 +240,20 @@ public class Resource {
 		}
 	}
 	/**
+	 * retrieves additional data to this resource using REST interface
+	 * @throws Exception when id of this resource is not known (null)
+	 */
+	public void fetchRestData() throws Exception {
+	    if (this.getId() == null) {
+		throw new Exception("ID of this resouce is not defined, cannot fetch additional data");
+	    }
+	    RestClient rc = RestClient.getDefault();
+	    Map<String, Object> result = rc.getResponse("resource/"+this.getId()+".json");
+	    JSONObject jsonObject = (JSONObject) result.get("response.content");
+	    String typeName = jsonObject.get("typeName").toString();
+	    this.setResourceType(typeName);
+	}
+	/**
 	 * this method uses REST API to retrieve all children of current resource
 	 * @return a List of resources that are direct or indirect ancestors to this resource
 	 */
@@ -261,8 +282,9 @@ public class Resource {
 	}
 	private List<Resource> getChidrenRecursive(RestClient rc, String myID, Resource current) throws Exception {
 		List<Resource> children = new ArrayList<Resource>();
+		current.fetchRestData();
 		for (Entry<String,String> entry : getChildren(rc, myID).entrySet()) {
-			Resource child = current.child(entry.getValue(),entry.getKey());
+			Resource child = current.child(entry.getValue(),entry.getKey());			
 			children.add(child);
 			children.addAll(getChidrenRecursive(rc, entry.getKey(), child));
 		}

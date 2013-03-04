@@ -1,7 +1,8 @@
 package com.redhat.qe.jon.sahi.tests;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sf.sahi.client.ElementStub;
@@ -21,15 +22,24 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 
     @DataProvider
     public Object[][] getResourceTree() throws Exception {
-	List<Resource> tree = new ArrayList<Resource>();
+
+	// we store all resources into map grouped by resource key
+	// so we do not check more than 1 resource of given type
+	Map<String,Resource> tree = new HashMap<String, Resource>();
 	// get really all resources from all agents
 	for (String agentName : RestClient.getPlatformNames()) {
 	    Resource root = new Resource(sahiTasks, agentName);
-	    tree.addAll(root.getChildrenTree());
+	    tree.put(agentName, root);
+	    for (Resource child : root.getChildrenTree()) {
+		tree.put(child.getResourceType(), child);
+	    }
 	}
-	Object[][] output = new Object[tree.size()][];
-	for (int i = 0; i < tree.size(); i++) {
-	    output[i] = new Object[] { tree.get(i) };
+	log.info("Retrieved "+tree.size()+" resources (max 1 resource of given type)");
+	Object[][] output = new Object[tree.values().size()][];
+	Iterator<Resource> iter = tree.values().iterator();
+	int i = 0;
+	while (iter.hasNext()) {
+	    output[i] = new Object[] {iter.next()};
 	}
 	return output;
     }
