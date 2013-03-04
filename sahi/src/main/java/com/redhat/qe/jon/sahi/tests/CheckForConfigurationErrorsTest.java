@@ -40,6 +40,7 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 	int i = 0;
 	while (iter.hasNext()) {
 	    output[i] = new Object[] {iter.next()};
+	    i+=1;
 	}
 	return output;
     }
