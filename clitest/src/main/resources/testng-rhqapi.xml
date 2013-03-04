@@ -58,8 +58,29 @@
 		</class>
 	</classes>
 </test>
-
-<test name="Inventory_Find">
+<test name="ResourceTypes_Find">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
+			<parameter name="js.file"  value="qe-api/resourceTypes.js"/>
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+<test name="MetricTemplates">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
+			<parameter name="js.file"  value="qe-api/metricTemplates.js"/>
+			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
+			<methods>
+				<include name="runJSfile"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+<test name="Resources_Find">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
 			<parameter name="js.file"  value="qe-api/find.js"/>

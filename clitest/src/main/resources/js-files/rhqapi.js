@@ -1307,6 +1307,194 @@ var ResGroup = function(param) {
 };
 
 /**
+ * creates a new instance of Resource Type
+ * @class 
+ * @constructor
+ * @param {org.rhq.core.domain.resource.ResourceType} rhqType
+ */
+var ResourceType = function(rhqType) {	
+	var _obj = rhqType;
+    /**
+	 * @lends ResourceType.prototype
+	 */
+	return {
+		/**
+		 * resource type id
+		 * @type Number
+		 */
+		id : _obj.id,
+		/**
+		 * resource type name
+		 * @type String
+		 */
+		name: _obj.name,
+		/**
+		 * org.rhq.core.domain.resource.ResourceType instance
+		 * @type org.rhq.core.domain.resource.ResourceType
+		 */
+		obj: _obj,
+		/**
+		 * plugin name defining this resource type
+		 * @type String
+		 */
+		plugin: _obj.plugin
+	};
+};
+
+/**
+ * 
+ * @namespace provides access to resource types
+ */
+var resourceTypes = (function() {
+	var common = new _common();
+	return {
+		/**
+		 * @ignore
+		 */
+	    createCriteria : function(params) {
+			params = params || {};
+			common.trace("resourceTypes.createCriteria("+common.objToString(params) +")");
+			var criteria = common.createCriteria(new ResourceTypeCriteria(),params,function(key,value) {
+				if (key=="createDeletePolicy") {
+		    		 return "addFilterCreateDeletePolicy(CreateDeletePolicy."+value.toUpperCase()+")";
+		    	}
+		    	if (key=="category") {
+		    		return "addFilterCategories(ResourceCategory."+value.toUpperCase()+")";
+		    	}
+		    	if (key=="plugin") {
+		    		return "addFilterPluginName(\""+value+"\")";
+		    	}
+			});
+			// by default only 200 items are returned, this line discards it ..
+			// so we get unlimited list
+			criteria.clearPaging();
+			return criteria;
+		},
+		/**
+		 * @function
+		 * Finds a resource type according to criteria params
+		 * @param params - filter params
+		 * * There are also shortcuts for ENUM parameters: - you can use
+		 * <ul>
+		 *    <li>{createDeletePolicy:"both"} insetead of {createDeletePolicy:"CreateDeletePolicy.BOTH"}</li>
+		 *    <li>{category:"platform"} instead of {category:"ResourceCategory.PLATTFORM"}</li>
+		 *    <li>{plugin:"Platforms"} instead of {pluginName:"Platforms"}</li>
+		 *  </ul>
+		 * @type ResourceType[]
+		 * @return array of resource types
+		 */
+		find : function(params) {
+			params = params || {};
+			common.trace("resourceTypes.find("+common.objToString(params)+")");
+			var criteria = resourceTypes.createCriteria(params);
+			var res = ResourceTypeManager.findResourceTypesByCriteria(criteria);
+			common.debug("Found "+res.size()+" resource types ");
+		    return common.pageListToArray(res).map(function(x){return new ResourceType(x);});			
+		}
+	}
+}) ();
+
+/**
+ * @namespace provides access to metric templates
+ */
+var metricsTemplates = (function() { 
+  var common = new _common();
+  
+  var forEachMetricDef = function(resTypes, fn) {
+	  resTypes.forEach(function(rt) {
+		  var metricDefinitions = java.util.ArrayList(rt.obj.metricDefinitions);
+		    for (i = 0; i < metricDefinitions.size(); ++i) {
+		      var metricDef = metricDefinitions.get(i);
+		      fn(rt,metricDef);
+		    }
+	  });    
+  };
+
+  var fetchMetricDefs = function(resTypes) {
+	  resTypes = resTypes || []
+	  var criteria = resourceTypes.createCriteria({ids:resTypes.map(function(rt){return rt.id})});
+	  criteria.fetchMetricDefinitions(true);
+	  var types = ResourceTypeManager.findResourceTypesByCriteria(criteria);
+	  common.debug("Found "+types.size()+" resource types ");
+	  return common.pageListToArray(types).map(function(x){return new ResourceType(x);});
+  };
+
+  return {
+    /**
+     * @namespace metric template predicates
+     */
+    predicates: {
+      /**
+       * predicate that accepts metric definitions of CALLTIME DataType
+       * @field
+       */
+      isCallTime: function(metricDef) { 
+        return metricDef.dataType == DataType.CALLTIME;
+      },
+
+      /**
+       * predicate that accepts metric definitions of MEASUREMENT DataType
+       * @field
+       */
+      isNumeric: function(metricDef) {
+        return metricDef.dataType == DataType.MEASUREMENT;
+      }
+    },
+
+    /**
+     * disables metrics 
+     * @public
+     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param filter - filter function - see {@link metricsTemplates.predicates}
+     * @example metricsTemplates.disable(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), metricTemplates.predicates.isCallTime);
+     * @example metricsTemplates.disable(resourceTypes.find());
+     */
+    disable: function(resTypes, filter) {
+    	common.trace("metricsTemplates.disable(resTypes="+resTypes+",filter="+filter+")");
+    	resTypes = fetchMetricDefs(resTypes);
+    	if (resTypes.length == 0) {
+    		common.error("Failed to find resource types for " + JSON.stringify(resTypes));
+        	return;
+      	}
+    	var definitionIds = [];
+      	forEachMetricDef(resTypes, function(rt,metricDef) {
+      		if (typeof filter == "undefined" || filter(metricDef)) {
+      			common.debug("Preparing to disable metric template " + metricDef + " for " +rt.name);
+      			definitionIds.push(metricDef.id);
+        	}
+      	});
+      	MeasurementScheduleManager.disableSchedulesForResourceType(definitionIds, true);
+    },
+
+    /**
+     * sets collection interval for metrics 
+     * @public
+     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param interval - collection interval in seconds
+     * @param filter - filter function - see {@link metricsTemplates.predicates}
+     * @example metricsTemplates.setCollectionInterval(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), 30, metricTemplates.predicates.isCallTime);
+     */
+    setCollectionInterval: function(resTypes, interval, filter) {
+    	common.trace("metricsTemplates.setCollectionInterval(resTypes="+resTypes+",interval="+interval+",filter="+filter+")");
+    	resTypes = fetchMetricDefs(resTypes);
+    	if (resTypes.lentgh == 0) {
+    		common.error("Failed to find resource types for " + JSON.stringify(resTypes));
+    		return;
+    	}
+    	var definitionIds = [];
+      	forEachMetricDef(resTypes, function(rt,metricDef) {
+      		if (typeof filter == "undefined" || filter(metricDef)) {
+          	common.debug("Setting collection interval for metric template " + metricDef + " to " + interval + "s for resource type " + rt.name);
+          	definitionIds.push(metricDef.id);
+      		}
+      	});
+      	MeasurementScheduleManager.updateSchedulesForResourceType(definitionIds, interval * 1000, true);
+    }
+  };
+})();
+
+
+/**
  * @namespace provides access to Bundle subsystem
  */
 var bundles = (function() {
