@@ -272,21 +272,21 @@ public class Resource {
 		}
 		
 		try {
-			String myId = findResourceId(rc,  platformId);
-			return getChidrenRecursive(rc, myId, this);			
+			this.id = findResourceId(rc,  platformId);
+			return getChidrenRecursive(rc, this);			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return children;
 	}
-	private List<Resource> getChidrenRecursive(RestClient rc, String myID, Resource current) throws Exception {
+	private List<Resource> getChidrenRecursive(RestClient rc, Resource current) throws Exception {
 		List<Resource> children = new ArrayList<Resource>();
 		current.fetchRestData();
-		for (Entry<String,String> entry : getChildren(rc, myID).entrySet()) {
+		for (Entry<String,String> entry : getChildren(rc, current.getId()).entrySet()) {
 			Resource child = current.child(entry.getValue(),entry.getKey());			
 			children.add(child);
-			children.addAll(getChidrenRecursive(rc, entry.getKey(), child));
+			children.addAll(getChidrenRecursive(rc, child));
 		}
 		return children;
 	}
