@@ -91,9 +91,9 @@ for(i in agents){
 	var firstOpCreatedTime = new Date(firstOpCreatedTimeMilis);
 	
 	assertTrue(firstOpCreatedTime > justBeforeScheduleTimeStamp && 
-			firstOpCreatedTimeMilis <justBeforeScheduleTimeStamp.getTime() + 11000, 
+			firstOpCreatedTimeMilis <justBeforeScheduleTimeStamp.getTime() + 12000, 
 			"First scheduled operation was created in incorrect timerange. Expected: "
-			+justBeforeScheduleTimeStamp +" - "+ new Date(justBeforeScheduleTimeStamp.getTime() + 11000)
+			+justBeforeScheduleTimeStamp +" - "+ new Date(justBeforeScheduleTimeStamp.getTime() + 12000)
 			+", actual time of scheduled operation: " + firstOpCreatedTime);
 	
 	// check that first operation was created according to cron expression (each 10 seconds) 
