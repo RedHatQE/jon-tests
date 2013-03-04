@@ -272,7 +272,7 @@ task jacocoreport() << {
               include(name:"modules/enterprise/**/target/classes/org/rhq/**")
               include(name:"modules/enterprise/**/target/generated-classes/org/rhq/**")
               exclude(name:"**/*Test*")
-              exclude(name:"modules/enterprise/gui**")
+              exclude(name:"modules/enterprise/gui/**")
             }
           }
           sourcefiles() {
