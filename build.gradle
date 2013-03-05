@@ -294,8 +294,8 @@ task jacocoreport() << {
         group(name:"GUI") {
           classfiles() {
             fileset(dir:System.properties["classes.dir"]) {
-              include(name:"modules/enterprise/gui/**/target/classes/org/rhq/**")
-              include(name:"modules/enterprise/gui/**/target/generated-classes/org/rhq/**")
+              include(name:"modules/enterprise/gui/**/target/classes/org/rhq/enterprise/gui/coregui/server/**")
+              include(name:"modules/enterprise/gui/**/target/generated-classes/org/rhq/enterprise/gui/coregui/server/**")
               exclude(name:"**/*Test*")
             }
           }
