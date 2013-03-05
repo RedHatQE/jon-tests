@@ -2602,10 +2602,12 @@ var Resource = function (param) {
 			common.debug("Retrieving configuration and configuration definition");
 			var self = ProxyFactory.getResource(_id);
 			var config = ConfigurationManager.getLiveResourceConfiguration(_id,false);
-			common.debug("Got configuration : "+config);
+			common.debug("Got configuration : "+config +", "
+					+ common.objToString(common.configurationAsHash(config)));
 			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(self.resourceType.id);
 			var applied = common.applyConfiguration(config,configDef,params);
-			common.debug("Will apply this configuration: "+applied);
+			common.debug("Will apply this configuration: "+applied +", "
+					+ common.objToString(common.configurationAsHash(applied)));
 
 			var update = ConfigurationManager.updateResourceConfiguration(_id,applied);
 			if (!update) {
@@ -2730,12 +2732,14 @@ var Resource = function (param) {
 		    }
 		    else {
 		    	// we should obtain default/empty configuration
+		    	common.debug("No configuration passed, using default");
 		    	var template = resType.resourceConfigurationDefinition.defaultTemplate;
 				if (template) {
 					configuration = template.createConfiguration();
 				}
 		    }
-			common.debug("Creating new ["+type+"] resource called [" + name+"]");
+			common.debug("Creating new ["+type+"] resource called [" + name+"] with following configuration: ["
+					+ common.objToString(common.configurationAsHash(configuration)) + "]");
 			if (content) {
 				// we're creating a resource with backing content
 				common.debug("Reading file " + content + " ...");
