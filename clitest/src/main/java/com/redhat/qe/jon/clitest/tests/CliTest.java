@@ -203,6 +203,12 @@ public class CliTest extends CliTestScript{
 		}
 		
 	}
+	public void runJSfile(String jsFile,String expectedResult) throws IOException, CliTasksException{
+		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, null, expectedResult, null, null, null, null);
+	}
+	public void runJSfile(String jsFile) throws IOException, CliTasksException{
+		runJSfile(jsFile, "Login successful");
+	}
 	/**
 	 * runs given javascript snippet
 	 * @param snippet

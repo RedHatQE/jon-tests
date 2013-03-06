@@ -405,41 +405,14 @@
 -->
 
 
-<!-- blocked by https://bugzilla.redhat.com/show_bug.cgi?id=814579--> 
-<test name="Bug814579">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="bugs/bug814579.js"/>
-                        <parameter name="expected.result"  value="Login successful,ResourceManagerBean"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
-<!-- fixed -->
-<test name="Bug906754">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="bugs/bug906754.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
-<!-- blocked by https://bugzilla.redhat.com/show_bug.cgi?id=907897-->
-<test name="Bug907897">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="bugs/bug907897.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
+<test name="bz reproduction test">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.bz.BzCliTest">
+			<methods>
+            	<include name="bz.*"></include>
+          	</methods>
+		</class>
+	</classes>
 </test>
 
 

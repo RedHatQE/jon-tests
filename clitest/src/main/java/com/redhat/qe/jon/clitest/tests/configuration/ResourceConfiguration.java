@@ -5,14 +5,13 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.testng.annotations.*;
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 
 ;
 

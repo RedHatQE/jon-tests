@@ -1,7 +1,6 @@
 package com.redhat.qe.jon.clitest.base;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -9,14 +8,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
+
 import com.redhat.qe.jon.clitest.base.Configuration.PARAM;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
 import com.redhat.qe.jon.common.TestScript;
-
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 
 /**
