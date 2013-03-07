@@ -204,9 +204,12 @@ public class CliTest extends CliTestScript{
 		
 	}
 	
-	
+	public void runJSfile(String jsFile,String cliArgs,String expectedResult,String jsDepends,String resSrc, String resDes) 
+			throws IOException, CliTasksException{
+		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, cliArgs, expectedResult, null, jsDepends, resSrc, resDes);
+	}
 	public void runJSfile(String jsFile,String cliArgs,String expectedResult,String jsDepends) throws IOException, CliTasksException{
-		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, cliArgs, expectedResult, null, jsDepends, null, null);
+		runJSfile(jsFile, cliArgs, expectedResult, jsDepends, null, null);
 	}
 	public void runJSfile(String jsFile,String cliArgs,String expectedResult) throws IOException, CliTasksException{
 		runJSfile(jsFile, cliArgs, expectedResult, null);
