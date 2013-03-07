@@ -2,6 +2,7 @@
 
 /**
  * test creates role and user with manage alert permission and removes it - it is not possible to create an Alert Definition and pass it to resource.
+ * this test is disabled for now
  */
 
 /**
