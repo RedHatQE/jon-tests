@@ -293,7 +293,6 @@ public class Resource {
 	/**
 	 * finds id of platform for this resource
 	 * @param rc
-	 * @param res
 	 * @return id of platform
 	 */
 	private String findPlatformId(com.redhat.qe.jon.common.util.RestClient rc) {
@@ -322,7 +321,6 @@ public class Resource {
 	/**
 	 * finds ID of this resource using REST
 	 * @param rc
-	 * @param res
 	 * @param platformId
 	 * @return ID of this resource
 	 * @throws Exception
@@ -352,7 +350,6 @@ public class Resource {
 	/**
 	 * gets children of given resource (resourceId) using REST
 	 * @param rc
-	 * @param res
 	 * @param resourceId
 	 * @return children of given resource (resourceId)
 	 * @throws Exception
