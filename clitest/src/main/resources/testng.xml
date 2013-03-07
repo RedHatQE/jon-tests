@@ -3,6 +3,8 @@
   	<listeners>
   	  	<!-- Listener to send report to Report Engine Server -->
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener" />
+  	  	<!-- Listener to ignore tests which reproduce known and still unfixed bugs -->
+  	  	<listener class-name="com.redhat.qe.auto.bugzilla.BugzillaTestNGListener"/>
   	  	<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found 
   		<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
   		-->
