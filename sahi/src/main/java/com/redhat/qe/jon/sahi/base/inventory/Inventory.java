@@ -240,14 +240,19 @@ public class Inventory extends ResourceTab{
             log.fine("Filtering elements by name: " + name);
             ElementStub searchBox = tasks.textbox("SearchPatternField");
             searchBox.setValue(name);
-            log.finest("Trying to press enter on the textBox");
+            searchBox.focus();
+            log.finer("Trying to press enter on the textBox");
             searchBox.keyDown(13,0);
             searchBox.keyUp(13,0);
             tasks.waitFor(Timing.WAIT_TIME);
-
-//            if (searchBox.isVisible()) {
-//                tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
-//            }
+            if (searchBox.isVisible()) {
+                log.finer("Using keyPress to press enter on the textbox");
+                tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+            } else {
+                searchBox.keyDown(13,0);
+                searchBox.keyUp(13,0);
+            }
+            tasks.waitFor(Timing.WAIT_TIME);
         }
 		/**
 		 * 
