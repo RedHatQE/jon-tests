@@ -59,11 +59,11 @@ public class Inventory extends ResourceTab{
 	 * @param childName
 	 */
 	public void uninventory(String childName) {
-		log.fine("Uninventoy child ["+childName+"]");
+		log.fine("Uninventoy child [" + childName + "]");
 		childResources().uninventoryChild(childName);
 		log.fine("Child resource ["+childName+"] uninventorized");
 	}
-	
+
 	public static class ConnectionSettings {
 		private final SahiTasks tasks;
 		private final Editor editor;
@@ -81,7 +81,7 @@ public class Inventory extends ResourceTab{
 		    return editor;
 		}
 	}
-	
+
 	public static class NewChildWizard {
 		private final Editor editor;
 		private final SahiTasks tasks;
@@ -98,7 +98,7 @@ public class Inventory extends ResourceTab{
 		 */
 		public void next() {
 			tasks.waitFor(Timing.WAIT_TIME);
-			tasks.xy(tasks.cell("Next"),3,3).click();			
+			tasks.xy(tasks.cell("Next"),3,3).click();
 		}
 		/**
 		 * clicks <b>Finish</b> button
@@ -130,11 +130,11 @@ public class Inventory extends ResourceTab{
 			tasks.xy(tasks.cell("Cancel"),3,3).click();
 		}
 	}
-	
+
 	public static class ChildHistory {
 		private final SahiTasks tasks;
 		private final Logger log = Logger.getLogger(this.getClass().getName());
-		
+
 		private ChildHistory(SahiTasks tasks) {
 			this.tasks = tasks;
 		}
@@ -149,7 +149,7 @@ public class Inventory extends ResourceTab{
 			return tasks.row(0).in(tasks.table("listTable["+(tables.size()-1)+"]"));
 		}
 		/**
-		 * gets status of last item in child history (first row in table) 
+		 * gets status of last item in child history (first row in table)
 		 * @return status string
 		 */
 		public String getLastResourceChangeStatus() {
@@ -167,7 +167,7 @@ public class Inventory extends ResourceTab{
 		 * @param success
 		 */
 		public void assertLastResourceChange(boolean success) {
-			
+
 			String status_success="Success";
 			String status_failed="Failed";
 			String status_progress="In Progress";
@@ -192,7 +192,7 @@ public class Inventory extends ResourceTab{
 	    			return;
 	    		}
 	    		if (status_progress.equals(status)) {
-	    			log.fine("Operation in progess, waiting "+Timing.toString(waitTime)+", refreshing ..");    		
+	    			log.fine("Operation in progess, waiting "+Timing.toString(waitTime)+", refreshing ..");
 	    			refresh();
 	    			tasks.waitFor(waitTime);
 		    		continue;
@@ -208,12 +208,12 @@ public class Inventory extends ResourceTab{
 	    			}
 	    			Assert.assertEquals(!success, success,message);
 	    		}
-	    		
+
 	    	}
 	    	log.info("Checking resurce addition/removal timed out");
 	    	Assert.assertTrue(false, message);
 		}
-		
+
 		/**
 		 * refreshes history view
 		 */
@@ -222,9 +222,9 @@ public class Inventory extends ResourceTab{
 				tasks.xy(refresh, 3, 3).click();
 			}
 		}
-		
+
 	}
-	
+
 	public static class ChildResources {
 		private final SahiTasks tasks;
 		private final Logger log = Logger.getLogger(this.getClass().getName());
@@ -238,24 +238,16 @@ public class Inventory extends ResourceTab{
          */
         public void filterChildResources(String name) {
             log.fine("Filtering elements by name: " + name);
-            ElementStub searchBox = tasks.textbox("SearchPatternField");
-            searchBox.setValue(name);
-            searchBox.focus();
-            log.finer("Trying to press enter on the textBox");
-            searchBox.keyDown(13,0);
-            searchBox.keyUp(13,0);
-            tasks.waitFor(Timing.WAIT_TIME);
-            if (searchBox.isVisible()) {
-                log.finer("Using keyPress to press enter on the textbox");
+            if (tasks.textbox("SearchPatternField").exists()) {
+                tasks.textbox("SearchPatternField").setValue(name);
                 tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
             } else {
-                searchBox.keyDown(13,0);
-                searchBox.keyUp(13,0);
+                tasks.textbox("search").setValue(name);
+                tasks.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
             }
-            tasks.waitFor(Timing.WAIT_TIME);
         }
 		/**
-		 * 
+		 *
 		 * @param name
 		 * @return true if child resource with given name exists
 		 */
@@ -276,7 +268,7 @@ public class Inventory extends ResourceTab{
 		 * @return wizard
 		 */
 		public NewChildWizard newChild(String type) {
-		    return selectMenu("Create Child", type);			
+		    return selectMenu("Create Child", type);
 		}
 		private NewChildWizard selectMenu(String menu,String item) {
 			tasks.xy(tasks.cell(menu),3,3).click();
@@ -307,7 +299,7 @@ public class Inventory extends ResourceTab{
 			selectChild(name);
 			tasks.cell("Uninventory").click();
 			tasks.cell("Yes").click();
-			
+
 		}
 		private void selectChild(String name) {
             filterChildResources(name);
@@ -357,5 +349,5 @@ public class Inventory extends ResourceTab{
 		}
 	}
 
-	
+
 }

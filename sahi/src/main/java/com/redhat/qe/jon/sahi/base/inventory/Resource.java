@@ -438,11 +438,13 @@ public class Resource {
      * @param name used for filtering child resources
      */
     public void filterChildResources(String name) {
-        ElementStub searchBox = tasks.textbox("SearchPatternField");
-        searchBox.setValue(name);
-        searchBox.focus();
-        if (searchBox.isVisible()) {
+        log.fine("Filtering elements by name: " + name);
+        if (tasks.textbox("SearchPatternField").exists()) {
+            tasks.textbox("SearchPatternField").setValue(name);
             tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+        } else {
+            tasks.textbox("search").setValue(name);
+            tasks.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
         }
     }
 
