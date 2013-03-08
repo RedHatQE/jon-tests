@@ -432,6 +432,20 @@ public class Resource {
         log.info("Could not verify whether a resource ["+getName()+"] is online or offline -- neither Server_down_16.png nor Server_up_16.png was found and resource remained in unknown state for too long");
         return false;
 	}
+
+    /**
+     * Method which filters child resources based on the provided name using search box
+     * @param name used for filtering child resources
+     */
+    public void filterChildResources(String name) {
+        ElementStub searchBox = tasks.textbox("SearchPatternField");
+        searchBox.setValue(name);
+        searchBox.focus();
+        if (searchBox.isVisible()) {
+            tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+        }
+    }
+
 	/**
 	 * navigates to parent resource of this resource and checks whether this resource exists.
 	 * Parent resource MUST exist (except for platform)!!
@@ -446,6 +460,7 @@ public class Resource {
 			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
+            filterChildResources(this.getName());
 			return tasks.cell(this.getName()).isVisible();
 		}else{
 			return parent().inventory().childResources().existsChild(getName());

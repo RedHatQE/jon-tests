@@ -231,6 +231,19 @@ public class Inventory extends ResourceTab{
 		private ChildResources(SahiTasks tasks) {
 			this.tasks = tasks;
 		}
+
+        /**
+         * Method which filters child resources based on the provided name using search box
+         * @param name used for filtering child resources
+         */
+        public void filterChildResources(String name) {
+            ElementStub searchBox = tasks.textbox("SearchPatternField");
+            searchBox.setValue(name);
+            searchBox.focus();
+            if (searchBox.isVisible()) {
+                tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+            }
+        }
 		/**
 		 * 
 		 * @param name
@@ -240,8 +253,10 @@ public class Inventory extends ResourceTab{
 			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
+            filterChildResources(name);
 			return tasks.cell(name).isVisible();
 		}
+
 		public void refresh() {
 			tasks.cell("Refresh").click();
 		}
@@ -285,6 +300,7 @@ public class Inventory extends ResourceTab{
 			
 		}
 		private void selectChild(String name) {
+            filterChildResources(name);
 			int children = tasks.cell(name).countSimilar();
 			log.fine("Matched cells "+children);
 			if (children==0) {
