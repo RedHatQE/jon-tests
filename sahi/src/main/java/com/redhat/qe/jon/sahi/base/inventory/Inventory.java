@@ -237,12 +237,17 @@ public class Inventory extends ResourceTab{
          * @param name used for filtering child resources
          */
         public void filterChildResources(String name) {
+            log.fine("Filtering elements by name: " + name);
             ElementStub searchBox = tasks.textbox("SearchPatternField");
             searchBox.setValue(name);
-            searchBox.focus();
-            if (searchBox.isVisible()) {
-                tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
-            }
+            log.finest("Trying to press enter on the textBox");
+            searchBox.keyDown(13,0);
+            searchBox.keyUp(13,0);
+            tasks.waitFor(Timing.WAIT_TIME);
+
+//            if (searchBox.isVisible()) {
+//                tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+//            }
         }
 		/**
 		 * 
