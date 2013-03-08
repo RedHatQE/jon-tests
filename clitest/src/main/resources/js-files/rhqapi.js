@@ -2,7 +2,7 @@
  * @overview this library tries to be synchronous and high-level API built on top of standard RHQ remote API
  * @name RHQ API
  * @version 0.2
- * @author Libor Zoubek (lzoubek@redhat.com), Filip Brychta (fbrychta@redhat.com)
+ * @author Libor Zoubek (lzoubek@redhat.com), Filip Brychta (fbrychta@redhat.com), John Sanda (jsanda@redhat.com)
  */
 
 
@@ -1453,7 +1453,7 @@ var metricsTemplates = (function() {
     	common.trace("metricsTemplates.disable(resTypes="+resTypes+",filter="+filter+")");
     	resTypes = fetchMetricDefs(resTypes);
     	if (resTypes.length == 0) {
-    		common.error("Failed to find resource types for " + JSON.stringify(resTypes));
+    		common.error("Failed to find resource types for " + resTypes);
         	return;
       	}
     	var definitionIds = [];
@@ -1478,7 +1478,7 @@ var metricsTemplates = (function() {
     	common.trace("metricsTemplates.setCollectionInterval(resTypes="+resTypes+",interval="+interval+",filter="+filter+")");
     	resTypes = fetchMetricDefs(resTypes);
     	if (resTypes.lentgh == 0) {
-    		common.error("Failed to find resource types for " + JSON.stringify(resTypes));
+    		common.error("Failed to find resource types for " + resTypes);
     		return;
     	}
     	var definitionIds = [];
