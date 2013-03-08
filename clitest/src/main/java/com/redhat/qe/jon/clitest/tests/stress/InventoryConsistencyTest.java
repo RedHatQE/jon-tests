@@ -1,4 +1,4 @@
-package com.redhat.qe.jon.clitest.tests;
+package com.redhat.qe.jon.clitest.tests.stress;
 
 import java.io.IOException;
 
@@ -8,6 +8,7 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 //import com.redhat.qe.tools.remotelog.CheckRemoteLog;
 //import com.redhat.qe.tools.remotelog.RemoteLog;
+import com.redhat.qe.jon.clitest.tests.CliTest;
 
 /**
  * this test checks whether inventory is consistent. This test runs UninventoryResources.js and ImportResources.js and checks server log
@@ -42,7 +43,7 @@ public class InventoryConsistencyTest extends CliTest {
 		groups={"blockedByBug-830158"}
 	)
 	public void importAndUninventory(int attempt) throws IOException, CliTasksException {
-		runJSfile(null, "rhqadmin", "rhqadmin", "ImportResources.js", null,null, null,null,null,null);
-		runJSfile(null, "rhqadmin", "rhqadmin", "UninventoryResources.js", null,null, null,null,null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "inventory/ImportResources.js", null,null, null,null,null,null);
+		runJSfile(null, "rhqadmin", "rhqadmin", "inventory/UninventoryResources.js", null,null, null,null,null,null);
 	}
 }

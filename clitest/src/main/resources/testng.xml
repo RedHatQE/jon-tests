@@ -28,12 +28,6 @@
 </test>
 
 
-<!-- 	***********************************************************************************************
-		<start> Examples from jon documentation, chapter Short Examples 
-		http://docs.redhat.com/docs/en-US/JBoss_Operations_Network/3.1/html/Dev_Writing_JON_Command-Line_Scripts/building-blocks.html
-		***********************************************************************************************
--->
-
 <test name="Examples from jon documentation">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.docexample.JonDocExampleCliTest">
@@ -51,27 +45,6 @@
 	</classes>
 </test>
 
-
-
-
-
-<!-- 	***********************************************************************************************
-		<end> Examples from jon documentation, chapter Short Examples 
-		http://docs.redhat.com/docs/en-US/JBoss_Operations_Network/3.1/html/Dev_Writing_JON_Command-Line_Scripts/building-blocks.html
-		***********************************************************************************************
--->
-
-
-
-
-
-<!-- 	
-		***********************************************************************************************
-		<start> CLI scripts for bug reproduction
-		***********************************************************************************************
--->
-
-
 <test name="bz reproduction test">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.bz.BzCliTest">
@@ -82,21 +55,6 @@
 	</classes>
 </test>
 
-
-<!-- 	
-		***********************************************************************************************
-		<stop> CLI scripts for bug reproduction
-		***********************************************************************************************
--->
-
-
-
-<!-- 	
-		***********************************************************************************************
-		<start> Examples from rhq documentation, Running the RHQ CLI 
-		https://docs.jboss.org/author/display/RHQ/Running+the+RHQ+CLI
-		***********************************************************************************************
--->
 
 <test name="Examples from rhq documentation">
 	<classes>
@@ -109,13 +67,6 @@
 	</classes>
 </test>
 
-
-<!-- 	
-		***********************************************************************************************
-		<end> Examples from rhq documentation, Running the RHQ CLI 
-		https://docs.jboss.org/author/display/RHQ/Running+the+RHQ+CLI
-		***********************************************************************************************
--->
 
 <test name="operation scheduling test">
 	<classes>
@@ -134,94 +85,16 @@
 	</classes>
 </test>
 
-
-<test name="subjects">
+<test name="manager test">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="subjects.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
+		<class name="com.redhat.qe.jon.clitest.tests.manager.ManagerCliTest">	
 			<methods>
-				<include name="runJSfile"></include>		
+				<include name=".*"></include>
+            	<exclude name="runJSfile"></exclude>		
 			</methods>
 		</class>
 	</classes>
 </test>
-
-
-
-<test name="subjectsusercreate">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="subjectsusercreate.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-<test name="systemmanager">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="systemmanager.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-
-<test name="measurementdefinitions">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="measurementdefinitions.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-
-<test name="resourcetypemanager">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="resourcetypemanager.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-<test name="dataaccessmanager">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="dataaccessmanager.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="repo">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="repo.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
 
 <test name="permission test">
 	<classes>
@@ -245,30 +118,26 @@
 	</classes>
 </test>
 
-
-<test name="create_delete_driftTemplate">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="create_delete_driftTemplate.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
+<test name="subject test">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.permission.SubjectCliTest">
+			<methods>
+            	<include name=".*"></include>
+            	<exclude name="runJSfile"></exclude>
+          	</methods>
+		</class>
+	</classes>
 </test>
 
-
-<test name="OperationManager">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="viewProcessList.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
+<test name="drift test">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.drift.DriftCliTest">
+			<methods>
+            	<include name=".*"></include>
+            	<exclude name="runJSfile"></exclude>
+          	</methods>
+		</class>
+	</classes>
 </test>
 
 <test name="schedule_Management_For_RHQ_Agent">
@@ -320,6 +189,7 @@
 	</classes>
 </test -->
 
+<!-- will be moved to jon-eap6 repository
 <test name="check_AS7_Deployment_Directory">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -345,53 +215,23 @@
                         </methods>
                 </class>
         </classes>
+</test -->
+
+<test name="stress test">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.stress.StressCliTest">
+			<methods>
+            	<include name=".*"></include>
+            	<exclude name="runJSfile"></exclude>
+          	</methods>
+		</class>
+		<class name="com.redhat.qe.jon.clitest.tests.stress.InventoryConsistencyTest">
+			<methods>
+            	<include name="importAndUninventory"></include>
+          	</methods>
+		</class>
+	</classes>
 </test>
-
-<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
-<!-- test name="test_LargeBundleDeploy">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="test_LargeBundleDeploy.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <parameter name="res.src" value="/bundles/byebye.war" />
-						<parameter name="res.dst" value="/tmp/byebye.war" />
-						<parameter name="cli.args" value="args-style=named bundle=/tmp/large_bundle.zip" />
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test -->
-
-<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=829399-->
-<!-- test name="test_LargeWarDeploy.js">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="test_LargeWarDeploy.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <parameter name="res.src" value="/bundles/byebye.war" />
-						<parameter name="res.dst" value="/tmp/byebye.war" />
-						<parameter name="cli.args" value="args-style=named bundle=/tmp/rh_dep1.war" />
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test -->
-
-
-<!--  This case SHOULD BE LAST ONE or before the one -->
-<!--  Doing inventory and Uninventory for N number times -->
-<!-- temp disabled because of https://bugzilla.redhat.com/show_bug.cgi?id=830158 -->
-<!--test name="InventoryConsistency">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.InventoryConsistencyTest">
-                        <methods>
-                                <include name="importAndUninventory"></include>
-                        </methods>
-                </class>
-        </classes>
-</test -->
 
 <!--  This case SHOULD BE LAST ONE -->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation -->
