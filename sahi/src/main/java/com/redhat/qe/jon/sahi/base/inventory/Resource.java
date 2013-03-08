@@ -440,7 +440,9 @@ public class Resource {
     public void filterChildResources(String name) {
         log.fine("Filtering elements by name: " + name);
         if (tasks.textbox("SearchPatternField").exists()) {
+          log.fine("textbox SearchPatternField Exists" + name);
             tasks.textbox("SearchPatternField").setValue(name);
+            tasks.textbox("SearchPatternField").click();
             tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
         } else {
             tasks.textbox("search").setValue(name);
