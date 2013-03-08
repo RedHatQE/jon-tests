@@ -239,8 +239,11 @@ public class Inventory extends ResourceTab{
         public void filterChildResources(String name) {
             log.fine("Filtering elements by name: " + name);
             if (tasks.textbox("SearchPatternField").exists()) {
+                log.fine("Textbox SearchPatternField Exists");
                 tasks.textbox("SearchPatternField").setValue(name);
+                tasks.textbox("SearchPatternField").click();
                 tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+                tasks.waitFor(Timing.TIME_5S*2);  
             } else {
                 tasks.textbox("search").setValue(name);
                 tasks.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
