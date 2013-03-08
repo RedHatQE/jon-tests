@@ -16,27 +16,12 @@
 <!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
 <parameter name="make.failure"  value="Login failed:,No such file or directory"/>
 
-
-<test name="discoveryScan">
+<test name="Import all Resources">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="discoveryScan.js"/>
-			<parameter name="js.depends" value="rhqapi.js" />
-			<parameter name="expected.result"  value="Login successful"/>
+		<class name="com.redhat.qe.jon.clitest.tests.inventory.InventoryCliTest">	
 			<methods>
-				<include name="runJSfile"></include>		
-			</methods>     
-		</class>   
-	</classes>
-</test>
-
-<test name="Import-Resources">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="ImportResources.js"/>
-			<parameter name="expected.result"  value="Login successful,Resources are imported successfully"/>
-			<methods>
-				<include name="runJSfile"></include>		
+				<include name="discoveryScanTest"></include>
+				<include name="importAllResourcesTest"></include>		
 			</methods>
 		</class>
 	</classes>
@@ -149,19 +134,6 @@
 	</classes>
 </test>
 
-<test name="roles">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="roles.js"/>
-			<parameter name="expected.result"  value="Login successful"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>     
-		</class>   
-	</classes>
-</test>
-
-
 
 <test name="subjects">
   	<classes>
@@ -250,23 +222,21 @@
 	</classes>
 </test>
 
-<!-- currently failing, see bug https://bugzilla.redhat.com/show_bug.cgi?id=841625 -->
-<test name="userRoles">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="userRoles.js"/>
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
-
 
 <test name="permission test">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.permission.PermissionCliTest">
+			<methods>
+            	<include name=".*"></include>
+            	<exclude name="runJSfile"></exclude>
+          	</methods>
+		</class>
+	</classes>
+</test>
+
+<test name="role test">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.permission.RoleCliTest">
 			<methods>
             	<include name=".*"></include>
             	<exclude name="runJSfile"></exclude>
@@ -427,12 +397,9 @@
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation -->
 <test name="Uninventory-Platforms-End">
   	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="UninventoryResources.js"/>
-			<parameter name="js.depends" value="rhqapi.js" />			
-			<parameter name="expected.result"  value="Login successful,All Platforms successfully removed from server"/>
+		<class name="com.redhat.qe.jon.clitest.tests.inventory.InventoryCliTest">	
 			<methods>
-				<include name="runJSfile"></include>		
+				<include name="uninventoryAllResourcesTest"></include>		
 			</methods>
 		</class>
 	</classes>

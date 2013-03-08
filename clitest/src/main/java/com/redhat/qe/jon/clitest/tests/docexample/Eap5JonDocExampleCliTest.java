@@ -28,7 +28,7 @@ public class Eap5JonDocExampleCliTest extends CliTest {
 		
 	}
 	
-	@Test(groups={"blockedByBug-851145"})
+	@Test(groups={"blockedByBug-851145"},dependsOnMethods = { "creatingContentBackedResTest" })
 	public void updatingContentBackedResTest()throws IOException, CliTasksException{
 		runJSfile("docExample/jon/short/updatingContentBackedRes.js",
 				"--args-style=named deployment=/tmp/MiscBeans-3.2.5.ear",
@@ -39,7 +39,7 @@ public class Eap5JonDocExampleCliTest extends CliTest {
 		
 	}
 	
-	@Test
+	@Test(dependsOnMethods = { "creatingContentBackedResTest" })
 	public void deletingContentBackedResTest()throws IOException, CliTasksException{
 		runJSfile("docExample/jon/short/deletingContentBackedRes.js",
 				null,

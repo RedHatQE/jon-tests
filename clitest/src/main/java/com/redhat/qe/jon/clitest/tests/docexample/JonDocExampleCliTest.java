@@ -51,7 +51,9 @@ public class JonDocExampleCliTest extends CliTest {
 	@Test
 	public void viewingResConfSettingsTest()throws IOException, CliTasksException{
 		runJSfile("docExample/jon/short/viewingResConfSettings.js",
-				"Login successful,rhq.agent.server.bind-port = 7080");
+				null,
+				"Login successful,rhq.agent.server.bind-port = 7080",
+				"rhqapi.js");
 	}
 	
 	@Test
@@ -109,7 +111,7 @@ public class JonDocExampleCliTest extends CliTest {
 		runJSfile("docExample/jon/short/newRole.js");
 	}
 	
-	@Test
+	@Test(dependsOnMethods = { "newRoleTest" })
 	public void creatingUserAndRolesTest()throws IOException, CliTasksException{
 		runJSfile("docExample/jon/short/creatingUserAndRoles.js");
 	}
