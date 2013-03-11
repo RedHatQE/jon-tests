@@ -33,7 +33,7 @@ subprojects {
 		}
 	}
   task jacocodump() << {
-    if ( System.properties["code.coverage"] ) {
+    if ( System.properties["code.coverage"] && System.properties["code.coverage"] == "true" ) {
       logger.info("Gathering jacoco results")
       ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
       def agentDump="$buildDir/reports/jon.agent.exec"
