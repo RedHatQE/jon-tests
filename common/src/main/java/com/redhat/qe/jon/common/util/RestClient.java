@@ -238,7 +238,7 @@ public class RestClient {
 	
 	public JSONArray getJSONArray(String content) throws ParseException{
 		JSONParser parser=new JSONParser();
-        _logger.finer("Parsing content to JSONArray: " + content);
+        _logger.finest("Parsing content to JSONArray: " + content);
 		return (JSONArray)parser.parse(content);
 	}
 	
