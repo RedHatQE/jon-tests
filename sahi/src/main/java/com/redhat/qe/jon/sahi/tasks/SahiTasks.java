@@ -1811,6 +1811,11 @@ public class SahiTasks extends ExtendedSahi {
    }
     
     //***********************************************************************************************
+    //* Administration Page(s) validation [NON-JSP pages] - added on 08-Mar-2013
+    //***********************************************************************************************
+    
+    
+    //***********************************************************************************************
     //* Administration Page(s) validation [JSP pages]
     //***********************************************************************************************
     
@@ -1821,10 +1826,23 @@ public class SahiTasks extends ExtendedSahi {
         this.waitForElementExists(this, this.table(tableName), tableName, 1000*20); //JSP pages are not a AJAX pages, hence waiting for an element (table name) on JSP page
         _logger.log(Level.FINE, "Page redirected to: Administration-->"+pageLocation);
     }
-    public boolean validatePage(String page, String tableName, String tableColumns, int columnIndexFrom, int minRowCount){
+    public boolean validatePage(String page, String tableName, String tableColumns, int columnIndexFrom, int minRowCount, boolean jsp){
     	navigateToAdministrationPage(page, tableName);
-    	LinkedList<String> header = getTableHeader(columnIndexFrom);
-    	LinkedList<LinkedList<String>> tableContent = getJSPtable(tableName, header.size(), columnIndexFrom);
+    	
+    	LinkedList<String> header = null;
+    	LinkedList<LinkedList<String>> tableContent = null;
+    	if(jsp){
+    		header = getTableHeader(columnIndexFrom);
+        	tableContent = getJSPtable(tableName, header.size(), columnIndexFrom);
+    	}else{
+    		String headerReference = "/headerButton/";
+        	String cellReference = "/tallCell/";
+        	header = getTableHeader(headerReference, columnIndexFrom);
+        	tableContent = getTable(cellReference, header.size());
+    	}
+    	
+    	
+    	
     	
     	StringBuffer tableDetails = new StringBuffer("***********Friendly Tabele Details***************\n");
     	tableDetails.append("Table Name: ").append(tableName).append("\n");
@@ -1842,6 +1860,17 @@ public class SahiTasks extends ExtendedSahi {
     	}    	
     	return ((minRowCount <= tableContent.size()) && (header.size() == 0));
     }
+    
+    public LinkedList<String> getTableHeader(String columnReference, int columnIndexFrom){
+    	LinkedList<String> header = new LinkedList<String>();
+       	int tableHeaderCount = this.cell(columnReference).countSimilar();
+    	_logger.log(Level.FINE, "Table Header Count: "+tableHeaderCount);
+    	for(int i=columnIndexFrom; i<tableHeaderCount;i++){
+    		header.addLast((this.cell(columnReference+"["+i+"]")).getText());
+    	}
+    	return header;
+    }
+    
     public LinkedList<String> getTableHeader(int columnIndexFrom){
     	LinkedList<String> header = new LinkedList<String>();
     	String tableHeadertext = "/rich-table-subheadercell/";
@@ -1873,6 +1902,22 @@ public class SahiTasks extends ExtendedSahi {
     			break;
     		}
     	}      
+    	return table;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public LinkedList<LinkedList<String>> getTable(String cellReference, int columnSize){
+    	LinkedList<LinkedList<String>> table = new LinkedList<LinkedList<String>>();
+    	LinkedList<String> row = new LinkedList<String>();
+    	
+    	int noCell = this.cell(cellReference).countSimilar();
+    	for(int cell=0;cell<noCell;cell++){
+    		for(int col=0; col<columnSize; col++){
+    			row.addLast(this.cell(cellReference+"["+cell+"]").getText());
+    		}
+    		table.addLast((LinkedList<String>) row.clone());
+			row.clear();
+    	}
     	return table;
     }
     
