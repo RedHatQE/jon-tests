@@ -243,7 +243,7 @@ public class Inventory extends ResourceTab{
             if (tasks.textbox("SearchPatternField").exists()) {
                 log.fine("Textbox SearchPatternField Exists");
                 tasks.textbox("SearchPatternField").setValue(name);
-                tasks.hidden("search").setFile(name);
+                tasks.hidden("search").setValue(name);
                 tasks.textbox("SearchPatternField").click();
                 //tasks.execute("_sahi._keyPress(_sahi._textbox(\"SearchPatternField\"), [13,13]);"); //13 - Enter key
                 // Sahi doesn't work using JDK awt robot
