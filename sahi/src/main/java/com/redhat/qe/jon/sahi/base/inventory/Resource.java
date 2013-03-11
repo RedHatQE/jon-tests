@@ -446,17 +446,18 @@ public class Resource {
           tasks.textbox("SearchPatternField").setValue(name);
           tasks.hidden("search").setValue(name);
           tasks.textbox("SearchPatternField").click();
-          //tasks.execute("_sahi._keyPress(_sahi._textbox(\"SearchPatternField\"), [13,13]);"); //13 - Enter key
-          // Sahi doesn't work using JDK awt robot
+          tasks.execute("_sahi._keyPress(_sahi._textbox(\"SearchPatternField\"), [13,13]);"); //13 - Enter key
+          /*
+          // Sahi doesn't work using JDK awt robot - AWT ROBOT WORKS!
           try {
             java.awt.Robot robot = new java.awt.Robot();
             robot.keyPress(KeyEvent.VK_ENTER);
-            //robot.keyRelease(KeyEvent.VK_ENTER);
+            robot.keyRelease(KeyEvent.VK_ENTER);
           } 
           catch (AWTException ex) {
             log.fine("filterChildResources: AWT Robot pressing enter thrown exception: " + ex.getMessage());
           }
-          
+          */
           tasks.waitFor(Timing.TIME_5S*6);          
         } else {
             tasks.textbox("search").setValue(name);
