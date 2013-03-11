@@ -33,6 +33,10 @@ subprojects {
 		}
 	}
   task jacocodump() << {
+    if ( !System.properties["code.coverage"] ) {
+      logger.info("System property [code.coverage=true] is required, skipping dump")
+      // wanna know why? just because jenkins does not support conditional build steps correctly :-/   
+    }
     logger.info("Gathering jacoco results")
     ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
     def agentDump="$buildDir/reports/jon.agent.exec"
