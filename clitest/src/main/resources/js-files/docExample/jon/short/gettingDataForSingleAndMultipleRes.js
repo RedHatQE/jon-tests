@@ -65,9 +65,12 @@ for( a in jbossServers ) {
     common.info("Restarting " + jbossServers[a]);
     var jboss = ProxyFactory.getResource(jbossServers[a].id);
     jboss.restart();
+    
     // check operation status
+    timeout = 240;
     var res = new Resource(jbossServers[a].id);
-    var history = res.waitForOperationResult(jbossServers[a].id);
+    var history = res.waitForOperationResult();
+    timeout = 120;
     assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + history.status + " but success was expected!!");
 
     sleep(20 * 1000); // jBoss is not started completely, wait to be sure

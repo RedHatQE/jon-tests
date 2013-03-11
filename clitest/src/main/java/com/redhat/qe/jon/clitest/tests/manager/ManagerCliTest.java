@@ -31,7 +31,10 @@ public class ManagerCliTest extends CliTest {
 	
 	@Test
 	public void operationManagerTest() throws IOException, CliTasksException{
-		runJSfile("managers/viewProcessList.js");
+		runJSfile("managers/viewProcessList.js",
+				null,
+				"Login successful",
+				"rhqapi.js");
 	}
 	
 	@Test

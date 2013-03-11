@@ -41,7 +41,7 @@ pretty.print(processlist);
 agent.updateAllPlugins();
 
 var res = new Resource(agent.id);
-var history = res.waitForOperationResult(agent.id);
+var history = res.waitForOperationResult();
 common.info("Update all plugins operation result: " + history.status);
 assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + history.status + " but success was expected!!");
 

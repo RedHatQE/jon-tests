@@ -2348,11 +2348,11 @@ var Resource = function (param) {
 		}
 	};
 
-	var _waitForOperationResult = function(resourceId, resOpShedule){
+	var _waitForOperationResult = function(resOpShedule){
 		var opHistCriteria = new ResourceOperationHistoryCriteria();
 		if(resOpShedule)
 			opHistCriteria.addFilterJobId(resOpShedule.getJobId());
-		opHistCriteria.addFilterResourceIds(resourceId);
+		opHistCriteria.addFilterResourceIds(_id);
 		opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent
 															// at top of results
 		opHistCriteria.setPaging(0, 1); // only return one result, in effect the
@@ -2866,7 +2866,7 @@ var Resource = function (param) {
 
 			var resOpShedule = OperationManager.scheduleResourceOperation(_id,name,0,0,0,0,configuration,null);
 			common.info("Operation ["+name+"] scheduled");
-			var result = _waitForOperationResult(_id,resOpShedule);
+			var result = _waitForOperationResult(resOpShedule);
 			var ret = {}
 			ret.status = String(result.status)
 			ret.error = String(result.errorMessage)
@@ -2929,9 +2929,8 @@ var Resource = function (param) {
 		/**
 		 * Waits until operation is finished or timeout is reached.
 		 *
-		 * @param resourceId
 		 * @param resOpShedule
-		 *            may be null, than the most recent job for given resourceId
+		 *            may be null, than the most recent job for this resource
 		 *            is picked
 		 * @returns operation history
 		 * @function

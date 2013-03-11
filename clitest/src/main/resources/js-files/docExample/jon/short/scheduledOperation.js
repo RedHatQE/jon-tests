@@ -35,7 +35,7 @@ var sched = OperationManager.scheduleResourceOperation(
 
 // check operation status
 var res = new Resource(agent.get(0).id);
-var history = res.waitForOperationResult(agent.get(0).id,sched);
+var history = res.waitForOperationResult(sched);
 assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + history.status + " but success was expected!!");
 
 

@@ -1,3 +1,5 @@
+
+
 var query = "SELECT r " +
 			"FROM Resource r " +
 			"WHERE r.resourceType.name='Linux'";
@@ -16,10 +18,14 @@ var op = OperationManager.scheduleResourceOperation(
 					"Test view process list"
 );
 
-sleep(10000);
 
 Assert.assertNotNull(op);
 pretty.print(op);
+
+//check operation status
+var res = new Resource(server.getId());
+var history = res.waitForOperationResult();
+assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + history.status + " but success was expected!!");
 
 var jobId = op.getJobId();
 
