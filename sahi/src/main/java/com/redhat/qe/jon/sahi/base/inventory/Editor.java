@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import net.sf.sahi.client.ElementStub;
 
+import net.sf.sahi.client.ExecutionException;
 import org.testng.Assert;
 
 import com.redhat.qe.jon.sahi.base.inventory.Configuration.ConfigEntry;
@@ -211,8 +212,12 @@ public class Editor {
 			if (cell.fetch("innerHTML").contains("class=\"buttonTitle") && cell.isVisible()) {
 				log.fine(cell.fetch("innerHTML"));
 				if (i == index) {
-//					tasks.xy(cell,3,3).doubleClick();
-                    tasks.execute("_sahi._keyPress(_sahi._image('add.png[" + index +"]'), 13);");
+					tasks.xy(cell,3,3).doubleClick();
+                    try {
+                        tasks.execute("_sahi._keyPress(_sahi._image('add.png[" + index +"]'), 13);");
+                    } catch (ExecutionException ex) {
+                        log.warning("Executing keyPress failed, it can be caused thx to successful opening of new entry dialog using clicking; Exception message: " + ex.toString());
+                    }
 					tasks.waitFor(Timing.WAIT_TIME);
 					return new ConfigEntry(tasks);
 				}
