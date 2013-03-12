@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.BeforeSuite;
 
+import com.redhat.qe.jon.clitest.base.CliEngine;
+import com.redhat.qe.jon.clitest.base.CliTestRunner;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 
 /**
@@ -15,7 +17,7 @@ import com.redhat.qe.jon.clitest.tasks.CliTasksException;
  * @author lzoubek
  * 
  */
-public class OnAgentCliTest extends CliTest {
+public class OnAgentCliTest extends CliEngine {
 
     protected static String agentName;
 
@@ -23,6 +25,16 @@ public class OnAgentCliTest extends CliTest {
     public void checkInputProperties() {
 	checkRequiredProperties("jon.agent.name");
 	agentName = System.getProperty("jon.agent.name");
+    }
+    
+    @Override
+    public CliTestRunner createJSRunner(String jsFile) {
+        return super.createJSRunner(jsFile).withArg("agent", agentName);
+    }
+    
+    @Override
+    public CliTestRunner createJSSnippetRunner(String jsSnippet) {
+        return super.createJSSnippetRunner(jsSnippet).withArg("agent", agentName);
     }
 
     public void runJSfile(String rhqTarget, String cliUsername,

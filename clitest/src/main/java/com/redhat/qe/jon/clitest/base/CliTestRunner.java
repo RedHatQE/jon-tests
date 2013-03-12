@@ -1,8 +1,13 @@
 package com.redhat.qe.jon.clitest.base;
 
+import java.util.Arrays;
+import java.util.logging.Logger;
+
+import org.testng.Assert;
+
 public class CliTestRunner {
 
-    //private static Logger log = Logger.getLogger(CliTestRunner.class.getName());
+    private static Logger log = Logger.getLogger(CliTestRunner.class.getName());
     private final CliEngine engine;
     private String username;
     private String password;
@@ -81,6 +86,37 @@ public class CliTestRunner {
 	return this;
     }
     /**
+     * set additional resource source paths (looked up as java resource)
+     * @param resSrc
+     * @return
+     */
+    public CliTestRunner resourceSrcs(String... resSrc) {
+	this.resSrc = resSrc;
+	return this;
+    }
+    /**
+     * set destinations for additional {@link resourceSrcs}
+     * @param resDst
+     * @return
+     */
+    public CliTestRunner resourceDests(String... resDst) {
+	this.resDst = resDst;
+	return this;
+    }
+    /**
+     * adds jsFile dependency
+     * @param jsFile
+     * @return
+     */
+    public CliTestRunner addDepends(String jsFile) {
+	if (this.jsDepends==null) {
+	    this.jsDepends = new String[] {};
+	}
+	this.jsDepends = Arrays.copyOf(this.jsDepends, this.jsDepends.length+1);
+	this.jsDepends[this.jsDepends.length-1] = jsFile;
+	return this;
+    }
+    /**
      * specify message that makes test fail, if produced as output of test
      * @return
      */
@@ -107,6 +143,9 @@ public class CliTestRunner {
 	return this;
     }
     public CliTestRunner withArg(String name, String value) {
+	if (this.cliArgs==null) {
+	    this.cliArgs="";
+	}
 	this.cliArgs += " "+name+"="+value;
 	return this;
     }
@@ -129,19 +168,28 @@ public class CliTestRunner {
     /**
      * runs this CLI test
      */
-    public void run() throws Exception {
+    public void run() {
 	validate();
 	if (this.cliArgs!=null) { // we support named arguments only at this time
 	    this.cliArgs = "--args-style=named"+this.cliArgs;
 	}
+	log.info("CLI ARGS:"+this.cliArgs);
 	String jsDepends = prepareArrayArgs(this.jsDepends);
 	String resSrc = prepareArrayArgs(this.resSrc);
 	String resDst = prepareArrayArgs(this.resDst);
 	if (jsSnippet==null) {
-	    engine.runJSfile(null, this.username, this.password, this.jsFile, this.cliArgs, this.expectedResult, this.makeFailure, jsDepends, resSrc, resDst);
+	    try {
+		engine.runJSfile(null, this.username, this.password, this.jsFile, this.cliArgs, this.expectedResult, this.makeFailure, jsDepends, resSrc, resDst);
+	    } catch (Exception e) {
+		Assert.fail("Test failed : "+e.getMessage(), e);
+	    } 
 	}
 	else {
-	    engine.runJSSnippet(this.jsSnippet, null, this.username, this.password, cliArgs, expectedResult, this.makeFailure, jsDepends, resSrc, resDst);
+	    try {
+		engine.runJSSnippet(this.jsSnippet, null, this.username, this.password, cliArgs, expectedResult, this.makeFailure, jsDepends, resSrc, resDst);
+	    } catch (Exception e) {
+		Assert.fail("Test failed : "+e.getMessage(), e);
+	    } 
 	}
 	
     }

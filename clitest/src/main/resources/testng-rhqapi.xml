@@ -5,185 +5,52 @@
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener" />
   	</listeners>
 
-
-<parameter name="cli.username"  value="rhqadmin"/>
-<parameter name="cli.password"  value="rhqadmin"/>
-<!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
-<parameter name="make.failure"  value="Login failed:,No such file or directory"/>
-
-<test name="Common">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="qe-api/common.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-<test name="Inventory_DiscoveryQueue">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="qe-api/discoveryQueue.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-<test name="Inventory_Import">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/import.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-<test name="users-roles-permissions">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="qe-api/users-roles-permissions.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="ResourceTypes_Find">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="qe-api/resourceTypes.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="MetricTemplates">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/metricTemplates.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="Resources_Find">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="qe-api/find.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="Resource_Metrics">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/resource_metrics.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="Resource_CreateChild">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/resource_createChild.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<parameter name="res.src" value="/deployments/hello1.war" />
-			<parameter name="res.dst" value="/tmp/hello.war" />
-			<parameter name="cli.args" value="--args-style=named deployment=/tmp/hello.war"/>
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-<test name="Resource_Configuration">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/resource_configuration.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-<test name="Resource_InvokeOperation">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/resource_invokeOperation.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="Resource_scheduleOperation">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/resource_scheduleOperation.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="Group_scheduleOperation">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/group_scheduleOperation.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="Groups">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.CliTest">	
-			<parameter name="js.file"  value="qe-api/groups.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />				
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-<test name="Bundles">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.OnAgentCliTest">	
-			<parameter name="js.file"  value="qe-api/bundles.js"/>
-			<parameter name="js.depends" value="rhqapi.js,qe-api/config.js" />
-				<parameter name="res.src" value="/bundles/bundle.zip,/bundles/bundle-incomplete.zip" />
-				<parameter name="res.dst" value="/tmp/bundle.zip,/tmp/bundle-incomplete.zip" />
-			<methods>
-				<include name="runJSfile"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
+	<test name="common">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.CommonCliTest">	
+			</class>
+		</classes>
+	</test>
+	<test name="resources">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.ResourceCliTest">
+			</class>
+		</classes>
+	</test>
+	<test name="users-roles-permissions">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.UsersRolesCliTest">
+			</class>
+		</classes>
+	</test>
+	<test name="resource types">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.ResourceTypesCliTest">
+			</class>
+		</classes>
+	</test>
+	<test name="metric templates">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.MetricTemplatesCliTest">
+			</class>
+		</classes>
+	</test>
+	<test name="resource">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.ResourceCliTest">
+			</class>
+		</classes>
+	</test>
+	<test name="groups">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.GroupsCliTest">
+			</class>
+		</classes>
+	</test>	
+	<test name="bundles">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.BundlesCliTest">
+			</class>
+		</classes>
+	</test>
 </suite>
