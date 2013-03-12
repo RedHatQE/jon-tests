@@ -1,7 +1,7 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
-
+import java.awt.Robot;
 import java.awt.AWTException;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -244,12 +244,12 @@ public class Inventory extends ResourceTab{
                 log.fine("Textbox SearchPatternField Exists");
                 tasks.textbox("SearchPatternField").setValue(name);
                 tasks.hidden("search").setValue(name);
-                tasks.textbox("SearchPatternField").focus();
+                tasks.textbox("SearchPatternField").click();
                 //tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
                 //tasks.execute("_sahi._typeNativeKeyCode(java.awt.event.KeyEvent.VK_ENTER);");
                 // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!!
                 try {
-                  java.awt.Robot robot = new java.awt.Robot();
+                  Robot robot = new Robot();
                   robot.keyPress(KeyEvent.VK_ENTER);
                   robot.keyRelease(KeyEvent.VK_ENTER);
                 } 
@@ -259,13 +259,13 @@ public class Inventory extends ResourceTab{
                 tasks.waitFor(Timing.TIME_5S*2);  
             } else {
                 tasks.textbox("search").setValue(name);
-                tasks.textbox("search").focus();
+                tasks.textbox("search").click();
                 //tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
                 //tasks.execute("_sahi._typeNativeKeyCode(java.awt.event.KeyEvent.VK_ENTER);");
 
                 // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!
                 try {
-                  java.awt.Robot robot = new java.awt.Robot();
+                  Robot robot = new Robot();
                   robot.keyPress(KeyEvent.VK_ENTER);
                   robot.keyRelease(KeyEvent.VK_ENTER);
                 } 
