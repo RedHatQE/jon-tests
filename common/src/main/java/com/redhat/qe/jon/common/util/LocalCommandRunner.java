@@ -32,14 +32,16 @@ public class LocalCommandRunner implements ICommandRunner {
 	
 	@Override
 	public void copyFile(String srcPath, String destDir) throws IOException {
-		copyFile(new File(srcPath),new File(destDir+File.separator+new File(srcPath).getName()));
+	    log.fine("Copying [" + srcPath + "] to " + destDir);
+	    copyFile(new File(srcPath),new File(destDir+File.separator+new File(srcPath).getName()));
 		log.fine("File [" + srcPath + "] copied to " + destDir);
 	}
 
 	@Override
 	public void copyFile(String srcPath, String destDir, String destFileName)
 			throws IOException {
-		copyFile(new File(srcPath), new File(destDir + File.separator
+	    log.fine("Copying [" + srcPath + "] to " + destDir + "/" + destFileName);
+	    copyFile(new File(srcPath), new File(destDir + File.separator
 				+ destFileName));
 		log.fine("File [" + srcPath + "] copied to " + destDir + "/"
 				+ destFileName);
