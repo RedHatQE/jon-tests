@@ -27,9 +27,4 @@ public class OnAgentCliTest extends CliEngine {
     public CliTestRunner createJSRunner(String jsFile) {
         return super.createJSRunner(jsFile).withArg("agent", agentName);
     }
-    
-    @Override
-    public CliTestRunner createJSSnippetRunner(String jsSnippet) {
-        return super.createJSSnippetRunner(jsSnippet).withArg("agent", agentName);
-    }
 }

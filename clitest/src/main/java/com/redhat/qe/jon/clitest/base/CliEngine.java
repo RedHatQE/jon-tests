@@ -203,13 +203,11 @@ public class CliEngine extends CliTestScript{
 		
 	}
 	public CliTestRunner createJSRunner(String jsFile) {
-	    CliTestRunner runner = new CliTestRunner(this);
-	    return runner.jsFile(jsFile);
+	    return new CliTestRunner(this).jsFile(jsFile);
 	}
 	
-	public CliTestRunner createJSSnippetRunner(String jsSnippet) {
-	    CliTestRunner runner = new CliTestRunner(this);
-	    return runner.jsSnippet(jsSnippet);
+	public final CliTestRunner createJSSnippetRunner(String jsSnippet) {
+	    return createJSRunner(null).jsSnippet(jsSnippet);
 	}
 	
 	public void runJSfile(String jsFile,String cliArgs,String expectedResult,String jsDepends,String resSrc, String resDes) 
