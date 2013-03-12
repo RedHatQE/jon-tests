@@ -68,7 +68,7 @@ public class CliTestRunner {
     }
     /**
      * JS file that is going to run
-     * @param jsFile
+     * @param jsSnippet
      */
     public CliTestRunner jsSnippet(String jsSnippet) {
 	this.jsSnippet = jsSnippet;
@@ -91,7 +91,7 @@ public class CliTestRunner {
 	return this;
     }
     /**
-     * set destinations for additional {@link resourceSrcs}
+     * set destinations for additional {@link #resourceSrcs(String...)}
      * @param resDst
      */
     public CliTestRunner resourceDests(String... resDst) {
