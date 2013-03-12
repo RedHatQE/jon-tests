@@ -1,9 +1,8 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
-import java.awt.Robot;
-import java.awt.AWTException;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -250,8 +249,11 @@ public class Inventory extends ResourceTab{
                 // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!!
                 try {
                   Robot robot = new Robot();
+                  log.fine("After new Robot()");
                   robot.keyPress(KeyEvent.VK_ENTER);
+                  log.fine("After robot.keyPress");
                   robot.keyRelease(KeyEvent.VK_ENTER);
+                  log.fine("After robot.keyRelease");
                 } 
                 catch (AWTException ex) {
                   log.fine("filterChildResources(SearchPatternField): AWT Robot pressing enter thrown exception: " + ex.getMessage());

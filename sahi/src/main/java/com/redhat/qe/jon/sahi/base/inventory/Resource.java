@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
-import java.awt.AWTException;
+import java.awt.*;
+import java.awt.event.*;
 
 import net.sf.sahi.client.ElementStub;
 
@@ -452,8 +451,11 @@ public class Resource {
         // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!!
         try {
           Robot robot = new Robot();
+          log.fine("After new Robot()");
           robot.keyPress(KeyEvent.VK_ENTER);
+          log.fine("After robot.keyPress");
           robot.keyRelease(KeyEvent.VK_ENTER);
+          log.fine("After robot.keyRelease");
         } 
         catch (AWTException ex) {
           log.fine("filterChildResources(SearchPatternField): AWT Robot pressing enter thrown exception: " + ex.getMessage());
