@@ -246,9 +246,8 @@ public class Inventory extends ResourceTab{
                 tasks.hidden("search").setValue(name);
                 tasks.textbox("SearchPatternField").focus();
                 //tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
-                tasks.execute("_sahi._typeNativeKeyCode(java.awt.event.KeyEvent.VK_ENTER);");
+                //tasks.execute("_sahi._typeNativeKeyCode(java.awt.event.KeyEvent.VK_ENTER);");
                 // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!!
-/*                
                 try {
                   java.awt.Robot robot = new java.awt.Robot();
                   robot.keyPress(KeyEvent.VK_ENTER);
@@ -257,15 +256,13 @@ public class Inventory extends ResourceTab{
                 catch (AWTException ex) {
                   log.fine("filterChildResources(SearchPatternField): AWT Robot pressing enter thrown exception: " + ex.getMessage());
                 }
-*/                
                 tasks.waitFor(Timing.TIME_5S*2);  
             } else {
                 tasks.textbox("search").setValue(name);
                 tasks.textbox("search").focus();
                 //tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
-                tasks.execute("_sahi._typeNativeKeyCode(java.awt.event.KeyEvent.VK_ENTER);");
+                //tasks.execute("_sahi._typeNativeKeyCode(java.awt.event.KeyEvent.VK_ENTER);");
 
-/*                
                 // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!
                 try {
                   java.awt.Robot robot = new java.awt.Robot();
@@ -275,7 +272,6 @@ public class Inventory extends ResourceTab{
                 catch (AWTException ex) {
                   log.fine("filterChildResources(search): AWT Robot pressing enter thrown exception: " + ex.getMessage());
                 }
-*/                
                 tasks.waitFor(Timing.TIME_5S*2);
             }
         }
