@@ -13,7 +13,7 @@
 	</test>
 	<test name="resources">
 	  	<classes>
-			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.ResourceCliTest">
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.ResourcesCliTest">
 			</class>
 		</classes>
 	</test>
