@@ -245,7 +245,8 @@ public class Inventory extends ResourceTab{
                 tasks.textbox("SearchPatternField").setValue(name);
                 tasks.hidden("search").setValue(name);
                 tasks.textbox("SearchPatternField").focus();
-                tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
+                //tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
+                tasks.execute("_sahi._typeNativeKeyCode(java.awt.event.KeyEvent.VK_ENTER);");
                 // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!!
 /*                
                 try {
@@ -261,7 +262,9 @@ public class Inventory extends ResourceTab{
             } else {
                 tasks.textbox("search").setValue(name);
                 tasks.textbox("search").focus();
-                tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
+                //tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
+                tasks.execute("_sahi._typeNativeKeyCode(java.awt.event.KeyEvent.VK_ENTER);");
+
 /*                
                 // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!
                 try {
