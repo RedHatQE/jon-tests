@@ -36,18 +36,4 @@ public class OnAgentCliTest extends CliEngine {
     public CliTestRunner createJSSnippetRunner(String jsSnippet) {
         return super.createJSSnippetRunner(jsSnippet).withArg("agent", agentName);
     }
-
-    public void runJSfile(String rhqTarget, String cliUsername,
-	    String cliPassword, String jsFile, String cliArgs,
-	    String expectedResult, String makeFilure, String jsDepends,
-	    String resSrc, String resDst) throws IOException, CliTasksException {
-
-	if (StringUtils.trimToNull(cliArgs) == null) {
-	    cliArgs = "--args-style=named agent=" + agentName;
-	} else {
-	    cliArgs += " agent=" + agentName;
-	}
-	super.runJSfile(rhqTarget, cliUsername, cliPassword, jsFile, cliArgs,
-		expectedResult, makeFilure, jsDepends, resSrc, resDst);
-    }
 }
