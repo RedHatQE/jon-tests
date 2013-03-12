@@ -1,13 +1,9 @@
 package com.redhat.qe.jon.clitest.tests;
 
-import java.io.IOException;
-
-import org.apache.commons.lang3.StringUtils;
 import org.testng.annotations.BeforeSuite;
 
 import com.redhat.qe.jon.clitest.base.CliEngine;
 import com.redhat.qe.jon.clitest.base.CliTestRunner;
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 
 /**
  * this class is extending {@link CliTest} class the way that it requires
