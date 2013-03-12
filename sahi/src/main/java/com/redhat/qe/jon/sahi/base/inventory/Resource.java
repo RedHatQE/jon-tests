@@ -439,40 +439,44 @@ public class Resource {
      * Method which filters child resources based on the provided name using search box
      * @param name used for filtering child resources
      */
-    public void filterChildResources(String name) {
-        log.fine("Filtering elements by name: " + name);
-        if (tasks.textbox("SearchPatternField").exists()) {
-          log.fine("Textbox SearchPatternField Exists");
-          tasks.textbox("SearchPatternField").setValue(name);
-          tasks.hidden("search").setValue(name);
-          tasks.textbox("SearchPatternField").click();
-          //tasks.execute("_sahi._keyPress(_sahi._textbox(\"SearchPatternField\"), [13,13]);"); //13 - Enter key
-          // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!
-          try {
-            java.awt.Robot robot = new java.awt.Robot();
-            robot.keyPress(KeyEvent.VK_ENTER);
-            robot.keyRelease(KeyEvent.VK_ENTER);
-          } 
-          catch (AWTException ex) {
-            log.fine("filterChildResources(SearchPatternField): AWT Robot pressing enter thrown exception: " + ex.getMessage());
-          }
-          tasks.waitFor(Timing.TIME_5S*2);          
-        } else {
-            tasks.textbox("search").setValue(name);
-            tasks.textbox("search").click();
-            //tasks.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
-            // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!
-            try {
-              java.awt.Robot robot = new java.awt.Robot();
-              robot.keyPress(KeyEvent.VK_ENTER);
-              robot.keyRelease(KeyEvent.VK_ENTER);
-            } 
-            catch (AWTException ex) {
-              log.fine("filterChildResources(search): AWT Robot pressing enter thrown exception: " + ex.getMessage());
-            }
-            tasks.waitFor(Timing.TIME_5S*2);
+  public void filterChildResources(String name) {
+    log.fine("Filtering elements by name: " + name);
+    if (tasks.textbox("SearchPatternField").exists()) {
+        log.fine("Textbox SearchPatternField Exists");
+        tasks.textbox("SearchPatternField").setValue(name);
+        tasks.hidden("search").setValue(name);
+        tasks.textbox("SearchPatternField").focus();
+        tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
+        // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!!
+/*                
+        try {
+          java.awt.Robot robot = new java.awt.Robot();
+          robot.keyPress(KeyEvent.VK_ENTER);
+          robot.keyRelease(KeyEvent.VK_ENTER);
+        } 
+        catch (AWTException ex) {
+          log.fine("filterChildResources(SearchPatternField): AWT Robot pressing enter thrown exception: " + ex.getMessage());
         }
+*/                
+        tasks.waitFor(Timing.TIME_5S*2);  
+    } else {
+        tasks.textbox("search").setValue(name);
+        tasks.textbox("search").focus();
+        tasks.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
+/*                
+        // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!
+        try {
+          java.awt.Robot robot = new java.awt.Robot();
+          robot.keyPress(KeyEvent.VK_ENTER);
+          robot.keyRelease(KeyEvent.VK_ENTER);
+        } 
+        catch (AWTException ex) {
+          log.fine("filterChildResources(search): AWT Robot pressing enter thrown exception: " + ex.getMessage());
+        }
+*/                
+        tasks.waitFor(Timing.TIME_5S*2);
     }
+  }
 
 	/**
 	 * navigates to parent resource of this resource and checks whether this resource exists.
