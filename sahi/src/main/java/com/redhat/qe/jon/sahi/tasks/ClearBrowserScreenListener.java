@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.redhat.qe.jon.common.TestScript;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestContext;
@@ -82,6 +83,11 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	
 	//To take Screen shot
 	public void takeScreenShot(ITestResult result){
+        String disableScreenShots = System.getenv("DISABLE_SCREENSHOTS");
+        if (disableScreenShots != null && !disableScreenShots.isEmpty() && Boolean.parseBoolean(disableScreenShots) == true) {
+           _logger.log(Level.WARNING, "Screenshots are disabled => skipping making a screenshot");
+           return;
+        }
 		try{
 			_logger.log(Level.INFO, "Taking screen shot...");
 			String fileDirPath = new File(result.getTestContext().getOutputDirectory()).getParent()+"/html/";
