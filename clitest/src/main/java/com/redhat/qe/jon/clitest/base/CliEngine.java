@@ -32,6 +32,9 @@ public class CliEngine extends CliTestScript{
 	private String cliUsername;
 	private String cliPassword;
 	protected CliTasks cliTasks;
+	/**
+	 * this handles console output of latest test run
+	 */
 	protected String consoleOutput;
 	
 	private String jsFileName;

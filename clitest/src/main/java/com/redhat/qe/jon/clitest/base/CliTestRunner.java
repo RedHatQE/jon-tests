@@ -109,11 +109,13 @@ public class CliTestRunner {
      * @return
      */
     public CliTestRunner addDepends(String jsFile) {
-	if (this.jsDepends==null) {
-	    this.jsDepends = new String[] {};
+	if (jsFile != null) {
+	    if (this.jsDepends == null) {
+		this.jsDepends = new String[] {};
+	    }
+	    this.jsDepends = Arrays.copyOf(this.jsDepends, this.jsDepends.length + 1);
+	    this.jsDepends[this.jsDepends.length - 1] = jsFile;
 	}
-	this.jsDepends = Arrays.copyOf(this.jsDepends, this.jsDepends.length+1);
-	this.jsDepends[this.jsDepends.length-1] = jsFile;
 	return this;
     }
     /**
@@ -121,7 +123,9 @@ public class CliTestRunner {
      * @return
      */
     public CliTestRunner addFailOn(String failOn) {
-	this.makeFailure+=","+failOn;
+	if (failOn!=null) {
+	    this.makeFailure+=","+failOn;
+	}
 	return this;
     }
     /**
@@ -130,7 +134,9 @@ public class CliTestRunner {
      * @return
      */
     public CliTestRunner addExpect(String expect) {
-	this.expectedResult+=","+expect;
+	if (expect!=null) {
+	    this.expectedResult+=","+expect;
+	}
 	return this;
     }
     /**
@@ -143,10 +149,12 @@ public class CliTestRunner {
 	return this;
     }
     public CliTestRunner withArg(String name, String value) {
-	if (this.cliArgs==null) {
-	    this.cliArgs="";
+	if (name != null && value != null) {
+	    if (this.cliArgs == null) {
+		this.cliArgs = "";
+	    }
+	    this.cliArgs += " " + name + "=" + value;
 	}
-	this.cliArgs += " "+name+"="+value;
 	return this;
     }
     /**
@@ -167,8 +175,9 @@ public class CliTestRunner {
     }
     /**
      * runs this CLI test
+     * @return consoleOutput 
      */
-    public void run() {
+    public String run() {
 	validate();
 	if (this.cliArgs!=null) { // we support named arguments only at this time
 	    this.cliArgs = "--args-style=named"+this.cliArgs;
@@ -177,9 +186,11 @@ public class CliTestRunner {
 	String jsDepends = prepareArrayArgs(this.jsDepends);
 	String resSrc = prepareArrayArgs(this.resSrc);
 	String resDst = prepareArrayArgs(this.resDst);
+	String result = null;
 	if (jsSnippet==null) {
 	    try {
 		engine.runJSfile(null, this.username, this.password, this.jsFile, this.cliArgs, this.expectedResult, this.makeFailure, jsDepends, resSrc, resDst);
+		result = engine.consoleOutput;
 	    } catch (Exception e) {
 		Assert.fail("Test failed : "+e.getMessage(), e);
 	    } 
@@ -187,10 +198,11 @@ public class CliTestRunner {
 	else {
 	    try {
 		engine.runJSSnippet(this.jsSnippet, null, this.username, this.password, cliArgs, expectedResult, this.makeFailure, jsDepends, resSrc, resDst);
+		result = engine.consoleOutput;
 	    } catch (Exception e) {
 		Assert.fail("Test failed : "+e.getMessage(), e);
 	    } 
 	}
-	
+	return result;	
     }
 }
