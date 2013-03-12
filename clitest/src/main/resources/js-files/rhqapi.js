@@ -2088,31 +2088,33 @@ discoveryQueue = (function () {
    * @returns platform resource
 	 * @type Resource
 	 */
-		importPlatform: function(name,children) {
-			common.trace("discoveryQueue.importPlatform(name="+name+" children[default=true]="+children+")");
+		importPlatform : function(name, children) {
+			common.trace("discoveryQueue.importPlatform(name=" + name + " children[default=true]=" + children + ")");
 
 			// default is true (when null is passed)
-			if(children != false){children = true;}
+			if (children != false) {
+				children = true;
+			}
 
 			// first lookup whether platform is already imported
-			var reso = resources.find({name:name,category:"PLATFORM"});
-			if (reso.length == 1) {
-				common.debug("Platform "+name+" is already in inventory, not importing");
+			var res = resources.find({name : name,category : "PLATFORM"});
+			if (res.length == 1) {
+				common.debug("Platform " + name + " is already in inventory, not importing");
 				return res[0];
 			}
-      if (_listPlatforms({name:name}).length < 1) {
-        throw "Platform ["+name+"] was not found in discovery queue"
-      }
-			res = _importResources({name:name,category:"PLATFORM"});
+			if (_listPlatforms({name : name}).length < 1) {
+				throw "Platform [" + name + "] was not found in discovery queue"
+			}
+			res = _importResources({name : name,category : "PLATFORM"});
 			if (res.length != 1) {
-        throw "Plaform was not imported, server error?"
-      }
+				throw "Plaform was not imported, server error?"
+			}
 			if (children) {
 				common.debug("Importing platform's children");
-				_importResources({parentResourceId:res[0].getId()});
+				_importResources({parentResourceId : res[0].getId()});
 			}
 			common.debug("Waiting 15 seconds, 'till inventory syncrhonizes with agent");
-			sleep(15*1000);
+			sleep(15 * 1000);
 			return res[0];
 		},
     /**
