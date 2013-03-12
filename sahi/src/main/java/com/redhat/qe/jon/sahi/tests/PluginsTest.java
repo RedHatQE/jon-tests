@@ -98,7 +98,7 @@ import org.testng.annotations.Test;
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Drift:JPA (RHQ default)", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"File Template Bundle Processor", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"PackageType:CLI", false}));
-			serverPluginsdata.add(Arrays.asList(new Object[]{"Perspective:Core", false}));
+			//serverPluginsdata.add(Arrays.asList(new Object[]{"Perspective:Core", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"URL Content", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Yum Content", false}));				
 			return TestNGUtils.convertListOfListsTo2dArray(serverPluginsdata);
