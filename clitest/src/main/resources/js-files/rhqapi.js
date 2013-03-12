@@ -1614,6 +1614,13 @@ var Bundle = function(param) {
 		 * @lends Bundle-Destination.prototype
 		 */
 		return {
+			/**
+			 * destination id
+			 */
+			id : param.id,
+			/**
+			 * org.rhq.core.domain.bundle.BundleDestination instance
+			 */
 			obj : _obj,
 			/**
 			 * purges this destination
@@ -1800,7 +1807,7 @@ var Bundle = function(param) {
 	 */
 		deploy : function(destination,params,version) {
 			params = params || {};
-			common.trace("Bundle("+_id+").deploy(destination="+destination+",params="+common.objToString(params)+",version="+version+")");
+			common.trace("Bundle("+_id+").deploy(destination="+common.objToString(destination)+",params="+common.objToString(params)+",version="+version+")");
 			if (version==null) {
 				common.info("Param version is null, will use latest version of bundle");
 				var criteria = common.createCriteria(new BundleCriteria(),{id:_id});
@@ -1826,7 +1833,7 @@ var Bundle = function(param) {
 				var defaultConfig = version.obj.configurationDefinition.defaultTemplate.createConfiguration();
 				configuration = common.applyConfiguration(defaultConfig,version.obj.configurationDefinition,params);
 			}
-			var deployment = BundleManager.createBundleDeployment(version.obj.id, destination.obj.id, "", configuration);
+			var deployment = BundleManager.createBundleDeployment(version.obj.id, destination.id, "", configuration);
 			deployment = BundleManager.scheduleBundleDeployment(deployment.id, true);
 			var func = function() {
 				var crit = common.createCriteria(new BundleDeploymentCriteria(),{id:deployment.id});
