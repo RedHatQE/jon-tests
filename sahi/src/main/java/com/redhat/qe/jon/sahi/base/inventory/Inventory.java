@@ -269,7 +269,7 @@ public class Inventory extends ResourceTab{
                 // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!
                 try {
                   Robot robot = new Robot();
-                  robot.setAutoDelay(1000);
+                  robot.setAutoDelay(500);
                   robot.keyPress(KeyEvent.VK_ENTER);
                   robot.keyRelease(KeyEvent.VK_ENTER);
                 } 
