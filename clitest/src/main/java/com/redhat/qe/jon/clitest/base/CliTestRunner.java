@@ -61,7 +61,6 @@ public class CliTestRunner {
     /**
      * JS file that is going to run
      * @param jsFile
-     * @return
      */
     public CliTestRunner jsFile(String jsFile) {
 	this.jsFile = jsFile;
@@ -70,7 +69,6 @@ public class CliTestRunner {
     /**
      * JS file that is going to run
      * @param jsFile
-     * @return
      */
     public CliTestRunner jsSnippet(String jsSnippet) {
 	this.jsSnippet = jsSnippet;
@@ -79,7 +77,6 @@ public class CliTestRunner {
     /**
      * add jsFiles that your script depends on. Those will be merged with your {@link #jsFile(String)}
      * together. Note that order of jsFiles is preserved, {@link #jsFile(String)} is always going to be last piece
-     * @return
      */
     public CliTestRunner dependsOn(String... jsFiles) {
 	this.jsDepends = jsFiles;
@@ -88,7 +85,6 @@ public class CliTestRunner {
     /**
      * set additional resource source paths (looked up as java resource)
      * @param resSrc
-     * @return
      */
     public CliTestRunner resourceSrcs(String... resSrc) {
 	this.resSrc = resSrc;
@@ -97,7 +93,6 @@ public class CliTestRunner {
     /**
      * set destinations for additional {@link resourceSrcs}
      * @param resDst
-     * @return
      */
     public CliTestRunner resourceDests(String... resDst) {
 	this.resDst = resDst;
@@ -106,7 +101,6 @@ public class CliTestRunner {
     /**
      * adds jsFile dependency
      * @param jsFile
-     * @return
      */
     public CliTestRunner addDepends(String jsFile) {
 	if (jsFile != null) {
@@ -120,7 +114,6 @@ public class CliTestRunner {
     }
     /**
      * specify message that makes test fail, if produced as output of test
-     * @return
      */
     public CliTestRunner addFailOn(String failOn) {
 	if (failOn!=null) {
@@ -131,7 +124,6 @@ public class CliTestRunner {
     /**
      * specify message - if such message is missing in output produced by CLI, test will fail
      * @param expect
-     * @return
      */
     public CliTestRunner addExpect(String expect) {
 	if (expect!=null) {
@@ -142,7 +134,6 @@ public class CliTestRunner {
     /**
      * specify username (subject)
      * @param user
-     * @return
      */
     public CliTestRunner asUser(String user) {
 	this.username = user;
@@ -160,7 +151,6 @@ public class CliTestRunner {
     /**
      * prepares array args for CLI execution (just puts ',' separator between items)
      * @param args
-     * @return
      */
     private String prepareArrayArgs(String[] args) {
 	if (args==null) {
