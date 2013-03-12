@@ -120,6 +120,7 @@ public class CliEngine extends CliTestScript{
 		try {
 		    _logger.fine("Copying resource "+resource.getFile()+" from JAR");
 		    File file = File.createTempFile("temp", ".tmp");
+		    file.deleteOnExit();
 		    InputStream is = resource.openStream();
 		    OutputStream os = new FileOutputStream(file);
 		    final byte[] buf = new byte[1024];
