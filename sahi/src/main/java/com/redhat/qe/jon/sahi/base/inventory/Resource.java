@@ -446,11 +446,9 @@ public class Resource {
     tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
 	  // 2. Set Auto Fit All Columns
     tasks.xy(tasks.cell("Auto Fit All Columns"), 3, 3).click();
-    tasks.waitFor(Timing.WAIT_TIME);
 	  // 3. Sort the table by Last Modified Time descending
     // sort by Last Modified Time
     tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
-    tasks.waitFor(Timing.WAIT_TIME);
     tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
     tasks.waitFor(Timing.WAIT_TIME);
   }
