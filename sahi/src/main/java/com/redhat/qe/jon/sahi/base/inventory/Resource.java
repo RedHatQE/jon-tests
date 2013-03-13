@@ -449,6 +449,7 @@ public class Resource {
 	  // 3. Sort the table by Last Modified Time descending
     // sort by Last Modified Time
     tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
+    tasks.waitFor(Timing.WAIT_TIME);
     tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
     tasks.waitFor(Timing.WAIT_TIME);
   }
@@ -460,6 +461,7 @@ public class Resource {
      * @param name used for filtering child resources
      * 
      */
+	@Deprecated
   public void filterChildResources(String name) {
     log.fine("Filtering elements by name: " + name);
     if (tasks.textbox("SearchPatternField").exists()) {
@@ -517,8 +519,7 @@ public class Resource {
 			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
-      //filterChildResources(this.getName());
-			sortChildResources();
+      sortChildResources();
 			return tasks.cell(this.getName()).isVisible();
 		}else{
 			return parent().inventory().childResources().existsChild(getName());
