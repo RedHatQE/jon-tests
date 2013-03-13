@@ -441,16 +441,13 @@ public class Resource {
    */
 	public void sortChildResources() {
 	  // 1. Add column Last Modified Time
-	  //tasks.cell("Name").click();
-	  //tasks.cell("Name").rightClick();
-	  
 	  tasks.xy(tasks.cell("Name"), 3, 3).rightClick();
-	  
 	  tasks.waitFor(Timing.WAIT_TIME);
-/*	  
 	  tasks.cell("Colums").mouseOver();
+	  tasks.waitFor(Timing.WAIT_TIME);
     tasks.cell("Last Modified Time[1]").click();
     tasks.waitFor(Timing.WAIT_TIME);
+/*    
 	  // 2. Set Auto Fit All Columns
     tasks.cell("Auto Fit All Columns").click();
     tasks.waitFor(Timing.WAIT_TIME);
