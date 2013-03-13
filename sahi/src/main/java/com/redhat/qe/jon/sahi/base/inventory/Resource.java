@@ -440,6 +440,7 @@ public class Resource {
    * 
    */
 	public void sortChildResources() {
+/*
 	  // 1. Add column Last Modified Time
 	  tasks.cell("Name").rightClick();
 	  tasks.waitFor(Timing.WAIT_TIME);
@@ -455,6 +456,7 @@ public class Resource {
     tasks.waitFor(Timing.WAIT_TIME);
     tasks.cell("Last Modified Time").click();
     tasks.waitFor(Timing.WAIT_TIME);
+*/    
   }
 	
 	
