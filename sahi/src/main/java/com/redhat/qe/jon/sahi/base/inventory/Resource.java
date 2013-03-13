@@ -441,8 +441,11 @@ public class Resource {
    */
 	public void sortChildResources() {
 	  // 1. Add column Last Modified Time
-	  tasks.cell("Name").click();
-	  tasks.cell("Name").rightClick();
+	  //tasks.cell("Name").click();
+	  //tasks.cell("Name").rightClick();
+	  
+	  tasks.xy(tasks.cell("Name"), 3, 3).rightClick();
+	  
 	  tasks.waitFor(Timing.WAIT_TIME);
 /*	  
 	  tasks.cell("Colums").mouseOver();
