@@ -436,12 +436,13 @@ public class Resource {
 	}
 
   /**
-   * Method which add column Last Modified Time and sort the table by this column
+   * Method which add column Last Modified Time and sort descending  the table by this column
    * 
    */
 	public void sortChildResources() {
 	  // 1. Add column Last Modified Time
 	  tasks.cell("Name").rightClick();
+	  tasks.waitFor(Timing.WAIT_TIME);
 	  tasks.cell("Colums").click();
     tasks.cell("Last Modified Time[1]").click();
     tasks.waitFor(Timing.WAIT_TIME);
