@@ -445,8 +445,8 @@ public class Resource {
 	  tasks.waitFor(Timing.WAIT_TIME);
 	  tasks.xy(tasks.cell("Columns"), 3, 3).mouseOver();
 	  tasks.waitFor(Timing.WAIT_TIME);
-    //tasks.cell("Last Modified Time").click();
-    //tasks.waitFor(Timing.WAIT_TIME);
+    tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
+    tasks.waitFor(Timing.WAIT_TIME);
 /*    
 	  // 2. Set Auto Fit All Columns
     tasks.cell("Auto Fit All Columns").click();
