@@ -443,7 +443,7 @@ public class Resource {
 	  // 1. Add column Last Modified Time
 	  tasks.xy(tasks.cell("Name"), 3, 3).rightClick();
 	  tasks.waitFor(Timing.WAIT_TIME);
-	  tasks.cell("Colums").mouseOver();
+	  tasks.cell("Columns").mouseOver();
 	  tasks.waitFor(Timing.WAIT_TIME);
     tasks.cell("Last Modified Time[1]").click();
     tasks.waitFor(Timing.WAIT_TIME);
