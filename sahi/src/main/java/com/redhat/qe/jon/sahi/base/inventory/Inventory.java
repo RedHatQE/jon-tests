@@ -233,12 +233,32 @@ public class Inventory extends ResourceTab{
 			this.tasks = tasks;
 		}
 
+	  /**
+	   * Method which add column Last Modified Time and sort descending  the table by this column
+	   * 
+	   */
+	  public void sortChildResources() {
+	    // 1. Add column Last Modified Time
+	    tasks.xy(tasks.cell("Name"), 3, 3).rightClick();
+	    tasks.xy(tasks.cell("Columns"), 3, 3).mouseOver();
+	    tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
+	    // 2. Set Auto Fit All Columns
+	    tasks.xy(tasks.cell("Auto Fit All Columns"), 3, 3).click();
+	    // 3. Sort the table by Last Modified Time descending
+	    // sort by Last Modified Time
+	    tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
+	    tasks.waitFor(Timing.WAIT_TIME);
+	    tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
+	    tasks.waitFor(Timing.WAIT_TIME);
+	  }
+		
         /**
          * Its unstable method
          * Method which filters child resources based on the provided name using search box
          * @param name used for filtering child resources
          * 
          */
+	      @Deprecated
         public void filterChildResources(String name) {
             log.fine("Filtering elements by name: " + name);
             if (tasks.textbox("SearchPatternField").exists()) {
@@ -289,7 +309,7 @@ public class Inventory extends ResourceTab{
 			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
-            filterChildResources(name);
+			sortChildResources();
 			return tasks.cell(name).isVisible();
 		}
 
@@ -336,7 +356,7 @@ public class Inventory extends ResourceTab{
 
 		}
 		private void selectChild(String name) {
-            filterChildResources(name);
+      sortChildResources();
 			int children = tasks.cell(name).countSimilar();
 			log.fine("Matched cells "+children);
 			if (children==0) {
