@@ -435,9 +435,33 @@ public class Resource {
         return false;
 	}
 
+  /**
+   * Method which add column Last Modified Time and sort the table by this column
+   * 
+   */
+	public void sortChildResources() {
+	  // 1. Add column Last Modified Time
+	  tasks.cell("Name").rightClick();
+	  tasks.cell("Colums").click();
+    tasks.cell("Last Modified Time[1]").click();
+    tasks.waitFor(Timing.WAIT_TIME);
+	  // 2. Set Auto Fit All Columns
+    tasks.cell("Auto Fit All Columns").click();
+    tasks.waitFor(Timing.WAIT_TIME);
+	  // 3. Sort the table by Last Modified Time descending
+    // sort by Last Modified Time
+    tasks.cell("Last Modified Time").click();
+    tasks.waitFor(Timing.WAIT_TIME);
+    tasks.cell("Last Modified Time").click();
+    tasks.waitFor(Timing.WAIT_TIME);
+  }
+	
+	
     /**
+     * Its unstable method
      * Method which filters child resources based on the provided name using search box
      * @param name used for filtering child resources
+     * 
      */
   public void filterChildResources(String name) {
     log.fine("Filtering elements by name: " + name);
@@ -496,7 +520,8 @@ public class Resource {
 			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
-            filterChildResources(this.getName());
+      //filterChildResources(this.getName());
+			sortChildResources();
 			return tasks.cell(this.getName()).isVisible();
 		}else{
 			return parent().inventory().childResources().existsChild(getName());

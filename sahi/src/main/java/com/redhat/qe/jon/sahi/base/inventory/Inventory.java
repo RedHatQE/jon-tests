@@ -234,8 +234,10 @@ public class Inventory extends ResourceTab{
 		}
 
         /**
+         * Its unstable method
          * Method which filters child resources based on the provided name using search box
          * @param name used for filtering child resources
+         * 
          */
         public void filterChildResources(String name) {
             log.fine("Filtering elements by name: " + name);
