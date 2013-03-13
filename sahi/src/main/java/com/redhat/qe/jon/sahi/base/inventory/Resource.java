@@ -451,12 +451,11 @@ public class Resource {
         // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!!
         try {
           Robot robot = new Robot();
-          robot.setAutoDelay(500);
-          log.fine("After new Robot()");
+          robot.setAutoDelay(1000);
           robot.keyPress(KeyEvent.VK_ENTER);
-          log.fine("After robot.keyPress");
           robot.keyRelease(KeyEvent.VK_ENTER);
           log.fine("After robot.keyRelease");
+          log.fine("AWT isheadless: " + System.getProperty("java.awt.headless"));
         } 
         catch (AWTException ex) {
           log.fine("filterChildResources(SearchPatternField): AWT Robot pressing enter thrown exception: " + ex.getMessage());
@@ -470,9 +469,11 @@ public class Resource {
         // Sahi keypress doesn't work using JDK awt robot - AWT ROBOT WORKS!
         try {
           Robot robot = new Robot();
-          robot.setAutoDelay(500);
+          robot.setAutoDelay(1000);
           robot.keyPress(KeyEvent.VK_ENTER);
           robot.keyRelease(KeyEvent.VK_ENTER);
+          log.fine("After robot.keyRelease");
+          log.fine("AWT isheadless: " + System.getProperty("java.awt.headless"));
         } 
         catch (AWTException ex) {
           log.fine("filterChildResources(search): AWT Robot pressing enter thrown exception: " + ex.getMessage());
