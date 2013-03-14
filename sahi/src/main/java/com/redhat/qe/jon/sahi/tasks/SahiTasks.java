@@ -1260,7 +1260,7 @@ public class SahiTasks extends ExtendedSahi {
     		}
     		row.clear();
     	}    	
-    	_logger.log(Level.INFO, "Table Details: "+rows);
+    	_logger.log(Level.FINEST, "Table Details: "+rows);
 		return rows;    	
     }
     
