@@ -519,7 +519,7 @@ public class Resource {
 			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
-			if (tasks.cell(this.getName()).isVisible()) {
+			if (!tasks.cell(this.getName()).isVisible()) {
 	      sortChildResources();
 			}
 			return tasks.cell(this.getName()).isVisible();
