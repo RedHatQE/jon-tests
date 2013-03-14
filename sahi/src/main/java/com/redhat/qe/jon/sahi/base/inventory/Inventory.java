@@ -239,7 +239,7 @@ public class Inventory extends ResourceTab{
 	   */
 	  public void sortChildResources() {
 	    // 1. Add column Last Modified Time
-	    tasks.xy(tasks.cell("Name"), 3, 3).rightClick();
+	    tasks.xy(tasks.cell("Name").near(tasks.cell("Ancestry")), 3, 3).rightClick();
 	    tasks.xy(tasks.cell("Columns"), 3, 3).mouseOver();
 	    tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
 	    // 2. Set Auto Fit All Columns
