@@ -519,7 +519,9 @@ public class Resource {
 			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
-      sortChildResources();
+			if (tasks.cell(this.getName()).isVisible()) {
+	      sortChildResources();
+			}
 			return tasks.cell(this.getName()).isVisible();
 		}else{
 			return parent().inventory().childResources().existsChild(getName());

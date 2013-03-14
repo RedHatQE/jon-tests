@@ -309,7 +309,9 @@ public class Inventory extends ResourceTab{
 			if (tasks.cell("No items to show").isVisible()) {
 				return false;
 			}
-			sortChildResources();
+      if (tasks.cell(name).isVisible()) {
+	      sortChildResources();
+	    }
 			return tasks.cell(name).isVisible();
 		}
 
@@ -356,7 +358,9 @@ public class Inventory extends ResourceTab{
 
 		}
 		private void selectChild(String name) {
-      sortChildResources();
+      if (tasks.cell(name).isVisible()) {
+        sortChildResources();
+      }
 			int children = tasks.cell(name).countSimilar();
 			log.fine("Matched cells "+children);
 			if (children==0) {
