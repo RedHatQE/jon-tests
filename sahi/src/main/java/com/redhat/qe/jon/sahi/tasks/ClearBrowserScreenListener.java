@@ -34,8 +34,17 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	protected static String[] buttonsToClick = {"Cancel", "No"}; //Add button names here
 	protected static String[] linksToClick = {};//Add link names here
 	protected static int elementCount = 4;
-	
-	
+
+    public ClearBrowserScreenListener() {
+        super();
+    }
+
+
+    public ClearBrowserScreenListener(SahiTasks mySahiTasks) {
+        super(mySahiTasks);
+    }
+
+
 	public void cleanPopUpOnScreen(){
 		_logger.log(Level.INFO, "[Clear pop-up] Entering...");
 		//For buttons

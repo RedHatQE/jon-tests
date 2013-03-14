@@ -32,6 +32,11 @@ public abstract class SahiTestScript extends TestScript {
 		checkForCorrectSahiLocation();
 		sahiTasks = new SahiTasks(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
 	}
+
+    public SahiTestScript(SahiTasks sahiTasksToUse) {
+        super();
+        sahiTasks = sahiTasksToUse;
+    }
         
 	@BeforeSuite(groups={"setup"})
 	public void openBrowser() {
