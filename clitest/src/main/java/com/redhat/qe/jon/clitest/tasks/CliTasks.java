@@ -92,7 +92,7 @@ public class CliTasks {
 	public void validateExpectedResultString(String consoleOutput, String resultString) throws CliTasksException{
 		for(String validateString : getArrayofCommaValues(resultString)){
 			if(!consoleOutput.contains(validateString.trim())){
-				throw new CliTasksException("Result doesn't contain: "+validateString.trim());
+				throw new CliTasksException("Result doesn't contain: "+validateString.trim() + "\nInstead the result is: " + consoleOutput);
 			}else{
 				_logger.log(Level.INFO, "Expected result available: ["+validateString.trim()+"]");
 			}
