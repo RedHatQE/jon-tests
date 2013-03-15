@@ -78,6 +78,7 @@ public class Operations extends ResourceTab {
         boolean existsImage = tasks.image(resultImage).in(tasks.div(opName + "[0]").parentNode("tr")).exists();
         // when operation failed and success was expected, let's get operation error message
         if (!existsImage && success) {
+            log.info("Retrieving the error message as it was expected that operation ends successfully but it didn't");
             String message = null;
             tasks.xy(tasks.image("Operation_failed_16.png").in(tasks.div(opName + "[0]").parentNode("tr")), 3, 3).click();
             if (tasks.preformatted("").exists()) {
