@@ -20,11 +20,12 @@
   	</test>
   	  	
   
-  <test name="ServiceSearchTest">
+  <test name="SubNavigationMenuTests">
   	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.ServiceSearchTest">
+			<class name="com.redhat.qe.jon.sahi.tests.SubNavigationMenuTests">
 			<methods>
-				 <include name="checkServicesSearchByVersion"></include> 
+				<include name="subNavigationMenuLinksExist"></include>
+				<include name="checkAutoGroupSubnavigation"></include> 
 			</methods>
 			</class>
 		</classes>
