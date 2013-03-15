@@ -30,6 +30,10 @@ public class CliEngine extends CliTestScript{
 	public static String cliShLocation;
 	public static String rhqCliJavaHome;
 	public static String rhqTarget;
+	/**
+	 * CLI test run listener 
+	 */
+	public static CliTestRunListener runListener;
 	private String cliUsername;
 	private String cliPassword;
 	protected CliTasks cliTasks;
@@ -285,6 +289,20 @@ public class CliEngine extends CliTestScript{
 				String resource = getResourceFileName(src);
 				if (resource==null) {
 					throw new CliTasksException("Resource file "+src+" does not exist!");
+				}
+				if (runListener!=null) {
+				    try {
+					File newResource = runListener.onResourceProcessed(new File(resource));						
+					if (newResource!=null && newResource.exists() && newResource.isFile()) {
+    					_logger.fine("Resource ["+resource+"] has been processed by listener, new result ["+newResource.getAbsolutePath()+"]");
+    					resource = newResource.getAbsolutePath();
+					}
+					else {
+					    throw new Exception("Resource file processed by listener is invalid (either null, non-existing or non-file)");
+					}
+				    } catch (Exception ex) {
+					_logger.log(Level.WARNING, "CliTestRunListener failed, using original resource. Error : "+ex.getMessage(), ex);
+				    }
 				}
 				cliTasks.copyFile(resource, destDir,dst.getName());
 			}
