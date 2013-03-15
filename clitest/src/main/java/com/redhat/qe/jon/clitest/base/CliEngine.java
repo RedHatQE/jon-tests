@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -242,13 +243,19 @@ public class CliEngine extends CliTestScript{
 	 * @throws IOException
 	 * @throws CliTasksException
 	 */
-	public String runJSSnippet(String snippet, String rhqTarget, String cliUsername,String cliPassword,String cliArgs,String expectedResult,String makeFilure,String jsDepends, String resSrc, String resDst) throws IOException, CliTasksException {
-	    	LocalCommandRunner runner = new LocalCommandRunner();
-	    	runner.connect();
-	    	runner.runAndWait("echo \""+snippet+"\" > /tmp/snippet.js");
-	    	runJSfile(rhqTarget, cliUsername, cliPassword, "file:///tmp/snippet.js", cliArgs, expectedResult, makeFilure, jsDepends, resSrc, resDst);
-	    	return consoleOutput;
-	}
+    public String runJSSnippet(String snippet, String rhqTarget,
+	    String cliUsername, String cliPassword, String cliArgs,
+	    String expectedResult, String makeFilure, String jsDepends,
+	    String resSrc, String resDst) throws IOException, CliTasksException {
+	File tempFile = File.createTempFile("snippet", "js");
+	PrintWriter pw = new PrintWriter(tempFile);
+	pw.println(snippet);
+	pw.close();
+	runJSfile(rhqTarget, cliUsername, cliPassword, tempFile.toURI()
+		.toString(), cliArgs, expectedResult, makeFilure, jsDepends,
+		resSrc, resDst);
+	return consoleOutput;
+    }
 
 	protected void prepareResources(String resSrc, String resDst)
 			throws CliTasksException, IOException {
