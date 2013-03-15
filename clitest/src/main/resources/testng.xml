@@ -189,33 +189,7 @@
 	</classes>
 </test -->
 
-<!-- will be moved to jon-eap6 repository
-<test name="check_AS7_Deployment_Directory">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="checkAS7DeploymentDirectory.js"/>
-                        <parameter name="js.depends" value="rhqapi.js" />
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test>
 
-
-<test name="JbossAs7_Plugin_Configuration">
-        <classes>
-                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
-                        <parameter name="js.file"  value="testJbossAs7PluginConfiguration.js"/>
-                        <parameter name="js.depends" value="rhqapi.js" />
-                        <parameter name="expected.result"  value="Login successful"/>
-                        <methods>
-                                <include name="runJSfile"></include>
-                        </methods>
-                </class>
-        </classes>
-</test -->
 
 <test name="stress test">
 	<classes>
