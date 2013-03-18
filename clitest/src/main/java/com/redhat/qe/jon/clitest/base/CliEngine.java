@@ -23,7 +23,6 @@ import org.testng.annotations.Optional;
 
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.common.util.LocalCommandRunner;
 
 public class CliEngine extends CliTestScript{
 	private static Logger _logger = Logger.getLogger(CliEngine.class.getName());
@@ -292,7 +291,7 @@ public class CliEngine extends CliTestScript{
 				}
 				if (runListener!=null) {
 				    try {
-					File newResource = runListener.onResourceProcessed(new File(resource));						
+					File newResource = runListener.onResourceProcessed(src, new File(resource));						
 					if (newResource!=null && newResource.exists() && newResource.isFile()) {
     					_logger.fine("Resource ["+resource+"] has been processed by listener, new result ["+newResource.getAbsolutePath()+"]");
     					resource = newResource.getAbsolutePath();
