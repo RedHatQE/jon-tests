@@ -200,12 +200,11 @@ public class Resource {
 	public boolean tryFetchId() {
 	    log.fine("Trying to fetch ID for resource "+toString());
 	    try {
-		if (HAVE_REST_API) {
-		    fetchId(true);
-		    return true;
-		}
-	    }
-	    catch (Exception ex) {
+            if (HAVE_REST_API) {
+                fetchId(true);
+                return true;
+            }
+        } catch (Exception ex) {
 		
 	    }
 	    return false;
@@ -440,18 +439,18 @@ public class Resource {
    * 
    */
 	public void sortChildResources() {
-	  // 1. Add column Last Modified Time
-	  tasks.xy(tasks.cell("Name"), 3, 3).rightClick();
-	  tasks.xy(tasks.cell("Columns"), 3, 3).mouseOver();
-    tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
-	  // 2. Set Auto Fit All Columns
-    tasks.xy(tasks.cell("Auto Fit All Columns"), 3, 3).click();
-	  // 3. Sort the table by Last Modified Time descending
-    // sort by Last Modified Time
-    tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
-    tasks.waitFor(Timing.WAIT_TIME);
-    tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
-    tasks.waitFor(Timing.WAIT_TIME);
+	    // 1. Add column Last Modified Time
+        tasks.xy(tasks.cell("Name"), 3, 3).rightClick();
+        tasks.xy(tasks.cell("Columns"), 3, 3).mouseOver();
+        tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
+        // 2. Set Auto Fit All Columns
+        tasks.xy(tasks.cell("Auto Fit All Columns"), 3, 3).click();
+        // 3. Sort the table by Last Modified Time descending
+        // sort by Last Modified Time
+        tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
+        tasks.waitFor(Timing.WAIT_TIME);
+        tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
+        tasks.waitFor(Timing.WAIT_TIME);
   }
 	
 	
@@ -520,7 +519,7 @@ public class Resource {
 				return false;
 			}
 			if (!tasks.cell(this.getName()).isVisible()) {
-	      sortChildResources();
+	            sortChildResources();
 			}
 			return tasks.cell(this.getName()).isVisible();
 		}else{
@@ -746,16 +745,18 @@ public class Resource {
 				tasks.cell("No").click();
 			}
 			tasks.cell("Import").click();
-			log.fine("Waiting " + Timing.toString(sleepTime)
-					+ " for resource to import...");
-			tasks.waitFor(sleepTime);
-			return true;
+			log.fine("Waiting for resource to import...");
+            for (int i = 0; i < Timing.REPEAT && !this.tryFetchId(); i++) {
+                log.finer("Waiting another " + Timing.toString(sleepTime) + " for " + this.getName() + " to import");
+                tasks.waitFor(sleepTime);
+            }
+            return true;
 		} else {
 			log.fine("Resource \""
-					+ resourceName
-					+ "\" of agent \""
-					+ agentName
-					+ "\" not found in Autodiscovery queue, it might have been already inventorized");
+                    + resourceName
+                    + "\" of agent \""
+                    + agentName
+                    + "\" not found in Autodiscovery queue, it might have been already inventorized");
 			
 		}
 		return false;
