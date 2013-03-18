@@ -746,9 +746,12 @@ public class Resource {
 			}
 			tasks.cell("Import").click();
 			log.fine("Waiting for resource to import...");
-            for (int i = 0; i < Timing.REPEAT && !this.tryFetchId(); i++) {
+            for (int i = 0; i < Timing.REPEAT; i++) {
                 log.finer("Waiting another " + Timing.toString(sleepTime) + " for " + this.getName() + " to import");
                 tasks.waitFor(sleepTime);
+                if (this.tryFetchId()) {
+                    break;
+                }
             }
             return true;
 		} else {
