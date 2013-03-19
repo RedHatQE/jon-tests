@@ -69,6 +69,18 @@ scheduledOp = OperationManager.findScheduledGroupOperations(allAgentsG.id);
 assertTrue(scheduledOp.size() == 0,"Incorrect number of scheduled operations on "+groupName+
 		" group, expected: 0, actual: " + scheduledOp.size());
 
+
+// print operation history of all agents (for debugging)
+for(i in agents){
+	common.info("Checking an agent with id: " + agents[i].id );
+	opHistory = getResOpHistory(agents[i].id);
+	
+	// print invoked operations
+	for(j=0;j<opHistory.size();j++){
+		pretty.print(opHistory.get(j));
+	}
+}
+
 // for all agents
 for(i in agents){
 	common.info("Checking an agent with id: " + agents[i].id );
