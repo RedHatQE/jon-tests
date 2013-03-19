@@ -2377,6 +2377,7 @@ var Resource = function (param) {
 			};
 		};
 		common.debug("Waiting for result..");
+		sleep(3000); // trying to workaround https://bugzilla.redhat.com/show_bug.cgi?id=855674
 		var history = common.waitFor(pred);
 		if (!history) {
 			// timed out
