@@ -19,6 +19,7 @@ public class CliTestRunner {
     private String[] jsDepends;
     private String[] resSrc;
     private String[] resDst;
+    private CliTestRunListener runListener;
     
     public CliTestRunner(CliEngine engine) {
 	this.engine = engine;
@@ -57,6 +58,15 @@ public class CliTestRunner {
 		throw new RuntimeException("Resource destinations and sources must be same size");
 	    }
 	}
+    }
+    /**
+     * sets {@link CliTestRunListener} for this run
+     * @param listener
+     * @return
+     */
+    public CliTestRunner withRunListener(CliTestRunListener listener) {
+	this.runListener = listener;
+	return this;
     }
     /**
      * JS file that is going to run
@@ -172,7 +182,7 @@ public class CliTestRunner {
 	if (this.cliArgs!=null) { // we support named arguments only at this time
 	    this.cliArgs = "--args-style=named"+this.cliArgs;
 	}
-	log.info("CLI ARGS:"+this.cliArgs);
+	CliEngine.runListener = this.runListener;
 	String jsDepends = prepareArrayArgs(this.jsDepends);
 	String resSrc = prepareArrayArgs(this.resSrc);
 	String resDst = prepareArrayArgs(this.resDst);

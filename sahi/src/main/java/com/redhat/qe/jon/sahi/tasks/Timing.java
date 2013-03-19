@@ -12,6 +12,7 @@ public class Timing {
 	public static int TIME_10S = (int)(10 * 1000 * multiplier());
 	public static int TIME_30S = (int)(30 * 1000 * multiplier());
 	public static int TIME_1M = (int)(60 * 1000 * multiplier());
+    public static int TIME_1S = (int)(1000 * multiplier());
 	public static int WAIT_TIME = TIME_5S;
 	public static int REPEAT = 10;
 	public static int DISCOVERY_WAIT = TIME_30S;

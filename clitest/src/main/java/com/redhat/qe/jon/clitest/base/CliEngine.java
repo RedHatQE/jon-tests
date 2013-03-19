@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -22,13 +23,16 @@ import org.testng.annotations.Optional;
 
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.common.util.LocalCommandRunner;
 
 public class CliEngine extends CliTestScript{
 	private static Logger _logger = Logger.getLogger(CliEngine.class.getName());
 	public static String cliShLocation;
 	public static String rhqCliJavaHome;
 	public static String rhqTarget;
+	/**
+	 * CLI test run listener 
+	 */
+	public static CliTestRunListener runListener;
 	private String cliUsername;
 	private String cliPassword;
 	protected CliTasks cliTasks;
@@ -242,13 +246,19 @@ public class CliEngine extends CliTestScript{
 	 * @throws IOException
 	 * @throws CliTasksException
 	 */
-	public String runJSSnippet(String snippet, String rhqTarget, String cliUsername,String cliPassword,String cliArgs,String expectedResult,String makeFilure,String jsDepends, String resSrc, String resDst) throws IOException, CliTasksException {
-	    	LocalCommandRunner runner = new LocalCommandRunner();
-	    	runner.connect();
-	    	runner.runAndWait("echo \""+snippet+"\" > /tmp/snippet.js");
-	    	runJSfile(rhqTarget, cliUsername, cliPassword, "file:///tmp/snippet.js", cliArgs, expectedResult, makeFilure, jsDepends, resSrc, resDst);
-	    	return consoleOutput;
-	}
+    public String runJSSnippet(String snippet, String rhqTarget,
+	    String cliUsername, String cliPassword, String cliArgs,
+	    String expectedResult, String makeFilure, String jsDepends,
+	    String resSrc, String resDst) throws IOException, CliTasksException {
+	File tempFile = File.createTempFile("snippet", "js");
+	PrintWriter pw = new PrintWriter(tempFile);
+	pw.println(snippet);
+	pw.close();
+	runJSfile(rhqTarget, cliUsername, cliPassword, tempFile.toURI()
+		.toString(), cliArgs, expectedResult, makeFilure, jsDepends,
+		resSrc, resDst);
+	return consoleOutput;
+    }
 
 	protected void prepareResources(String resSrc, String resDst)
 			throws CliTasksException, IOException {
@@ -278,6 +288,20 @@ public class CliEngine extends CliTestScript{
 				String resource = getResourceFileName(src);
 				if (resource==null) {
 					throw new CliTasksException("Resource file "+src+" does not exist!");
+				}
+				if (runListener!=null) {
+				    try {
+					File newResource = runListener.onResourceProcessed(src, new File(resource));						
+					if (newResource!=null && newResource.exists() && newResource.isFile()) {
+    					_logger.fine("Resource ["+resource+"] has been processed by listener, new result ["+newResource.getAbsolutePath()+"]");
+    					resource = newResource.getAbsolutePath();
+					}
+					else {
+					    throw new Exception("Resource file processed by listener is invalid (either null, non-existing or non-file)");
+					}
+				    } catch (Exception ex) {
+					_logger.log(Level.WARNING, "CliTestRunListener failed, using original resource. Error : "+ex.getMessage(), ex);
+				    }
 				}
 				cliTasks.copyFile(resource, destDir,dst.getName());
 			}
