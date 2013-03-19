@@ -3031,7 +3031,7 @@ var Resource = function (param) {
 					return true;
 				}catch(err){
 					var errMsg = err.message;
-					common.warn("Catched following error during uninventory: " + errMsg);
+					common.warn("Caught following error during uninventory: " + errMsg);
 					if(errMsg.indexOf("Failed to uninventory platform. " +
 							"This can happen if new resources were actively being imported. " +
 							"Please wait and try again shortly") != -1){
@@ -3040,7 +3040,7 @@ var Resource = function (param) {
 						return true;
 					}
 				}
-			},20);
+			},20,240);
 			
 			if(!result){
 				throw "Failed to uninventory. See previous errors."
