@@ -31,6 +31,11 @@ public class LocalCommandRunner implements ICommandRunner {
 	}
 	
 	@Override
+	public void getFile(String srcPath, String destDir) throws IOException {
+		copyFile(srcPath,destDir);
+	}
+	
+	@Override
 	public void copyFile(String srcPath, String destDir) throws IOException {
 	    log.fine("Copying [" + srcPath + "] to " + destDir);
 	    copyFile(new File(srcPath),new File(destDir+File.separator+new File(srcPath).getName()));
@@ -163,4 +168,5 @@ public class LocalCommandRunner implements ICommandRunner {
 		// TODO Auto-generated method stub
 		
 	}
+	
 }

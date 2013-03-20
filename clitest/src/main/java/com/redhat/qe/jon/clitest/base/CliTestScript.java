@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.velocity.texen.util.FileUtil;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
@@ -14,6 +15,8 @@ import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
 import com.redhat.qe.jon.common.TestScript;
+import com.redhat.qe.jon.common.util.LocalCommandRunner;
+import com.redhat.qe.jon.common.util.SSHClient;
 
 
 /**
@@ -23,6 +26,7 @@ import com.redhat.qe.jon.common.TestScript;
 public abstract class CliTestScript extends TestScript{
 	
 	private static Logger _logger = Logger.getLogger(CliTestScript .class.getName());
+	private static Configuration config = null;
 	
 	public CliTestScript(){
 		super();
@@ -31,7 +35,7 @@ public abstract class CliTestScript extends TestScript{
 	@BeforeSuite
 	public void loadBeforeSuite() throws IOException, CliTasksException{
 		_logger.log(Level.INFO, "Loading before Suite");
-		Configuration config = Configuration.load();
+		config = Configuration.load();
 		CliTasks.getCliTasks().initialize(	config.get(PARAM.HOST_NAME), 
 												config.get(PARAM.HOST_USER),
 												config.get(PARAM.HOST_PASSWORD));
@@ -56,9 +60,28 @@ public abstract class CliTestScript extends TestScript{
 	}
 
 	@AfterSuite
-	public void closeBrowser() {
+	public void cleanUp() {
 		_logger.log(Level.INFO, "Executing after Suite");
 		CliTasks.getCliTasks().closeConnection();
+		SSHClient rhqServer = new SSHClient("hudson",config.get(PARAM.RHQ_TARGET),"hudson");
+		LocalCommandRunner localServer = new LocalCommandRunner(".");
+		try{
+			rhqServer.connect();
+			if(System.getProperty("jon.server.log.path") == null){
+				_logger.log(Level.INFO, "Location of RHQ/JON server log not defined, skipping gathering.");
+			}else{
+				_logger.log(Level.INFO, "Gathering the RHQ/JON server log");
+				rhqServer.getFile(System.getProperty("jon.server.log.path"), "/tmp");
+				localServer.copyFile("/tmp/server.log", ".", "server"+rhqServer.getHost()+".log");
+				
+			}
+			_logger.log(Level.INFO, "Gathering the RHQ/JON agent log");
+			rhqServer.getFile("rhq-agent/logs/agent.log", "/tmp");
+			localServer.copyFile("/tmp/agent.log", ".", "agent"+rhqServer.getHost()+".log");
+			
+		}catch(Exception ex){
+			_logger.log(Level.WARNING, "Failed to gather RHQ logs." ,ex);
+		}
 		_logger.log(Level.INFO, "Completed after Suite");
 		
 	}

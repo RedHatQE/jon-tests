@@ -12,6 +12,14 @@ import com.redhat.qe.tools.SSHCommandResult;
 public interface ICommandRunner {
 
 	/**
+	 * copies file from destination
+	 * @param srcPath remote src path
+	 * @param destDir must always be on local machine
+	 * @throws IOException
+	 */
+	void getFile(String srcPath,String destDir) throws IOException;
+	
+	/**
 	 * copies file to destination
 	 * @param srcPath must always be on local machine
 	 * @param destDir
