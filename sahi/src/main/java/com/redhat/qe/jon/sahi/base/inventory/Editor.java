@@ -204,6 +204,7 @@ public class Editor {
      * @param check true to check, false to uncheck
      */
     public void checkBox(int index, boolean check) {
+        tasks.waitFor(Timing.WAIT_TIME);
         String checkBox = null;
         if (check) {
             checkBox = "unchecked.png[" + index + "]";
