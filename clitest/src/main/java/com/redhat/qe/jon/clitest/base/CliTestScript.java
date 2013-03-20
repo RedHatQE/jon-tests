@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.clitest.base;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,26 +64,84 @@ public abstract class CliTestScript extends TestScript{
 	public void cleanUp() {
 		_logger.log(Level.INFO, "Executing after Suite");
 		CliTasks.getCliTasks().closeConnection();
-		SSHClient rhqServer = new SSHClient("hudson",config.get(PARAM.RHQ_TARGET),"hudson");
-		LocalCommandRunner localServer = new LocalCommandRunner(".");
-		try{
-			rhqServer.connect();
-			if(System.getProperty("jon.server.log.path") == null){
-				_logger.log(Level.INFO, "Location of RHQ/JON server log not defined, skipping gathering.");
-			}else{
-				_logger.log(Level.INFO, "Gathering the RHQ/JON server log");
-				rhqServer.getFile(System.getProperty("jon.server.log.path"), "/tmp");
-				localServer.copyFile("/tmp/server.log", ".", "server"+rhqServer.getHost()+".log");
-				
+		
+		gatherServerLog(config.get(PARAM.RHQ_TARGET), System.getProperty("jon.server.log.path"));
+		
+		String agents = System.getProperty("jon.agent.hosts");
+		if(agents == null){
+			_logger.log(Level.INFO, "IPs of RHQ/JON agents not defined, skipping gathering.");
+		}else{
+			String[] ips = agents.split(",");
+			for(String ip : ips){
+				gatherAgentLog(ip.trim());
 			}
-			_logger.log(Level.INFO, "Gathering the RHQ/JON agent log");
-			rhqServer.getFile("rhq-agent/logs/agent.log", "/tmp");
-			localServer.copyFile("/tmp/agent.log", ".", "agent"+rhqServer.getHost()+".log");
-			
-		}catch(Exception ex){
-			_logger.log(Level.WARNING, "Failed to gather RHQ logs." ,ex);
 		}
 		_logger.log(Level.INFO, "Completed after Suite");
 		
+	}
+	/**
+	 * Gets the server log from remote server to 'logs' directory in actual directory
+	 * @param serverHost ip or hostname of RHQ/JON server's host
+	 * @param serverLogPath path to the RHQ/JON server log (relative or absolute)
+	 */
+	private void gatherServerLog(String serverHost, String serverLogPath){
+		SSHClient rhqServer = new SSHClient("hudson",serverHost,"hudson");
+		LocalCommandRunner localServer = new LocalCommandRunner(".");
+		createLogDir();
+		
+		try{
+			rhqServer.connect();
+			if(serverLogPath == null){
+				_logger.log(Level.INFO, "Location of RHQ/JON server log not defined, skipping gathering.");
+				// TODO try to find the server log
+			}else{
+				_logger.log(Level.INFO, "Gathering the RHQ/JON server log from " + rhqServer.getHost());
+				// get it from remote server to local /tmp
+				rhqServer.getFile(serverLogPath, "/tmp");
+				// copy it to logs directory
+				localServer.copyFile("/tmp/server.log", "logs", "server"+rhqServer.getHost()+".log");
+			}
+		}catch(Exception ex){
+			_logger.log(Level.WARNING, "Failed to gather the RHQ server log." ,ex);
+		}finally{
+			rhqServer.disconnect();
+		}
+	}
+	
+	/**
+	 * Gets the agent log from remote server to 'logs' directory in actual directory
+	 * @param agentHost ip or hostname of RHQ/JON agent's host
+	 */
+	private void gatherAgentLog(String agentHost){
+		SSHClient agentHostClient = new SSHClient("hudson",agentHost,"hudson");
+		LocalCommandRunner localServer = new LocalCommandRunner(".");
+		createLogDir();
+		
+		try{
+			agentHostClient.connect();
+			_logger.log(Level.INFO, "Gathering the RHQ/JON agent log from host: " + agentHost);
+			// get it from remote server to local /tmp
+			agentHostClient.getFile("rhq-agent/logs/agent.log", "/tmp");
+			// copy it to logs directory
+			localServer.copyFile("/tmp/agent.log", "logs", "agent"+agentHostClient.getHost()+".log");
+		}catch(Exception ex){
+			_logger.log(Level.WARNING, "Failed to gather the agent log." ,ex);
+		}finally{
+			agentHostClient.disconnect();
+		}
+	}
+	
+	/**
+	 * Creates 'logs' directory in actual directory if it doesn't already exist
+	 * @return true if it is successfully created
+	 */
+	private boolean createLogDir(){
+		File destLogDir = new File("logs");
+		// if the directory does not exist, create it
+		if (!destLogDir.exists())
+		{
+			return destLogDir.mkdir();  
+		}
+		return true;
 	}
 }
