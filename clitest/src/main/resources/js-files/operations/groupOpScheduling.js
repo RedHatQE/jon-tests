@@ -86,11 +86,6 @@ for(i in agents){
 	common.info("Checking an agent with id: " + agents[i].id );
 	opHistory = getResOpHistory(agents[i].id);
 	
-	// print invoked operations
-	for(j=0;j<opHistory.size();j++){
-		pretty.print(opHistory.get(j));
-	}
-	
 	// check number of invoked operations
 	assertTrue(opHistory.size() >= repeatCount && opHistory.size() <=repeatCount+1,
 			"Incorrect number of operations in agent's history, expected: "+repeatCount+ "-"+(repeatCount+1)+
@@ -113,6 +108,22 @@ for(i in agents){
 	if((new String(seconds)).indexOf("0") == -1){
 		throw "Operation was not created at expected time. Actual: "+
 		firstOpCreatedTime + ", but we expect operation to be created each 10 complete seconds (0, 10, 20, ...)"
+	}
+	
+	// wait until operation is finished 
+	var pred = function() {
+		opHistory = getResOpHistory(agents[i].id);
+		if (opHistory.size() > 0) {
+			if (opHistory.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
+				return opHistory.get(0);
+			}
+			common.debug("Operation in progress..");
+		};
+	};
+	common.debug("Waiting for result..");
+	var history = common.waitFor(pred);
+	if (!history) {
+		throw "Operation is still in progress!!"
 	}
 	
 	// check invoked operations one by one
