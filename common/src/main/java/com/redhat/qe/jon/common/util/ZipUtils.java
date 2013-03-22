@@ -6,7 +6,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
- * @author: rhatlapa@redhat.com
+ * @author rhatlapa@redhat.com
  */
 public class ZipUtils {
 
