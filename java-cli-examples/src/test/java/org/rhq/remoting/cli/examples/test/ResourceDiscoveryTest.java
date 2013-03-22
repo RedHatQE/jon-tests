@@ -25,25 +25,25 @@ public class ResourceDiscoveryTest {
     
     @Test
     public void discoveryQueue() {
-	new ResourceDiscovery().discoveryQueue(this.client);	
+	new ResourceDiscovery(this.client).discoveryQueue();	
     }
     
     @Test
     public void importResources() {
-	Resource[] resources = new ResourceDiscovery().discoveryQueue(this.client);
-	new ResourceDiscovery().importResources(client, resources);
-	Assert.assertTrue(new ResourceDiscovery().discoveryQueue(this.client).length == 0);
+	Resource[] resources = new ResourceDiscovery(this.client).discoveryQueue();
+	new ResourceDiscovery(this.client).importResources(resources);
+	Assert.assertTrue(new ResourceDiscovery(this.client).discoveryQueue().length == 0);
 
     }
     
     @Test
     public void importAllResources() {
-	new ResourceDiscovery().importAllResources(client);
-	Assert.assertTrue(new ResourceDiscovery().discoveryQueue(this.client).length == 0);
+	new ResourceDiscovery(this.client).importAllResources();
+	Assert.assertTrue(new ResourceDiscovery(this.client).discoveryQueue().length == 0);
     }
     
     @Test
     public void findResourcesByResourceTypeName() {
-	Assert.assertTrue(new ResourceDiscovery().findResources(client, "RHQ Agent").length > 0);
+	Assert.assertTrue(new ResourceDiscovery(this.client).findResources("RHQ Agent").length > 0);
     }
 }

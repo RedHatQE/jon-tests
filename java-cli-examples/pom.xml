@@ -34,10 +34,6 @@
 					<artifactId>antlr</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>hibernate-annotations</groupId>
-					<artifactId>hibernate-annotations</artifactId>
-				</exclusion>
-				<exclusion>
 					<groupId>com.jcraft</groupId>
 					<artifactId>jsch</artifactId>
 				</exclusion>
