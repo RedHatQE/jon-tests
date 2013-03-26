@@ -542,21 +542,26 @@ var _common = function() {
 		 * @param conditionFunc -
 		 *            predicate waits until conditionFunc does return any
 		 *            defined value except for false
+		 * @param funcDelay - delay (seconds) which overwrites globally defined delay
+		 * @param funcTimeout - timeout (seconds) which overwrites globally defined timeout 
 		 */
-		waitFor : function(conditionFunc) {
+		waitFor : function(conditionFunc,funcDelay,funcTimeout) {
 			var time = 0;
-			if (typeof timeout == "number") {
-				var tout = timeout;
+			
+			var dlay = 5;
+			if(funcDelay){
+				dlay = funcDelay;
+			}else if (typeof delay == "number") {
+				dlay = delay;
 			}
-			else {
-				tout = 20;
+			
+			var tout = 20;
+			if(funcTimeout){
+				tout = funcTimeout
+			}else if (typeof timeout == "number") {
+				tout = timeout;
 			}
-			if (typeof delay == "number") {
-				var dlay = delay;
-			}
-			else {
-				dlay = 5;
-			}
+			
 			_trace("common.waitFor(func,delay="+dlay+",timeout="+tout+")");
 
 			var result = conditionFunc();
@@ -3018,8 +3023,31 @@ var Resource = function (param) {
 		 */
 		uninventory : function() {
 			common.trace("Resource("+_id+").uninventory()");
-			ResourceManager.uninventoryResources([_id]);
-			var result = common.waitFor(function () {
+			
+			// this is a workaround for https://bugzilla.redhat.com/show_bug.cgi?id=830158
+			var result = common.waitFor(function (){
+				try{
+					ResourceManager.uninventoryResources([_id]);
+					return true;
+				}catch(err){
+					var errMsg = err.message;
+					common.warn("Caught following error during uninventory: " + errMsg);
+					if(errMsg.indexOf("Failed to uninventory platform. " +
+							"This can happen if new resources were actively being imported. " +
+							"Please wait and try again shortly") != -1){
+						return false;
+					}else{
+						return true;
+					}
+				}
+			},20,240);
+			
+			if(!result){
+				throw "Failed to uninventory. See previous errors."
+			}
+			
+			
+			result = common.waitFor(function () {
 					if (_find().size()>0) {
 						common.debug("Waiting for resource to be removed from inventory");
 						return false;

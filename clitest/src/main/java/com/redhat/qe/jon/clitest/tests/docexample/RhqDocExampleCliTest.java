@@ -22,7 +22,7 @@ public class RhqDocExampleCliTest extends CliTest {
 				"Login successful, named args...,x = 1,y = 2");
 	}
 	
-	@Test
+	@Test(groups={"blockedByBug-924304"})
 	public void proxyTest() throws IOException, CliTasksException{
 		runJSfile("docExample/rhq/proxyExample.js",
 				null,

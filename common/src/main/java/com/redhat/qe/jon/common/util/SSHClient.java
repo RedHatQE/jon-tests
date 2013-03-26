@@ -160,5 +160,17 @@ public class SSHClient implements ICommandRunner {
 		log.fine("File ["+srcPath+"] copied to "+getHost()+":"+destDir+"/"+destFileName);
 		
 	}
+	/**
+	 * copies file from remote host 
+	 * @param srcPath source file on remote host
+	 * @param destDir destinaion dir on local host
+	 * @throws IOException
+	 */
+	@Override
+	public void getFile(String srcPath, String destDir) throws IOException {
+		scpClient.get(srcPath, destDir);
+		log.fine("File ["+srcPath+"] copied from "+getHost()+":"+destDir);
+		
+	}
 	
 }

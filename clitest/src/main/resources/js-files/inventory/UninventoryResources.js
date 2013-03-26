@@ -5,6 +5,7 @@
  * Aug 10, 2012
  */
 
+verbose = 3; // logging level
 
 // this depends on rhqapi.js
 

@@ -36,6 +36,16 @@ public class CliTasks {
 		}
 		commandRunner.connect();
 	}
+	
+	/**
+	 * copies file from remote host
+	 * @param src source file
+	 * @param dest remote dir
+	 * @throws IOException
+	 */
+	public void getFile(String src, String dest) throws IOException {
+		commandRunner.getFile(src, dest);
+	}
 	/**
 	 * copies file to remote host
 	 * @param src source file

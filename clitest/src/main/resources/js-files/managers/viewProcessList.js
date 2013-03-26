@@ -25,7 +25,9 @@ pretty.print(op);
 //check operation status
 var res = new Resource(server.getId());
 var history = res.waitForOperationResult();
-assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + history.status + " but success was expected!!");
+pretty.print(history);
+assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + 
+		history.status + " but success was expected!! Err message: " + history.getErrorMessage());
 
 var jobId = op.getJobId();
 
