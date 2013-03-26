@@ -157,6 +157,15 @@ project(":metricsimulator") {
         }
 
 }
+
+project(":agentrpm") {
+        dependencies {
+                compile project(":common")
+                testCompile  project(":common")
+        }
+
+}
+
 project(":common") {
 	dependencies {
 		compile "com.redhat.qe:ssh-tools:1.0.0",
