@@ -11,7 +11,11 @@ import org.rhq.core.domain.configuration.definition.PropertyDefinition;
 import org.rhq.core.domain.configuration.definition.PropertyDefinitionMap;
 import org.rhq.core.domain.resource.Resource;
 import org.rhq.enterprise.clientapi.RemoteClient;
-
+/**
+ * this class shows how to configure a resource
+ * @author lzoubek
+ *
+ */
 public class ResourceConfiguration {
 
     private final RemoteClient client;
@@ -62,6 +66,9 @@ public class ResourceConfiguration {
 	// but may fail if agent communication is broken
 	//Configuration config = client.getConfigurationManager().getLiveResourceConfiguration(client.getSubject(), resource.getId(),true);
 	PropertySimple property = config.getSimple(key);
+	if (property==null) {
+	    throw new RuntimeException("Property ["+key+"] not found in configuration");
+	}
 	property.setValue(value);
 	config.put(property);
 	ResourceConfigurationUpdate update = client.getConfigurationManager().updateResourceConfiguration(client.getSubject(), resource.getId(), config);
@@ -90,6 +97,11 @@ public class ResourceConfiguration {
 	return update;
     }
 
+    /**
+     * prints Configuration Property 
+     * @param property to be printed
+     * @param indent
+     */
     private void printProperty(Property property, String indent) {	
 	if (PropertyMap.class.equals(property.getClass())) {
 	    PropertyMap map = (PropertyMap)property;
@@ -104,6 +116,11 @@ public class ResourceConfiguration {
 	}
     }
 
+    /**
+     * prints Configuration property definition 
+     * @param definition
+     * @param indent
+     */
     private void printPropertyDefinition(PropertyDefinition definition, String indent) {	
 	if (PropertyDefinitionMap.class.equals(definition.getClass())) {
 	    PropertyDefinitionMap def = (PropertyDefinitionMap)definition;
