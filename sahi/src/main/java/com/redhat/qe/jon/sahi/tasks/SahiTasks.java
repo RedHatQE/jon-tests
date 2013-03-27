@@ -58,6 +58,27 @@ public class SahiTasks extends ExtendedSahi {
         login(userName, password);
     }
 
+    /**
+     * Method which add column Last Modified Time and sort descending  the table by this column
+     *
+     */
+    public void sortChildResources() {
+        if (!this.cell("Last Modified Time").isVisible()) {
+            // 1. Add column Last Modified Time
+            this.xy(this.cell("Name").near(this.cell("Ancestry")), 3, 3).rightClick();
+            this.xy(this.cell("Columns"), 3, 3).mouseOver();
+            this.xy(this.cell("Last Modified Time"), 3, 3).click();
+            // 2. Set Auto Fit All Columns
+            this.xy(this.cell("Auto Fit All Columns"), 3, 3).click();
+            // 3. Sort the table by Last Modified Time descending
+            // sort by Last Modified Time
+            this.xy(this.cell("Last Modified Time"), 3, 3).click();
+            this.waitFor(Timing.WAIT_TIME);
+            this.xy(this.cell("Last Modified Time"), 3, 3).click();
+            this.waitFor(Timing.WAIT_TIME);
+        }
+    }
+
     // ***************************************************************************
     // Inventory
     // ***************************************************************************
