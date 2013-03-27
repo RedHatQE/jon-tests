@@ -1,0 +1,15 @@
+bin
+classes
+test-output
+*~
+\#*
+clitest/src/main/resources/testng-dev.xml
+.gradle
+build
+*/.gradle
+*/build
+*/.settings
+*/.project
+*/.classpath
+*.iml
+.idea
