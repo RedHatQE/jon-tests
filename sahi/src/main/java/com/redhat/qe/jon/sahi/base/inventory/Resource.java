@@ -750,7 +750,13 @@ public class Resource {
             for (int i = 0; i < Timing.REPEAT; i++) {
                 log.finer("Waiting another " + Timing.toString(sleepTime) + " for " + this.getName() + " to import");
                 tasks.waitFor(sleepTime);
-                if (this.tryFetchId()) {
+                boolean imported = false;
+                if (HAVE_REST_API) {
+                    imported = tryFetchId();
+                } else {
+                    imported = this.exists();
+                }
+                if (imported) {
                     break;
                 }
             }
