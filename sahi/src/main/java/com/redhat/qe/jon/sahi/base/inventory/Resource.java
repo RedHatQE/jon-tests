@@ -52,13 +52,14 @@ public class Resource {
 	public static final boolean HAVE_REST_API;
 	
 	static {
-		HTTPClient client = new HTTPClient(System.getProperty("jon.server.url")+"/rest"); 		
-		HAVE_REST_API = client.isRunning();
+		HTTPClient client = new HTTPClient(System.getProperty("jon.server.url")+"/rest");
+        Boolean restApiForbidden = Boolean.valueOf(System.getProperty("jon.rest.api.forbidden", "false"));
+		HAVE_REST_API = !restApiForbidden && client.isRunning();
 		if (HAVE_REST_API) {
 			log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured with REST API, resource navigation will be fast as hell");
 		}
 		else {
-			log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured without REST API, resource navigation will be slower");
+			log.info("RHQ/JON server ["+System.getProperty("jon.server.url")+"] is configured without REST API or REST API usage is forbidden, resource navigation will be slower");
 		}
 	}
 
