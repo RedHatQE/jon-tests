@@ -233,27 +233,7 @@ public class Inventory extends ResourceTab{
 			this.tasks = tasks;
 		}
 
-	  /**
-	   * Method which add column Last Modified Time and sort descending  the table by this column
-	   * 
-	   */
-	  public void sortChildResources() {
-	    if (!tasks.cell("Last Modified Time").isVisible()) {
-	      // 1. Add column Last Modified Time
-	      tasks.xy(tasks.cell("Name").near(tasks.cell("Ancestry")), 3, 3).rightClick();
-	      tasks.xy(tasks.cell("Columns"), 3, 3).mouseOver();
-	      tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
-	      // 2. Set Auto Fit All Columns
-	      tasks.xy(tasks.cell("Auto Fit All Columns"), 3, 3).click();
-	      // 3. Sort the table by Last Modified Time descending
-	      // sort by Last Modified Time
-	      tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
-	      tasks.waitFor(Timing.WAIT_TIME);
-	      tasks.xy(tasks.cell("Last Modified Time"), 3, 3).click();
-	      tasks.waitFor(Timing.WAIT_TIME);
-	    }
-	  }
-		
+
         /**
          * Its unstable method
          * Method which filters child resources based on the provided name using search box
@@ -302,20 +282,20 @@ public class Inventory extends ResourceTab{
                 tasks.waitFor(Timing.TIME_5S*2);
             }
         }
-		/**
-		 *
-		 * @param name
-		 * @return true if child resource with given name exists
-		 */
-		public boolean existsChild(String name) {
-			if (tasks.cell("No items to show").isVisible()) {
-				return false;
-			}
-      if (!tasks.cell(name).isVisible()) {
-	      sortChildResources();
-	    }
-			return tasks.cell(name).isVisible();
-		}
+
+        /**
+         * @param name
+         * @return true if child resource with given name exists
+         */
+        public boolean existsChild(String name) {
+            if (tasks.cell("No items to show").isVisible()) {
+                return false;
+            }
+            if (!tasks.cell(name).isVisible()) {
+                tasks.sortChildResources();
+            }
+            return tasks.cell(name).isVisible();
+        }
 
 		public void refresh() {
 			tasks.cell("Refresh").click();
@@ -359,18 +339,20 @@ public class Inventory extends ResourceTab{
 			tasks.cell("Yes").click();
 
 		}
-		private void selectChild(String name) {
-      if (!tasks.cell(name).isVisible()) {
-        sortChildResources();
-      }
-			int children = tasks.cell(name).countSimilar();
-			log.fine("Matched cells "+children);
-			if (children==0) {
-				throw new RuntimeException("Unable to select resource ["+name+"], NOT FOUND!");
-			}
-			tasks.xy(tasks.cell(name+"["+(children-1)+"]"), 3, 3).click();
-		}
-		/**
+
+        private void selectChild(String name) {
+            if (!tasks.cell(name).isVisible()) {
+                tasks.sortChildResources();
+            }
+            int children = tasks.cell(name).countSimilar();
+            log.fine("Matched cells " + children);
+            if (children == 0) {
+                throw new RuntimeException("Unable to select resource [" + name + "], NOT FOUND!");
+            }
+            tasks.xy(tasks.cell(name + "[" + (children - 1) + "]"), 3, 3).click();
+        }
+
+        /**
 		 * deletes child by given name from repository
 		 * @param name
 		 */

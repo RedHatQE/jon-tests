@@ -83,23 +83,31 @@ public class Navigator {
 	public void inventorySelectTab(String it) {
 		inventorySelectTab(it, null);
 	}
+
 	public void inventoryDiscoveryQueue() {
         tasks.link("Inventory").click();
         tasks.cell("Discovery Queue").click();
         tasks.waitFor(timeout);
 	}
+
 	public void inventoryGoToResource(Resource res) {
 		tasks.link("Inventory").click();
 		tasks.waitFor(timeout);
 		tasks.cell("Platforms").click();
 		tasks.waitFor(timeout);
+        if (!tasks.link(res.getPlatform()).isVisible()) {
+            tasks.sortChildResources();
+        }
         log.fine("Select platform ["+res.getPlatform()+"]");
         tasks.link(res.getPlatform()).click();
         for (int i = 1;i<res.getPath().size();i++) {
         	String element = res.getPath().get(i);
         	log.fine("Select element ["+element+"]");
         	tasks.waitFor(timeout);
-	        inventorySelectTab("Inventory","Child Resources");	        
+	        inventorySelectTab("Inventory","Child Resources");
+            if (!tasks.cell(element).isVisible()) {
+                tasks.sortChildResources();
+            }
 	        tasks.link(element).click();
 	        log.fine("Clicked element ["+element+"]");
         }
