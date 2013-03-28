@@ -75,6 +75,8 @@ public class HTTPClient {
         try {
             while (attempt < retryNumber) {
                 try {
+                    attempt++;
+                    log.fine("Attempt number " + attempt + " to verify if " + url.toString() + " is reachable");
                     connection = (HttpURLConnection) url.openConnection();
                     urlIsReachable = (connection.getResponseCode() == HttpURLConnection.HTTP_OK);
                     if (urlIsReachable) {
@@ -85,7 +87,6 @@ public class HTTPClient {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } finally {
-                    attempt++;
                     Library.sleepFor(1000);
                 }
             }
@@ -111,7 +112,7 @@ public class HTTPClient {
         HttpURLConnection connection = null;
         try {
             URL u = new URL(url);
-            Assert.assertTrue(checkURLReachability(u, 5),  "Deployment " + deployment + " is reachable on EAP via HTTP request");
+            Assert.assertTrue(checkURLReachability(u, 10),  "Deployment " + deployment + " is reachable on EAP via HTTP request");
             connection = (HttpURLConnection) u.openConnection();
             BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             for (String line; (line = reader.readLine()) != null; ) {
