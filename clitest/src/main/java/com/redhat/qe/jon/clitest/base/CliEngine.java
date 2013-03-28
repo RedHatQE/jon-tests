@@ -175,16 +175,20 @@ public class CliEngine extends CliTestScript{
 			prepareDependencies(jsFile, jsDepends,jsFilePath);
 		}
 		
+		String command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
 		// autodetect RHQ_CLI_JAVA_HOME if not defined
 		if (StringUtils.trimToNull(rhqCliJavaHome)==null) {
 			rhqCliJavaHome = cliTasks.runCommand("echo $JAVA_HOME").trim();
 			if ("".equals(rhqCliJavaHome)) {
-			    throw new CliTasksException("Neither RHQ_CLI_JAVA_HOME nor JAVA_HOME environment variables were defined, unable to run RHQ CLI");
+				log.info("Neither RHQ_CLI_JAVA_HOME nor JAVA_HOME environment variables were defined, trying to get java exe file location");
+				command = "export RHQ_CLI_JAVA_EXE_FILE_PATH=`which java`; ";
+			}else{
+				_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
+				command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
 			}
-			_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
 		}
 		// workaround #913135 for JON 3.2 ALPHA build !!!! export RHQ_CLI_ADDITIONAL_JAVA_OPTS=-Drhq.client.version-check=false;
-		String command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; export RHQ_CLI_ADDITIONAL_JAVA_OPTS=-Drhq.client.version-check=false; "+CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName;
+		command += "export RHQ_CLI_ADDITIONAL_JAVA_OPTS=-Drhq.client.version-check=false; "+CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName;
 		if(cliArgs != null){
 			command +=" "+cliArgs;
 		}
