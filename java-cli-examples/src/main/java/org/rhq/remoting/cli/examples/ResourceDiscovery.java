@@ -9,6 +9,8 @@ import org.rhq.core.domain.resource.Resource;
 import org.rhq.core.domain.resource.group.ResourceGroup;
 import org.rhq.core.domain.util.PageList;
 import org.rhq.enterprise.clientapi.RemoteClient;
+import org.rhq.enterprise.server.discovery.DiscoveryBossRemote;
+import org.rhq.enterprise.server.resource.ResourceManagerRemote;
 
 /**
  * this class shows several examples about how to get resources from discovery queue or how to import them
@@ -18,9 +20,13 @@ import org.rhq.enterprise.clientapi.RemoteClient;
 public class ResourceDiscovery {
 
     private final RemoteClient client;
+    private final ResourceManagerRemote resourceManager;
+    private final DiscoveryBossRemote discoveryBoss;
     
     public ResourceDiscovery(RemoteClient client) {
 	this.client = client;
+	this.resourceManager = client.getProxy(ResourceManagerRemote.class);
+	this.discoveryBoss = client.getProxy(DiscoveryBossRemote.class);
     }
     
     /**
@@ -29,7 +35,7 @@ public class ResourceDiscovery {
     public Resource[] discoveryQueue() {
 	ResourceCriteria criteria = new ResourceCriteria();
 	criteria.addFilterInventoryStatus(InventoryStatus.NEW);
-	PageList<Resource> list = client.getResourceManager().findResourcesByCriteria(client.getSubject(), criteria);
+	PageList<Resource> list = resourceManager.findResourcesByCriteria(client.getSubject(), criteria);
 	return list.getValues().toArray(new Resource[]{});
     }
     /**
@@ -41,7 +47,7 @@ public class ResourceDiscovery {
 	for (int i=0;i<resources.length;i++) {
 	    ids[i] = resources[i].getId();
 	}
-	client.getDiscoveryBoss().importResources(client.getSubject(), ids);
+	discoveryBoss.importResources(client.getSubject(), ids);
     }
     /**
      * imports given array of resources to inventory
@@ -64,7 +70,7 @@ public class ResourceDiscovery {
 	criteria.addFilterIds(ids);
 	
 	List<Integer> importIds = new ArrayList<Integer>();
-	PageList<Resource> list = client.getResourceManager().findResourcesByCriteria(client.getSubject(), criteria);
+	PageList<Resource> list = resourceManager.findResourcesByCriteria(client.getSubject(), criteria);
 	if (list.isEmpty()) {
 	    // no resources in disco queue have been found based on criteria
 	    return;
@@ -85,7 +91,7 @@ public class ResourceDiscovery {
 	for (int i=0;i<importIds.size();i++) {
 	    submitIds[i] = importIds.get(i);
 	}
-	client.getDiscoveryBoss().importResources(client.getSubject(), submitIds);	
+	discoveryBoss.importResources(client.getSubject(), submitIds);	
     }
     
     /**
@@ -98,7 +104,7 @@ public class ResourceDiscovery {
 	criteria.setStrict(true); // enabling this we force server to match exactly name of resource type not just a substring
 	criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED);
 	criteria.addFilterResourceTypeName(resourceTypeName);
-	PageList<Resource> resources = client.getResourceManager().findResourcesByCriteria(client.getSubject(), criteria);
+	PageList<Resource> resources = resourceManager.findResourcesByCriteria(client.getSubject(), criteria);
 	return resources.toArray(new Resource[]{});
     }
     /**
@@ -110,7 +116,7 @@ public class ResourceDiscovery {
 	ResourceCriteria criteria = new ResourceCriteria();
 	criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED);
 	criteria.addFilterIds(ids);
-	PageList<Resource> resources = client.getResourceManager().findResourcesByCriteria(client.getSubject(), criteria);
+	PageList<Resource> resources = resourceManager.findResourcesByCriteria(client.getSubject(), criteria);
 	return resources.toArray(new Resource[]{});	
     }
     /**
@@ -122,7 +128,7 @@ public class ResourceDiscovery {
 	ResourceCriteria criteria = new ResourceCriteria();
 	criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED);
 	criteria.addFilterExplicitGroupIds(group.getId());
-	PageList<Resource> resources = client.getResourceManager().findResourcesByCriteria(client.getSubject(), criteria);
+	PageList<Resource> resources = resourceManager.findResourcesByCriteria(client.getSubject(), criteria);
 	return resources.toArray(new Resource[]{});	
     }
 }

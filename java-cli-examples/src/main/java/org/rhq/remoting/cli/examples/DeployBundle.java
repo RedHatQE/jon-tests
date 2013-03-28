@@ -11,6 +11,7 @@ import org.rhq.core.domain.configuration.Configuration;
 import org.rhq.core.domain.criteria.BundleDeploymentCriteria;
 import org.rhq.core.domain.resource.group.ResourceGroup;
 import org.rhq.enterprise.clientapi.RemoteClient;
+import org.rhq.enterprise.server.bundle.BundleManagerRemote;
 
 /**
  * this class shows several examples about how to deploy a bundle to JON server.
@@ -26,14 +27,16 @@ import org.rhq.enterprise.clientapi.RemoteClient;
 public class DeployBundle {
 
     private final RemoteClient client;
+    private final BundleManagerRemote bundleManager;
     
     public DeployBundle(RemoteClient client) {
 	this.client = client;
+	bundleManager = client.getProxy(BundleManagerRemote.class);
     }
     
     public BundleDeployment deployBundle(File input,ResourceGroup group, Configuration config, String name, String baseDirName, String deployDir) throws Exception {
 	BundleVersion version = createBundleVersion(input);
-	BundleDestination destination = client.getBundleManager().createBundleDestination(
+	BundleDestination destination = bundleManager.createBundleDestination(
 		client.getSubject(), 
 		version.getBundle().getId(), 
 		name, 
@@ -42,8 +45,9 @@ public class DeployBundle {
 		deployDir, 
 		group.getId()
 	);
-	BundleDeployment deployment = client.getBundleManager().createBundleDeployment(client.getSubject(), version.getId(), destination.getId(), "", config);
-	deployment = client.getBundleManager().scheduleBundleDeployment(client.getSubject(), deployment.getId(), false);	
+	
+	BundleDeployment deployment = bundleManager.createBundleDeployment(client.getSubject(), version.getId(), destination.getId(), "", config);
+	deployment = bundleManager.scheduleBundleDeployment(client.getSubject(), deployment.getId(), false);	
 	return waitForBundleDeploymentFinishes(deployment);
     }
         
@@ -62,7 +66,7 @@ public class DeployBundle {
 	    numRead = is.read(array, offset, array.length - offset);
 	}
 	is.close();
-	return  client.getBundleManager().createBundleVersionViaByteArray(client.getSubject(), array);
+	return  bundleManager.createBundleVersionViaByteArray(client.getSubject(), array);
 	
     }
     /**
@@ -82,7 +86,7 @@ public class DeployBundle {
 	    }
 	    BundleDeploymentCriteria criteria = new BundleDeploymentCriteria();
 	    criteria.addFilterBundleId(deployment.getId());
-	    deployment = client.getBundleManager().findBundleDeploymentsByCriteria(client.getSubject(), criteria).get(0);
+	    deployment = bundleManager.findBundleDeploymentsByCriteria(client.getSubject(), criteria).get(0);
 	}
 	return deployment;
     }

@@ -4,6 +4,7 @@ import org.rhq.enterprise.clientapi.RemoteClient;
 
 public class Login {
 
+    
     /**
      * an examle method that logs in to remote RHQ/JBoss ON server
      * @param host RHQ/JBoss ON server host or IP
@@ -21,8 +22,5 @@ public class Login {
 	    return null;
 	}	
 	return client;
-    }
-    public static void main(String[] agrs) {
-	new Login().login("10.16.23.113", 7080, "rhqadmin", "rhqadmin");
     }
 }

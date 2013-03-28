@@ -29,11 +29,13 @@ public class ResourceGroupsTest {
     
     @Test
     public void createEmptyGroup() {
+	new ResourceGroups(client).deleteGroup("empty");
 	new ResourceGroups(client).createGroup("empty", new Resource[0], false);
     }
     
     @Test
     public void createCompatibleGroup() {
+	new ResourceGroups(client).deleteGroup("agents");
 	Resource[] resources = new ResourceDiscovery(this.client).findResources("RHQ Agent");
 	Assert.assertTrue(resources.length>0);
 	ResourceGroup group = new ResourceGroups(client).createGroup("agents", resources, false);
@@ -44,6 +46,7 @@ public class ResourceGroupsTest {
     }
     @Test
     public void createMixedGroup() {
+	new ResourceGroups(client).deleteGroup("mixed");
 	Resource[] agents = new ResourceDiscovery(this.client).findResources("RHQ Agent");
 	Assert.assertTrue(agents.length>0);
 	
