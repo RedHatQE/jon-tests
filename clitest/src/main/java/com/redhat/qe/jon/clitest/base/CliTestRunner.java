@@ -62,7 +62,7 @@ public class CliTestRunner {
     /**
      * sets {@link CliTestRunListener} for this run
      * @param listener
-     * @return
+     * @return this
      */
     public CliTestRunner withRunListener(CliTestRunListener listener) {
 	this.runListener = listener;

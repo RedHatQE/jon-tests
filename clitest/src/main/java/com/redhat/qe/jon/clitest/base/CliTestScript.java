@@ -1,15 +1,12 @@
 package com.redhat.qe.jon.clitest.base;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.velocity.texen.util.FileUtil;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
-
 
 import com.redhat.qe.jon.clitest.base.Configuration.PARAM;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
@@ -21,7 +18,7 @@ import com.redhat.qe.jon.common.util.SSHClient;
 
 
 /**
- * @author jkandasa@redhat.com (Jeeva Kandasamy)
+ * @author jkandasa@redhat.com (Jeeva Kandasamy), fbrychta@redhat.com
  * Feb 15, 2012
  */
 public abstract class CliTestScript extends TestScript{
@@ -34,30 +31,75 @@ public abstract class CliTestScript extends TestScript{
 	}
 
 	@BeforeSuite
-	public void loadBeforeSuite() throws IOException, CliTasksException{
+	public void loadBeforeSuite() throws CliTasksException{
 		_logger.log(Level.INFO, "Loading before Suite");
-		config = Configuration.load();
-		CliTasks.getCliTasks().initialize(	config.get(PARAM.HOST_NAME), 
-												config.get(PARAM.HOST_USER),
-												config.get(PARAM.HOST_PASSWORD));
 		
-		CliTest.rhqTarget = config.get(PARAM.RHQ_TARGET);
-		CliTest.cliShLocation = config.get(PARAM.CLI_AGENT_BIN_SH);
-		if (StringUtils.trimToNull(CliTest.cliShLocation)==null) {
-			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was not defined, auto-installing CLI and auto-detecting");
-			// auto-install and setup cli executable
-			// download from target server
-			CliTasks.getCliTasks().runCommand("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
-			// detect CLI_HOME from zip content
-			String cliHome = CliTasks.getCliTasks().runCommand("unzip -l rhq-cli.zip | head -n4 | tail -1 | grep cli | awk '{print $4}'").trim();
-			CliTest.cliShLocation = cliHome+"bin/rhq-cli.sh";
-			// unzip CLI
-			CliTasks.getCliTasks().runCommand("rm -rf "+cliHome+" && unzip rhq-cli.zip; rm -f rhq-cli.zip");
-			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was autodetected to "+CliTest.cliShLocation);
+		String dynamicProvisoning = System.getProperty("jon.dynamic.provisioning");
+		if(dynamicProvisoning != null && dynamicProvisoning.equalsIgnoreCase("true")){
+			_logger.info("Dynamic provisioning enabled, skipping configuration loading. All config properties must " +
+					"be set manually.");
+		}else{
+			config = Configuration.load();
+			initialize(config.get(PARAM.RHQ_TARGET),
+					config.get(PARAM.HOST_NAME),
+					config.get(PARAM.HOST_USER),
+					config.get(PARAM.HOST_PASSWORD),
+					config.get(PARAM.CLI_AGENT_BIN_SH),
+					config.get(PARAM.RHQ_CLI_JAVA_HOME)
+					);
 		}
-		CliTest.rhqCliJavaHome = config.get(PARAM.RHQ_CLI_JAVA_HOME);
 		
 		_logger.log(Level.INFO, "Loaded before Suite");
+	}
+	
+	
+	/**
+	 * Initializes required parameters. Optional parameters are omitted (this means that things defined by
+	 * optional parameters will be auto-installed or guessed). Initializes {@link CliTasks}
+	 * @param rhqTarget
+	 * @throws CliTasksException
+	 */
+	public void initialize(String rhqTarget) throws CliTasksException{
+		initialize(rhqTarget, null, null, null, null, null);
+	}
+	
+	/**
+	 * Initializes required and optional parameters. Initializes {@link CliTasks}
+	 * @param rhqTarget
+	 * @param cliHost
+	 * @param cliHostUser
+	 * @param cliHostPasswd
+	 * @param cliShLocation
+	 * @param cliJavaHome
+	 * @throws CliTasksException
+	 */
+	public void initialize(String rhqTarget,String cliHost, String cliHostUser, 
+			String cliHostPasswd, String cliShLocation, String cliJavaHome) throws CliTasksException{
+		if(rhqTarget == null){
+			throw new RuntimeException("No target RHQ/JON server defined!If you are not using dynamic provisioning, " +
+					"please set "+PARAM.RHQ_TARGET+" environment variable or 'jon.server.host' java system property");
+		}
+		CliTest.rhqTarget = rhqTarget;
+		CliTasks.getCliTasks().initialize(cliHost,cliHost,cliHostPasswd);
+		CliTest.cliShLocation = cliShLocation;
+		if (StringUtils.trimToNull(CliTest.cliShLocation)==null) {
+			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was not defined");
+			CLIClientAutoInstall();
+		}
+		CliTest.rhqCliJavaHome = cliJavaHome;
+	}
+	
+	private void CLIClientAutoInstall() throws CliTasksException{
+		_logger.info("Auto-installing CLI and auto-detecting");
+		// auto-install and setup cli executable
+		// download from target server
+		CliTasks.getCliTasks().runCommand("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
+		// detect CLI_HOME from zip content
+		String cliHome = CliTasks.getCliTasks().runCommand("unzip -l rhq-cli.zip | head -n4 | tail -1 | grep cli | awk '{print $4}'").trim();
+		CliTest.cliShLocation = cliHome+"bin/rhq-cli.sh";
+		// unzip CLI
+		CliTasks.getCliTasks().runCommand("rm -rf "+cliHome+" && unzip rhq-cli.zip; rm -f rhq-cli.zip");
+		_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was autodetected to "+CliTest.cliShLocation);
 	}
 
 	@AfterSuite
@@ -65,7 +107,7 @@ public abstract class CliTestScript extends TestScript{
 		_logger.log(Level.INFO, "Executing after Suite");
 		CliTasks.getCliTasks().closeConnection();
 		
-		gatherServerLog(config.get(PARAM.RHQ_TARGET), System.getProperty("jon.server.log.path"));
+		gatherServerLog(CliTest.rhqTarget, System.getProperty("jon.server.log.path"));
 		
 		String agents = System.getProperty("jon.agent.hosts");
 		if(agents == null){
@@ -77,8 +119,8 @@ public abstract class CliTestScript extends TestScript{
 			}
 		}
 		_logger.log(Level.INFO, "Completed after Suite");
-		
 	}
+	
 	/**
 	 * Gets the server log from remote server to 'logs' directory in actual directory
 	 * @param serverHost ip or hostname of RHQ/JON server's host
