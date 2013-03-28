@@ -8,60 +8,17 @@
 	<name>RHQ remote Java API examples</name>
 	<version>1.0-SNAPSHOT</version>
 	<properties>
-		<!-- To work with JON 3.1.x use 4.4.0 For JON 3.2.x use 4.7.0 -->
-		<rhq.version>4.4.0</rhq.version>
+		<!-- To work with JON 3.1.x use 4.4.0 For JON 3.2.x use 4.6.0 -->
+		<rhq.version>4.6.0</rhq.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.rhq</groupId>
-			<artifactId>rhq-remoting-client-api</artifactId>
-			<version>${rhq.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.gwt</groupId>
-					<artifactId>gwt-user</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.xml.bind</groupId>
-					<artifactId>jaxb-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>antlr</groupId>
-					<artifactId>antlr</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.antlr</groupId>
-					<artifactId>antlr</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.jcraft</groupId>
-					<artifactId>jsch</artifactId>
-				</exclusion>
-			</exclusions>
-
-		</dependency>
-		<dependency>
-			<groupId>oswego-concurrent</groupId>
-			<artifactId>concurrent</artifactId>
-			<version>1.3.4-jboss-update1</version>
-		</dependency>
-		<dependency>
-			<groupId>i18nlog</groupId>
-			<artifactId>i18nlog</artifactId>
-			<version>1.0.10</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.0.jboss</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
-		</dependency>
-
-		<dependency>
+			<artifactId>remote-client-deps</artifactId>
+      <version>${rhq.version}</version>
+      <type>pom</type>
+    </dependency>  
+    <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
@@ -73,9 +30,6 @@
 			<id>jboss-public-repository</id>
 			<name>JBoss Repository</name>
 			<url>http://repository.jboss.org/nexus/content/groups/public</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
