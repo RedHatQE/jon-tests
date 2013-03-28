@@ -33,13 +33,23 @@ public class DeployBundle {
 	this.client = client;
 	bundleManager = client.getProxy(BundleManagerRemote.class);
     }
-    
-    public BundleDeployment deployBundle(File input,ResourceGroup group, Configuration config, String name, String baseDirName, String deployDir) throws Exception {
+    /**
+     * deploys a bundle
+     * @param input bundle distribution ZIP file
+     * @param group to be deployed to (a BundleDestination is created on top of given group), group must be compatible it's resources must support bundle deployment
+     * @param config input configuratoin for bundle (for passing input param values)
+     * @param destinationName - name of new destination being created
+     * @param baseDirName - basedir for deployment - this must match to resourceType contained in given group
+     * @param deployDir - directory to deploy to - it's based on baseDir
+     * @return bundleDeployment where deployment has finished (either failed or success)
+     * @throws Exception
+     */
+    public BundleDeployment deployBundle(File input,ResourceGroup group, Configuration config, String destinationName, String baseDirName, String deployDir) throws Exception {
 	BundleVersion version = createBundleVersion(input);
 	BundleDestination destination = bundleManager.createBundleDestination(
 		client.getSubject(), 
 		version.getBundle().getId(), 
-		name, 
+		destinationName, 
 		"", 
 		baseDirName, 
 		deployDir, 
