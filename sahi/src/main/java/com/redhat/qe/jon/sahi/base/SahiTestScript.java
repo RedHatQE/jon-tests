@@ -23,7 +23,7 @@ public abstract class SahiTestScript extends TestScript {
 	protected String browserOpt				= System.getProperty("jon.browser.opt", "");
 
 	protected String sahiBaseDir			= System.getProperty("jon.sahi.base.dir", "/home/hudson/sahi");
-	protected String sahiUserdataDir		= System.getProperty("jon.sahi.userdata.dir", sahiBaseDir+"/userdata");
+	protected String sahiUserdataDir		= System.getProperty("jon.sahi.userdata.dir", sahiBaseDir+File.separator+"userdata");
 
 	protected String bundleHostURL			= System.getProperty("jon.bundleServer.url");
 
@@ -53,7 +53,7 @@ public abstract class SahiTestScript extends TestScript {
 		sahiTasks.close();
 	}
 	private Properties getSahiConfigProperties() {
-		File config = new File(sahiBaseDir+File.separator+"config"+File.separator+"sahi.properties");
+		File config = new File(sahiBaseDir, "config"+File.separator+"sahi.properties");
 		Properties props = new Properties();
 		try {
 			props.load(new FileInputStream(config));
