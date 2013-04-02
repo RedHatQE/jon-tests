@@ -2,13 +2,9 @@ package org.rhq.remoting.cli.examples;
 
 import org.rhq.core.domain.configuration.Configuration;
 import org.rhq.core.domain.configuration.ConfigurationUpdateStatus;
-import org.rhq.core.domain.configuration.Property;
-import org.rhq.core.domain.configuration.PropertyMap;
 import org.rhq.core.domain.configuration.PropertySimple;
 import org.rhq.core.domain.configuration.ResourceConfigurationUpdate;
 import org.rhq.core.domain.configuration.definition.ConfigurationDefinition;
-import org.rhq.core.domain.configuration.definition.PropertyDefinition;
-import org.rhq.core.domain.configuration.definition.PropertyDefinitionMap;
 import org.rhq.core.domain.resource.Resource;
 import org.rhq.enterprise.clientapi.RemoteClient;
 import org.rhq.enterprise.server.configuration.ConfigurationManagerRemote;
@@ -35,9 +31,7 @@ public class ResourceConfiguration {
 	int resourceTypeId = resource.getResourceType().getId();
 	ConfigurationDefinition configDef = configurationManager
 		.getResourceConfigurationDefinitionForResourceType(client.getSubject(), resourceTypeId);
-	for (PropertyDefinition def : configDef.getPropertyDefinitions().values()) {
-	    printPropertyDefinition(def,"");
-	}	
+	PrintUtil.printConfigurationDefinition(configDef);	
     }
     /**
      * prints configuration for given resource
@@ -45,9 +39,7 @@ public class ResourceConfiguration {
      */
     public void printConfiguration(Resource resource) {
 	Configuration config = configurationManager.getResourceConfiguration(client.getSubject(), resource.getId());
-	for (Property property : config.getAllProperties().values()) {
-	    printProperty(property, "");
-	}
+	PrintUtil.printConfiguration(config);
     }
     /**
      * updates configuration for given resource and waits until update process is finished,
@@ -100,41 +92,5 @@ public class ResourceConfiguration {
 	return update;
     }
 
-    /**
-     * prints Configuration Property 
-     * @param property to be printed
-     * @param indent
-     */
-    private void printProperty(Property property, String indent) {	
-	if (PropertyMap.class.equals(property.getClass())) {
-	    PropertyMap map = (PropertyMap)property;
-	    System.out.println("{\n");
-	    for (Property prop : map.getMap().values()) {
-		printProperty(prop, indent+"  ");
-	    }
-	    System.out.println("}\n");
-	}
-	else {
-	    System.out.println(indent+property.toString());
-	}
-    }
 
-    /**
-     * prints Configuration property definition 
-     * @param definition
-     * @param indent
-     */
-    private void printPropertyDefinition(PropertyDefinition definition, String indent) {	
-	if (PropertyDefinitionMap.class.equals(definition.getClass())) {
-	    PropertyDefinitionMap def = (PropertyDefinitionMap)definition;
-	    System.out.println("{\n");
-	    for (PropertyDefinition propDef : def.getMap().values()) {
-		printPropertyDefinition(propDef, indent+"  ");
-	    }
-	    System.out.println("}\n");
-	}
-	else {
-	    System.out.println(indent+definition.toString());
-	}
-    }
 }
