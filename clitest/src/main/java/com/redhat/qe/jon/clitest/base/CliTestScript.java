@@ -80,7 +80,7 @@ public abstract class CliTestScript extends TestScript{
 					"please set "+PARAM.RHQ_TARGET+" environment variable or 'jon.server.host' java system property");
 		}
 		CliTest.rhqTarget = rhqTarget;
-		CliTasks.getCliTasks().initialize(cliHost,cliHost,cliHostPasswd);
+		CliTasks.getCliTasks().initialize(cliHost,cliHostUser,cliHostPasswd);
 		CliTest.cliShLocation = cliShLocation;
 		if (StringUtils.trimToNull(CliTest.cliShLocation)==null) {
 			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was not defined");
