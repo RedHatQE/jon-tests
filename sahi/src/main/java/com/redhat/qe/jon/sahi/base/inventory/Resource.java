@@ -679,9 +679,9 @@ public class Resource {
 	public boolean importFromDiscoQueue(int sleepTime) {
 		String resourceName = this.getName();
 		String agentName = this.getPlatform();
+		ElementStub elmUpper;
 		log.fine("Trying to inventorize resource \"" + resourceName
 				+ "\" of agent \"" + agentName + "\".");
-
 		
 		if (this.exists()) {
 			log.fine("Resource \"" + resourceName + "\" of agent \""
@@ -704,9 +704,10 @@ public class Resource {
 			tasks.cell("Discovery Time").doubleClick();
 			tasks.waitFor(Timing.WAIT_TIME);
 			
-			ElementStub elm = tasks.cell(agentName);
-			if (elm.exists()) {
-				elm.doubleClick();
+			elmUpper = tasks.cell(agentName);
+			if (elmUpper.exists()) {
+				elmUpper.doubleClick();
+				tasks.waitFor(3000);
 			} else {
 				throw new IllegalStateException();
 			}
@@ -718,40 +719,53 @@ public class Resource {
 			return false;
 		}
 		
-		
 		ElementStub elm = tasks.image("unchecked.png").near(
 				tasks.cell(resourceName));
 		if (elm.exists()) {
-			elm.check();
-			// this resource is platform
-			if(this.isPlatform){
-				tasks.cell("No").click();
-			}
-			tasks.cell("Import").click();
-			log.fine("Waiting for resource to import...");
-            for (int i = 0; i < Timing.REPEAT; i++) {
-                log.finer("Waiting another " + Timing.toString(sleepTime) + " for " + this.getName() + " to import");
-                tasks.waitFor(sleepTime);
-                boolean imported = false;
-                if (HAVE_REST_API) {
-                    imported = tryFetchId();
-                } else {
-                    imported = this.exists();
-                }
-                if (imported) {
-                    break;
-                }
-            }
-            return true;
+      log.fine("Resource \""
+               + resourceName
+               + "\" of agent \""
+               + agentName
+               + "\" found in Autodiscovery queue.");
 		} else {
-			log.fine("Resource \""
-                    + resourceName
-                    + "\" of agent \""
-                    + agentName
-                    + "\" not found in Autodiscovery queue, it might have been already inventorized");
-			
+		  tasks.image("opener_closed.png").near(elmUpper).click();
+  		if (elm.exists()) {
+        log.fine("Resource \""
+                 + resourceName
+                 + "\" of agent \""
+                 + agentName
+                 + "\" found in Autodiscovery queue.");
+		  } else {
+        log.fine("Resource \""
+                 + resourceName
+                 + "\" of agent \""
+                 + agentName
+                 + "\" not found in Autodiscovery queue, it might have been already inventorized");
+        return false;					  
+		  }
+    }		
+				
+	  elm.check();
+		// this resource is platform
+		if(this.isPlatform){
+			tasks.cell("No").click();
 		}
-		return false;
+		tasks.cell("Import").click();
+		log.fine("Waiting for resource to import...");
+    for (int i = 0; i < Timing.REPEAT; i++) {
+      log.finer("Waiting another " + Timing.toString(sleepTime) + " for " + this.getName() + " to import");
+      tasks.waitFor(sleepTime);
+      boolean imported = false;
+      if (HAVE_REST_API) {
+        imported = tryFetchId();
+      } else {
+        imported = this.exists();
+      }
+      if (imported) {
+        break;
+      }
+    }
+    return true;
 	}
     /**
      * imports this resource from discovery queue. It is required that parent platform is already imported. This
