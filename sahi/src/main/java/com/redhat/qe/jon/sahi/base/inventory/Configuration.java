@@ -157,6 +157,12 @@ public class Configuration extends ResourceTab {
 					}
 				}
 			}
+            tasks.waitFor(Timing.TIME_1S);
+            if (tasks.cell("OK").isVisible()) {
+                log.info("The [OK] button still exists => using keypress");
+                tasks.cell("OK").focus();
+                tasks.execute("_sahi._keyPress(_sahi._cell('OK'), 13);");
+            }
 		}
 	}
 
