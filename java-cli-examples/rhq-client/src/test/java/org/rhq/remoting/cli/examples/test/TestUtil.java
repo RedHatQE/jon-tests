@@ -12,6 +12,10 @@ public class TestUtil {
      * @return
      */
     public static RemoteClient createClient() {
-	return new Login().login(System.getProperty("rhq.server.host","localhost"), 7080, "rhqadmin", "rhqadmin");
+	RemoteClient client =  new Login().login(System.getProperty("rhq.server.host","localhost"), 7080, "rhqadmin", "rhqadmin");
+	if (client==null) {
+	    throw new RuntimeException("RemoteClient could not be initialized, did you pass correct \'rhq.server.host\' system property?");
+	}
+	return client;
     }
 }
