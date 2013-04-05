@@ -95,7 +95,7 @@ public class SSHClient implements ICommandRunner {
             try {
                 connection.ping();
                 return true;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 log.info("Ping unsuccessful => you should try to use a new connection");
                 return false;
             }
