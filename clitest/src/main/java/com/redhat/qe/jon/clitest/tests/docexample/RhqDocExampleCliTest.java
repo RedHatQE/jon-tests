@@ -29,5 +29,12 @@ public class RhqDocExampleCliTest extends CliTest {
 				"Login successful,OSName:,Invoking operation viewProcessList,Invoking operation updateAllPlugins,rhq.agent.plugins.directory =",
 				"rhqapi.js");
 	}
+	
+	@Test
+	public void criteriaApiTipsTest(){
+		createJSRunner("docExample/rhq/criteriaApiTips.js")
+		.addDepends("rhqapi.js,rhqapi/config.js")
+		.run();
+	}
 
 }
