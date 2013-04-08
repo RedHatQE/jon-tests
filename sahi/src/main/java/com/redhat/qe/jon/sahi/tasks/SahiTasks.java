@@ -451,7 +451,10 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("New").click();
         this.textbox("name").setValue(groupName);
         this.textarea("description").setValue(groupDesc);
-        this.textarea("expression").setValue("groupby resource.trait[jboss.system:type=Server:VersionName]\nresource.type.plugin = JBossAS\nresource.type.name = JBossAS Server");
+        this.textarea("expression").setValue("" +
+        		"groupby resource.trait[jboss.system:type=Server:VersionName]\n" +
+        		"resource.type.plugin = JBossAS\n" +
+        		"resource.type.name = JBossAS Server");
         this.cell("Save & Recalculate").click();
         org.testng.Assert.assertTrue(this.waitForElementExists(this, this.cell("You have successfully recalculated this group definition"), "Cell: You have successfully recalculated this group definition", 1000*20), "Successful message check"); //Wait 20 seconds
         this.bold("Back to List").click();
@@ -1071,7 +1074,7 @@ public class SahiTasks extends ExtendedSahi {
 
         //Define new alert name and Description(if any)
         this.cell("New").click();
-       // this.textbox("textItem").near(this.row("Name :")).setValue(alertName);
+        _logger.log(Level.FINE, "Alert Name Text Box Status: "+this.textbox("/textItem/").near(this.row("Name :")).isVisible());
         this.textbox("/textItem/").near(this.row("Name :")).setValue(alertName);
         if (alertDescription != null) {
             this.textarea("textItem").near(this.row("Description :")).setValue(alertDescription);
@@ -1311,8 +1314,10 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("New").click();
         
         //This line added as a work-around for the issue --> Bug 949471
-        if(this.cell("Yes").under(this.cell("New")).exists()){
-        	this.cell("Yes").under(this.cell("New")).click();
+        if(this.cell("Yes").under(this.cell("Question")).exists()){
+        	this.cell("Yes").under(this.cell("Question")).click();
+        }else{
+        	_logger.log(Level.FINE, "Unable to find 'Confirmation' box!!");
         }
         
         //Select Template
