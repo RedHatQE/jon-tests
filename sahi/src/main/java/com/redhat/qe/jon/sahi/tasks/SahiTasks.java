@@ -91,6 +91,9 @@ public class SahiTasks extends ExtendedSahi {
         this.textarea("description").setValue(groupDesc);
         this.cell("Next").click();
         this.cell("Finish").click();
+        if(this.cell("OK").under(this.cell("An emapty group is always considered as mixed.")).exists()){
+        	this.cell("OK").under(this.cell("An emapty group is always considered as mixed.")).click();
+        }
     }
 
     private void selectResourceOnGroup(String resourceName, int maxIndex){
@@ -469,8 +472,8 @@ public class SahiTasks extends ExtendedSahi {
         createRoleWithoutMangeInvetntory(searchRoleName, desc, compGroupName, searchTestuser);
         loginNewUser(searchTestuser, password);
         navigateToAllGroups();
-        enterValueToSerachTextBox(compGroupName, searchQueryName);
-
+        setSearchBox(compGroupName="="+searchQueryName);
+        this.cell("name").click();
     }
 
     public void createRoleWithoutMangeInvetntory(String roleName, String desc, String compGroupName, String searchTestuser) {
@@ -500,17 +503,6 @@ public class SahiTasks extends ExtendedSahi {
         this.waitFor(5000);
         this.cell("All Groups").click();
     }
-
-    public void enterValueToSerachTextBox(String compGroupName, String searchName) {
-        this.textbox("SearchPatternField").setValue(searchName + "=" + compGroupName);
-        this.cell("name").click();
-    }
-    
-    public void enterValueToSerachText(String searchName, String searchValue) {
-        this.textbox("SearchPatternField").setValue(searchName + "==" + searchValue);
-        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
-    }
-
     
     public void checkPlatform(){
     	this.link("Inventory").click();
@@ -518,7 +510,6 @@ public class SahiTasks extends ExtendedSahi {
     	this.cell("Platforms").click();
     	Assert.assertTrue(this.div("Linux").exists());
     	this.div("Linux").doubleClick();
-    	
     }
     
     
@@ -923,36 +914,12 @@ public class SahiTasks extends ExtendedSahi {
     //* Alert Definition Creation
     //*********************************************************************************
     public void selectResource(String resourceName){
-    	//String searchCategory = null;
         String[] resourceType = resourceName.split("=");
         if (resourceType.length > 1) {
-        	//selectPage("Inventory-->"+resourceType[0], this.textbox("SearchPatternField"), 1000*5, 3);
         	selectPage("Inventory-->"+resourceType[0], this.textbox("search"), 1000*5, 3);
-            /*
-            if(resourceType[0].equalsIgnoreCase("Platforms")){
-            	searchCategory = "category=platform ";
-            }else if(resourceType[0].equalsIgnoreCase("Servers")){
-            	searchCategory = "category=server ";
-            }else if(resourceType[0].equalsIgnoreCase("Services")){
-            	searchCategory = "category=service ";
-            }else if(resourceType[0].equalsIgnoreCase("Unavailable Servers")){
-            	searchCategory = "category=server availability=down ";
-            }
-            this.textbox("SearchPatternField").setValue(searchCategory+resourceType[1].trim());
-            */
-            
-        	//Changed the search field name from the version : 4.5.0-SNAPSHOT, Build Number: 1704544. Still we have the field in JBOSS ON, Hence dealing with both search fields
-        	if(this.textbox("SearchPatternField").exists()){
-        		this.textbox("SearchPatternField").setValue(resourceType[1].trim());
-        		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
-        	}else{
-        		this.textbox("search").setValue(resourceType[1].trim());
-        		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
-        	}        	
-                        
+        	setSearchBox(resourceType[1].trim());                        
         } else {
             _logger.log(Level.WARNING, "Invalid parameter passed --> "+resourceName);
-            //throw new SahiTasksException("Invalid parameter passed --> "+resourceName);
             return;
         }
         this.link(resourceType[1].trim()).click();
@@ -1104,7 +1071,8 @@ public class SahiTasks extends ExtendedSahi {
 
         //Define new alert name and Description(if any)
         this.cell("New").click();
-        this.textbox("textItem").near(this.row("Name :")).setValue(alertName);
+       // this.textbox("textItem").near(this.row("Name :")).setValue(alertName);
+        this.textbox("/textItem/").near(this.row("Name :")).setValue(alertName);
         if (alertDescription != null) {
             this.textarea("textItem").near(this.row("Description :")).setValue(alertDescription);
         }
@@ -1341,6 +1309,11 @@ public class SahiTasks extends ExtendedSahi {
         }
         
         this.cell("New").click();
+        
+        //This line added as a work-around for the issue --> Bug 949471
+        if(this.cell("Yes").under(this.cell("New")).exists()){
+        	this.cell("Yes").under(this.cell("New")).click();
+        }
         
         //Select Template
         if(templateName != null){
@@ -1948,8 +1921,7 @@ public class SahiTasks extends ExtendedSahi {
     public boolean isAgentRunning(String agentName) {
     	this.link("Inventory").click();
         this.cell("Platforms").click();
-        this.textbox("SearchPatternField").setValue(agentName.trim());
-        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+        this.setSearchBox(agentName.trim());
         LinkedList<HashMap<String, String>> agents = getRHQgwtTableFullDetails("listTable", 2, "Resource Type,Name,Ancestry,Description,Type,Version,Availability", "availability_red_16.png=Down,availability_green_16.png=Up");
         if(agents.size() != 1){
         	if(agents.get(0).get("Availability").equalsIgnoreCase("Up")){
@@ -2099,27 +2071,15 @@ public class SahiTasks extends ExtendedSahi {
     public boolean searchComaptibilityGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
     	//'SearchPatternField' is on JBOSS ON and 'search' is on RHQ 4.5 and above
     	selectPage("Inventory-->"+groupPanelName, this.textbox("search"), 1000*5, 3);
-    	if(this.textbox("search").exists()){
-    		this.textbox("search").setValue(groupName);
-    		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key 
-    	}else{
-    		this.textbox("SearchPatternField").setValue(groupName);
-    		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key 
-    	}    	
-           
+    	setSearchBox(groupName);
+    	
         if(!this.link(groupName.trim()).exists()){
         	_logger.log(Level.INFO, "Group ["+groupName+"] unavailable, Creating new one...");
         	createGroup(groupPanelName, groupName, groupDesc, resourceList);
         }else{
         	return true;
         }
-        if(this.textbox("search").exists()){
-    		this.textbox("search").setValue(groupName);
-    		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key 
-    	}else{
-    		this.textbox("SearchPatternField").setValue(groupName);
-    		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key 
-    	}   
+        setSearchBox(groupName);
         return this.link(groupName.trim()).exists();
     }
 
@@ -2229,9 +2189,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Services").click();
 		this.waitFor(5000);
 		checkSearchBox();
-		enterValueToSerachText("version", "2");
-/*		this.textbox("SearchPatternField").keyDown(13, 13);
-		this.textbox("SearchPatternField").keyUp(13, 13);*/
+		setSearchBox("version==2");
 		this.waitFor(5000);
 	}
 	
@@ -2622,6 +2580,17 @@ public class SahiTasks extends ExtendedSahi {
 		
 	}
 	
-	
+	//Changed the search field name from the version : 4.5.0-SNAPSHOT, Build Number: 1704544. Still we have the field in JBOSS ON, Hence dealing with both search fields
+	public void setSearchBox(String boxValue){
+		if(this.textbox("SearchPatternField").exists()){
+    		this.textbox("SearchPatternField").setValue(boxValue);
+    		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+    	}else{
+    		this.textbox("search").click();
+    		this.textbox("search").setValue(boxValue);
+    		this.waitFor(2000);
+    		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
+    	}       
+	}	
 
 }
