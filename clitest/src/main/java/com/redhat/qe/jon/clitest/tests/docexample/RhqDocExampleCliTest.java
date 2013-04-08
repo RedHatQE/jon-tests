@@ -9,7 +9,7 @@ import com.redhat.qe.jon.clitest.tests.CliTest;
 
 public class RhqDocExampleCliTest extends CliTest {
 	
-	@Test
+	@Test(priority=0)
 	public void displayingOutputTest() throws IOException, CliTasksException{
 		runJSfile("docExample/rhq/displayingOutputExample.js",
 				"Login successful,name=Memory Subsystem,name: Memory Subsystem");
@@ -30,7 +30,7 @@ public class RhqDocExampleCliTest extends CliTest {
 				"rhqapi.js");
 	}
 	
-	@Test
+	@Test(priority=1)
 	public void criteriaApiTipsTest(){
 		createJSRunner("docExample/rhq/criteriaApiTips.js")
 		.addDepends("rhqapi.js,rhqapi/config.js")

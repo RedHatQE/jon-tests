@@ -111,7 +111,8 @@ common.info("Invoking getSingleResult on page list with more enteries, exception
 
 // import all resources
 timeout=300
-discoveryQueue.importResources();
+var imported = discoveryQueue.importResources();
+imported[0].waitForAvailable();
 timeout=120
 
 
