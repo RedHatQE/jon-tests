@@ -62,6 +62,7 @@ public class ResourceConfiguration {
 	//Configuration config = client.getConfigurationManager().getLiveResourceConfiguration(client.getSubject(), resource.getId(),true);
 	PropertySimple property = config.getSimple(key);
 	if (property==null) {
+            PrintUtil.printConfiguration(config);
 	    throw new RuntimeException("Property ["+key+"] not found in configuration");
 	}
 	property.setValue(value);
@@ -84,7 +85,6 @@ public class ResourceConfiguration {
 	    try {
 		Thread.currentThread().join(3 * 1000);
 	    } catch (InterruptedException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	    }
 	    update = configurationManager.getLatestResourceConfigurationUpdate(client.getSubject(), resourceId);

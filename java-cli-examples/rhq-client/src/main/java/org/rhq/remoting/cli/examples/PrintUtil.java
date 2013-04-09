@@ -14,6 +14,10 @@ public class PrintUtil {
      * @param config
      */
     public static void printConfiguration(Configuration config) {
+        if (config==null) {
+            System.out.println("Configuration could not be printed, it's null");
+            return;
+        }
 	for (Property property : config.getAllProperties().values()) {
 	    printConfigurationProperty(property, "");
 	}
@@ -50,7 +54,11 @@ public class PrintUtil {
      * @param definition
      * @param indent
      */
-    public static void printConfigurationDefinitionProperty(PropertyDefinition definition, String indent) {	
+    public static void printConfigurationDefinitionProperty(PropertyDefinition definition, String indent) {
+        if (definition==null) {
+            System.out.println("ConfigurationDefinition could not be printed, it's null");
+            return;
+        }
 	if (PropertyDefinitionMap.class.equals(definition.getClass())) {
 	    PropertyDefinitionMap def = (PropertyDefinitionMap)definition;
 	    System.out.println("{\n");
