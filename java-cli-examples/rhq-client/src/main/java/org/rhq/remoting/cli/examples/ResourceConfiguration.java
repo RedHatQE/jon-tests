@@ -49,17 +49,17 @@ public class ResourceConfiguration {
      * @param value - new configuration value
      * @return
      */
-    public ResourceConfigurationUpdate updateResourceConfiguration(Resource resource, String key, Object value) {
+    public ResourceConfigurationUpdate updateResourceConfiguration(Resource resource, String key, Object value) throws Exception {
 	// there are 2 ways to retrieve configuration for resource
 	
 	// this method gets configuration from JON server's database, this configuration 
 	// is accessible even when given resource or its agent is disconnected,
 	// but may not be up-to-date
-	Configuration config = configurationManager.getResourceConfiguration(client.getSubject(), resource.getId());
+	// Configuration config = configurationManager.getResourceConfiguration(client.getSubject(), resource.getId());
 	
 	// this method gets live configuration directly from agent, it is up-to-date
 	// but may fail if agent communication is broken
-	//Configuration config = client.getConfigurationManager().getLiveResourceConfiguration(client.getSubject(), resource.getId(),true);
+	Configuration config = configurationManager.getLiveResourceConfiguration(client.getSubject(), resource.getId(),true);
 	PropertySimple property = config.getSimple(key);
 	if (property==null) {
             PrintUtil.printConfiguration(config);

@@ -42,18 +42,24 @@ public class ResourceConfigurationTest {
     }
     
     @Test
-    public void updateAgentConfiguration() {
+    public void updateAgentConfiguration() throws Exception {
 	Resource[] resources = new ResourceDiscovery(this.client).findResources("RHQ Agent");
 	Assert.assertTrue(resources.length>0);
 	
+        // let's update a configuration - we assue that RHQ Client has default configuration
+        // (rhq.agent.server.alias != 'test')
 	ResourceConfigurationUpdate result = new ResourceConfiguration(this.client)
 		.updateResourceConfiguration(resources[0], "rhq.agent.server.alias", "test");
 	Assert.assertEquals(ConfigurationUpdateStatus.SUCCESS, result.getStatus());
 	
+        // let's try to update again, this time our property has already 
+        // a value 'test' this means no update should happen
+        // and result must be null
 	result = new ResourceConfiguration(this.client)
 	.updateResourceConfiguration(resources[0], "rhq.agent.server.alias", "test");
 	Assert.assertNull(result);
 	
+        // put configuration back to default value
 	result = new ResourceConfiguration(this.client)
 	.updateResourceConfiguration(resources[0], "rhq.agent.server.alias", "rhqserver");
 	Assert.assertEquals(ConfigurationUpdateStatus.SUCCESS, result.getStatus());
