@@ -12,7 +12,16 @@ public class TestUtil {
      * @return
      */
     public static RemoteClient createClient() {
-	RemoteClient client =  new Login().login(System.getProperty("rhq.server.host","localhost"), 7080, "rhqadmin", "rhqadmin");
+	return createClient("rhqadmin", "rhqadmin");
+    }
+    /**
+     * a helper method that returns connected and authenticated client.
+     * RHQ defaults are used, RHQ/JBoss ON host is <b>rhq.server.host</b> system property 
+     * or <b>localhost</b> by default
+     * @return
+     */
+    public static RemoteClient createClient(String username, String password) {
+	RemoteClient client =  new Login().login(System.getProperty("rhq.server.host","localhost"), 7080, username, password);
 	if (client==null) {
 	    throw new RuntimeException("RemoteClient could not be initialized, did you pass correct \'rhq.server.host\' system property?");
 	}
