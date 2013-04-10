@@ -23,11 +23,12 @@ println("Sleeping 2 minute(s) to sync!!");
 sleep(1000*60*2);
 }
 
-assertTrue(resourcesNew.size() > 0, "There is no resource to import!!");
+// we don't want to throw an error, resources could be already imported
+//assertTrue(resourcesNew.size() > 0, "There is no resource to import!!");
 
 /*
  * Workaround: Add filter to get just selected resources (not their children)
- * findResourcesByCriteria(criteria) retuns maximally just first 200 resources, not complete set of resources. So this is to be sure, that our tested resources are contained in returnet set.
+ * findResourcesByCriteria(criteria) retuns maximally just first 200 resources, not complete set of resources. So this is to be sure, that our tested resources are contained in returned set.
  */
 criteria.addFilterIds(resourcesArray); 
 criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED); //Add a filter to get Commited resources
