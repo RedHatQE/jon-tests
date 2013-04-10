@@ -1239,6 +1239,81 @@ var ResGroup = function(param) {
 		params.explicitGroupIds = [_id];
 		return resources.find(params);
 	}
+	var _waitForOperationResult = function(groupOpShedule) {
+		var opHistCriteria = new GroupOperationHistoryCriteria();
+		if (groupOpShedule)
+			opHistCriteria.addFilterJobId(groupOpShedule.getJobId());
+		opHistCriteria.addFilterResourceIds(_id);
+		opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent
+		// at top of results
+		opHistCriteria.setPaging(0, 1); // only return one result, in effect the
+		// latest
+		opHistCriteria.fetchResults(true);
+		var pred = function() {
+			var histories = OperationManager
+					.findGroupOperationHistoriesByCriteria(opHistCriteria);
+			if (histories.size() > 0) {
+				if (histories.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
+					return histories.get(0);
+				}
+				common.debug("Operation in progress..");
+			}
+			;
+		};
+		common.debug("Waiting for result..");
+		sleep(3000); // trying to workaround
+						// https://bugzilla.redhat.com/show_bug.cgi?id=855674
+		var history = common.waitFor(pred);
+		if (!history) {
+			// timed out
+			var histories = OperationManager
+					.findGroupOperationHistoriesByCriteria(opHistCriteria);
+			if (histories.size() > 0) {
+				history = histories.get(0);
+			} else {
+				throw "ERROR Cannot get operation history result remote API ERROR?";
+			}
+		}
+		common.debug("Operation finished with status : " + history.status);
+		return history;
+	};
+	var _scheduleOperation = function(name,delay,repeatInterval,repeatCount,timeout,
+			haltOnFailure,executionOrderResourceIds,description,opParams){
+		delay = delay || 0;
+		repeatInterval = repeatInterval || 0;
+		repeatCount = repeatCount || 0;
+		timeout = timeout || 0;
+		haltOnFailure = haltOnFailure || true;
+		executionOrderResourceIds = executionOrderResourceIds || null;
+		description = description || null;
+		
+		common.trace("Group(" + _id + ")._scheduleOperation(name="
+				+ name + ", delay=" + delay + ", repeatInterval="+repeatInterval 
+				+ ", repeatCount=" + repeatCount 
+				+", timeout="+timeout
+				+", haltOnFailure="+haltOnFailure
+				+", executionOrderResourceIds="+common.objToString(executionOrderResourceIds)
+				+", description="+description
+				+", opParams="+common.objToString(opParams)+")");
+		
+		if (_getCategory() == GroupCategory.MIXED) {
+			throw "It's not possible to invoke operation on MIXED group!!"
+		}
+
+		// get resources in this group
+		var groupRes = _resources();
+		var res = groupRes[0];
+		// check that operation is correct and get operation configuration
+		var conf = res.checkOperation(name, opParams);
+		
+		var opShedule = OperationManager.scheduleGroupOperation(
+				_id, executionOrderResourceIds, haltOnFailure, name, common.hashAsConfiguration(conf),
+				delay * 1000, repeatInterval * 1000, repeatCount,timeout,description)
+		common.info("Group operation '" + name + "' scheduled on '" + _name
+				+ "'");
+		
+		return opShedule;
+	}
     /**
 	 * @lends ResGroup.prototype
 	 */
@@ -1277,7 +1352,7 @@ var ResGroup = function(param) {
 		resources : _resources,
 		/**
 		 * schedules operation on this group using cron expression. In contrast to invokeOperation this is 
-		 * not blocking (synchronous) operation.
+		 * not blocking operation.
 		 *
 		 * @param {String}
 		 *            name of operation (required)
@@ -1296,10 +1371,6 @@ var ResGroup = function(param) {
 			
 			// get resources in this group
 			var groupRes = _resources();
-			if(groupRes.length == 0){
-				throw "It's not possible to invoke operation on empty group!!"
-			}
-			
 			var res = groupRes[0];
 			// check that operation is correct and get operation configuration
 			var conf = res.checkOperation(name,opParams);
@@ -1307,6 +1378,79 @@ var ResGroup = function(param) {
 			var opShedule = OperationManager.scheduleGroupOperationUsingCron(_id, null, true, name, common.hashAsConfiguration(conf), 
 					cronExpression, 0, null)
 			common.info("Group operation '"+name+"' scheduled on '"+_name+"'");
+		},
+		/**
+		 * Invokes operation on this group and returns result of the operation.
+		 * 
+		 * @param {String}
+		 *            name of operation (required)
+		 * @param {boolean}
+		 *            haltOnFailure (optional, default is true)
+		 * @param {Array}
+		 *            executionOrderResourceIds defines execution order (optional)
+		 * @param {String}
+		 *            description (optional)
+		 * @param {Object}
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @example allAgents.invokeOperation("executeAvailabilityScan");                       
+		 *
+		 */
+		invokeOperation : function(name,haltOnFailure,executionOrderResourceIds,description,opParams){
+			var groupOpShedule = _scheduleOperation(name,0,0,0,0,haltOnFailure,executionOrderResourceIds,
+					description,opParams);
+			var result = _waitForOperationResult(groupOpShedule);
+			
+			// get resources in this group
+			var groupRes = _resources();
+			var res = groupRes[0];
+			// get resource type
+			var resType = res.getResourceType();
+			// find operation definition
+			var iter = resType.operationDefinitions.iterator();
+			var operationDefinition;
+			while(iter.hasNext()) {
+				operationDefinition = iter.next();
+				if (name==operationDefinition.name) {
+					return operationDefinition;	
+				}
+			}
+			var ret = {}
+			ret.status = String(result.status)
+			ret.error = String(result.errorMessage)
+			ret.result = common.configurationAsHash(result.results,
+					operationDefinition.resultsConfigurationDefinition);
+			
+			return ret;
+		},
+		/**
+		 * Schedules operation on this group. In contrast to invokeOperation this is 
+		 * not blocking operation.
+		 * 
+		 * @param {String}
+		 *            name of operation (required)
+		 * @param {int}
+		 *            delay of operation in seconds (optional, 0 is default)       
+		 * @param {int}
+		 *            repeatInterval of operation in seconds (optional, 0 is default)           
+		 * @param {int}
+		 *            repeatCount of operations (optional, 0 is default)           
+		 * @param {int}
+		 *            timeout of operation in seconds (optional, 0 is default)           
+		 * @param {boolean}
+		 *            haltOnFailure (optional, default is true)
+		 * @param {Array}
+		 *            executionOrderResourceIds defines execution order (optional)
+		 * @param {String}
+		 *            description (optional)
+		 * @param {Object}
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @example scheduleOperation("executeAvailabilityScan",10,10,10,0,true,null,"My description",{changesOnly:false});                       
+		 *
+		 */
+		scheduleOperation : function(name,delay,repeatInterval,repeatCount,timeout,
+				haltOnFailure,executionOrderResourceIds,description,opParams){
+			_scheduleOperation(name,delay,repeatInterval,repeatCount,timeout,
+					haltOnFailure,executionOrderResourceIds,description,opParams);
 		}
 	}
 };
