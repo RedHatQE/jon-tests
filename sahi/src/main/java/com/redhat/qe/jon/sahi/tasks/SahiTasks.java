@@ -589,8 +589,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void createRole(String roleName, String roleDesc) {
-        this.link("Administration").click();
-        this.cell("Roles").click();
+    	selectPage("Administration-->Roles", this.cell("Name"), 1000*5, 2);
         this.cell("New").click();
         this.textbox("name").setValue(roleName);
         this.textbox("description").setValue("Description");
@@ -1322,8 +1321,8 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("New").click();
         
         //This line added as a work-around for the issue --> Bug 949471
-        if(this.cell("Yes").under(this.cell("Question")).exists()){
-        	this.cell("Yes").under(this.cell("Question")).click();
+        if(this.cell("Yes").near(this.image("ask.png")).exists()){
+        	this.cell("Yes").near(this.image("ask.png")).click();
         }else{
         	_logger.log(Level.FINE, "Unable to find 'Confirmation' box!!");
         }
