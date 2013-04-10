@@ -91,9 +91,15 @@ public class SahiTasks extends ExtendedSahi {
         this.textarea("description").setValue(groupDesc);
         this.cell("Next").click();
         this.cell("Finish").click();
-        if(this.cell("OK").under(this.cell("An emapty group is always considered as mixed.")).exists()){
-        	this.cell("OK").under(this.cell("An emapty group is always considered as mixed.")).click();
-        }
+        checkInfo();
+    }
+    
+    private boolean checkInfo(){
+    	 if(this.cell("OK").under(this.cell("An emapty group is always considered as mixed.")).exists()){
+         	this.cell("OK").under(this.cell("An emapty group is always considered as mixed.")).click();
+         	return true;
+         }
+    	 return false;
     }
 
     private void selectResourceOnGroup(String resourceName, int maxIndex){
@@ -120,6 +126,7 @@ public class SahiTasks extends ExtendedSahi {
         	selectResourceOnGroup(resource.trim(), 2);
         }
         this.cell("Finish").click();
+        checkInfo();
     }
 
     public void createDynaGroup(String groupName, String groupDesc, ArrayList<String> preloadExpressions, String otherExpressions) {
@@ -1074,7 +1081,8 @@ public class SahiTasks extends ExtendedSahi {
 
         //Define new alert name and Description(if any)
         this.cell("New").click();
-        _logger.log(Level.FINE, "Alert Name Text Box Status: "+this.textbox("/textItem/").near(this.row("Name :")).isVisible());
+        _logger.log(Level.INFO, "Alert Name Text Box Status: "+this.textbox("/textItem/").near(this.row("Name :")).exists());
+        this.textbox("/textItem/").near(this.row("Name :")).click();
         this.textbox("/textItem/").near(this.row("Name :")).setValue(alertName);
         if (alertDescription != null) {
             this.textarea("textItem").near(this.row("Description :")).setValue(alertDescription);
