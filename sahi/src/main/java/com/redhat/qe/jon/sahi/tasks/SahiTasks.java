@@ -1321,10 +1321,12 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("New").click();
         
         //This line added as a work-around for the issue --> Bug 949471
-        if(this.cell("Yes").near(this.image("ask.png")).exists()){
-        	this.cell("Yes").near(this.image("ask.png")).click();
+        if(this.cell("Yes").near(this.cell("No")).exists()){
+        	this.cell("Yes").near(this.cell("No")).click();
         }else{
         	_logger.log(Level.FINE, "Unable to find 'Confirmation' box!!");
+        	_logger.log(Level.FINE, "Trying with 'Yes' button");
+        	this.cell("Yes").click();
         }
         
         //Select Template
