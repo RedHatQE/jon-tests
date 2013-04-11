@@ -8,8 +8,9 @@ clitest/src/main/resources/testng-dev.xml
 build
 */.gradle
 */build
-*/.settings
-*/.project
-*/.classpath
+.settings
+.project
+.classpath
+target
 *.iml
 .idea
