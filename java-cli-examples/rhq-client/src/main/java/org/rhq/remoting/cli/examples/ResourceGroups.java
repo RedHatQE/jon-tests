@@ -26,7 +26,7 @@ public class ResourceGroups {
      * creates a new resource group
      * @param name of new group
      * @param children resources to be contained
-     * @param recursive
+     * @param recursive - whether this group will contain child resources as implicit resources
      * @return
      */
     public ResourceGroup createGroup(String name, Resource[] children, boolean recursive) {
@@ -52,6 +52,7 @@ public class ResourceGroups {
 	    group.setResourceType(type); // this makes group COMPATIBLE
 	}
 	group = resourceGroupManager.createResourceGroup(client.getSubject(), group);
+	// assign resources to new group
 	resourceGroupManager.addResourcesToGroup(client.getSubject(), group.getId(), ids);	
 	return group;
     }

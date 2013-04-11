@@ -54,7 +54,7 @@ public class ResourceConfiguration {
 	
 	// this method gets configuration from JON server's database, this configuration 
 	// is accessible even when given resource or its agent is disconnected,
-	// but may not be up-to-date
+	// but may not be up-to-date (in case a resource was configured aside)
 	// Configuration config = configurationManager.getResourceConfiguration(client.getSubject(), resource.getId());
 	
 	// this method gets live configuration directly from agent, it is up-to-date
@@ -72,7 +72,7 @@ public class ResourceConfiguration {
 	    // configuration has not been changed
 	    return null;
 	}
-	update = waitForUpdateFinishes(resource.getId(), update);
+	update = waitForConfigurationUpdate(resource.getId(), update);
 	return update;
     }
     /**
@@ -80,7 +80,7 @@ public class ResourceConfiguration {
      * @param update
      * @return
      */
-    private ResourceConfigurationUpdate waitForUpdateFinishes(int resourceId, ResourceConfigurationUpdate update) {
+    private ResourceConfigurationUpdate waitForConfigurationUpdate(int resourceId, ResourceConfigurationUpdate update) {
 	while (update.getStatus().equals(ConfigurationUpdateStatus.INPROGRESS)) {
 	    try {
 		Thread.currentThread().join(3 * 1000);

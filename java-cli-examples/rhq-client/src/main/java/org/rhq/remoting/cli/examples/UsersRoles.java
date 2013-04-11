@@ -25,14 +25,25 @@ public class UsersRoles {
 	subjectManager = client.getProxy(SubjectManagerRemote.class);
 	roleManager = client.getProxy(RoleManagerRemote.class);
     }
-    
+    /**
+     * creates a role of given name, adds some permissions
+     * @param name
+     * @return
+     */
     public Role createRole(String name) {
 	Role role = new Role(name);	
 	role.addPermission(Permission.MANAGE_INVENTORY);
 	role.addPermission(Permission.VIEW_USERS);
 	return roleManager.createRole(client.getSubject(), role);
     }
-    
+    /**
+     * creates a new subject with given name and password, given Role is assigned 
+     * to subject
+     * @param name of subject (login name) 
+     * @param password
+     * @param role
+     * @return
+     */
     public Subject createSubject(String name, String password, Role role) {
 	//create the new user entry
 	Subject subject = new Subject();

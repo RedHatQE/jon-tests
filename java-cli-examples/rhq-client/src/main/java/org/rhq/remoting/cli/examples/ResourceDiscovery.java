@@ -39,7 +39,9 @@ public class ResourceDiscovery {
 	return list.getValues().toArray(new Resource[]{});
     }
     /**
-     * imports all resources from discovery queue to inventory
+     * imports all resources from discovery queue to inventory,  note that 
+     * importing happens on server and is asynchronous - it may take a while until all resources
+     * and their children got imported
      */
     public void importAllResources() {
 	Resource[] resources = discoveryQueue();
@@ -73,8 +75,10 @@ public class ResourceDiscovery {
 	PageList<Resource> list = resourceManager.findResourcesByCriteria(client.getSubject(), criteria);
 	if (list.isEmpty()) {
 	    // no resources in disco queue have been found based on criteria
+	    // this could happen when resources got imported in the meantime
 	    return;
 	}
+	// check for parent resources
 	for (Resource resource : list.getValues()) {
 	    Resource parent = resource.getParentResource();
 	    if (parent != null) {
@@ -87,13 +91,25 @@ public class ResourceDiscovery {
 	    }
 	    importIds.add(resource.getId());
 	}
+	// copy IDs to array
 	int[] submitIds = new int[importIds.size()];
 	for (int i=0;i<importIds.size();i++) {
 	    submitIds[i] = importIds.get(i);
 	}
 	discoveryBoss.importResources(client.getSubject(), submitIds);	
     }
-    
+    /**
+     * finds direct child resources for given resource
+     * @param resource
+     * @return
+     */
+    public Resource[] findChildResources(Resource resource) {
+	ResourceCriteria criteria = new ResourceCriteria();
+	criteria.addFilterInventoryStatus(InventoryStatus.COMMITTED);
+	criteria.addFilterParentResourceId(resource.getId());
+	PageList<Resource> resources = resourceManager.findResourcesByCriteria(client.getSubject(), criteria);
+	return resources.toArray(new Resource[]{});
+    }
     /**
      * finds resources by given resourceTypeName in inventory
      * @param resourceTypeName
