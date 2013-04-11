@@ -1243,12 +1243,12 @@ var ResGroup = function(param) {
 		var opHistCriteria = new GroupOperationHistoryCriteria();
 		if (groupOpShedule)
 			opHistCriteria.addFilterJobId(groupOpShedule.getJobId());
-		opHistCriteria.addFilterResourceIds(_id);
+		var list = new java.util.ArrayList();
+		list.add(new java.lang.Integer(_id));
+		opHistCriteria.addFilterResourceGroupIds(list);
 		opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent
 		// at top of results
-		opHistCriteria.setPaging(0, 1); // only return one result, in effect the
-		// latest
-		opHistCriteria.fetchResults(true);
+		opHistCriteria.setPaging(0, 1); // only return one result, in effect the latest
 		var pred = function() {
 			var histories = OperationManager
 					.findGroupOperationHistoriesByCriteria(opHistCriteria);
@@ -1400,25 +1400,10 @@ var ResGroup = function(param) {
 					description,opParams);
 			var result = _waitForOperationResult(groupOpShedule);
 			
-			// get resources in this group
-			var groupRes = _resources();
-			var res = groupRes[0];
-			// get resource type
-			var resType = res.getResourceType();
-			// find operation definition
-			var iter = resType.operationDefinitions.iterator();
-			var operationDefinition;
-			while(iter.hasNext()) {
-				operationDefinition = iter.next();
-				if (name==operationDefinition.name) {
-					return operationDefinition;	
-				}
-			}
 			var ret = {}
 			ret.status = String(result.status)
 			ret.error = String(result.errorMessage)
-			ret.result = common.configurationAsHash(result.results,
-					operationDefinition.resultsConfigurationDefinition);
+			ret.nativeHistory = result;
 			
 			return ret;
 		},
@@ -2638,7 +2623,7 @@ var Resource = function (param) {
     * gets resource String representation
     * @type String
     */
-		toString : function() {return _res.toString();},
+	toString : function() {return _res.toString();},
     /**
 	  * gets resource name
 	  * @type String
