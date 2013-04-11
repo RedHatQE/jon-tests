@@ -69,15 +69,25 @@ public class DeployBundle {
      * @throws Exception when input file cannot be read or Server fails creating BundleVersion
      */
     private BundleVersion createBundleVersion(File input) throws Exception {
-        byte[] array;
-        try (FileInputStream is = new FileInputStream(input)) {
-            int length = (int)input.length();
-            array = new byte[length];
-            for (int numRead=0, offset=0; ((numRead >= 0) && (offset < array.length)); offset += numRead ) {
-                numRead = is.read(array, offset, array.length - offset);
-            }
-        }
-	return  bundleManager.createBundleVersionViaByteArray(client.getSubject(), array);	
+	byte[] array;
+	FileInputStream is = null;
+	try {
+	    is = new FileInputStream(input);
+	    int length = (int) input.length();
+	    array = new byte[length];
+	    for (int numRead = 0, offset = 0; ((numRead >= 0) && (offset < array.length)); offset += numRead) {
+		numRead = is.read(array, offset, array.length - offset);
+	    }
+	    is.close();
+	    return bundleManager.createBundleVersionViaByteArray(client.getSubject(), array);
+	    
+	} catch (Exception ex) {
+	    if (is != null) {
+		is.close();
+	    }
+	    throw ex;
+	}
+
     }
     /**
      * waits until given BundleDeployment is not PENDING or IN_PROGRESS,
