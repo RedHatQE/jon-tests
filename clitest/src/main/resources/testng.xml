@@ -71,10 +71,6 @@
 <test name="operation scheduling test">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.operation.GroupOperationCliTest">
-			<methods>
-            	<include name=".*"></include>
-            	<exclude name="runJSfile"></exclude>
-          	</methods>
 		</class>
 		<class name="com.redhat.qe.jon.clitest.tests.operation.ResourceOperationCliTest">
 			<methods>

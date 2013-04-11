@@ -11,10 +11,16 @@ public class GroupOperationCliTest extends CliTest {
 	
 	@Test
 	public void operationSchedulingOnGroupUsingCronTest() throws IOException, CliTasksException{
-		runJSfile("operations/groupOpScheduling.js",
-				null,
-				"Login successful",
-				"rhqapi.js,operations/common.js");
+		createJSRunner("operations/groupOpSchedulingUsingCron.js").
+			addDepends("rhqapi.js,operations/common.js").
+			run();
+	}
+	
+	@Test
+	public void operationSchedulingOnGroupTest(){
+		createJSRunner("operations/groupOpScheduling.js").
+			addDepends("rhqapi.js,operations/common.js").
+			run();
 	}
 
 }

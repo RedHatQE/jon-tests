@@ -1324,6 +1324,11 @@ var ResGroup = function(param) {
 		 */
 		id : _id,
 		/**
+		 * gets name of this group
+		 * @field
+		 */
+		name : _name,
+		/**
 		 * gets underlying ResourceGroup instance
 		 * @field
 		 *
