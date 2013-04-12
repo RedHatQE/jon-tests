@@ -1,7 +1,7 @@
 package com.redhat.qe.jon.common.util;
 
 /**
- * @author: rhatlapa@redhat.com
+ * @author rhatlapa@redhat.com
  */
 public class Library {
 
