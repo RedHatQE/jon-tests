@@ -95,10 +95,11 @@ public class SahiTasks extends ExtendedSahi {
     }
     
     private boolean checkInfo(){
-    	 if(this.cell("OK").under(this.cell("An emapty group is always considered as mixed.")).exists()){
-         	this.cell("OK").under(this.cell("An emapty group is always considered as mixed.")).click();
+    	 if(this.cell("OK").under(this.cell("An empty group is always considered as mixed.")).exists()){
+         	this.cell("OK").under(this.cell("An empty group is always considered as mixed.")).click();
          	return true;
          }
+    	 _logger.log(Level.FINE, "Info Message is not available to click!");
     	 return false;
     }
 
@@ -1319,7 +1320,7 @@ public class SahiTasks extends ExtendedSahi {
         }
         
         this.cell("New").click();
-        
+        this.waitFor(1000*1);
         //This line added as a work-around for the issue --> Bug 949471
         if(this.cell("Yes").near(this.cell("No")).exists()){
         	this.cell("Yes").near(this.cell("No")).click();
