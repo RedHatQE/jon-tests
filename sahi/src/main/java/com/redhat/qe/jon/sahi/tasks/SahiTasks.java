@@ -1280,6 +1280,16 @@ public class SahiTasks extends ExtendedSahi {
         }
     }
     
+    private void byPassConfirmationBox(){
+        if(this.cell("Yes").near(this.cell("No")).exists()){
+        	this.cell("Yes").near(this.cell("No")).click();
+        }else{
+        	_logger.log(Level.FINE, "Unable to find 'Confirmation' box!!");
+        	_logger.log(Level.FINE, "Trying with 'Yes' button");
+        	this.cell("Yes").click();
+        }
+    }
+    
     public boolean clickDriftDetectNowOrDelete(String driftName, int divMaxIndex, long waitTime, boolean deleteDrift) throws InterruptedException{
     	
     	for(int i=divMaxIndex; i>=0; i--){
@@ -1301,6 +1311,8 @@ public class SahiTasks extends ExtendedSahi {
     		}else{
     			this.cell("DetectNow").near(this.cell("Delete All")).click();
     		}
+    		//This line added as a work-around for the issue --> Bug 949471
+    		byPassConfirmationBox();
         	_logger.log(Level.INFO, "Waiting "+(waitTime/1000)+" Second(s) for agent/server drift actions...");
         	Thread.sleep(waitTime); //Give X second(s) for agent/server actions
         	return true;
@@ -1327,13 +1339,7 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("New").click();
         this.waitFor(1000*1);
         //This line added as a work-around for the issue --> Bug 949471
-        if(this.cell("Yes").near(this.cell("No")).exists()){
-        	this.cell("Yes").near(this.cell("No")).click();
-        }else{
-        	_logger.log(Level.FINE, "Unable to find 'Confirmation' box!!");
-        	_logger.log(Level.FINE, "Trying with 'Yes' button");
-        	this.cell("Yes").click();
-        }
+        byPassConfirmationBox();
         
         //Select Template
         if(templateName != null){
