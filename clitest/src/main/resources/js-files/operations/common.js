@@ -72,6 +72,22 @@ function deleteAllScheduledOpOnGroup(groupId){
 			", but "+schedules.size()+" scheduled operation were found!!");
 }
 
+/**
+ * Deletes all operation history on given group. Asserts successful deletion.
+ * @param resourceId
+ */
+function deleteOpHistoryOnGroup(groupId){
+	var opHist = getGroupOpHistory(groupId);
+	for(var i = 0; i<opHist.size();i++){
+		common.debug("Deleting operation history with id: " +opHist.get(i).getId()+", on group: " + groupId);
+		OperationManager.deleteOperationHistory(opHist.get(i).getId(),false);
+	}
+	
+	opHist = getGroupOpHistory(groupId);
+	assertTrue(opHist.size() == 0,"Operation history should be empty on group with id: " +groupId+
+			", but " +opHist.size()+ " histories were found!!");
+}
+
 
 // group functions
 function deleteAllGroups(){
