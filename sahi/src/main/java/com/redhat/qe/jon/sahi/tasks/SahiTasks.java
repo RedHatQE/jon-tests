@@ -106,6 +106,7 @@ public class SahiTasks extends ExtendedSahi {
     private void selectResourceOnGroup(String resourceName, int maxIndex){
     	for(int i=maxIndex; i>=0; i--){
     		if(this.textbox("search["+i+"]").exists()){
+    			this.textbox("search["+i+"]").click();
     			this.textbox("search["+i+"]").setValue(resourceName);
     			_logger.log(Level.INFO, "Clciked on the element:  search["+i+"]");
     			break;
@@ -1295,13 +1296,17 @@ public class SahiTasks extends ExtendedSahi {
     		this.cell("Yes").near(this.cell("No")).click();
     		return this.link(driftName).exists();
     	}else{
-    		this.cell("Detect Now").near(this.cell("Delete All")).click();
+    		if(this.cell("Detect Now").near(this.cell("Delete All")).exists()){
+    			this.cell("Detect Now").near(this.cell("Delete All")).click();
+    		}else{
+    			this.cell("DetectNow").near(this.cell("Delete All")).click();
+    		}
         	_logger.log(Level.INFO, "Waiting "+(waitTime/1000)+" Second(s) for agent/server drift actions...");
         	Thread.sleep(waitTime); //Give X second(s) for agent/server actions
         	return true;
     	}
     	
-    }
+   }
     public boolean addDrift(String baseDir, String resourceName, String templateName, String driftName, String textBoxKeyValue, String radioButtons, String fileIncludes, String fileExcludes ) throws InterruptedException, IOException {
     	//Remove old file History If any
     	DriftManagementSSH driftSSH = new DriftManagementSSH();
