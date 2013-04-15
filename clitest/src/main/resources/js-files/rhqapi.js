@@ -1248,7 +1248,7 @@ var ResGroup = function(param) {
 		opHistCriteria.addFilterResourceGroupIds(list);
 		opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent
 		// at top of results
-		opHistCriteria.setPaging(0, 1); // only return one result, in effect the latest
+		opHistCriteria.clearPaging();
 		var pred = function() {
 			var histories = OperationManager
 					.findGroupOperationHistoriesByCriteria(opHistCriteria);
@@ -2503,8 +2503,7 @@ var Resource = function (param) {
 		opHistCriteria.addFilterResourceIds(_id);
 		opHistCriteria.addSortStartTime(PageOrdering.DESC); // put most recent
 															// at top of results
-		opHistCriteria.setPaging(0, 1); // only return one result, in effect the
-										// latest
+		opHistCriteria.clearPaging();
 		opHistCriteria.fetchResults(true);
 		var pred = function() {
 			var histories = OperationManager.findResourceOperationHistoriesByCriteria(opHistCriteria);
