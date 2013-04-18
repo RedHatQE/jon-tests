@@ -67,7 +67,7 @@ public class ResourceMonitoring {
         // if we know it's resourceType
         // we can lookup a metric definition - to make sure that 
         // a metric denoted by metricName exists for given resource
-        // now, having metric definigion we'll lookup live data for given resource
+        // now, having metric definition we'll lookup live data for given resource
         ResourceCriteria resourceCriteria = new ResourceCriteria();
         System.out.println("Will lookup resource with ID="+resource.getId());
         resourceCriteria.addFilterId(resource.getId());
@@ -78,14 +78,14 @@ public class ResourceMonitoring {
             for (Resource r : list.getValues()) {
                 System.out.println(r);
             }
-            throw new RuntimeException("Resource "+resource+" was not found in inventory "+list.size());
+            throw new RuntimeException("Resource "+resource+" was not found in inventory");
         }
         
         ResourceType resourceType = list.get(0).getResourceType();
         
         MeasurementDefinitionCriteria criteria = new MeasurementDefinitionCriteria();
         criteria.addFilterResourceTypeId(resourceType.getId());
-        criteria.addFilterName(metricName);
+        criteria.addFilterDisplayName(metricName);
         criteria.setStrict(true); // we want to be strict, because we look for particular metric
         
         PageList<MeasurementDefinition> mds = measurementDefinitionManager.findMeasurementDefinitionsByCriteria(client.getSubject(), criteria);

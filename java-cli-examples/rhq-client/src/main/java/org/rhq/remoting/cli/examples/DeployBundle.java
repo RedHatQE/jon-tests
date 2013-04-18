@@ -31,16 +31,17 @@ public class DeployBundle {
     
     public DeployBundle(RemoteClient client) {
 	this.client = client;
+	
 	bundleManager = client.getProxy(BundleManagerRemote.class);
     }
     /**
      * deploys a bundle
      * @param input bundle distribution ZIP file
-     * @param group to be deployed to (a BundleDestination is created on top of given group), group must be compatible it's resources must support bundle deployment
-     * @param config input configuration for bundle (for passing input param values)
-     * @param destinationName - name of new destination being created
+     * @param group to be deployed to (a BundleDestination is created on top of given group), group must be compatible and it's resources must support bundle deployment
+     * @param config input configuration for bundle (for passing input-parameter values)
+     * @param destinationName - name for new destination being created
      * @param baseDirName - baseDir for deployment - this must match to resourceType contained in given group
-     * @param deployDir - directory to deploy to - it's based on baseDir
+     * @param deployDir - directory to deploy to - relative path based on baseDir
      * @return bundleDeployment where deployment has finished (either failed or success)
      * @throws Exception
      */
@@ -90,7 +91,7 @@ public class DeployBundle {
 
     }
     /**
-     * waits until given BundleDeployment is not PENDING or IN_PROGRESS,
+     * waits until given BundleDeployment is not in PENDING or IN_PROGRESS state,
      * then returns BundleDeployment instance, which is going to be either SUCCESS or FAILURE
      * @param deployment
      * @return

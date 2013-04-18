@@ -6,7 +6,7 @@ public class Login {
 
     
     /**
-     * an examle method that logs in to remote RHQ/JBoss ON server
+     * an example method that logs in to remote RHQ/JBoss ON server
      * @param host RHQ/JBoss ON server host or IP
      * @param port 
      * @param username

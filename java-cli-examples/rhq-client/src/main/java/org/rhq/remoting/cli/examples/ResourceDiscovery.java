@@ -13,7 +13,7 @@ import org.rhq.enterprise.server.discovery.DiscoveryBossRemote;
 import org.rhq.enterprise.server.resource.ResourceManagerRemote;
 
 /**
- * this class shows several examples about how to get resources from discovery queue or how to import them
+ * this class shows several examples about how to get resources from inventory or discovery queue and how to import them
  * @author lzoubek@redhat.com
  *
  */
@@ -41,7 +41,7 @@ public class ResourceDiscovery {
     /**
      * imports all resources from discovery queue to inventory,  note that 
      * importing happens on server and is asynchronous - it may take a while until all resources
-     * and their children got imported
+     * and their children get imported
      */
     public void importAllResources() {
 	Resource[] resources = discoveryQueue();
@@ -57,7 +57,7 @@ public class ResourceDiscovery {
      */
     public void importResources(Resource[] resources) {
 	// when importing specific resources we have to care about it's parent resources
-	// if a resource is meant to be imported but it's parent is not yet imported, we have to import it as well
+	// if a resource is to be imported but it's parent is not yet imported, we have to import it too
 	if (resources.length==0) {
 	    return;
 	}

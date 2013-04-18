@@ -12,7 +12,7 @@ import org.rhq.enterprise.clientapi.RemoteClient;
 import org.rhq.enterprise.server.operation.OperationManagerRemote;
 
 /**
- * this class shows how to schedule resource operations
+ * this class shows how to schedule resource operation
  * 
  * @author lzoubek
  * 

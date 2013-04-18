@@ -10,7 +10,7 @@ import org.rhq.enterprise.server.resource.group.ResourceGroupDeleteException;
 import org.rhq.enterprise.server.resource.group.ResourceGroupManagerRemote;
 import org.rhq.enterprise.server.resource.group.ResourceGroupNotFoundException;
 /**
- * this class shows how to create resource groups
+ * this class shows how to create and delete resource groups
  * @author lzoubek
  *
  */
@@ -18,6 +18,7 @@ public class ResourceGroups {
 
     private final RemoteClient client;
     private final ResourceGroupManagerRemote resourceGroupManager;
+    
     public ResourceGroups(RemoteClient client) {
 	this.client = client;
 	this.resourceGroupManager = client.getProxy(ResourceGroupManagerRemote.class);
@@ -32,11 +33,15 @@ public class ResourceGroups {
     public ResourceGroup createGroup(String name, Resource[] children, boolean recursive) {
 	ResourceGroup group = new ResourceGroup(name);
 	group.setRecursive(recursive);
-	int[] ids = new int[children.length];
+	// create a group on server
+	group = resourceGroupManager.createResourceGroup(client.getSubject(), group);
+		
 	// check whether all resources are same type, if so, we'll create COMPATIBLE group
 	// at the same time we fill array of resource IDs to tell server our group contains given resources
+	int[] ids = new int[children.length];
 	ResourceType type = null;
 	boolean compatible = true;
+	// find a first resource type, which would be used in case of compatible group
 	if (children.length>0) {	    
 	    type = children[0].getResourceType();
 	}
@@ -51,7 +56,7 @@ public class ResourceGroups {
 	if (type!=null && compatible) {
 	    group.setResourceType(type); // this makes group COMPATIBLE
 	}
-	group = resourceGroupManager.createResourceGroup(client.getSubject(), group);
+	
 	// assign resources to new group
 	resourceGroupManager.addResourcesToGroup(client.getSubject(), group.getId(), ids);	
 	return group;
@@ -62,10 +67,13 @@ public class ResourceGroups {
      * @return true if given group was deleted
      */
     public boolean deleteGroup(String name) {
+	// let's find given group
 	ResourceGroupCriteria criteria = new ResourceGroupCriteria();
+	criteria.setStrict(true); // we need to be strict otherwise if name is foo server could return foo, foo2 etc 
 	criteria.addFilterName(name);
 	PageList<ResourceGroup> groups = resourceGroupManager.findResourceGroupsByCriteria(client.getSubject(), criteria);
-	if (groups.size()>0) {
+	// we expect exactly 1 group, on RHQ server group name must be unique
+	if (groups.size() == 1) {
 	    try {
 		resourceGroupManager.deleteResourceGroup(client.getSubject(), groups.get(0).getId());
 	    } catch (ResourceGroupNotFoundException e) {
