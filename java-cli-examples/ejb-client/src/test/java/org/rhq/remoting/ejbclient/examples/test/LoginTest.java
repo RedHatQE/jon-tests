@@ -4,6 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.rhq.core.domain.auth.Subject;
+import org.rhq.enterprise.server.exception.LoginException;
 import org.rhq.remoting.ejbclient.examples.Login;
 
 public class LoginTest {
@@ -14,9 +15,8 @@ public class LoginTest {
 	Assert.assertNotNull(subject);
     }
     
-    @Test(expected=Exception.class)
+    @Test(expected=LoginException.class)
     public void loginFailed() {
-	Subject subject = new Login().login("foo","bar");
-	Assert.assertNotNull(subject);
+	new Login().login("foo","bar");
     }
 }

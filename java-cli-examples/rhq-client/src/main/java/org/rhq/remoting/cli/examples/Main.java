@@ -1,8 +1,11 @@
 package org.rhq.remoting.cli.examples;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Set;
 
+import org.rhq.core.domain.auth.Subject;
+import org.rhq.core.domain.authz.Role;
 import org.rhq.core.domain.bundle.BundleDeployment;
 import org.rhq.core.domain.configuration.Configuration;
 import org.rhq.core.domain.configuration.PropertySimple;
@@ -15,7 +18,7 @@ import org.rhq.core.domain.resource.group.ResourceGroup;
 import org.rhq.enterprise.clientapi.RemoteClient;
 
 /**
- * Main class that just runs several examples
+ * Main class just runs several examples
  * @author lzoubek@redhat.com
  *
  */
@@ -42,6 +45,20 @@ public class Main {
 	    System.exit(1);
 	}	
 	
+	
+	String roleName = "testrole"+new Date().getTime();
+	System.out.println(String.format("Creating sample role '%s'",roleName));
+	Role role = new UsersRoles(client).createRole(roleName);
+	
+	String subjName = "testsubject"+new Date().getTime();
+	System.out.println(String.format("Creating new subject '%s' with role",subjName));
+	new UsersRoles(client).createSubject(subjName, "secure", role);
+	
+	System.out.println("Login with new subject");
+	RemoteClient cl = new Login().login(host,7080, subjName,"secure");
+	System.out.println("Subject logged in, RemoteClient "+cl);
+	
+	
 	System.out.println("Listing discovery queue");
 	System.out.println(separator);
 	Resource[] discoveryQueue = new ResourceDiscovery(client).discoveryQueue();
@@ -56,6 +73,7 @@ public class Main {
 	    System.out.println("Waiting 5s...");
 	    Thread.currentThread().join(5000);
 	}
+	
 	System.out.println("Looking up RHQ Agent resources..");
 	Resource[] agents = new ResourceDiscovery(client).findResources("RHQ Agent");
 	System.out.println(String.format("Found %d resources",agents.length));
@@ -113,6 +131,7 @@ public class Main {
 	PrintUtil.printConfiguration(opResult.getResults());
 	System.out.println(separator);
 	
+	
 	System.out.println("Delete resource groups called 'My agents'");
 	boolean groupDeleted = new ResourceGroups(client).deleteGroup("My agents");
 	if (groupDeleted) {
@@ -130,6 +149,7 @@ public class Main {
 	}
 	System.out.println(separator);	
 	
+	
 	System.out.println("Looking up Linux platforms..");
 	Resource[] linuxes = new ResourceDiscovery(client).findResources("Linux");
 	System.out.println(String.format("Found %d resources",linuxes.length));
@@ -138,6 +158,7 @@ public class Main {
 	    System.exit(0);
 	}	
 	Resource platform = linuxes[0];
+	System.out.println("- "+platform);
 	
 	System.out.println("Retrieving current availability for platform");
 	Availability availability = new ResourceMonitoring(client).getCurrentAvailability(platform);

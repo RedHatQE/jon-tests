@@ -21,7 +21,6 @@ public class Login {
 	    return subjectManager.login(username, password);
 	    
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	    return null;
 	}

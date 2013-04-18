@@ -121,14 +121,14 @@
 			<version>${rhq.version}</version>
 			<type>ejb</type>
 			<exclusions>
-			<exclusion>
-				<artifactId>jboss-remoting</artifactId>
-				<groupId>jboss</groupId>
-			</exclusion>
-			<exclusion>
-				<artifactId>jboss-common</artifactId>
-				<groupId>jboss</groupId>
-			</exclusion>
+				<exclusion>
+					<artifactId>jboss-remoting</artifactId>
+					<groupId>jboss</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jboss-common</artifactId>
+					<groupId>jboss</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -168,6 +168,14 @@
 				<configuration>
 					<target>1.6</target>
 					<source>1.6</source>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<mainClass>org.rhq.remoting.ejbclient.examples.Main</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
