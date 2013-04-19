@@ -239,11 +239,14 @@ public class RestClient {
 	public JSONArray getJSONArray(String content) throws ParseException{
 		JSONParser parser=new JSONParser();
         _logger.finest("Parsing content to JSONArray: " + content);
-        // There is issue that null as String is returned instead of empty array which causes parsing error
-        if (content != null && content.equals("null")) {
-            content = null;
+
+        Object parsedObj = parser.parse(content);
+        if (parsedObj instanceof JSONArray) {
+    		return (JSONArray)parsedObj;
+        } else {
+            _logger.warning(content + " cannot be parsed as JSONArray");
+            throw new RuntimeException("Unable to parse content as JSONArray: " + content);
         }
-		return (JSONArray)parser.parse(content);
 	}
 	
 	@SuppressWarnings("rawtypes")
