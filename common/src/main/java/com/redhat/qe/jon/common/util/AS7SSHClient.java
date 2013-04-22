@@ -117,7 +117,7 @@ public class AS7SSHClient extends SSHClient {
      * @return jps command which takes into account JAVA_HOME env variable
      */
     public String getJpsCommand() {
-        return "{ " +getJavaHome()+"/bin/jps -mlvV; || $JAVA_HOME/bin/jps -mlvV || jps -mlvV }";
+        return "{ " +getJavaHome()+"/bin/jps -mlvV || $JAVA_HOME/bin/jps -mlvV || jps -mlvV; }";
     }
 
 	/**
