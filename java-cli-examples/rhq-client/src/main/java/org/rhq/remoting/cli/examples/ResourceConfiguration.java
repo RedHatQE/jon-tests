@@ -10,7 +10,7 @@ import org.rhq.enterprise.clientapi.RemoteClient;
 import org.rhq.enterprise.server.configuration.ConfigurationManagerRemote;
 /**
  * this class shows how to configure a resource
- * @author lzoubek
+ * @author lzoubek@redhat.com
  *
  */
 public class ResourceConfiguration {

@@ -14,7 +14,7 @@ import org.rhq.enterprise.server.operation.OperationManagerRemote;
 /**
  * this class shows how to schedule resource operation
  * 
- * @author lzoubek
+ * @author lzoubek@redhat.com
  * 
  */
 public class ResourceOperation {

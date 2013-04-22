@@ -1,6 +1,8 @@
 package org.rhq.remoting.cli.examples;
 
 import java.util.Set;
+
+import org.jboss.logging.Logger;
 import org.rhq.core.domain.criteria.MeasurementDefinitionCriteria;
 import org.rhq.core.domain.criteria.ResourceCriteria;
 import org.rhq.core.domain.measurement.Availability;
@@ -24,6 +26,7 @@ import org.rhq.enterprise.server.resource.ResourceManagerRemote;
  */
 public class ResourceMonitoring {
 
+    private static final Logger log = Logger.getLogger(ResourceMonitoring.class);
     private final RemoteClient client;
     private final MeasurementDataManagerRemote measurementDataManager;
     private final MeasurementDefinitionManagerRemote measurementDefinitionManager;
@@ -69,14 +72,13 @@ public class ResourceMonitoring {
         // a metric denoted by metricName exists for given resource
         // now, having metric definition we'll lookup live data for given resource
         ResourceCriteria resourceCriteria = new ResourceCriteria();
-        System.out.println("Will lookup resource with ID="+resource.getId());
         resourceCriteria.addFilterId(resource.getId());
         resourceCriteria.fetchResourceType(true);        
         PageList<Resource> list = resourceManager.findResourcesByCriteria(client.getSubject(), resourceCriteria);        
         if (list.size()!=1) {
-            System.out.println("Error looking up resource expected size = 1, but got "+list.size()+" resources");
+            log.error("Error looking up resource expected size = 1, but got "+list.size()+" resources");
             for (Resource r : list.getValues()) {
-                System.out.println(r);
+                log.debug(r);
             }
             throw new RuntimeException("Resource "+resource+" was not found in inventory");
         }
@@ -91,7 +93,7 @@ public class ResourceMonitoring {
         PageList<MeasurementDefinition> mds = measurementDefinitionManager.findMeasurementDefinitionsByCriteria(client.getSubject(), criteria);
         if (mds.size()!=1) {
             for (int i=0;i<mds.getTotalSize();i++) {
-                System.out.println(mds.get(i));
+                log.error(mds.get(i));
             }
             throw new RuntimeException("Could not find metric definition '"+metricName+"' for resource "+resource.toString());
         }        

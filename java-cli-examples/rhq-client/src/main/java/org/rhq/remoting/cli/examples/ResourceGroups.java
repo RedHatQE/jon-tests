@@ -11,7 +11,7 @@ import org.rhq.enterprise.server.resource.group.ResourceGroupManagerRemote;
 import org.rhq.enterprise.server.resource.group.ResourceGroupNotFoundException;
 /**
  * this class shows how to create and delete resource groups
- * @author lzoubek
+ * @author lzoubek@redhat.com
  *
  */
 public class ResourceGroups {

@@ -44,9 +44,6 @@ public class ResourceMonitoringTest {
 	Set<MeasurementData> data = new ResourceMonitoring(client).getLiveMetricData(resources[0], "Free Memory");
         Assert.assertNotNull(data);
         Assert.assertTrue(data.size()>0);
-        for (MeasurementData md : data) {
-            System.out.println(md);
-        }
     }
     
 }

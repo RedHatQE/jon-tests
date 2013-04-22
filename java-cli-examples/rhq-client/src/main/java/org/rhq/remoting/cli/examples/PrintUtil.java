@@ -1,5 +1,6 @@
 package org.rhq.remoting.cli.examples;
 
+import org.jboss.logging.Logger;
 import org.rhq.core.domain.configuration.Configuration;
 import org.rhq.core.domain.configuration.Property;
 import org.rhq.core.domain.configuration.PropertyMap;
@@ -9,13 +10,14 @@ import org.rhq.core.domain.configuration.definition.PropertyDefinitionMap;
 
 public class PrintUtil {
 
+    private static final Logger log = Logger.getLogger(PrintUtil.class);
     /**
      * prints Configuration
      * @param config
      */
     public static void printConfiguration(Configuration config) {
         if (config==null) {
-            System.out.println("Configuration could not be printed, it's null");
+            log.info("Configuration could not be printed, it's null");
             return;
         }
 	for (Property property : config.getAllProperties().values()) {
@@ -30,14 +32,14 @@ public class PrintUtil {
     public static void printConfigurationProperty(Property property, String indent) {	
 	if (PropertyMap.class.equals(property.getClass())) {
 	    PropertyMap map = (PropertyMap)property;
-	    System.out.println("{\n");
+	    log.info("{\n");
 	    for (Property prop : map.getMap().values()) {
 		printConfigurationProperty(prop, indent+"  ");
 	    }
-	    System.out.println("}\n");
+	    log.info("}\n");
 	}
 	else {
-	    System.out.println(indent+property.toString());
+	    log.info(indent+property.toString());
 	}
     }
     /**
