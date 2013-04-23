@@ -65,10 +65,11 @@ public class AS7SSHClient extends SSHClient {
 	public void stop() {
 		String pids = null;
         String grepFiltering = getGrepFiltering();
-
-        if (isJpsSupported()) {
+        boolean jpsSupported = isJpsSupported();
+        if (jpsSupported) {
             pids = runAndWait(getJpsCommand() + " | " + grepFiltering + " | awk '{print $1}'").getStdout();
-        } else {
+        }
+        if (!jpsSupported || pids.trim().isEmpty()) {
             pids = runAndWait("ps -ef | " +  grepFiltering + " | awk '{print $2}'").getStdout();
         }
 
