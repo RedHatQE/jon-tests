@@ -303,10 +303,16 @@ public class Resource {
 		JSONArray jsonArray = null;
 		try {
 			jsonArray = rc.getJSONArray((String) result.get("response.content"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
+		} catch (Exception ex) {
+            log.fine("getJSONArray thrown an Exception, trying one more time after " + Timing.toString(Timing.WAIT_TIME) + " due to BZ#952265");
+            result = rc.getResponse(URIs.PLATFORMS.getUri()+".json");
+            try {
+              jsonArray = rc.getJSONArray((String) result.get("response.content"));
+            } catch (ParseException pex) {
+              pex.printStackTrace();
+              return null;
+            }
+        }
 		log.fine("Number of Platfoms(s): "+jsonArray.size());
 		JSONObject jsonObject;
 		String platformId = null;
@@ -360,7 +366,14 @@ public class Resource {
 		Map<String,String> children = new HashMap<String, String>();
 		Map<String, Object> result = rc.getResponse("resource/"+resourceId+"/children.json");
 		
-		JSONArray jsonArray = rc.getJSONArray((String)result.get("response.content"));		
+		JSONArray jsonArray = null;
+        try {
+            jsonArray = rc.getJSONArray((String)result.get("response.content"));
+        } catch (Exception ex) {
+            log.fine("getJSONArray thrown an Exception, trying one more time after " + Timing.toString(Timing.WAIT_TIME) + " due to BZ#952265");
+            result = rc.getResponse(URIs.PLATFORMS.getUri()+".json");
+            jsonArray = rc.getJSONArray((String) result.get("response.content"));
+        }
 		
 		log.fine("Number of Resource(s): "+jsonArray.size());
 		JSONObject jsonObject;
