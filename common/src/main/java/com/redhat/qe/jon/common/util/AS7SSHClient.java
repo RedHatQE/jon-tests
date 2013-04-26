@@ -149,11 +149,14 @@ public class AS7SSHClient extends SSHClient {
         } else {
              dateStringFilteringCommand += "head -n1 "+asHome+"/"+logFile+" | awk -F, '{print $1}' ";
         }
-        String dateStr = runAndWait(dateStringFilteringCommand).getStdout().trim();
+        String dateStrOut = runAndWait(dateStringFilteringCommand).getStdout().trim();
         try {
-            if (dateStr.isEmpty() && logFile.endsWith("boot.log")) { // done for managing that boot.log information are put in server.log since EAP 6.1 and boot.log no longer exists
+            if (dateStrOut.isEmpty() && logFile.endsWith("boot.log")) { // done for managing that boot.log information are put in server.log since EAP 6.1 boot.log no longer exists
                 return getStartupTime(logFile.replace("boot.log", "server.log"));
             } else {
+                // on Solaris sparc 11 the dateStrOut contains also an error message (from unknown reason), filtering is out by taking only the last item into an account, which is the startup time
+                String[] dateStrArray = dateStrOut.split("\\s+"); // splitting by whitespace
+                String dateStr = dateStrArray[dateStrArray.length-1];
                 return sdfServerLog.parse(dateStr);
             }
         } catch (ParseException e) {
