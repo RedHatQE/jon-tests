@@ -239,7 +239,14 @@ public class RestClient {
 	public JSONArray getJSONArray(String content) throws ParseException{
 		JSONParser parser=new JSONParser();
         _logger.finest("Parsing content to JSONArray: " + content);
-		return (JSONArray)parser.parse(content);
+
+        Object parsedObj = parser.parse(content);
+        if (parsedObj instanceof JSONArray) {
+    		return (JSONArray)parsedObj;
+        } else {
+            _logger.warning(content + " cannot be parsed as JSONArray");
+            throw new RuntimeException("Unable to parse content as JSONArray: " + content);
+        }
 	}
 	
 	@SuppressWarnings("rawtypes")

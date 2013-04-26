@@ -91,7 +91,17 @@ public class SSHClient implements ICommandRunner {
 		}
 	}
 	public boolean isConnected() {
-		return connection!=null;
+		if (connection!=null) {
+            try {
+                connection.ping();
+                return true;
+            } catch (Exception e) {
+                log.info("Ping unsuccessful => you should try to use a new connection");
+                return false;
+            }
+        } else {
+            return false;
+        }
 	}
 
 	/**

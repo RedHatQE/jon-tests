@@ -65,10 +65,11 @@ public class AS7SSHClient extends SSHClient {
 	public void stop() {
 		String pids = null;
         String grepFiltering = getGrepFiltering();
-
-        if (isJpsSupported()) {
+        boolean jpsSupported = isJpsSupported();
+        if (jpsSupported) {
             pids = runAndWait(getJpsCommand() + " | " + grepFiltering + " | awk '{print $1}'").getStdout();
-        } else {
+        }
+        if (!jpsSupported || pids.trim().isEmpty()) {
             pids = runAndWait("ps -ef | " +  grepFiltering + " | awk '{print $2}'").getStdout();
         }
 
@@ -117,7 +118,7 @@ public class AS7SSHClient extends SSHClient {
      * @return jps command which takes into account JAVA_HOME env variable
      */
     public String getJpsCommand() {
-        return "{ jps -mlvV || $JAVA_HOME/bin/jps -mlvV || "+getJavaHome()+"/bin/jps -mlvV; }";
+        return "{ " +getJavaHome()+"/bin/jps -mlvV || $JAVA_HOME/bin/jps -mlvV || jps -mlvV; }";
     }
 
 	/**
@@ -126,13 +127,17 @@ public class AS7SSHClient extends SSHClient {
 	 */
 	public boolean isRunning() {
         String grepFiltering = getGrepFiltering();
-
-        if (isJpsSupported()) {
-            return runAndWait(getJpsCommand() + " | " + grepFiltering).getStdout().contains(asHome);
-        } else {
-            return runAndWait("ps -ef | " +  grepFiltering).getStdout().contains(asHome);
+        boolean running = false;
+        boolean jpsSupported = isJpsSupported();
+        if (jpsSupported) {
+            running = runAndWait(getJpsCommand() + " | " + grepFiltering).getStdout().contains(asHome);
         }
+        if (!jpsSupported || !running) {
+            running = runAndWait("ps -ef | " +  grepFiltering).getStdout().contains(asHome);
+        }
+        return running;
 	}
+
 	/**
 	 * @param logFile relative path located in {@link AS7SSHClient#getAsHome()} to server's log with boot information (for 6.0.x it is boot.log, for 6.1.x standalone mode it is server.log) logFile
 	 * @return server startup time by parsing 1st line of it's log file

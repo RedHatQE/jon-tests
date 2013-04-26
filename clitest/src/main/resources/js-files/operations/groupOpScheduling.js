@@ -1,21 +1,15 @@
 verbose = 2;
 var common = new _common();
 
-// delete all groups
-groups.find().forEach(function(b){
-	b.remove();
-});
-
-assertTrue(groups.find().length==0,"All groups have been removed");
+deleteAllGroups();
 
 
 // create a group containing all agents
-var agents = resources.find({type:"RHQ Agent",name:"RHQ Agent"});
 var groupName = "All agents";
-var allAgentsG = groups.create(groupName,agents);
-assertTrue(allAgentsG.resources().length > 0, "At least 1 agent is expected in created group.");
+var allAgentsG = createAgentGroup(groupName);
 
 // clear operation history and scheduled operation for all agents
+var agents = resources.find({type:"RHQ Agent",name:"RHQ Agent"});
 for(i in agents){
 	deleteAllScheduledOp(agents[i].id);
 	deleteAllOperationHistory(agents[i].id);
@@ -23,17 +17,19 @@ for(i in agents){
 
 
 var opName = "retrieveCurrentDateTime";
-var cronExpr = "0/10 * * * * ?";
 
 //create empty group
 var emptyG = groups.create("empty");
 
-// try to invoke operation on empty group
+/**
+ * Test 1
+ * Try to invoke operation on empty group
+ */
 var exception = null;
 try{
 	common.info("Scheduling operation on empty group");
-	OperationManager.scheduleGroupOperationUsingCron(emptyG.id, null, true, opName, new Configuration(), 
-		cronExpr, 0, null);
+	OperationManager.scheduleGroupOperation(emptyG.id, null, true, opName, new Configuration(), 
+		0,0,0, 0, null);
 }catch(ex){
 	exception = ex;
 }
@@ -51,114 +47,193 @@ if(exception == null){
 	}
 }
 
+
+/**
+ * Test 2
+ * Invoke operation on group of agents with undefined order
+ */
+//invoke operation on group of agents
 var justBeforeScheduleTimeStamp = new Date();
-// schedule operation on group of agents
-allAgentsG.scheduleOperationUsingCron(opName,cronExpr);
-scheduledOp = OperationManager.findScheduledGroupOperations(allAgentsG.id);
-assertTrue(scheduledOp.size() == 1,"Incorrect number of scheduled operations on "+groupName+
-		" group, expected: 1, actual: " + scheduledOp.size());
+var result = allAgentsG.invokeOperation(opName);
+var operationFinishedTimeStamp = new Date();
 
-var repeatCount = 4;
-var sleepPeriod = 10000 * repeatCount;
-common.info("Going sleep for "+sleepPeriod+" milis");
-sleep(sleepPeriod);
+// check result
+assertTrue(result.status == "Success", "Operation is expected to be Successful but it was " + result.status 
+		+" with error message: " + result.error);
 
-// remove scheduled operation
-deleteAllScheduledOpOnGroup(allAgentsG.id);
-scheduledOp = OperationManager.findScheduledGroupOperations(allAgentsG.id);
-assertTrue(scheduledOp.size() == 0,"Incorrect number of scheduled operations on "+groupName+
-		" group, expected: 0, actual: " + scheduledOp.size());
+// check number of operations in history
+checkNumberOfOpInGroupHist(allAgentsG,1);
 
+// check group operation history 
+var groupOpHist = getGroupOpHistory(allAgentsG.id);
+checkGroupOpHistory(groupOpHist.get(0),justBeforeScheduleTimeStamp,operationFinishedTimeStamp);
 
-// print operation history of all agents (for debugging)
+// check operation history on all agents within this group
 for(i in agents){
-	common.info("Checking an agent with id: " + agents[i].id );
-	opHistory = getResOpHistory(agents[i].id);
-	
-	// print invoked operations
-	for(j=0;j<opHistory.size();j++){
-		pretty.print(opHistory.get(j));
-	}
+	common.info("Checking the agent with id: " + agents[i].id);
+	checkNumberOfOpInResHist(agents[i],1);
+	checkResOpHistory(getResOpHistory(agents[i].id).get(0),groupOpHist.get(0),
+			justBeforeScheduleTimeStamp,operationFinishedTimeStamp);
 }
 
-// for all agents
+
+//clear operation history and scheduled operation for all agents
 for(i in agents){
-	common.info("Checking an agent with id: " + agents[i].id );
-	opHistory = getResOpHistory(agents[i].id);
-	
-	// check number of invoked operations
-	assertTrue(opHistory.size() >= repeatCount && opHistory.size() <=repeatCount+1,
-			"Incorrect number of operations in agent's history, expected: "+repeatCount+ "-"+(repeatCount+1)+
-			", actual: "+opHistory.size());
-	
-	
-	// check that first operation was created in correct time range
-	var firstOp = opHistory.get(0);
-	var firstOpCreatedTimeMilis = firstOp.getCreatedTime();
-	var firstOpCreatedTime = new Date(firstOpCreatedTimeMilis);
-	
-	assertTrue(firstOpCreatedTime > justBeforeScheduleTimeStamp && 
-			firstOpCreatedTimeMilis <justBeforeScheduleTimeStamp.getTime() + 12000, 
-			"First scheduled operation was created in incorrect timerange. Expected: "
-			+justBeforeScheduleTimeStamp +" - "+ new Date(justBeforeScheduleTimeStamp.getTime() + 12000)
-			+", actual time of scheduled operation: " + firstOpCreatedTime);
-	
-	// check that first operation was created according to cron expression (each 10 seconds) 
-	var seconds = firstOpCreatedTime.getSeconds();
-	if((new String(seconds)).indexOf("0") == -1){
-		throw "Operation was not created at expected time. Actual: "+
-		firstOpCreatedTime + ", but we expect operation to be created each 10 complete seconds (0, 10, 20, ...)"
-	}
-	
-	// wait until operation is finished 
-	var pred = function() {
-		opHistory = getResOpHistory(agents[i].id);
-		if (opHistory.size() > 0) {
-			if (opHistory.get(0).getStatus() != OperationRequestStatus.INPROGRESS) {
-				return opHistory.get(0);
-			}
-			common.debug("Operation in progress..");
-		};
-	};
-	common.debug("Waiting for result..");
-	var history = common.waitFor(pred);
-	if (!history) {
-		throw "Operation is still in progress!!"
-	}
-	
-	// check invoked operations one by one
-	for(k=0;k<opHistory.size();k++){
-		op = opHistory.get(k);
-		// check status
-		assertTrue(op.getStatus() == "Success","Unsuccessful status: "+op.getStatus()+", with error msg: "+op.getErrorMessage());
-		// check that operation was created at correct time
-		createdTime = new Date(op.getCreatedTime());
-		cmpTimesWithTolerance(createdTime,new Date(firstOpCreatedTimeMilis + k*10000),900);
-		// check result of the operation
-		agentTime = op.getResults().getSimple("dateTime").getStringValue();
-		assertTrue(agentTime != null, "No result of operation was returned");
+	deleteAllScheduledOp(agents[i].id);
+	deleteAllOperationHistory(agents[i].id);
+}
+deleteOpHistoryOnGroup(allAgentsG.id);
+
+
+/**
+ * Test 3
+ * Schedule operations on group of agents with undefined order
+ */
+// schedule parallel operations on group
+justBeforeScheduleTimeStamp = new Date();
+allAgentsG.scheduleOperation(opName,10,10,5);
+var afterScheduleTimeStamp = new Date();
+
+// include delay of scheduling operation
+var delta = afterScheduleTimeStamp.getTime() - justBeforeScheduleTimeStamp.getTime();
+if(delta > 2000){
+	common.trace("Delta is " +delta+" ms, before: " +justBeforeScheduleTimeStamp+ ", after: " +afterScheduleTimeStamp);
+	justBeforeScheduleTimeStamp = new Date(justBeforeScheduleTimeStamp.getTime() + delta - 2000);
+}
+
+// wait for all scheduled operation to be finished
+common.info("Going sleep for 67 sec");
+sleep(67 * 1000);
+
+checkNumberOfOpInGroupHist(allAgentsG,6);
+
+// check group operation history one by one
+groupOpHist = getGroupOpHistory(allAgentsG.id);
+for(var i=0;i<groupOpHist.size();i++){
+	checkGroupOpHistory(groupOpHist.get(i),new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *10000),
+			new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *10000 + 7000));
+}
+
+//check operation history on all agents within this group
+for(i in agents){
+	common.info("Checking the agent with id: " + agents[i].id);
+	checkNumberOfOpInResHist(agents[i],6);
+	var agentOpHist = getResOpHistory(agents[i].id);
+	for(var i=0;i<agentOpHist.size();i++){
+		checkResOpHistory(agentOpHist.get(i),groupOpHist.get(i),
+				new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *10000),
+				new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *10000 + 5000));
 	}
 }
 
 
-function cmpTimesWithTolerance(date1,date2,toleranceMilis){
-	milis1 = date1.getTime();
-	milis2 = date2.getTime();
-	if(milis1 == milis2){
-		return true;
-	}else if(milis1 > milis2){
-		if(milis1 - milis2 <= toleranceMilis){
-			// correct
-			return true;
-		}
-	}else{
-		if(milis2 - milis1 <= toleranceMilis){
-			// correct
-			return true;
-		}
-	}
-	
-	throw "Compared times are not equal!! First: " + date1 +", ("+milis1+" milisec), "+
-	"second: "+ date2 +", ("+milis2+" milisec), with tolerance: " +toleranceMilis+" milisec"
+/**
+ * Test 4
+ * Schedule operations on group of agents with defined order
+ */
+// prepare execution order 
+var executionOrderResourceIds = new Array();
+for(i in agents){
+	executionOrderResourceIds[i] = agents[i].id;
+}
+//schedule sequence operations on group
+justBeforeScheduleTimeStamp = new Date();
+allAgentsG.scheduleOperation(opName,15,15,5,0,true,executionOrderResourceIds);
+afterScheduleTimeStamp = new Date();
+
+//include delay of scheduling operation
+delta = afterScheduleTimeStamp.getTime() - justBeforeScheduleTimeStamp.getTime();
+if(delta > 2000){
+	common.trace("Delta is " +delta+" ms, before: " +justBeforeScheduleTimeStamp+ ", after: " +afterScheduleTimeStamp);
+	justBeforeScheduleTimeStamp = new Date(justBeforeScheduleTimeStamp.getTime() + delta - 2000);
+}
+// wait for all scheduled operation to be finished
+var sleepTime = 15 * 1000 * 6 + 15; 
+common.info("Going sleep for 105 sec");
+sleep(105 * 1000);
+
+checkNumberOfOpInGroupHist(allAgentsG,12);
+
+// check group operation history one by one
+groupOpHist = getGroupOpHistory(allAgentsG.id);
+for(var i=6;i<groupOpHist.size();i++){
+	checkGroupOpHistory(groupOpHist.get(i),new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *15000),
+			new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *15000 + 10000));
 }
 
+//check operation history on all agents within this group
+for(i in agents){
+	common.info("Checking the agent with id: " + agents[i].id);
+	checkNumberOfOpInResHist(agents[i],12);
+	var agentOpHist = getResOpHistory(agents[i].id);
+	for(var i=6;i<agentOpHist.size();i++){
+		checkResOpHistory(agentOpHist.get(i),groupOpHist.get(i),
+				new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *15000),
+				new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *15000 + 10000));
+	}
+}
+
+// check that operations were launched on with defined order
+var agentOpHist1 = getResOpHistory(executionOrderResourceIds[0]);
+var agentOpHist2 = getResOpHistory(executionOrderResourceIds[1]);
+for(var i=6;i<agentOpHist1.size();i++){
+	assertTrue(agentOpHist1.get(i).getStartedTime() < agentOpHist2.get(i).getStartedTime(),"Operations were" +
+			"not executed in defined order. Agent with id " + executionOrderResourceIds[0] +" should" + 
+			"precede agent with id " + executionOrderResourceIds[1]);
+}
+
+
+
+
+/**
+ * Functions
+ */
+function checkNumberOfOpInGroupHist(group,expectedNumber){
+	common.info("Checking number of operations in history on group with id " + group.id);
+	var groupOpHistory = getGroupOpHistory(group.id);
+	assertTrue(groupOpHistory.size() == expectedNumber,expectedNumber + " operations in history of group " 
+			+group.name+" is expected, but actually " +groupOpHistory.size()+" operation were found!!");
+}
+
+function checkNumberOfOpInResHist(resource,expectedNumber){
+	common.info("Checking number of operations in history on resource with id " + resource.id);
+	var agentOpHist = getResOpHistory(resource.id);
+	assertTrue(agentOpHist.size() == expectedNumber,"Expected number of operations in history of" +
+			"resource with id "+resource.id+" is "+expectedNumber+", but actual is "+agentOpHist.size());
+}
+
+function checkOpHistory(opHistory,startTime,endTime){
+	common.info("Checking operation history with id: " + opHistory.getId());
+	
+	var status = opHistory.getStatus();
+	common.info("Checking status of operation");
+	assertTrue(status == OperationRequestStatus.SUCCESS,"Operation was not successful. Actual status: " +status
+			+", err msg: " + opHistory.getErrorMessage());
+	
+	common.info("Checking created time");
+	assertTimeWithinInterval(new Date(opHistory.getCreatedTime()),
+			startTime,endTime);
+	common.info("Checking Started time");
+	assertTimeWithinInterval(new Date(opHistory.getStartedTime()),
+			startTime,endTime);
+	common.info("Checking Modified time");
+	assertTimeWithinInterval(new Date(opHistory.getModifiedTime()),
+			new Date(opHistory.getStartedTime()),endTime);
+}
+function checkGroupOpHistory(groupOpHist,startTime,endTime){
+	checkOpHistory(groupOpHist,startTime,endTime);
+}
+function checkResOpHistory(resOperationHist,parentGroupOpHist,startTime,endTime){
+	checkOpHistory(resOperationHist,startTime,endTime);
+	
+	var timeFromResult = resOperationHist.getResults().getSimple("dateTime").getStringValue();
+	common.info("Checking returned time in the result");
+	assertTrue(timeFromResult != null, "No result of operation was returned");
+	
+	var groupOpHist = resOperationHist.getGroupOperationHistory();
+	common.info("Checking group operation history");
+	assertTrue(groupOpHist != null, "This agent is a part of group so his operation history should return relevant" +
+			"GroupOperationHistory and not null!!");
+	assertTrue(groupOpHist.equals(parentGroupOpHist), "Group operation history returned by a resource which is part of the group" +
+			" and group operation history returned by the group are not the same!!");
+}

@@ -55,7 +55,7 @@ public class ResourceTest extends SahiTestScript{
 	}
 	public static List<List<Object>> userRoleAndGroupData() {
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
-		data.add(Arrays.asList(new Object[]{"search testuser", "password","jboss","operations","test@redhat.com","search Test Role1", 			"Description", "testCompGroup", "name"}));
+		data.add(Arrays.asList(new Object[]{"searchtestuser", "password", "jboss", "operations", "test@redhat.com", "search Test Role1", "Description", "testCompGroup", "name"}));
 		return data;
 	}
 	

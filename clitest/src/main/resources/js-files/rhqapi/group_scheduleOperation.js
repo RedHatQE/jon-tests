@@ -15,7 +15,7 @@ var opName = "executeAvailabilityScan"
 var cronExp = "5 5 10 * * ?";
 var cronExp2 = "5 5 5 * * ?";
 
-// invalid arguments
+// invalid arguments cron
 println("Schedule operation without required arguments");
 println(expectException(agentsGroup.scheduleOperationUsingCron));
 
@@ -34,15 +34,32 @@ println(expectException(agentsGroup.scheduleOperationUsingCron,["non-existing-op
 println("Schedule operation that has optional parameters, passing incorrect params");
 println(expectException(agentsGroup.scheduleOperationUsingCron,[opName,cronExp,{nonexistingparam:false}]));
 
+//invalid arguments 
+println("Schedule operation without required arguments");
+println(expectException(agentsGroup.scheduleOperation));
+
+println("Schedule operation of invalid name");
+println(expectException(agentsGroup.scheduleOperation,["non-existing-operation"]));
+
+println("Schedule operation that has optional parameters, passing incorrect params");
+println(expectException(agentsGroup.scheduleOperation,[opName,null,null,null,null,null,null,null,{nonexistingparam:false}]));
+
 
 // mixed group
 println("Schedule operation on mixed group");
 println(expectException(mixedGroup.scheduleOperationUsingCron,[opName,cronExp]));
+println("Schedule operation on mixed group");
+println(expectException(mixedGroup.scheduleOperation,[opName]));
 
 // empty group
 println("Schedule operation on empty group");
 println(expectException(emptyGroup.scheduleOperationUsingCron,[opName,cronExp]));
+println("Schedule operation on empty group");
+println(expectException(emptyGroup.scheduleOperation,[opName]));
 
 // correct
 agentsGroup.scheduleOperationUsingCron(opName,cronExp,{changesOnly:false});
 agentsGroup.scheduleOperationUsingCron(opName,cronExp2);
+
+agentsGroup.scheduleOperation(opName,null,null,null,null,null,null,null,{changesOnly:false});
+agentsGroup.scheduleOperation(opName);

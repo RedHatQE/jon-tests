@@ -18,6 +18,8 @@ import org.testng.annotations.Optional;
 
 public class SahiTasks extends ExtendedSahi {
 
+	public static final String ADMIN_USER		= "rhqadmin";
+	public static final String ADMIN_PASSWORD	= "rhqadmin";
     private static Logger _logger = Logger.getLogger(SahiTasks.class.getName());
     private Navigator navigator;
     public SahiTasks(String browserPath, String browserName, String browserOpt, String sahiBaseDir, String sahiUserdataDir) {
@@ -53,9 +55,19 @@ public class SahiTasks extends ExtendedSahi {
         this.link("Logout").click();
     }
 
+    public String getCurrentLogin(){
+		return this.cell(1).near(this.cell("|").in(this.div("toolStrip"))).getText();
+	}
+	
     public void relogin(String userName, String password) {
-        logout();
-        login(userName, password);
+    	String currentLogin = this.getCurrentLogin();
+		if(userName.equals(currentLogin)){
+			_logger.log(Level.FINE, "User["+userName+"] already logged in");
+		}else{
+			_logger.log(Level.FINE, "Currently logged in as ["+currentLogin+"], Changing login to ["+userName+"]");
+			logout();
+			login(userName, password);
+		}
     }
 
     /**
@@ -86,16 +98,31 @@ public class SahiTasks extends ExtendedSahi {
         this.link("Inventory").click();
         this.waitFor(5000);
         this.cell(groupPanelName).click();
-        this.cell("New").click();
-        this.textbox("name").setValue(groupName);
-        this.textarea("description").setValue(groupDesc);
-        this.cell("Next").click();
-        this.cell("Finish").click();
+        if(!this.div(groupName).in(this.div("gridBody")).exists()){
+        	this.cell("New").click();
+            this.textbox("name").setValue(groupName);
+            this.textarea("description").setValue(groupDesc);
+            this.cell("Next").click();
+            this.cell("Finish").click();
+        }else{
+        	_logger.log(Level.WARNING, "Group["+groupName+"] already available!!");
+        }
+        checkInfo();
+    }
+    
+    private boolean checkInfo(){
+    	 if(this.cell("OK").under(this.cell("An empty group is always considered as mixed.")).exists()){
+         	this.cell("OK").under(this.cell("An empty group is always considered as mixed.")).click();
+         	return true;
+         }
+    	 _logger.log(Level.FINE, "Info Message is not available to click!");
+    	 return false;
     }
 
     private void selectResourceOnGroup(String resourceName, int maxIndex){
     	for(int i=maxIndex; i>=0; i--){
     		if(this.textbox("search["+i+"]").exists()){
+    			this.textbox("search["+i+"]").click();
     			this.textbox("search["+i+"]").setValue(resourceName);
     			_logger.log(Level.INFO, "Clciked on the element:  search["+i+"]");
     			break;
@@ -117,6 +144,7 @@ public class SahiTasks extends ExtendedSahi {
         	selectResourceOnGroup(resource.trim(), 2);
         }
         this.cell("Finish").click();
+        checkInfo();
     }
 
     public void createDynaGroup(String groupName, String groupDesc, ArrayList<String> preloadExpressions, String otherExpressions) {
@@ -448,7 +476,10 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("New").click();
         this.textbox("name").setValue(groupName);
         this.textarea("description").setValue(groupDesc);
-        this.textarea("expression").setValue("groupby resource.trait[jboss.system:type=Server:VersionName]\nresource.type.plugin = JBossAS\nresource.type.name = JBossAS Server");
+        this.textarea("expression").setValue("" +
+        		"groupby resource.trait[jboss.system:type=Server:VersionName]\n" +
+        		"resource.type.plugin = JBossAS\n" +
+        		"resource.type.name = JBossAS Server");
         this.cell("Save & Recalculate").click();
         org.testng.Assert.assertTrue(this.waitForElementExists(this, this.cell("You have successfully recalculated this group definition"), "Cell: You have successfully recalculated this group definition", 1000*20), "Successful message check"); //Wait 20 seconds
         this.bold("Back to List").click();
@@ -469,8 +500,8 @@ public class SahiTasks extends ExtendedSahi {
         createRoleWithoutMangeInvetntory(searchRoleName, desc, compGroupName, searchTestuser);
         loginNewUser(searchTestuser, password);
         navigateToAllGroups();
-        enterValueToSerachTextBox(compGroupName, searchQueryName);
-
+        setSearchBox(compGroupName="="+searchQueryName);
+        this.cell("name").click();
     }
 
     public void createRoleWithoutMangeInvetntory(String roleName, String desc, String compGroupName, String searchTestuser) {
@@ -500,17 +531,6 @@ public class SahiTasks extends ExtendedSahi {
         this.waitFor(5000);
         this.cell("All Groups").click();
     }
-
-    public void enterValueToSerachTextBox(String compGroupName, String searchName) {
-        this.textbox("SearchPatternField").setValue(searchName + "=" + compGroupName);
-        this.cell("name").click();
-    }
-    
-    public void enterValueToSerachText(String searchName, String searchValue) {
-        this.textbox("SearchPatternField").setValue(searchName + "==" + searchValue);
-        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);");
-    }
-
     
     public void checkPlatform(){
     	this.link("Inventory").click();
@@ -518,7 +538,6 @@ public class SahiTasks extends ExtendedSahi {
     	this.cell("Platforms").click();
     	Assert.assertTrue(this.div("Linux").exists());
     	this.div("Linux").doubleClick();
-    	
     }
     
     
@@ -588,8 +607,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void createRole(String roleName, String roleDesc) {
-        this.link("Administration").click();
-        this.cell("Roles").click();
+    	selectPage("Administration-->Roles", this.cell("Name"), 1000*5, 2);
         this.cell("New").click();
         this.textbox("name").setValue(roleName);
         this.textbox("description").setValue("Description");
@@ -923,36 +941,12 @@ public class SahiTasks extends ExtendedSahi {
     //* Alert Definition Creation
     //*********************************************************************************
     public void selectResource(String resourceName){
-    	//String searchCategory = null;
         String[] resourceType = resourceName.split("=");
         if (resourceType.length > 1) {
-        	//selectPage("Inventory-->"+resourceType[0], this.textbox("SearchPatternField"), 1000*5, 3);
         	selectPage("Inventory-->"+resourceType[0], this.textbox("search"), 1000*5, 3);
-            /*
-            if(resourceType[0].equalsIgnoreCase("Platforms")){
-            	searchCategory = "category=platform ";
-            }else if(resourceType[0].equalsIgnoreCase("Servers")){
-            	searchCategory = "category=server ";
-            }else if(resourceType[0].equalsIgnoreCase("Services")){
-            	searchCategory = "category=service ";
-            }else if(resourceType[0].equalsIgnoreCase("Unavailable Servers")){
-            	searchCategory = "category=server availability=down ";
-            }
-            this.textbox("SearchPatternField").setValue(searchCategory+resourceType[1].trim());
-            */
-            
-        	//Changed the search field name from the version : 4.5.0-SNAPSHOT, Build Number: 1704544. Still we have the field in JBOSS ON, Hence dealing with both search fields
-        	if(this.textbox("SearchPatternField").exists()){
-        		this.textbox("SearchPatternField").setValue(resourceType[1].trim());
-        		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
-        	}else{
-        		this.textbox("search").setValue(resourceType[1].trim());
-        		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
-        	}        	
-                        
+        	setSearchBox(resourceType[1].trim());                        
         } else {
             _logger.log(Level.WARNING, "Invalid parameter passed --> "+resourceName);
-            //throw new SahiTasksException("Invalid parameter passed --> "+resourceName);
             return;
         }
         this.link(resourceType[1].trim()).click();
@@ -1104,7 +1098,9 @@ public class SahiTasks extends ExtendedSahi {
 
         //Define new alert name and Description(if any)
         this.cell("New").click();
-        this.textbox("textItem").near(this.row("Name :")).setValue(alertName);
+        _logger.log(Level.INFO, "Alert Name Text Box Status: "+this.textbox("/textItem/").near(this.row("Name :")).exists());
+        this.textbox("/textItem/").near(this.row("Name :")).click();
+        this.textbox("/textItem/").near(this.row("Name :")).setValue(alertName);
         if (alertDescription != null) {
             this.textarea("textItem").near(this.row("Description :")).setValue(alertDescription);
         }
@@ -1300,6 +1296,16 @@ public class SahiTasks extends ExtendedSahi {
         }
     }
     
+    private void byPassConfirmationBox(){
+        if(this.cell("Yes").near(this.cell("No")).exists()){
+        	this.cell("Yes").near(this.cell("No")).click();
+        }else{
+        	_logger.log(Level.FINE, "Unable to find 'Confirmation' box!!");
+        	_logger.log(Level.FINE, "Trying with 'Yes' button");
+        	this.cell("Yes").click();
+        }
+    }
+    
     public boolean clickDriftDetectNowOrDelete(String driftName, int divMaxIndex, long waitTime, boolean deleteDrift) throws InterruptedException{
     	
     	for(int i=divMaxIndex; i>=0; i--){
@@ -1316,13 +1322,19 @@ public class SahiTasks extends ExtendedSahi {
     		this.cell("Yes").near(this.cell("No")).click();
     		return this.link(driftName).exists();
     	}else{
-    		this.cell("Detect Now").near(this.cell("Delete All")).click();
+    		if(this.cell("Detect Now").near(this.cell("Delete All")).exists()){
+    			this.cell("Detect Now").near(this.cell("Delete All")).click();
+    		}else{
+    			this.cell("DetectNow").near(this.cell("Delete All")).click();
+    		}
+    		//This line added as a work-around for the issue --> Bug 949471
+    		byPassConfirmationBox();
         	_logger.log(Level.INFO, "Waiting "+(waitTime/1000)+" Second(s) for agent/server drift actions...");
         	Thread.sleep(waitTime); //Give X second(s) for agent/server actions
         	return true;
     	}
     	
-    }
+   }
     public boolean addDrift(String baseDir, String resourceName, String templateName, String driftName, String textBoxKeyValue, String radioButtons, String fileIncludes, String fileExcludes ) throws InterruptedException, IOException {
     	//Remove old file History If any
     	DriftManagementSSH driftSSH = new DriftManagementSSH();
@@ -1341,6 +1353,9 @@ public class SahiTasks extends ExtendedSahi {
         }
         
         this.cell("New").click();
+        this.waitFor(1000*1);
+        //This line added as a work-around for the issue --> Bug 949471
+        byPassConfirmationBox();
         
         //Select Template
         if(templateName != null){
@@ -1948,8 +1963,7 @@ public class SahiTasks extends ExtendedSahi {
     public boolean isAgentRunning(String agentName) {
     	this.link("Inventory").click();
         this.cell("Platforms").click();
-        this.textbox("SearchPatternField").setValue(agentName.trim());
-        this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+        this.setSearchBox(agentName.trim());
         LinkedList<HashMap<String, String>> agents = getRHQgwtTableFullDetails("listTable", 2, "Resource Type,Name,Ancestry,Description,Type,Version,Availability", "availability_red_16.png=Down,availability_green_16.png=Up");
         if(agents.size() != 1){
         	if(agents.get(0).get("Availability").equalsIgnoreCase("Up")){
@@ -2099,27 +2113,15 @@ public class SahiTasks extends ExtendedSahi {
     public boolean searchComaptibilityGroupWithText(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList){
     	//'SearchPatternField' is on JBOSS ON and 'search' is on RHQ 4.5 and above
     	selectPage("Inventory-->"+groupPanelName, this.textbox("search"), 1000*5, 3);
-    	if(this.textbox("search").exists()){
-    		this.textbox("search").setValue(groupName);
-    		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key 
-    	}else{
-    		this.textbox("SearchPatternField").setValue(groupName);
-    		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key 
-    	}    	
-           
+    	setSearchBox(groupName);
+    	
         if(!this.link(groupName.trim()).exists()){
         	_logger.log(Level.INFO, "Group ["+groupName+"] unavailable, Creating new one...");
         	createGroup(groupPanelName, groupName, groupDesc, resourceList);
         }else{
         	return true;
         }
-        if(this.textbox("search").exists()){
-    		this.textbox("search").setValue(groupName);
-    		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key 
-    	}else{
-    		this.textbox("SearchPatternField").setValue(groupName);
-    		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key 
-    	}   
+        setSearchBox(groupName);
         return this.link(groupName.trim()).exists();
     }
 
@@ -2229,9 +2231,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Services").click();
 		this.waitFor(5000);
 		checkSearchBox();
-		enterValueToSerachText("version", "2");
-/*		this.textbox("SearchPatternField").keyDown(13, 13);
-		this.textbox("SearchPatternField").keyUp(13, 13);*/
+		setSearchBox("version==2");
 		this.waitFor(5000);
 	}
 	
@@ -2266,7 +2266,9 @@ public class SahiTasks extends ExtendedSahi {
 	        if (permissions != null){
 	        	for (int i =0; i< permissions.length ;i++ ){
 	        		this.div(permissions[i]).click();
-	        		this.image("unchecked.png").click();
+	        		if(this.image("unchecked.png").near(this.div(permissions[i])).exists()){
+	        			this.image("unchecked.png").near(this.div(permissions[i])).click();
+	        		}
 	        	}
 	        }
 	        this.cell("Resource Groups").click();
@@ -2293,14 +2295,39 @@ public class SahiTasks extends ExtendedSahi {
 	        this.cell("Save").click();
 	    }
 
+	public boolean isUserAvailable(String userName){
+		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+		if(this.link(userName).in(this.div("gridBody")).exists()){
+			return true;
+		}
+		_logger.log(Level.FINE, "User["+userName+"] is not available");
+		return false;
+	}
+	
+	public void preConfigPermissionTest(String userName, String password, String firstName, String lastName, String email, String groupPanelName, String groupName, String groupDesc, String roleName, String roleDesc, String[] permissions){
+		if(!this.getCurrentLogin().equals(ADMIN_USER)){
+			relogin(ADMIN_USER, ADMIN_PASSWORD);
+		}
+		if(!this.isUserAvailable(userName)){
+				createUser(userName, password, firstName, lastName, email);
+		}		
+		createGroup(groupPanelName, groupName, groupDesc);
+		createRoleWithPermissions(roleName, roleDesc, groupName, userName, permissions);
+		//relogin(userName, password);	
+	}
+	
+	public void postConfigPermissionTest(String userName, String role, String groupPanelName, String groupName) throws SahiTasksException{
+		relogin(ADMIN_USER, ADMIN_PASSWORD);
+		deleteUser(userName);
+		deleteRole(role);
+		deleteGroup(groupPanelName, groupName);
+	}
 	    
 	public void checkManageSecurity(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
-
-		createUser(searchTestuser, password, firstName, secondName, emailId);
-		createGroup("All Groups", compTestGroup, desc);
+		
 		String [] permissions = new String [] {"Manage Security"};
-		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
-
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		
 		// login with created user
 		relogin(searchTestuser, password);
 		// go to Administration-->Users
@@ -2323,20 +2350,14 @@ public class SahiTasks extends ExtendedSahi {
 		this.waitFor(5000);
 		Assert.assertFalse(this.cell("Cancel").exists());
 		Assert.assertFalse(this.password("password").exists());
-		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
-		deleteUser(searchTestuser);
-		deleteRole(roleName);
-		deleteGroup("All Groups", compTestGroup);
-
+		
+		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);
 	}
 	
 	public void checkManageInventory(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 
-		createUser(searchTestuser, password, firstName, secondName, emailId);
-		createGroupWithAllResources("All Groups", compTestGroup, desc);
 		String [] permissions = new String [] {"Manage Inventory"};
-		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2363,11 +2384,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.waitFor(2000);
 		this.cell("Discovery Queue").click();
 		Assert.assertFalse(this.span("Discovery Queue").exists());
-		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
-		deleteUser(searchTestuser);
-		deleteRole(roleName);
-		deleteGroup("All Groups", compTestGroup);
+		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);
 	}
 	
 	public void createTestRepo(String testRepoName){
@@ -2389,10 +2406,8 @@ public class SahiTasks extends ExtendedSahi {
 	
 	public void checkManageRespository(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
-		createUser(searchTestuser, password, firstName, secondName, emailId);
-		createGroupWithAllResources("All Groups", compTestGroup, desc);
 		String [] permissions = new String [] {"Manage Repositories"};
-		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		//create test repo
 		String testReponame="testRepo";
@@ -2428,20 +2443,13 @@ public class SahiTasks extends ExtendedSahi {
 		this.waitFor(2000);
 		Assert.assertFalse(this.link(testReponame).exists());
 				
-//		 login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
-		deleteTestRepo(testReponame);
-		deleteUser(searchTestuser);
-		deleteRole(roleName);
-		deleteGroup("All Groups", compTestGroup);
+		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);
 	}
 
 	public void checkViewUsers(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
-		createUser(searchTestuser, password, firstName, secondName, emailId);
-		createGroup("All Groups", compTestGroup, desc);
 		String [] permissions = new String [] {"View Users"};
-		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, null); //this is the default role creation wich has View Users checked
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2472,19 +2480,12 @@ public class SahiTasks extends ExtendedSahi {
 		Assert.assertTrue(this.password("password").exists());
 		Assert.assertTrue(this.span("Edit User ["+searchTestuser+"]").exists());
 		
-		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
-		deleteUser(searchTestuser);
-		deleteGroup("All Groups", compTestGroup);
-		deleteRole(roleName);
+		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);
 	}
 	public void checkManageSettings(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 	
-		createUser(searchTestuser, password, firstName, secondName, emailId);
-		createGroup("All Groups", compTestGroup, desc);
-		
 		String [] permissions = new String [] {"Manage Settings"};
-		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2506,19 +2507,13 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("System Settings").click();
 		Assert.assertFalse(this.cell("Server Local Time :").exists());
 		
-		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
-		deleteUser(searchTestuser);
-		deleteGroup("All Groups", compTestGroup);
-		deleteRole(roleName);
+		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);
 	}
 
 	public void checkManageBundles(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 	
-		createUser(searchTestuser, password, firstName, secondName, emailId);
-		createGroup("All Groups", compTestGroup, desc);
 		String [] permissions = new String [] {"Manage Bundles"};
-		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, permissions); //this is the default role creation wich has View Users checked
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2540,18 +2535,12 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("New").click();
 		Assert.assertFalse(this.cell("Next").exists());
 		
-		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
-		deleteUser(searchTestuser);
-		deleteGroup("All Groups", compTestGroup);
-		deleteRole(roleName);
+		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);
 	}
 
 	public void checkGroupsPermission(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
-		createUser(searchTestuser, password, firstName, secondName, emailId);
-		createGroupWithAllResources("All Groups", compTestGroup, desc);
-		createRoleWithPermissions(roleName, desc, compTestGroup, searchTestuser, null); //this is the default role creation wich has View Users checked
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, null); //this is the default role creation which has View Users checked
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2576,11 +2565,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.waitFor(2000);
 		Assert.assertFalse(this.div("RHQ Agent").exists());
 		
-		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
-		deleteUser(searchTestuser);
-		deleteGroup("All Groups", compTestGroup);
-		deleteRole(roleName);
+		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);
 	}
 	
 	//*************************************************************************************
@@ -2622,6 +2607,17 @@ public class SahiTasks extends ExtendedSahi {
 		
 	}
 	
-	
+	//Changed the search field name from the version : 4.5.0-SNAPSHOT, Build Number: 1704544. Still we have the field in JBOSS ON, Hence dealing with both search fields
+	public void setSearchBox(String boxValue){
+		if(this.textbox("SearchPatternField").exists()){
+    		this.textbox("SearchPatternField").setValue(boxValue);
+    		this.execute("_sahi._keyPress(_sahi._textbox('SearchPatternField'), 13);"); //13 - Enter key
+    	}else{
+    		this.textbox("search").click();
+    		this.textbox("search").setValue(boxValue);
+    		this.waitFor(2000);
+    		this.execute("_sahi._keyPress(_sahi._textbox('search'), 13);"); //13 - Enter key
+    	}       
+	}	
 
 }

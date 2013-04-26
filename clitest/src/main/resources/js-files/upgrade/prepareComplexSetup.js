@@ -8,7 +8,6 @@ var common = new _common();
 verbose = 2;
 
 
-var numberOfAgents =1;
 var deploymentWarPath = deploymentWar;
 //var deploymentEARPath = deploymentEAR;
 
@@ -17,9 +16,10 @@ importAllResources();
 
 var agents = Inventory.find({resourceTypeName:"RHQ Agent",name:"RHQ Agent"});
 assertTrue(agents.length > 0, "No RHQ Agent found in invenotry !!!");
-var eap6Array = Inventory.find({resourceTypeName:"JBossAS7 Standalone Server"});
-assertTrue(eap6Array.length > 0, "No JBossAS7 Standalone Server found in invenotry !!!");
-var eap6Standalone = eap6Array[0];
+var eap6StandaloneArray = Inventory.find({resourceTypeName:"JBossAS7 Standalone Server"});
+assertTrue(eap6StandaloneArray.length > 0, "No JBossAS7 Standalone Server found in invenotry !!!");
+var eap5Array = Inventory.find({pluginName:"JBossAS5",resourceTypeName:"JBossAS Server"});
+assertTrue(eap5Array.length > 0, "No JBossAS5 Server found in invenotry !!!");
 
 enableMetrics();
 
@@ -38,10 +38,10 @@ prepareBundles();
 function importAllResources(){
 	var platforms = Inventory.discoveryQueue.listPlatforms();
 	
-	for(x in platforms){
+	for(var x in platforms){
 		// using importPlatform, we import it including children resources (default)
 		var imported = Inventory.discoveryQueue.importPlatform(platforms[x].getProxy().getName());
-		assertTrue(imported.exists(),"Imported platform does not exists in inventory");
+		assertTrue(imported.exists(),"Imported platform does not exists in the inventory");
 		// let's wait until our platform becomes available
 		imported.waitForAvailable();
 		assertTrue(imported.isAvailable(),"Imported platform is not available");
@@ -49,10 +49,12 @@ function importAllResources(){
 }
 
 function enableMetrics(){
-	// enable some additional metrics on RHQ Agent
-	agents[0].getMetric("Up Time").set(true);
-	agents[0].getMetric("JVM Free Memory").set(true);
-	agents[0].getMetric("JVM Total Memory").set(true);
+	// enable some additional metrics on all found RHQ Agents
+	for(var x in agents){
+		agents[x].getMetric("Up Time").set(true);
+		agents[x].getMetric("JVM Free Memory").set(true);
+		agents[x].getMetric("JVM Total Memory").set(true);
+	}
 }
 
 function clearAllGroups(){
@@ -61,48 +63,53 @@ function clearAllGroups(){
 		b.remove();
 	});
 }
+
 function createGroups(){
-	common.info("Creating group of platforms");
+	common.info("Creating a group of platforms");
 	var platformsGroup = groups.create("All platforms",Inventory.platforms());
 	
-	common.info("Creating group of agents");
+	common.info("Creating a group of agents");
 	var agentsGroup = groups.create("All agent",agents);
 	
-	common.info("Creating mixed group");
+	common.info("Creating a mixed group");
 	var mixedGroup = groups.create("Mixed group",Inventory.platforms().concat(agents));
 	assertTrue(groups.find().length==3,"Count of groups is incorrect!! Expected: 3, actual: " + groups.find().length);
 }
 
 function setUpEap6Standalone(){
-	common.info("Setting up EAP6 standalone");
-	common.info("Installing RhqUser");
-	var hist = eap6Standalone.invokeOperation("installRhqUser");
-	assertTrue(hist.status == OperationRequestStatus.SUCCESS, "Install RHQ user failed!! with error message: " + hist.error);
 	
-	common.info("Scheduling restart operation each one hour for next 24 hours");
-	eap6Standalone.scheduleOperation("restart",3600,3600,24);
-	
-	var depName = "hello1.war"
-	common.info("Deploying WAR file" + depName);
-	var deployed = eap6Standalone.child({type:"Deployment",name:depName});
-	if (deployed) {
-		common.info(depName + " already created, skipping deploying")
-	}else{
-		deployed = eap6Standalone.createChild({content:deploymentWarPath,type:"Deployment"});
-		assertTrue(deployed!=null,"Deployment resource was not returned by createChild method = > something went wrong, see previous messages");
-		assertTrue(deployed.exists(),"Deployment resource does not exists in inventory");
-		assertTrue(deployed.waitForAvailable(),"Deployment resource is not available!");
-	}
-	
-	var dsName = "testDatasource";
-	common.info("Adding datasource " + dsName);
-	var datasources = Inventory.find({resourceTypeName:"Datasources (Standalone)",name:"datasources"});
-	assertTrue(datasources.length > 0,"No 'datasources' service found!!");
-	if(datasources[0].child({type:"DataSource (Standalone)",name:dsName})){
-		common.info(dsName + " already created, skipping");
-	}else{
-		var createdDS = datasources[0].createChild({name:dsName,type:"DataSource (Standalone)",
-		config:{'jndi-name':"java:jboss/datasources/testDatasource",'driver-name':"h2",'connection-url':"jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1"}});
+	for(var x in eap6StandaloneArray){
+		common.info("Setting up EAP6 standalone on " + eap6StandaloneArray[x].parent().name);
+		eap6StandaloneArray[x].waitForAvailable();
+		common.info("Installing RhqUser");
+		var hist = eap6StandaloneArray[x].invokeOperation("installRhqUser");
+		assertTrue(hist.status == OperationRequestStatus.SUCCESS, "Install RHQ user failed!! with error message: " + hist.error);
+		
+		common.info("Scheduling restart operation each one hour for next 24 hours");
+		eap6StandaloneArray[x].scheduleOperation("restart",3600,3600,24);
+		
+		var depName = "hello1.war"
+		common.info("Deploying WAR file" + depName);
+		var deployed = eap6StandaloneArray[x].child({type:"Deployment",name:depName});
+		if (deployed) {
+			common.info(depName + " already created, skipping deploying")
+		}else{
+			deployed = eap6StandaloneArray[x].createChild({content:deploymentWarPath,type:"Deployment"});
+			assertTrue(deployed!=null,"Deployment resource was not returned by createChild method = > something went wrong, see previous messages");
+			assertTrue(deployed.exists(),"Deployment resource does not exists in inventory");
+			assertTrue(deployed.waitForAvailable(),"Deployment resource is not available!");
+		}
+		
+		var dsName = "testDatasource";
+		common.info("Adding datasource " + dsName);
+		var datasources = Inventory.find({resourceTypeName:"Datasources (Standalone)",name:"datasources"});
+		assertTrue(datasources.length > 0,"No 'datasources' service found!!");
+		if(datasources[0].child({type:"DataSource (Standalone)",name:dsName})){
+			common.info(dsName + " already created, skipping");
+		}else{
+			var createdDS = datasources[0].createChild({name:dsName,type:"DataSource (Standalone)",
+			config:{'jndi-name':"java:jboss/datasources/testDatasource",'driver-name':"h2",'connection-url':"jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1"}});
+		}
 	}
 	
 }

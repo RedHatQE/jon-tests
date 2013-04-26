@@ -104,19 +104,19 @@ public class Resource {
 	 */
 	public void navigate() {
 		if (HAVE_REST_API) {
-			fetchId(false);
+			fetchId(true);
 			String serverBaseUrl = tasks.getNavigator().getServerBaseUrl();
 			String url = serverBaseUrl+"/#Resource/"+getId()+"/Inventory";
 			log.fine("Navigating to ["+url+"]");
 			tasks.navigateTo(url,false);
-			ElementStub es =  tasks.byXPath("//td[@class='WarnBlock'][1]");
-			if (es.exists() && es.getText().contains("does not exist")) {
-				// need to refresh resource's ID
-				fetchId(true);
-				if (getId()!=null) {
-					tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
-				}
-			}
+			//ElementStub es =  tasks.byXPath("//td[@class='WarnBlock'][1]");
+			//if (es.exists() && es.getText().contains("does not exist")) {
+			//	// need to refresh resource's ID
+			//	fetchId(true);
+			//	if (getId()!=null) {
+			//		tasks.navigateTo(serverBaseUrl+"/#Resource/"+getId()+"/Inventory",false);
+			//	}
+			//}
 			log.fine("Navigation to "+toString()+ " done.");
 		}
 		else {
@@ -303,10 +303,16 @@ public class Resource {
 		JSONArray jsonArray = null;
 		try {
 			jsonArray = rc.getJSONArray((String) result.get("response.content"));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
-		}
+		} catch (Exception ex) {
+            log.fine("getJSONArray thrown an Exception, trying one more time after " + Timing.toString(Timing.WAIT_TIME) + " due to BZ#952265");
+            result = rc.getResponse(URIs.PLATFORMS.getUri()+".json");
+            try {
+              jsonArray = rc.getJSONArray((String) result.get("response.content"));
+            } catch (ParseException pex) {
+              pex.printStackTrace();
+              return null;
+            }
+        }
 		log.fine("Number of Platfoms(s): "+jsonArray.size());
 		JSONObject jsonObject;
 		String platformId = null;
@@ -360,7 +366,14 @@ public class Resource {
 		Map<String,String> children = new HashMap<String, String>();
 		Map<String, Object> result = rc.getResponse("resource/"+resourceId+"/children.json");
 		
-		JSONArray jsonArray = rc.getJSONArray((String)result.get("response.content"));		
+		JSONArray jsonArray = null;
+        try {
+            jsonArray = rc.getJSONArray((String)result.get("response.content"));
+        } catch (Exception ex) {
+            log.fine("getJSONArray thrown an Exception, trying one more time after " + Timing.toString(Timing.WAIT_TIME) + " due to BZ#952265");
+            result = rc.getResponse(URIs.PLATFORMS.getUri()+".json");
+            jsonArray = rc.getJSONArray((String) result.get("response.content"));
+        }
 		
 		log.fine("Number of Resource(s): "+jsonArray.size());
 		JSONObject jsonObject;
@@ -679,9 +692,9 @@ public class Resource {
 	public boolean importFromDiscoQueue(int sleepTime) {
 		String resourceName = this.getName();
 		String agentName = this.getPlatform();
+		ElementStub elmUpper;
 		log.fine("Trying to inventorize resource \"" + resourceName
 				+ "\" of agent \"" + agentName + "\".");
-
 		
 		if (this.exists()) {
 			log.fine("Resource \"" + resourceName + "\" of agent \""
@@ -704,9 +717,10 @@ public class Resource {
 			tasks.cell("Discovery Time").doubleClick();
 			tasks.waitFor(Timing.WAIT_TIME);
 			
-			ElementStub elm = tasks.cell(agentName);
-			if (elm.exists()) {
-				elm.doubleClick();
+			elmUpper = tasks.cell(agentName);
+			if (elmUpper.exists()) {
+				elmUpper.doubleClick();
+				tasks.waitFor(3000);
 			} else {
 				throw new IllegalStateException();
 			}
@@ -718,40 +732,53 @@ public class Resource {
 			return false;
 		}
 		
-		
 		ElementStub elm = tasks.image("unchecked.png").near(
 				tasks.cell(resourceName));
 		if (elm.exists()) {
-			elm.check();
-			// this resource is platform
-			if(this.isPlatform){
-				tasks.cell("No").click();
-			}
-			tasks.cell("Import").click();
-			log.fine("Waiting for resource to import...");
-            for (int i = 0; i < Timing.REPEAT; i++) {
-                log.finer("Waiting another " + Timing.toString(sleepTime) + " for " + this.getName() + " to import");
-                tasks.waitFor(sleepTime);
-                boolean imported = false;
-                if (HAVE_REST_API) {
-                    imported = tryFetchId();
-                } else {
-                    imported = this.exists();
-                }
-                if (imported) {
-                    break;
-                }
-            }
-            return true;
+      log.fine("Resource \""
+               + resourceName
+               + "\" of agent \""
+               + agentName
+               + "\" found in Autodiscovery queue.");
 		} else {
-			log.fine("Resource \""
-                    + resourceName
-                    + "\" of agent \""
-                    + agentName
-                    + "\" not found in Autodiscovery queue, it might have been already inventorized");
-			
+		  tasks.image("opener_closed.png").near(elmUpper).click();
+  		if (elm.exists()) {
+        log.fine("Resource \""
+                 + resourceName
+                 + "\" of agent \""
+                 + agentName
+                 + "\" found in Autodiscovery queue.");
+		  } else {
+        log.fine("Resource \""
+                 + resourceName
+                 + "\" of agent \""
+                 + agentName
+                 + "\" not found in Autodiscovery queue, it might have been already inventorized");
+        return false;					  
+		  }
+    }		
+				
+	  elm.check();
+		// this resource is platform
+		if(this.isPlatform){
+			tasks.cell("No").click();
 		}
-		return false;
+		tasks.cell("Import").click();
+		log.fine("Waiting for resource to import...");
+    for (int i = 0; i < Timing.REPEAT; i++) {
+      log.finer("Waiting another " + Timing.toString(sleepTime) + " for " + this.getName() + " to import");
+      tasks.waitFor(sleepTime);
+      boolean imported = false;
+      if (HAVE_REST_API) {
+        imported = tryFetchId();
+      } else {
+        imported = this.exists();
+      }
+      if (imported) {
+        break;
+      }
+    }
+    return true;
 	}
     /**
      * imports this resource from discovery queue. It is required that parent platform is already imported. This

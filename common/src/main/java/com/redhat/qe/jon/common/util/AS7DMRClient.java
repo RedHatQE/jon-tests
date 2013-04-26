@@ -244,6 +244,7 @@ public class AS7DMRClient {
 	 */
 	public boolean reloadOrRestartRequired(ModelNode result) {
 		ModelNode headers = result.get("response-headers");
+        log.fine("ReloadOrRestartRequired - response headers are: " + headers.toString());
 		if (headers==null) {
 			log.fine("headers null");
 			return false;
