@@ -109,8 +109,12 @@ public class Inventory extends ResourceTab{
 			log.fine("Finish buttons: "+tasks.cell("Finish").countSimilar());
 			ElementStub es = tasks.cell("Finish");
 			tasks.xy(es,3,3).click();
+
 			// if click does not work we send enter key and pray
+            tasks.waitFor(Timing.TIME_1S);
 			if (es.isVisible()) {
+                log.info("The [Finish] button still exists => using keypress");
+                es.focus();
 				tasks.execute("_sahi._keyPress(_sahi._cell('Finish'), 13);"); //13 - Enter key
 			}
 		}
