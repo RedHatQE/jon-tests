@@ -1,1 +1,1 @@
-include "common","clitest","sahi","rest-java","rest-groovy","metricsimulator","agentrpm"
+include "common","clitest","sahi","rest-java","rest-groovy","metricsimulator","agentrpm","rhq-control"
