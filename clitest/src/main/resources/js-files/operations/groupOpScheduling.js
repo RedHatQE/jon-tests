@@ -138,7 +138,8 @@ for(i in agents){
 }
 //schedule sequence operations on group
 justBeforeScheduleTimeStamp = new Date();
-allAgentsG.scheduleOperation(opName,15,15,5,0,true,executionOrderResourceIds);
+var repeatIntervalSec = 20;
+allAgentsG.scheduleOperation(opName,20,repeatIntervalSec,5,0,true,executionOrderResourceIds);
 afterScheduleTimeStamp = new Date();
 
 //include delay of scheduling operation
@@ -148,17 +149,19 @@ if(delta > 2000){
 	justBeforeScheduleTimeStamp = new Date(justBeforeScheduleTimeStamp.getTime() + delta - 2000);
 }
 // wait for all scheduled operation to be finished
-var sleepTime = 15 * 1000 * 6 + 15; 
-common.info("Going sleep for 105 sec");
-sleep(105 * 1000);
+var operationDelayTolerationSec = 17;
+var sleepTime = repeatIntervalSec * 1000 * 6 + operationDelayTolerationSec * 1000; 
+common.info("Going sleep for " +sleepTime / 1000+" sec");
+sleep(sleepTime);
 
 checkNumberOfOpInGroupHist(allAgentsG,12);
 
 // check group operation history one by one
 groupOpHist = getGroupOpHistory(allAgentsG.id);
 for(var i=6;i<groupOpHist.size();i++){
-	checkGroupOpHistory(groupOpHist.get(i),new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *15000),
-			new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *15000 + 10000));
+	checkGroupOpHistory(groupOpHist.get(i),new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *repeatIntervalSec * 1000),
+			new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *repeatIntervalSec * 1000 
+					+ operationDelayTolerationSec * 1000));
 }
 
 //check operation history on all agents within this group
@@ -168,8 +171,9 @@ for(i in agents){
 	var agentOpHist = getResOpHistory(agents[i].id);
 	for(var i=6;i<agentOpHist.size();i++){
 		checkResOpHistory(agentOpHist.get(i),groupOpHist.get(i),
-				new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *15000),
-				new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *15000 + 10000));
+				new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *repeatIntervalSec * 1000),
+				new Date(justBeforeScheduleTimeStamp.getTime() + (i -5) *repeatIntervalSec*1000 
+						+ operationDelayTolerationSec *1000));
 	}
 }
 
