@@ -82,10 +82,18 @@ public class AS7SSHClient extends SSHClient {
 
     private String getGrepFiltering() {
         String grepFiltering = "";
-        if (serverConfig != null) {
-            grepFiltering = "grep "+asHome+" | grep "+serverConfig+" | grep java | grep -v bash | grep -v -w grep";
+        File asHomeDir = new File(asHome);
+        String as7FilteringString = null;
+        if (asHomeDir.getParent() != null) {
+            as7FilteringString = asHomeDir.getParentFile().getName() + File.separator + asHomeDir.getName();
         } else {
-            grepFiltering = "grep "+asHome+" | grep java | grep -v bash | grep -v -w grep";
+            as7FilteringString = asHomeDir.getName();
+        }
+
+        if (serverConfig != null) {
+            grepFiltering = "grep "+as7FilteringString+" | grep "+serverConfig+" | grep java | grep -v bash | grep -v -w grep";
+        } else {
+            grepFiltering = "grep "+as7FilteringString+" | grep java | grep -v bash | grep -v -w grep";
         }
         return grepFiltering;
     }
