@@ -23,9 +23,16 @@ class RHQRestTest(unittest.TestCase):
         # set parameters to our test class instance
         self.endpoint = 'http://%s:7080/rest/' % os.getenv('RHQ_TARGET','localhost')
         self.auth = (os.getenv('RHQ_USER','rhqadmin'),os.getenv('RHQ_PASSWORD','rhqadmin'))
+        self.debug = os.getenv('DEBUG','no') != 'no'
 
     def get(self,resource):
-        return requests.get(self.endpoint+resource, auth=self.auth)
+        if self.debug:
+            self.log.debug('GET %s' %(self.endpoint+resource))
+        resp = requests.get(self.endpoint+resource, auth=self.auth, headers = {'accept':'application/json','content-type': 'application/json'})
+        if self.debug:
+            self.log.debug('Response HEADERS:%s' % str(resp.headers))
+            self.log.debug('Response BODY: %s' %(resp.text))
+        return resp
 
     def post(self,resource,data):
         json_data = json.dumps(data)
