@@ -178,12 +178,18 @@ for(i in agents){
 }
 
 // check that operations were launched on with defined order
-var agentOpHist1 = getResOpHistory(executionOrderResourceIds[0]);
-var agentOpHist2 = getResOpHistory(executionOrderResourceIds[1]);
-for(var i=6;i<agentOpHist1.size();i++){
-	assertTrue(agentOpHist1.get(i).getStartedTime() < agentOpHist2.get(i).getStartedTime(),"Operations were" +
-			"not executed in defined order. Agent with id " + executionOrderResourceIds[0] +" should" + 
-			"precede agent with id " + executionOrderResourceIds[1]);
+for(var i=0;i< executionOrderResourceIds.length;i++){
+	if(i +1 < executionOrderResourceIds.length){
+		common.info("Checking operation order for resources with ids " +executionOrderResourceIds[i]+
+				" and "+executionOrderResourceIds[(i+1)]);
+		var agentOpHist1 = getResOpHistory(executionOrderResourceIds[i]);
+		var agentOpHist2 = getResOpHistory(executionOrderResourceIds[(i+1)]);
+		for(var j=6;j<agentOpHist1.size();j++){
+			assertTrue(agentOpHist1.get(j).getStartedTime() < agentOpHist2.get(j).getStartedTime(),"Operations were" +
+					"not executed in defined order. Agent with id " + executionOrderResourceIds[i] +" should" + 
+					"precede agent with id " + executionOrderResourceIds[(i+1)]);
+		}
+	}
 }
 
 
