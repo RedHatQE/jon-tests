@@ -2,7 +2,7 @@
 
 Those tests are written for python 2.7
 # Requirements
- * nosetests - ```yum install python-nose```
+ * nosetests 1.2.0  - ```yum install python-nose; easy_install --upgrade nose```, 
  * requests - python http client library ```easy_install requests```
 If you do not have easy_install do ```yum install python-setuptools```
 
