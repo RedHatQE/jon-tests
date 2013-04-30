@@ -14,3 +14,4 @@ build
 target
 *.iml
 .idea
+*.py[oc]
