@@ -44,7 +44,10 @@ public class AS7SSHClient extends SSHClient {
      * @param asHome - path to AS7 basedir
      * @return counted identifier which is parentDirName/as7DirName or as7DirName if it doesn't have a parent dir
      */
-    private String countAS7Identifier(String asHome) {
+    private static String countAS7Identifier(String asHome) {
+        if (asHome == null) {
+            throw new IllegalArgumentException("Unable to count as7Identifier without asHome specified");
+        }
         File asHomeDir = new File(asHome);
         if (asHomeDir.getParent() != null) {
             return asHomeDir.getParentFile().getName() + File.separator + asHomeDir.getName();
