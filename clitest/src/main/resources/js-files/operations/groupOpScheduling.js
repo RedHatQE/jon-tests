@@ -54,6 +54,7 @@ if(exception == null){
  */
 //invoke operation on group of agents
 var justBeforeScheduleTimeStamp = new Date();
+common.info("Invoking operation on group of agents with undefined order");
 var result = allAgentsG.invokeOperation(opName);
 var operationFinishedTimeStamp = new Date();
 
@@ -91,7 +92,9 @@ deleteOpHistoryOnGroup(allAgentsG.id);
  */
 // schedule parallel operations on group
 justBeforeScheduleTimeStamp = new Date();
-allAgentsG.scheduleOperation(opName,10,10,5);
+common.info("Scheduling operation on group of agents with undefined order");
+var repeatIntervalSec = 20;
+allAgentsG.scheduleOperation(opName,20,repeatIntervalSec,5);
 var afterScheduleTimeStamp = new Date();
 
 // include delay of scheduling operation
@@ -102,16 +105,18 @@ if(delta > 2000){
 }
 
 // wait for all scheduled operation to be finished
-common.info("Going sleep for 67 sec");
-sleep(67 * 1000);
+var operationDelayTolerationSec = 15;
+var sleepTime = repeatIntervalSec * 1000 * 6 + operationDelayTolerationSec * 1000; 
+common.info("Going sleep for " +sleepTime / 1000+" sec");
+sleep(sleepTime);
 
 checkNumberOfOpInGroupHist(allAgentsG,6);
 
 // check group operation history one by one
 groupOpHist = getGroupOpHistory(allAgentsG.id);
 for(var i=0;i<groupOpHist.size();i++){
-	checkGroupOpHistory(groupOpHist.get(i),new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *10000),
-			new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *10000 + 7000));
+	checkGroupOpHistory(groupOpHist.get(i),new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *repeatIntervalSec *1000),
+			new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *repeatIntervalSec *1000 + operationDelayTolerationSec *1000));
 }
 
 //check operation history on all agents within this group
@@ -121,8 +126,9 @@ for(i in agents){
 	var agentOpHist = getResOpHistory(agents[i].id);
 	for(var i=0;i<agentOpHist.size();i++){
 		checkResOpHistory(agentOpHist.get(i),groupOpHist.get(i),
-				new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *10000),
-				new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *10000 + 5000));
+				new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *repeatIntervalSec *1000),
+				new Date(justBeforeScheduleTimeStamp.getTime() + (i +1) *repeatIntervalSec*1000 
+						+ operationDelayTolerationSec*1000));
 	}
 }
 
@@ -139,6 +145,7 @@ for(i in agents){
 //schedule sequence operations on group
 justBeforeScheduleTimeStamp = new Date();
 var repeatIntervalSec = 20;
+common.info("Scheduling operation on group of agents with defined order");
 allAgentsG.scheduleOperation(opName,20,repeatIntervalSec,5,0,true,executionOrderResourceIds);
 afterScheduleTimeStamp = new Date();
 
