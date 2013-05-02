@@ -19,31 +19,37 @@ public class AS7SSHClient extends SSHClient {
 	public AS7SSHClient(String asHome) {
 		super();
 		this.asHome = asHome;
+        this.asIdentifier = countAS7Identifier(asHome);
 	}
 	public AS7SSHClient(String asHome, String user,String host, String pass) {
 		super(user,host,pass);
 		this.asHome = asHome;
-        setAsIdentifier();
+        this.asIdentifier = countAS7Identifier(asHome);
 
 	}
 	public AS7SSHClient(String asHome, String user,String host, File keyFile, String pass) {
 	    super(user,host,keyFile,pass);
 	    this.asHome = asHome;
-        setAsIdentifier();
+        this.asIdentifier = countAS7Identifier(asHome);
 	}
     public AS7SSHClient(String asHome, String serverConfig, String user,String host, File keyFile, String pass) {
         super(user,host,keyFile,pass);
         this.asHome = asHome;
         this.serverConfig = serverConfig;
-        setAsIdentifier();
+        this.asIdentifier = countAS7Identifier(asHome);
     }
 
-    private void setAsIdentifier() {
+    /**
+     * Counts identifier for AS7 server based on its location
+     * @param asHome - path to AS7 basedir
+     * @return counted identifier which is parentDirName/as7DirName or as7DirName if it doesn't have a parent dir
+     */
+    private String countAS7Identifier(String asHome) {
         File asHomeDir = new File(asHome);
         if (asHomeDir.getParent() != null) {
-            asIdentifier = asHomeDir.getParentFile().getName() + File.separator + asHomeDir.getName();
+            return asHomeDir.getParentFile().getName() + File.separator + asHomeDir.getName();
         } else {
-            asIdentifier = asHomeDir.getName();
+            return asHomeDir.getName();
         }
     }
 
