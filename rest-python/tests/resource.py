@@ -31,14 +31,18 @@ class CreateResourceTest(RHQRestTest):
         r = self.post('resource',self.net_iface_body)
         data = r.json()
         assert_is_not_none(data['resourceId'])
-        assert_equal(self.iface_id,data['resourceId'],'Server must return an existing resource')
-        assert_equal(r.status_code,304,'Server must return NOT MODIFIED response')
+        assert_equal(self.iface_id,data['resourceId'],'Returned unexpected resource %s' % data['resourceId'])
+        assert_equal(r.status_code,201,'Returned unexpected status %d' % r.status_code)
 
     @test(depends_on=[create_child])
     def delete_child(self):
-        r = self.delete('resource/%s' % self.iface_id)
-        assert_equal(r.status_code,200)
-        assert_equal(self.get('resource/%s' % self.iface_id).status_code,404,'Server must return NOT FOUND when resource was just deleted')
+        r = self.delete('resource/%s?delete=true' % self.iface_id)
+        assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
+        r = self.get('resource/%s' % self.iface_id)            
+        assert_equal(r.status_code,404,'Returned unexpected status %d for deleted resource' % r.status_code)
+
+    def create_child_content(self):
+        body = {'resourceName':'deploy.war'}
 
 
 @test
@@ -62,7 +66,7 @@ class GetResourceTest(RHQRestTest):
         r = self.get('resource/%d/hierarchy' % self.res_id)
         assert_equal(r.status_code, 200)
 
-    @test
+    #@test
     def test_paging(self):
         self.paging(1,2)
         self.paging(6,2)

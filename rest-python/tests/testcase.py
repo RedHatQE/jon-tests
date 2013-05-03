@@ -40,7 +40,7 @@ class RHQRestTest(object):
         resp = requests.delete(self.endpoint+resource, auth=self.auth, headers = self.headers)
         self.log.debug('Response HEADERS:%s' % str(resp.headers))
         self.log.debug('Response BODY: %s' %(resp.text))
-        
+        return resp 
 
     def find_resource_agent(self):
         return self.__find_resource({'q':'RHQ Agent','category':'SERVER'})
