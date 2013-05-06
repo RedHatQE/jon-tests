@@ -101,7 +101,7 @@ public class CliEngine extends CliTestScript{
 			}
 			
 		}
-		else if (path.startsWith("file:/")) {
+		else if (path.startsWith("file://")) {
 		    try {
 			File file = new File(new URI(path));
 			return file.getAbsolutePath();
