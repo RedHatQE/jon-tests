@@ -2,7 +2,7 @@
  * @author fbrychta@redhat.com (Filip Brychta)
  * May 6, 2013
  * 
- * This tests methods from sample measurement_utils.js file
+ * This tests methods from sample measurement_utils.js file (samples in CLI client)
  **/
 
 var common = new _common();
