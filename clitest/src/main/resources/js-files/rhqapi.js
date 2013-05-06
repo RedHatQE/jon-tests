@@ -424,103 +424,105 @@ var _common = function() {
 
 		return original;
 	};
+	
+	var _objToString = function(hash) {
+		function isArray(obj) {
+			return typeof (obj) == 'object' && (obj instanceof Array);
+		}
+		function isHash(obj) {
+			return typeof (obj) == 'object' && !(obj instanceof Array);
+		}
 
-	return {
-		objToString : function(hash) {
-			function isArray(obj) {
-				return typeof (obj) == 'object' && (obj instanceof Array);
+		function isPrimitive(obj) {
+			return typeof (obj) != 'object' || obj == null || obj instanceof Number || obj instanceof String || obj instanceof Boolean;
+		}
+		function isJavaObject(obj) {
+			return typeof (obj) == 'object' && typeof (obj.getClass) != 'undefined'
+		}
+		if (!hash) {
+			return hash;
+		}
+		// process only hashes, everything else is "just" string
+		if (!isHash(hash)) {
+			return String(hash);
+		}
+		output = "";
+		for (key in hash) {
+			if (!hash.hasOwnProperty(key)) {
+				continue;
 			}
-			function isHash(obj) {
-				return typeof (obj) == 'object' && !(obj instanceof Array);
-			}
+			var valueStr = (function(key, value) {
 
-			function isPrimitive(obj) {
-				return typeof (obj) != 'object' || obj == null || obj instanceof Number || obj instanceof String || obj instanceof Boolean;
-			}
-			function isJavaObject(obj) {
-				return typeof (obj) == 'object' && typeof (obj.getClass) != 'undefined'
-			}
-			if (!hash) {
-				return hash;
-			}
-			// process only hashes, everything else is "just" string
-			if (!isHash(hash)) {
-				return String(hash);
-			}
-			output = "";
-			for (key in hash) {
-				if (!hash.hasOwnProperty(key)) {
-					continue;
+				var me = arguments.callee;
+
+				var prop = null;
+				if (typeof value == "function") {
+					return;
 				}
-				var valueStr = (function(key, value) {
-
-					var me = arguments.callee;
-
-					var prop = null;
-					if (typeof value == "function") {
-						return;
+				// if non-empty key was passed we are going to print this
+				// element as key:<something>
+				// otherwise there's no key to print
+				var kkey = "";
+				if (key != "") {
+					kkey = key + ":";
+				}
+				if (isPrimitive(value)) {
+					// put strings into quotes
+					if (typeof value == "string" || value instanceof String) {
+						prop = kkey + "\'" + value + "\'";
+					} else {
+						prop = kkey + value;
 					}
-					// if non-empty key was passed we are going to print this
-					// element as key:<something>
-					// otherwise there's no key to print
-					var kkey = "";
-					if (key != "") {
-						kkey = key + ":";
-					}
-					if (isPrimitive(value)) {
-						// put strings into quotes
-						if (typeof value == "string" || value instanceof String) {
-							prop = kkey + "\'" + value + "\'";
-						} else {
-							prop = kkey + value;
-						}
 
-					} else if (isJavaObject(value)) {
-						// java object - should't be here
-						prop = kkey + String(value);
-					} else if (isArray(value)) {
-						// by printing array we deeper (passing empty key)
-						prop = kkey + "[";
-						for ( var i = 0; i < value.length; ++i) {
-							var v = value[i];
-							if (v != null) {
-								var repr = me("", v)
-								if (repr) {
-									// only if value was printed to something
-									prop += repr + ",";
-								}
-							}
-						}
-						// trim last ','
-						prop = prop.substring(0, prop.length - 1) + "]"
-					} else if (isHash(value)) {
-						// printing hash, again we go deeper
-						prop = kkey + "{";
-						for ( var i in value) {
-							var v = value[i];
-							var repr = me(i, v)
+				} else if (isJavaObject(value)) {
+					// java object - should't be here
+					prop = kkey + String(value);
+				} else if (isArray(value)) {
+					// by printing array we deeper (passing empty key)
+					prop = kkey + "[";
+					for ( var i = 0; i < value.length; ++i) {
+						var v = value[i];
+						if (v != null) {
+							var repr = me("", v)
 							if (repr) {
+								// only if value was printed to something
 								prop += repr + ",";
 							}
 						}
-						prop = prop.substring(0, prop.length - 1) + "}"
-					} else {
-						// this code should not be reached
-						println("it is unkonwn");
-						println(typeof value);
-						println(value);
-						return;
 					}
-					return prop;
-				})(key, hash[key])
-
-				if (valueStr) {
-					output += valueStr + ",";
+					// trim last ','
+					prop = prop.substring(0, prop.length - 1) + "]"
+				} else if (isHash(value)) {
+					// printing hash, again we go deeper
+					prop = kkey + "{";
+					for ( var i in value) {
+						var v = value[i];
+						var repr = me(i, v)
+						if (repr) {
+							prop += repr + ",";
+						}
+					}
+					prop = prop.substring(0, prop.length - 1) + "}"
+				} else {
+					// this code should not be reached
+					println("it is unkonwn");
+					println(typeof value);
+					println(value);
+					return;
 				}
+				return prop;
+			})(key, hash[key])
+
+			if (valueStr) {
+				output += valueStr + ",";
 			}
-			output = output.substring(0, output.length - 1);
-			return "{"+output+"}";
-		},
+		}
+		output = output.substring(0, output.length - 1);
+		return "{"+output+"}";
+	}
+
+	return {
+		objToString : _objToString,
 		arrayToSet : function(array){
 			var hashSet = new java.util.HashSet();
 			if(array){
@@ -607,6 +609,7 @@ var _common = function() {
 			if (!criteria) {
 				throw "Criteria object must be defined!";
 			}
+			_trace("Creating criteria with following params: " + _objToString(params));
 			for (var k in params) {
 			    // use hasOwnProperty to filter out keys from the
 				// Object.prototype
@@ -1313,7 +1316,36 @@ var ResGroup = function(param) {
 				+ "'");
 		
 		return opShedule;
-	}
+	};
+	var _getMetricSchedules = function(metricName){
+		var criteria = common.createCriteria(new MeasurementDefinitionCriteria(),
+				{resourceTypeId:_resources()[0].getProxy().resourceType.id,displayName:metricName});				
+		var mDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
+		
+		var index = -1
+		for (i=0;i<mDefs.size();i++) {
+			if (mDefs.get(i).displayName == metricName) {
+				index = i;
+				break;
+			}
+		}
+		if (index == -1) {
+			throw "Unable to retrieve measurement definition with following name: " + metricName;
+		}
+		var mDefId = mDefs.get(index).id;
+		
+		common.trace("Retreaving schedules for goup with id: " +_id + 
+				" and measurement definition id: " +mDefId);
+		var criteria = common.createCriteria(new MeasurementScheduleCriteria(),
+				{resourceGroupId:_id,definitionIds:[mDefId]});				
+		var schedules = MeasurementScheduleManager.findSchedulesByCriteria(criteria);
+		
+		if(schedules.size()==0){
+			throw "Unable to retrive schedule for this Metric!!";
+		}
+		
+		return schedules;
+	};
     /**
 	 * @lends ResGroup.prototype
 	 */
@@ -1441,7 +1473,85 @@ var ResGroup = function(param) {
 				haltOnFailure,executionOrderResourceIds,description,opParams){
 			_scheduleOperation(name,delay,repeatInterval,repeatCount,timeout,
 					haltOnFailure,executionOrderResourceIds,description,opParams);
+		},
+		/**
+		 * Returns Array with metric intervals of given metric for all resources in this group.
+		 * 
+		 * @param {String}
+		 *  		metricName 
+		 * 
+		 * @type {Array}
+		 * @returns Array with javascript objects (hashmap) with following keys:
+		 * <ul>
+		 * <li>id {String} - resource id</li>
+		 * <li>interval {Number} - metric collection interval</li>
+		 * <ul>
+		 */
+		getMetricIntervals : function(metricName){
+			// TODO - for all metric methods - create inner Metric type like its done for Resource, compatible group checks, tests
+			common.debug("Getting metric intervals for metric with name " + metricName);
+			var schedules = _getMetricSchedules(metricName);
+			var array = new Array();
+			for(var i =0;i<schedules.size();i++){
+				array[i] = {id:new String(schedules.get(i).getResource().getId()),
+						interval: new Number(schedules.get(i).getInterval())}
+			}
+			return array;
+		},
+		/**
+		 * Returns Array with metric statuses of given metric for all resources in this group.
+		 * 
+		 * @param {String}
+		 *  		metricName 
+		 * 
+		 * @type {Array}
+		 * @returns Array with javascript objects (hashmap) with following keys:
+		 * <ul>
+		 * <li>id {String} - resource id</li>
+		 * <li>isEnabled {Boolean} - true when metric is enabled</li>
+		 * <ul>
+		 */
+		getMetricStatuses : function(metricName){
+			common.debug("Getting metric statuses for metric with name " + metricName);
+			var schedules = _getMetricSchedules(metricName);
+			var array = new Array();
+			for(var i =0;i<schedules.size();i++){
+				array[i] = {id: new String(schedules.get(i).getResource().getId()),
+						isEnabled: schedules.get(i).isEnabled()}
+			}
+			return array;
+		},
+		/**
+		 * Returns true only if given metric is enabled on all resources in this group
+		 * 
+		 * @param {String}
+		 *            metricName 
+		 */
+		isMetricEnabled : function(metricName){
+			var schedules = _getMetricSchedules(metricName);
+			for(var i =0;i<schedules.size();i++){
+				if(!schedules.get(i).isEnabled()){
+					return false;
+				}
+			}
+			return true;
+		},
+		/**
+		 * Returns true only if given metric is disabled on all resources in this group
+		 * 
+		 * @param {String}
+		 *            metricName
+		 */
+		isMetricDisabled : function(metricName){
+			var schedules = _getMetricSchedules(metricName);
+			for(var i =0;i<schedules.size();i++){
+				if(schedules.get(i).isEnabled()){
+					return false;
+				}
+			}
+			return true;
 		}
+		
 	}
 };
 
@@ -2337,9 +2447,10 @@ var Resource = function (param) {
 		var common = new _common();
 		var _param = param;
 		var _res = res;
-		var _defId = function() {
+		var _getMDef = function(){
 			var criteria = common.createCriteria(new MeasurementDefinitionCriteria(),{resourceTypeId:_res.resourceType.id,displayName:_param.name});				
 			var mDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
+			
 			var index = -1
 			for (i=0;i<mDefs.size();i++) {
 				if (mDefs.get(i).displayName == _param.name) {
@@ -2350,8 +2461,26 @@ var Resource = function (param) {
 			if (index == -1) {
 				throw "Unable to retrieve measurement definition, this is a bug"
 			}
-			return mDefs.get(index).id;
+			return mDefs.get(index);
 		};
+		var _getSchedule = function(){
+			var mDefId = _getMDef().id;
+			common.trace("Retreaving schedules for resource with id: " +_res.id + 
+					" and measurement definition id: " +mDefId);
+			var criteria = common.createCriteria(new MeasurementScheduleCriteria(),
+					{resourceId:_res.id,definitionIds:[mDefId]});				
+			var schedules = MeasurementScheduleManager.findSchedulesByCriteria(criteria);
+			
+			if(schedules.size()==0){
+				throw "Unable to retrive schedule for this Metric!!";
+			}
+			if(schedules.size()>1){
+				throw "Retrived multiple schedules for this Metric!!";
+			}
+			
+			return schedules.get(0);
+		};
+		
 		return {
 			/**
 			 * name of metric
@@ -2368,7 +2497,7 @@ var Resource = function (param) {
 			 */
 			getLiveValue : function() {
 				common.trace("Resource("+_res.id+").metrics.["+param.name+"].getLiveValue()");				
-				var defId = _defId();
+				var defId = _getMDef().id;
 				var values = MeasurementDataManager.findLiveData(_res.id,[defId]).toArray()
 				// values is returned as set
 				if (values.length>0) {
@@ -2384,7 +2513,7 @@ var Resource = function (param) {
 			 */
 			set : function(enabled,interval) {
 				common.trace("Resource("+_res.id+").metrics.["+param.name+"].set(enabled="+enabled+",interval="+interval+")");
-				var defId = _defId();
+				var defId = _getMDef().id;
 				if (enabled==false) {
 					common.debug("Disabling measurement");
 					MeasurementScheduleManager.disableSchedulesForResource(_res.id,[defId])
@@ -2398,6 +2527,22 @@ var Resource = function (param) {
 					MeasurementScheduleManager.updateSchedulesForResource(_res.id,[defId],interval*1000);
 				}
 				
+			},
+			/**
+			 * gets actual metric collection interval
+			 * @type Number
+			 * @returns Number interval in milis
+			 */
+			getInterval : function(){
+				return new Number(_getSchedule().getInterval());
+			}, 
+			/**
+			 * returns true if this metrics is enabled, false otherwise
+			 * @type Boolean
+			 * @returns Boolean true if this metrics is enabled, false otherwise
+			 */
+			isEnabled : function(){
+				return _getSchedule().isEnabled();
 			}
 		}
 	};

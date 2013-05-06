@@ -17,9 +17,15 @@ assertTrue(len>=6,"There's at least 6 metrics defined on platform resource");
 
 var measurement = platform.getMetric("Free Memory");
 measurement.set(true,60);
+assertTrue(measurement.getInterval() == 60 * 1000,"Collection interval for Free Memory must be set to "+
+		60 * 1000+", but actually is " + measurement.getInterval());
+assertTrue(measurement.isEnabled(),"Free Memory metrtic must be enabled!!");
 
 var trait = platform.getMetric("Hostname");
 trait.set(true,60);
+assertTrue(measurement.getInterval() == 60 * 1000,"Collection interval for Hostname must be set to "+
+		60 * 1000+", but actually is " + measurement.getInterval());
+assertTrue(measurement.isEnabled(),"Hostname metrtic must be enabled!!");
 
 println("Waiting for measurements to be gathered")
 sleep(180);
