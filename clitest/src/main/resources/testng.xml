@@ -67,6 +67,13 @@
 	</classes>
 </test>
 
+<test name="Samples from CLI client">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.samples.SamplesFromCliClientCliTest">
+		</class>
+	</classes>
+</test>
+
 
 <test name="operation scheduling test">
 	<classes>
