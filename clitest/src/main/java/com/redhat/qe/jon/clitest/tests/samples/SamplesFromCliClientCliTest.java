@@ -37,7 +37,7 @@ public class SamplesFromCliClientCliTest extends CliEngine {
 	private File getCliSamplesDir(){
 		File cliBinLocation = new File(CliTest.cliShLocation); 
 		File cliSamplesDir = new File(cliBinLocation.getParentFile().getParent()+File.separator+"samples");
-		LOG.info("Following directory with CLI samples will be used " + cliSamplesDir.getPath());
+		LOG.info("Following directory with CLI samples will be used: " + cliSamplesDir.getPath());
 		
 		return cliSamplesDir;
 	}
