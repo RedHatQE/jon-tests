@@ -5,9 +5,10 @@ import java.util.logging.Logger;
 
 import org.testng.annotations.Test;
 
+import com.redhat.qe.jon.clitest.base.CliEngine;
 import com.redhat.qe.jon.clitest.tests.CliTest;
 
-public class SamplesFromCliClientCliTest extends CliTest {
+public class SamplesFromCliClientCliTest extends CliEngine {
 	
 	private static Logger LOG = Logger.getLogger(SamplesFromCliClientCliTest.class.getName());
 

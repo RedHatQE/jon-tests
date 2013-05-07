@@ -2,9 +2,9 @@ package com.redhat.qe.jon.clitest.tests.operation;
 
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.base.CliEngine;
 
-public class ResourceOperationCliTest extends CliTest {
+public class ResourceOperationCliTest extends CliEngine {
 
 	@Test
 	public void operationSchedulingOnResourceUsingCronTest(){

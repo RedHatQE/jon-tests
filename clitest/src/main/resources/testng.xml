@@ -80,10 +80,6 @@
 		<class name="com.redhat.qe.jon.clitest.tests.operation.GroupOperationCliTest">
 		</class>
 		<class name="com.redhat.qe.jon.clitest.tests.operation.ResourceOperationCliTest">
-			<methods>
-            	<include name=".*"></include>
-            	<exclude name="runJSfile"></exclude>
-          	</methods>
 		</class>
 	</classes>
 </test>
