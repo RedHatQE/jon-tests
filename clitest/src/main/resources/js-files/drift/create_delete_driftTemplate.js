@@ -62,7 +62,7 @@ function createDriftDefinitionTemplate(resource) {
 	var driftTemplateCriteria = new DriftDefinitionTemplateCriteria()
 	driftTemplateCriteria.addFilterResourceTypeId(resource.getResourceType().id);
 
-	DriftTemplateManager.createTemplate(resource.id, true, driftDef);
+	DriftTemplateManager.createTemplate(resourceType.id, true, driftDef);
 
 }
 
