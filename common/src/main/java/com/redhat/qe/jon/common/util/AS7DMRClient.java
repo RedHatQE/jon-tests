@@ -33,6 +33,8 @@ public class AS7DMRClient {
 	private String password = "rhqadmin";
 	private final String host;
 	private final int port;
+
+    private static final int TIMEOUT = 30000;
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -64,7 +66,7 @@ public class AS7DMRClient {
 		ModelControllerClient client = null;
 		try {
 			client = ModelControllerClient.Factory.create(
-					InetAddress.getByName(host), port,authHandler);
+					InetAddress.getByName(host).getHostAddress(), port,authHandler, null, TIMEOUT);
 			return client;
 		} catch (Exception e) {
 			close();
