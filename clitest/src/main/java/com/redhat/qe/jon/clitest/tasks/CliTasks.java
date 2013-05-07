@@ -36,6 +36,9 @@ public class CliTasks {
 		}
 		commandRunner.connect();
 	}
+	public boolean isRemote(){
+		return commandRunner.isRemote();
+	}
 	
 	/**
 	 * copies file from remote host

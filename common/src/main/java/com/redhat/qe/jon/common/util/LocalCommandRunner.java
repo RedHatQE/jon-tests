@@ -168,5 +168,9 @@ public class LocalCommandRunner implements ICommandRunner {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public boolean isRemote() {
+		return false;
+	}
 	
 }
