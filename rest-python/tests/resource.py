@@ -52,19 +52,48 @@ class GetResourceTest(RHQRestTest):
     def setUp(self):
         self.res_id = int(self.find_resource_agent()['resourceId'])
 
+    def __check_resource_fields(self,resource,keys=None):
+        if not keys:
+            keys = ['resourceName','resourceId','typeName','typeId','pluginName','parentId']
+        with asserts.Check() as check:
+            for key in keys:
+                check.true(key in resource)
+
     @test
     def get_resource(self):
         r = self.get('resource/%d' % self.res_id)
         assert_equal(r.status_code, 200)
         resource = r.json()
-        with asserts.Check() as check:
-            for key in ['resourceName','resourceId','typeName','typeId','pluginName','parentId']:
-                check.true(key in resource)
+        self.__check_resource_fields(resource)
+
+    @test
+    def get_non_existing_resource(self):
+        r=9999999 # non-existing resource id
+        assert_equal(self.get('resource/%d' % r).status_code,404)
+        assert_equal(self.get('resource/%d/hierarchy' % r).status_code,404)
+        assert_equal(self.get('resource/%d/availability' % r).status_code,404)
+        assert_equal(self.get('resource/%d/availability/history' % r).status_code,404)
+        assert_equal(self.get('resource/%d/availability/summary' % r).status_code,404)
+        assert_equal(self.get('resource/%d/availability/schedules' % r).status_code,404)
+        assert_equal(self.get('resource/%d/availability/children' % r).status_code,404)
+        assert_equal(self.get('resource/%d/availability/alerts' % r).status_code,404)
 
     @test
     def get_resource_hierarchy(self):
         r = self.get('resource/%d/hierarchy' % self.res_id)
         assert_equal(r.status_code, 200)
+        result = r.json()
+        level = 0
+        keys = ['id','name']
+        self.__check_resource_fields(result,keys=keys)
+        for child in result['children']:
+            self.__check_resource_fields(child,keys=keys)
+            if level < 1: level += 1
+            if child['children']:
+                for child2 in child['children']:
+                    self.__check_resource_fields(child2,keys=keys)
+                    if level < 2: level += 1
+        assert_true(level >= 2,'Failed to find 3rd level resource in hierarchy')
 
     #@test
     def test_paging(self):

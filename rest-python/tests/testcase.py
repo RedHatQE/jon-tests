@@ -10,10 +10,13 @@ class RHQRestTest(object):
 
     def __init__(self):
         self.log = logging.getLogger(self.__class__.__name__)
-        #formatter = logging.Formatter('%(asctime)s - %(levelname)s: %(message)s (%(name)s)')
-        #log_handler = logging.StreamHandler()
-        #log_handler.setFormatter(formatter)
-        #self.log.addHandler(log_handler)        
+        if os.getenv('PS1'):
+            # enable console output only if we run in interactive shell
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s: %(message)s (%(name)s)')
+            log_handler = logging.StreamHandler()
+            log_handler.setFormatter(formatter)
+            log_handler.setLevel('INFO')
+            self.log.addHandler(log_handler)        
         # set parameters to our test class instance
         self.endpoint = 'http://%s:7080/rest/' % os.getenv('RHQ_TARGET','localhost')
         self.auth = (os.getenv('RHQ_USER','rhqadmin'),os.getenv('RHQ_PASSWORD','rhqadmin'))
