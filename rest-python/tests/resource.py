@@ -2,11 +2,13 @@ import sys,os
 import requests,json
 import unittest
 import proboscis.asserts as asserts
+from bzchecker import *
 from proboscis.asserts import *
 from proboscis import before_class
 from proboscis import test
 
 from testcase import RHQRestTest
+
 @test
 class CreateResourceTest(RHQRestTest):
 
@@ -19,6 +21,7 @@ class CreateResourceTest(RHQRestTest):
                 'parentId':self.res_id}
 
     @test
+    @blockedBy('958922')
     def create_child(self):
         r = self.post('resource',self.net_iface_body)
         assert_equal(r.status_code,201)
@@ -27,6 +30,7 @@ class CreateResourceTest(RHQRestTest):
         self.iface_id = data['resourceId']
 
     @test(depends_on=[create_child])
+    @blockedBy('958922')
     def create_child_when_exists(self):
         r = self.post('resource',self.net_iface_body)
         data = r.json()
@@ -55,9 +59,7 @@ class GetResourceTest(RHQRestTest):
     def __check_resource_fields(self,resource,keys=None):
         if not keys:
             keys = ['resourceName','resourceId','typeName','typeId','pluginName','parentId']
-        with asserts.Check() as check:
-            for key in keys:
-                check.true(key in resource)
+        self.check_fields(resource,keys)
 
     @test
     def get_resource(self):
@@ -67,6 +69,7 @@ class GetResourceTest(RHQRestTest):
         self.__check_resource_fields(resource)
 
     @test
+    @blockedBy('960529')
     def get_non_existing_resource(self):
         r=9999999 # non-existing resource id
         assert_equal(self.get('resource/%d' % r).status_code,404)
@@ -95,7 +98,7 @@ class GetResourceTest(RHQRestTest):
                     if level < 2: level += 1
         assert_true(level >= 2,'Failed to find 3rd level resource in hierarchy')
 
-    #@test
+    @test
     def test_paging(self):
         self.paging(1,2)
         self.paging(6,2)

@@ -18,6 +18,13 @@ input variables must be passed as environment variables
 
 ```python run.py --with-xunit```
 
-## Execute a single class 
+## Execute a single test/group 
 
-```nosetests status.py:StatusTest --verbosity 2```
+have test class or method with annotated with ```@test(groups=['mytest'])```
+
+```python run.py --group=mytest --verbosity 2```
+
+## Enable @blockedBy decorators
+You can enable Bugzilla checker, so tests annotated by @blockedBy are skipped
+if given BZ is not yet DONE
+```export BZCHECKER=true```

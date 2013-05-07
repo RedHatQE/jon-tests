@@ -1,6 +1,9 @@
 import sys,os
 import requests,json
 import logging
+import proboscis.asserts
+from proboscis import before_class
+from proboscis import SkipTest
 
 class RHQRestTest(object):
     """
@@ -65,3 +68,11 @@ class RHQRestTest(object):
             self.log.info('Retrieved %d resources by query %s, returning first' % (len(data),str(query)))
             return data[0]
         return resp.json()
+    
+    def check_fields(self,obj,keys):
+        """
+        Checks whether given obj contains all given keys
+        """
+        with proboscis.asserts.Check() as check:
+            for key in keys:
+                check.true(key in obj,'Key %s was not found in %s' %(key,str(obj)))
