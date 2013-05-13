@@ -14,7 +14,7 @@ class blockedBy(object):
                 json_data = json.dumps([{'ids':self.bz}])
                 r = requests.get(BUGZILLA+'?method=Bug.get&params=%s' % json_data)
                 for bug in r.json()['result']['bugs']:
-                    if bug['status'] in ['NEW','MODIFIED','ON_DEV']:
+                    if bug['status'] in ['NEW','MODIFIED','ASSIGNED','ON_DEV']:
                         raise SkipTest('BZ%s %s - %s' %(bug['id'],bug['status'],bug['summary']))
             f(*args)
         wrap.func_name = f.func_name
