@@ -9,7 +9,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<properties>
 		<!-- To work with JON 3.1.x use 4.4.0 For JON 3.2.x use 4.6.0 -->
-		<rhq.version>4.6.0</rhq.version>
+		<rhq.version>4.7.0</rhq.version>
 	</properties>
 
 	
