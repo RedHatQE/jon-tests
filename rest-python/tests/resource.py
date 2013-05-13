@@ -76,9 +76,9 @@ class GetResourceTest(RHQRestTest):
         assert_equal(self.get('resource/%d/availability' % r).status_code,404)
         assert_equal(self.get('resource/%d/availability/history' % r).status_code,404)
         assert_equal(self.get('resource/%d/availability/summary' % r).status_code,404)
-        assert_equal(self.get('resource/%d/availability/schedules' % r).status_code,404)
-        assert_equal(self.get('resource/%d/availability/children' % r).status_code,404)
-        assert_equal(self.get('resource/%d/availability/alerts' % r).status_code,404)
+        assert_equal(self.get('resource/%d/children' % r).status_code,404)
+        assert_equal(self.get('resource/%d/alerts' % r).status_code,404)
+        assert_equal(self.get('resource/%d/schedules' % r).status_code,404)
 
     @test
     def get_resource_hierarchy(self):
