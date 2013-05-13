@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.clitest.base.CliEngine;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
+import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
 
 public class SamplesFromCliClientCliTest extends CliEngine {
@@ -33,52 +34,71 @@ public class SamplesFromCliClientCliTest extends CliEngine {
 	}
 	@Test
 	public void measurementUtilsTest() throws IOException{
-		File utilsLocalLocation = null;
-		File measurementUtilsLocalLocation = null;
-		// get cli sample files from remote host if necessary
-		if(isSampleDirRemote){
-			utilsLocalLocation = new File(SAMPLES_DIR_LOCAL_PATH,"util.js");
-			measurementUtilsLocalLocation = new File(SAMPLES_DIR_LOCAL_PATH,"measurement_utils.js");
-			cliTasks.getFile(cliSamplesDir.getPath()+"/util.js", SAMPLES_DIR_LOCAL_PATH);
-			cliTasks.getFile(cliSamplesDir.getPath()+"/measurement_utils.js",SAMPLES_DIR_LOCAL_PATH);
-		}else{
-			utilsLocalLocation = new File(cliSamplesDir.getPath()+"/util.js");
-			measurementUtilsLocalLocation = new File(cliSamplesDir.getPath()+"/measurement_utils.js");
-		}
-		
-		
 		// run the test
 		createJSRunner("samplesFromCliClient/measurementUtilsTest.js").
 		addDepends("rhqapi.js," +
-				"file://"+utilsLocalLocation +
-				",file://" + measurementUtilsLocalLocation).
+				"file://"+getCliSampleFileLocation("util.js") +
+				",file://" + getCliSampleFileLocation("measurement_utils.js")).
 		run();
 	}
 	
 	@Test
 	public void bundlesTest() throws IOException{
-		File utilsLocalLocation = null;
-		File bundlesLocalLocation = null;
-		// get cli sample files from remote host if necessary
-		if(isSampleDirRemote){
-			utilsLocalLocation = new File(SAMPLES_DIR_LOCAL_PATH,"util.js");
-			bundlesLocalLocation = new File(SAMPLES_DIR_LOCAL_PATH,"bundles.js");
-			cliTasks.getFile(cliSamplesDir.getPath()+"/util.js", SAMPLES_DIR_LOCAL_PATH);
-			cliTasks.getFile(cliSamplesDir.getPath()+"/bundles.js",SAMPLES_DIR_LOCAL_PATH);
-		}else{
-			utilsLocalLocation = new File(cliSamplesDir.getPath()+"/util.js");
-			bundlesLocalLocation = new File(cliSamplesDir.getPath()+"/bundles.js");
-		}
-		
-		
 		// run the test
 		createJSRunner("samplesFromCliClient/bundlesTest.js").
 		addDepends("rhqapi.js," +
-				"file://"+utilsLocalLocation+
-				",file://"+bundlesLocalLocation).
+				"file://"+getCliSampleFileLocation("util.js")+
+				",file://"+getCliSampleFileLocation("bundles.js")).
 				resourceSrcs("/bundles/bundle.zip").
 				resourceDests("/tmp/bundle.zip").
 				run();
+	}
+	
+	@Test
+	public void driftTest() throws IOException, CliTasksException{
+		String file1Path = "/home/hudson/rhq-agent/bin/file1.txt";
+		String file2Path = "/home/hudson/rhq-agent/bin/file2.txt";
+		cliTasks.runCommand("rm -rf " + file1Path);
+		cliTasks.runCommand("rm -rf " + file2Path);
+		
+		// run the first part
+		createJSRunner("samplesFromCliClient/driftTestPart1.js").
+				addDepends("rhqapi.js," +
+				"file://"+getCliSampleFileLocation("util.js")+
+				",file://"+getCliSampleFileLocation("drift.js")+
+				",samplesFromCliClient/driftCommon.js").
+				run();
+		
+		// add one new file
+		cliTasks.runCommand("echo \"first line\" > " + file1Path);
+		waitForNewSnapshotVersion("1");
+		
+		// add another new file
+		cliTasks.runCommand("echo \"first line\" > " + file2Path);
+		waitForNewSnapshotVersion("2");
+		
+		// add one new line
+		cliTasks.runCommand("echo \"second line\" >> " + file1Path);
+		waitForNewSnapshotVersion("3");
+		
+		// run second part
+		createJSRunner("samplesFromCliClient/driftTestPart2.js").
+				addDepends("rhqapi.js," +
+				"file://"+getCliSampleFileLocation("util.js")+
+				",file://"+getCliSampleFileLocation("drift.js")+
+				",samplesFromCliClient/driftCommon.js").
+				addExpect("+second line,Retrieved content of file: first line,baca3ae8	bin/file1.txt").
+				run();
+	}
+	
+	private File getCliSampleFileLocation(String sampleFileName) throws IOException{
+		// get cli sample files from remote host if necessary
+		if(isSampleDirRemote){
+			cliTasks.getFile(new File(cliSamplesDir,sampleFileName).toString(), SAMPLES_DIR_LOCAL_PATH);
+			return new File(SAMPLES_DIR_LOCAL_PATH,sampleFileName);
+		}else{
+			return new File(cliSamplesDir,sampleFileName);
+		}
 	}
 	
 	private File getCliSamplesDir(){
@@ -87,5 +107,15 @@ public class SamplesFromCliClientCliTest extends CliEngine {
 		LOG.info("Following directory with CLI samples will be used: " + cliSamplesDir.getPath());
 		
 		return cliSamplesDir;
+	}
+	
+	private void waitForNewSnapshotVersion(String version) throws IOException{
+		createJSRunner("samplesFromCliClient/drift-waitForNewSnapshot.js").
+				addDepends("rhqapi.js," +
+				"file://"+getCliSampleFileLocation("util.js")+
+				",file://"+getCliSampleFileLocation("drift.js")+
+				",samplesFromCliClient/driftCommon.js").
+				withArg("expectedVersion", version).
+				run();
 	}
 }

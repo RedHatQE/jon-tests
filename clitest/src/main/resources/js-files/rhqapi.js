@@ -1742,6 +1742,35 @@ var metricsTemplates = (function() {
   };
 })();
 
+/**
+ * @namespace provides access to drift subsystem
+ */
+var drifts = (function(){
+	var common = new _common();
+	
+	return{
+		findDriftDefinitionTemplates : function(params){
+			params = params || {};
+			common.trace("drifts.findDriftDefinitionTemplates("+common.objToString(params)+")");
+			var cri = common.createCriteria(new DriftDefinitionTemplateCriteria(),params);
+			cri.fetchDriftDefinitions(true);
+			cri.fetchResourceType(true);
+			var result = DriftTemplateManager.findTemplatesByCriteria(cri);
+		
+			// TODO: create and return javascript-only driftDefinitionTemplates type
+			return result;
+		},
+		findDriftDefinition : function(params){
+			params = params || {};
+			common.trace("drifts.findDriftDefinition("+common.objToString(params)+")");
+			var cri = common.createCriteria(new DriftDefinitionCriteria(),params);
+			var result = DriftManager.findDriftDefinitionsByCriteria(cri);
+		
+			// TODO: create and return javascript-only driftDefinition type
+			return result;
+		}
+	};
+})();
 
 /**
  * @namespace provides access to Bundle subsystem
@@ -2778,6 +2807,13 @@ var Resource = function (param) {
 	  * @type String
 	  */
     getName : function() {return _getName();},
+    /**
+	  * gets resource type id
+	  * @type Number
+	  */
+    getResourceTypeId : function(){
+    	return _res.resourceType.id;
+    },
 	  /**
 	  * @returns Resource proxy object
 	  */
