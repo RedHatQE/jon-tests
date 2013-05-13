@@ -48,7 +48,6 @@ class CreateResourceTest(RHQRestTest):
     def create_child_content(self):
         body = {'resourceName':'deploy.war'}
 
-
 @test
 class GetResourceTest(RHQRestTest):
 
@@ -98,14 +97,25 @@ class GetResourceTest(RHQRestTest):
                     if level < 2: level += 1
         assert_true(level >= 2,'Failed to find 3rd level resource in hierarchy')
 
-    @test
-    def test_paging(self):
-        self.paging(1,2)
-        self.paging(6,2)
-        self.paging(15,1)
-        self.paging(3,5)
+    @test()
+    def filter_by_status(self):
+        for status in ['all','NEW','COMMITTED','DELETED','UNINVENTORIED','IgnoreD']:
+            r = self.get('resource?status=%s' % status)
+            assert_equal(r.status_code,200,'Invalid status code (%d) when requested ?status=%s' % (r.status_code,status))
+            assert_equal(type(r.json()),type([]),'Server did not return array of resources')
+        assert_equal(self.get('resource?status=%s' % 'FOO').status_code ,406)
 
-    def paging(self,ps,pages):
+
+
+
+    @test
+    def paging(self):
+        self._paging(1,2)
+        self._paging(6,2)
+        self._paging(15,1)
+        self._paging(3,5)
+
+    def _paging(self,ps,pages):
         ids = []
         for page in xrange(pages):
             request = 'resource?ps=%d&page=%d' % (ps,page)
