@@ -25,25 +25,43 @@ class RHQRestTest(object):
         self.auth = (os.getenv('RHQ_USER','rhqadmin'),os.getenv('RHQ_PASSWORD','rhqadmin'))
         self.headers = {'accept':'application/json','content-type': 'application/json'} 
 
-    def get(self,resource):
-        self.log.debug('GET %s' %(self.endpoint+resource))
-        resp = requests.get(self.endpoint+resource, auth=self.auth, headers = {'accept':'application/json','content-type': 'application/json'})
+    def url(self,resource):
+        if resource.find('http') >= 0:
+            return resource
+        return self.endpoint+resource.lstrip('./')
+
+    def get(self,resource,accepts='application/json'):
+        url = self.url(resource)
+        self.log.debug('GET %s' % url)
+        resp = requests.get(url, auth=self.auth, headers = {'accept':accepts,'content-type': accepts})
         self.log.debug('Response HEADERS:%s' % str(resp.headers))
         self.log.debug('Response BODY: %s' %(resp.text))
         return resp
 
     def post(self,resource,data):
         json_data = json.dumps(data)
-        self.log.debug('POST %s' %(self.endpoint+resource))
+        url = self.url(resource)
+        self.log.debug('POST %s' % url)
         self.log.debug('DATA %s' % json_data)
-        resp = requests.post(self.endpoint+resource, json_data, auth=self.auth, headers = self.headers)
+        resp = requests.post(url, json_data, auth=self.auth, headers = self.headers)
+        self.log.debug('Response HEADERS:%s' % str(resp.headers))
+        self.log.debug('Response BODY: %s' %(resp.text))
+        return resp
+    
+    def put(self,resource,data):
+        json_data = json.dumps(data)
+        url = self.url(resource)
+        self.log.debug('PUT %s' % url)
+        self.log.debug('DATA %s' % json_data)
+        resp = requests.put(url, json_data, auth=self.auth, headers = self.headers)
         self.log.debug('Response HEADERS:%s' % str(resp.headers))
         self.log.debug('Response BODY: %s' %(resp.text))
         return resp
 
     def delete(self,resource):
-        self.log.debug('DELETE %s' %(self.endpoint+resource))
-        resp = requests.delete(self.endpoint+resource, auth=self.auth, headers = self.headers)
+        url = self.url(resource)
+        self.log.debug('DELETE %s' % url)
+        resp = requests.delete(url, auth=self.auth, headers = self.headers)
         self.log.debug('Response HEADERS:%s' % str(resp.headers))
         self.log.debug('Response BODY: %s' %(resp.text))
         return resp 
@@ -53,6 +71,9 @@ class RHQRestTest(object):
 
     def find_resource_eap6standalone(self):
         return self.__find_resource({'q':'EAP (0.0.0.0:9990)','category':'SERVER'})
+
+    def find_resource_platform(self):
+        return self.__find_resource({'category':'PLATFORM'})
 
     def __find_resource(self,query):
         self.log.debug('GET %s' %(self.endpoint+'resource'))
@@ -69,10 +90,19 @@ class RHQRestTest(object):
             return data[0]
         return resp.json()
     
-    def check_fields(self,obj,keys):
+    def check_fields(self,obj,keys,value_cb=None):
         """
         Checks whether given obj contains all given keys
+        obj (Object) - object to be checked
+        keys (Array) - array of string keys 
+        value_cb (function(key,value)) - callback function that must return nothing if validation is successfull,
+        otherwise a string message
+            can be used for additional asserts (when we expect not just key to be present, but some value)
         """
         with proboscis.asserts.Check() as check:
             for key in keys:
                 check.true(key in obj,'Key %s was not found in %s' %(key,str(obj)))
+                if value_cb:
+                    val = value_cb(key,obj[key])
+                    check.true(val == None,str(val))
+

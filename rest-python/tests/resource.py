@@ -56,9 +56,16 @@ class GetResourceTest(RHQRestTest):
         self.res_id = int(self.find_resource_agent()['resourceId'])
 
     def __check_resource_fields(self,resource,keys=None):
+        def value_cb(key,value):
+            if key.find('Id') > 0:
+                if not type(value) == type(0):
+                    return '%s field must be number type' % key
+            if key.find('Name') > 0:
+                if not value:
+                    return '%s field must NOT be null' % key
         if not keys:
             keys = ['resourceName','resourceId','typeName','typeId','pluginName','parentId']
-        self.check_fields(resource,keys)
+        self.check_fields(resource,keys,value_cb)
 
     @test
     def get_resource(self):
@@ -106,6 +113,13 @@ class GetResourceTest(RHQRestTest):
         assert_equal(self.get('resource?status=%s' % 'FOO').status_code ,406)
 
 
+    @test()
+    def filter_by_category(self):
+        for cat in ['serViCe','Platform','SERVER']:
+            r = self.get('resource?category=%s' % cat)
+            assert_equal(r.status_code,200,'Invalid status code (%d) when requested ?category=%s' % (r.status_code,cat))
+            assert_equal(type(r.json()),type([]),'Server did not return array of resources')
+        assert_equal(self.get('resource?category=%s' % 'FOO').status_code ,406)
 
 
     @test
