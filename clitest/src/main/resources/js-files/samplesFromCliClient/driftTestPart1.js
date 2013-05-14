@@ -24,7 +24,7 @@ var driftDefTempls = drifts.findDriftDefinitionTemplates({resourceTypeId:platfor
 var driftDef = driftDefTempls.get(0).createDefinition();
 driftDef.setBasedir(DriftDefinition.BaseDirectory(
 		DriftConfigurationDefinition.BaseDirValueContext.fileSystem ,
-		"/home/hudson/rhq-agent"));
+		"/tmp/driftFiles"));
 driftDef.addInclude(new Filter("bin",null));
 driftDef.setName(driftDefName);
 driftDef.setInterval(30);

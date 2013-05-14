@@ -56,10 +56,10 @@ public class SamplesFromCliClientCliTest extends CliEngine {
 	
 	@Test
 	public void driftTest() throws IOException, CliTasksException{
-		String file1Path = "/home/hudson/rhq-agent/bin/file1.txt";
-		String file2Path = "/home/hudson/rhq-agent/bin/file2.txt";
-		cliTasks.runCommand("rm -rf " + file1Path);
-		cliTasks.runCommand("rm -rf " + file2Path);
+		cliTasks.runCommand("rm -rf /tmp/driftFiles");
+		cliTasks.runCommand("mkdir -p /tmp/driftFiles/bin");
+		String file1Path = "/tmp/driftFiles/bin/file1.txt";
+		String file2Path = "/tmp/driftFiles/bin/file2.txt";
 		
 		// run the first part
 		createJSRunner("samplesFromCliClient/driftTestPart1.js").
