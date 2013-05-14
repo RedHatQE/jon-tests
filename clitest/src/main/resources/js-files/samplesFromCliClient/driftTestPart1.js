@@ -29,8 +29,13 @@ driftDef.addInclude(new Filter("bin",null));
 driftDef.setName(driftDefName);
 driftDef.setInterval(30);
 
-common.info("Removing a drift definition with name:  "+driftDef.getName());
-DriftManager.deleteDriftDefinition(entityContext,driftDef.getName());
+// remove a drift definition with the same name if there is any
+var retreivedDriftDefs = drifts.findDriftDefinition({name:driftDefName});
+if(retreivedDriftDefs.size()>0){
+	common.info("Removing a drift definition with name:  "+driftDef.getName());
+	DriftManager.deleteDriftDefinition(entityContext,driftDef.getName());
+}
+
 common.info("Creating a new drift definition with name:  "+driftDef.getName());
 DriftManager.updateDriftDefinition(entityContext,driftDef);
 
