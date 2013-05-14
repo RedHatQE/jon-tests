@@ -68,6 +68,7 @@ class GetResourceTest(RHQRestTest):
         self.check_fields(resource,keys,value_cb)
 
     @test
+    @blockedBy('962853')
     def get_resource(self):
         r = self.get('resource/%d' % self.res_id)
         assert_equal(r.status_code, 200)
@@ -75,7 +76,7 @@ class GetResourceTest(RHQRestTest):
         self.__check_resource_fields(resource)
 
     @test
-    @blockedBy('960529')
+    @blockedBy(['960529','962858'])
     def get_non_existing_resource(self):
         r=9999999 # non-existing resource id
         assert_equal(self.get('resource/%d' % r).status_code,404)
