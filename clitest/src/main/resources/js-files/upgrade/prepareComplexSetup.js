@@ -19,7 +19,6 @@ assertTrue(agents.length > 0, "No RHQ Agent found in invenotry !!!");
 var eap6StandaloneArray = Inventory.find({resourceTypeName:"JBossAS7 Standalone Server"});
 assertTrue(eap6StandaloneArray.length > 0, "No JBossAS7 Standalone Server found in invenotry !!!");
 var eap5Array = Inventory.find({pluginName:"JBossAS5",resourceTypeName:"JBossAS Server"});
-assertTrue(eap5Array.length > 0, "No JBossAS5 Server found in invenotry !!!");
 
 enableMetrics();
 
