@@ -111,9 +111,9 @@ public abstract class CliTestScript extends TestScript{
 		
 		gatherServerLog(CliTest.rhqTarget, System.getProperty("jon.server.log.path"));
 		
-		String agents = System.getProperty("jon.agent.hosts");
+		String agents = System.getProperty("jon.agent.log.hosts");
 		if(agents == null){
-			_logger.log(Level.INFO, "IPs of RHQ/JON agents not defined, skipping gathering.");
+			_logger.log(Level.INFO, "IPs of RHQ/JON agents (jon.agent.log.hosts property) not defined, skipping gathering.");
 		}else{
 			String[] ips = agents.split(",");
 			for(String ip : ips){

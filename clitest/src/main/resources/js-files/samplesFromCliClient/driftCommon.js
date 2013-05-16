@@ -13,11 +13,14 @@ verbose = 2;
 var driftDefName = "Test drift def";
 
 
-
+/**
+ * Get a platform with defined name
+ * @returns
+ */
 function getPlatform(){
-	var platform = resources.platform();
+	var platform = resources.platform({name:agent});
 	if(!platform){
-		throw "At least one imported platform is expected!!";
+		throw "Platform "+agent+" is expected!!";
 	}
 	return platform;
 }

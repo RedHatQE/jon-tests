@@ -7,12 +7,13 @@ import java.util.logging.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.clitest.base.CliEngine;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.tests.OnAgentCliTest;
+import com.redhat.qe.jon.common.util.SSHClient;
 
-public class SamplesFromCliClientCliTest extends CliEngine {
+public class SamplesFromCliClientCliTest extends OnAgentCliTest {
 	
 	private static Logger LOG = Logger.getLogger(SamplesFromCliClientCliTest.class.getName());
 	private File cliSamplesDir = null;
@@ -56,8 +57,15 @@ public class SamplesFromCliClientCliTest extends CliEngine {
 	
 	@Test
 	public void driftTest() throws IOException, CliTasksException{
-		cliTasks.runCommand("rm -rf /tmp/driftFiles");
-		cliTasks.runCommand("mkdir -p /tmp/driftFiles/bin");
+		checkRequiredProperties("jon.agent.host");
+		
+		CliTasks agentMachine = new CliTasks();
+		agentMachine.initialize(System.getProperty("jon.agent.host"),"hudson","hudson");
+		
+		// clean monitored directory
+		agentMachine.runCommand("rm -rf /tmp/driftFiles");
+		agentMachine.runCommand("mkdir -p /tmp/driftFiles/bin");
+		
 		String file1Path = "/tmp/driftFiles/bin/file1.txt";
 		String file2Path = "/tmp/driftFiles/bin/file2.txt";
 		
@@ -70,15 +78,15 @@ public class SamplesFromCliClientCliTest extends CliEngine {
 				run();
 		
 		// add one new file
-		cliTasks.runCommand("echo \"first line\" > " + file1Path);
+		agentMachine.runCommand("echo \"first line\" > " + file1Path);
 		waitForNewSnapshotVersion("1");
 		
 		// add another new file
-		cliTasks.runCommand("echo \"first line\" > " + file2Path);
+		agentMachine.runCommand("echo \"first line\" > " + file2Path);
 		waitForNewSnapshotVersion("2");
 		
 		// add one new line
-		cliTasks.runCommand("echo \"second line\" >> " + file1Path);
+		agentMachine.runCommand("echo \"second line\" >> " + file1Path);
 		waitForNewSnapshotVersion("3");
 		
 		// run second part
