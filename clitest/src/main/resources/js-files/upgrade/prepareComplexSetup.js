@@ -16,9 +16,19 @@ importAllResources();
 
 var agents = Inventory.find({resourceTypeName:"RHQ Agent",name:"RHQ Agent"});
 assertTrue(agents.length > 0, "No RHQ Agent found in invenotry !!!");
-var eap6StandaloneArray = Inventory.find({resourceTypeName:"JBossAS7 Standalone Server"});
+var allEap6StandaloneArray = Inventory.find({resourceTypeName:"JBossAS7 Standalone Server"});
+
+// create an array without EAP which runs RHQ server
+var eap6StandaloneArray = new Array();
+for(var i=0;i<allEap6StandaloneArray.length;i++){
+	if(allEap6StandaloneArray[i].getName().indexOf("RHQ Server") == -1){
+		eap6StandaloneArray.push(allEap6StandaloneArray[i]);
+	}
+}
 assertTrue(eap6StandaloneArray.length > 0, "No JBossAS7 Standalone Server found in invenotry !!!");
 var eap5Array = Inventory.find({pluginName:"JBossAS5",resourceTypeName:"JBossAS Server"});
+
+
 
 enableMetrics();
 
