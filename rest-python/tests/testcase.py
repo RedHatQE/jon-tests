@@ -90,7 +90,7 @@ class RHQRestTest(object):
             return data[0]
         return resp.json()
     
-    def check_fields(self,obj,keys,value_cb=value_cb):
+    def check_fields(self,obj,keys,value_cb=None):
         """
         Checks whether given obj contains all given keys
         obj (Object) - object to be checked
