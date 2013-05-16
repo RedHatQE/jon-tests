@@ -158,7 +158,7 @@ class OperationDefinitionsTest(RHQRestTest):
         r = self.get('operation/definition/%d' % did)
         assert_equal(r.status_code,200)
         self._check_opdef(r.json())
-        r = self.get('operation/definition%d?resourceId=%d' % (did, self.res_id))
+        r = self.get('operation/definition/%d?resourceId=%d' % (did, self.res_id))
         assert_equal(r.status_code,200)
         self._check_opdef(r.json())
 
