@@ -44,6 +44,10 @@ class OperationTest(RHQRestTest):
         assert_equal(r.status_code,200)
         self.op_id = r.json()['id']
 
+    @test
+    def get_operation_invalid_id(self):
+        r = self.get('operation/%d' % 9999)
+        assert_equal(r.status_code,404)
 
     @test(depends_on=[create_draft])
     def get_operation(self):
@@ -94,6 +98,9 @@ class OperationTest(RHQRestTest):
     @test(depends_on=[schedule])
     def get_history_html(self):
         r = self.get(self.op_hist,accepts='text/html')
+        assert_equal(r.status_code,200)
+        self.log.info(r.text)
+        r = self.get('operation/history',accepts='text/html')
         assert_equal(r.status_code,200)
         self.log.info(r.text)
     
@@ -150,6 +157,9 @@ class OperationDefinitionsTest(RHQRestTest):
     def get_op_def(self):
         did = self.find_op_def('discovery')
         r = self.get('operation/definition/%d' % did)
+        assert_equal(r.status_code,200)
+        self._check_opdef(r.json())
+        r = self.get('operation/definition%d?resourceId=%d' % (did, self.res_id))
         assert_equal(r.status_code,200)
         self._check_opdef(r.json())
 
