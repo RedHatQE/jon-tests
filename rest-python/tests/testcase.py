@@ -100,12 +100,13 @@ class RHQRestTest(object):
             can be used for additional asserts (when we expect not just key to be present, but some value)
         """
         def _default_value_cb(key,value):
-            if key.find('Id') > 0:
-                if not type(value) == type(0):
+            if key.find('Id') > 0 or key.find('TimeStamp') > 0:
+                if not type(value) == type(0): # IDs and timeStamps must be number type
                     return '%s field must be number type' % key
-            if key.find('Name') > 0:
-                if not value:
+            if key.find('Name') > 0: 
+                if not value: # *Name fields must not be NULL
                     return '%s field must NOT be null' % key
+                
         with proboscis.asserts.Check() as check:
             for key in keys:
                 check.true(key in obj,'Key %s was not found in %s' %(key,str(obj)))
