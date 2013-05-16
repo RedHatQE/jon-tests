@@ -145,7 +145,6 @@ class OperationDefinitionsTest(RHQRestTest):
                 return 'id value should be number'
             if 'name' == key and not value:
                 return 'name value should not be null'
-
         self.check_fields(opDef,['id','params','name','links'],cb_value)
 
     def find_op_def(self,name):

@@ -56,16 +56,9 @@ class GetResourceTest(RHQRestTest):
         self.res_id = int(self.find_resource_agent()['resourceId'])
 
     def __check_resource_fields(self,resource,keys=None):
-        def value_cb(key,value):
-            if key.find('Id') > 0:
-                if not type(value) == type(0):
-                    return '%s field must be number type' % key
-            if key.find('Name') > 0:
-                if not value:
-                    return '%s field must NOT be null' % key
         if not keys:
             keys = ['resourceName','resourceId','typeName','typeId','pluginName','parentId']
-        self.check_fields(resource,keys,value_cb)
+        self.check_fields(resource,keys)
 
     @test
     @blockedBy('962853')

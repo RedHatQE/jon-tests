@@ -90,7 +90,7 @@ class RHQRestTest(object):
             return data[0]
         return resp.json()
     
-    def check_fields(self,obj,keys,value_cb=None):
+    def check_fields(self,obj,keys,value_cb=value_cb):
         """
         Checks whether given obj contains all given keys
         obj (Object) - object to be checked
@@ -99,9 +99,18 @@ class RHQRestTest(object):
         otherwise a string message
             can be used for additional asserts (when we expect not just key to be present, but some value)
         """
+        def _default_value_cb(key,value):
+            if key.find('Id') > 0:
+                if not type(value) == type(0):
+                    return '%s field must be number type' % key
+            if key.find('Name') > 0:
+                if not value:
+                    return '%s field must NOT be null' % key
         with proboscis.asserts.Check() as check:
             for key in keys:
                 check.true(key in obj,'Key %s was not found in %s' %(key,str(obj)))
+                val = _default_value_cb(key,obj[key])
+                check.true(val == None,str(val))
                 if value_cb:
                     val = value_cb(key,obj[key])
                     check.true(val == None,str(val))
