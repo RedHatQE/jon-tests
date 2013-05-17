@@ -131,6 +131,15 @@ public class Resource {
 	public Inventory inventory() {
 		return (Inventory)new Inventory(tasks, this).navigateFull();
 	}
+	
+	/**
+	 * creates <b>Alerts</b> resource tab for this resource and navigates to it
+	 * @return resource tab
+	 */
+	public Alerts alerts() {
+		return (Alerts)new Alerts(tasks, this).navigateFull();
+	}
+	
 	/**
 	 * creates <b>Configuration</b> resource tab for this resource and navigates to it
 	 * @return resource tab
