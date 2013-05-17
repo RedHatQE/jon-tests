@@ -55,4 +55,10 @@ public interface ICommandRunner {
 	 * connects (useful for remote runner implementations)
 	 */
 	void connect();
+	
+	/**
+	 * Returns true when the instance is remote
+	 * @return
+	 */
+	boolean isRemote();
 }

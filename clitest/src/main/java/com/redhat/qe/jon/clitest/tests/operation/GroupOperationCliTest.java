@@ -1,16 +1,13 @@
 package com.redhat.qe.jon.clitest.tests.operation;
 
-import java.io.IOException;
-
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.base.CliEngine;
 
-public class GroupOperationCliTest extends CliTest {
+public class GroupOperationCliTest extends CliEngine {
 	
 	@Test
-	public void operationSchedulingOnGroupUsingCronTest() throws IOException, CliTasksException{
+	public void operationSchedulingOnGroupUsingCronTest() {
 		createJSRunner("operations/groupOpSchedulingUsingCron.js").
 			addDepends("rhqapi.js,operations/common.js").
 			run();

@@ -14,23 +14,47 @@ public class AS7SSHClient extends SSHClient {
     private String serverConfig; // allows to recognize the correct AS7 server process
 	private final String asHome;
 	private static final SimpleDateFormat sdfServerLog = new SimpleDateFormat("HH:mm:ss");
+    private String asIdentifier;
+
 	public AS7SSHClient(String asHome) {
 		super();
 		this.asHome = asHome;
+        setAS7Identifier();
 	}
 	public AS7SSHClient(String asHome, String user,String host, String pass) {
 		super(user,host,pass);
 		this.asHome = asHome;
+        setAS7Identifier();
+
 	}
 	public AS7SSHClient(String asHome, String user,String host, File keyFile, String pass) {
 	    super(user,host,keyFile,pass);
 	    this.asHome = asHome;
+        setAS7Identifier();
 	}
     public AS7SSHClient(String asHome, String serverConfig, String user,String host, File keyFile, String pass) {
         super(user,host,keyFile,pass);
         this.asHome = asHome;
         this.serverConfig = serverConfig;
+        setAS7Identifier();
     }
+
+    /**
+     * Sets identifier for AS7 server based on asHome
+     */
+    private void setAS7Identifier() {
+        if (asHome == null) {
+            throw new IllegalArgumentException("Unable to count as7Identifier without asHome specified");
+        }
+        File asHomeDir = new File(asHome);
+        if (asHomeDir.getParent() != null) {
+            this.asIdentifier = asHomeDir.getParentFile().getName() + File.separator + asHomeDir.getName();
+        } else {
+            this.asIdentifier = asHomeDir.getName();
+        }
+    }
+
+
 	/**
 	 * gets AS7/EAP home dir
 	 * @return AS7/EAP home dir
@@ -83,9 +107,9 @@ public class AS7SSHClient extends SSHClient {
     private String getGrepFiltering() {
         String grepFiltering = "";
         if (serverConfig != null) {
-            grepFiltering = "grep "+asHome+" | grep "+serverConfig+" | grep java | grep -v bash | grep -v -w grep";
+            grepFiltering = "grep "+asIdentifier+" | grep "+serverConfig+" | grep java | grep -v bash | grep -v -w grep";
         } else {
-            grepFiltering = "grep "+asHome+" | grep java | grep -v bash | grep -v -w grep";
+            grepFiltering = "grep "+asIdentifier+" | grep java | grep -v bash | grep -v -w grep";
         }
         return grepFiltering;
     }
@@ -130,10 +154,10 @@ public class AS7SSHClient extends SSHClient {
         boolean running = false;
         boolean jpsSupported = isJpsSupported();
         if (jpsSupported) {
-            running = runAndWait(getJpsCommand() + " | " + grepFiltering).getStdout().contains(asHome);
+            running = runAndWait(getJpsCommand() + " | " + grepFiltering).getStdout().contains(asIdentifier);
         }
         if (!jpsSupported || !running) {
-            running = runAndWait("ps -ef | " +  grepFiltering).getStdout().contains(asHome);
+            running = runAndWait("ps -ef | " +  grepFiltering).getStdout().contains(asIdentifier);
         }
         return running;
 	}

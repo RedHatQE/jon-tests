@@ -36,6 +36,9 @@ public class CliTasks {
 		}
 		commandRunner.connect();
 	}
+	public boolean isRemote(){
+		return commandRunner.isRemote();
+	}
 	
 	/**
 	 * copies file from remote host
@@ -77,7 +80,7 @@ public class CliTasks {
 		SSHCommandResult result = commandRunner.runAndWait(command, commandTimeout);
 		String output = result.getStdout();
 		String error = result.getStderr();
-		if(error.length() > 0){
+		if(error.trim().length() > 0){
 			_logger.log(Level.INFO, output);
 			_logger.log(Level.SEVERE, error);			
 			throw new CliTasksException("Found error logs on Error Stream :"+error);

@@ -223,6 +223,7 @@ public class Editor {
      * @return new config entry
      */
     public ConfigEntry newEntry(int index) {
+        tasks.waitFor(Timing.TIME_1S);
         List<ElementStub> buttons = tasks.image("add.png").collectSimilar();
         log.fine("Found images " + buttons);
         int i = 0;

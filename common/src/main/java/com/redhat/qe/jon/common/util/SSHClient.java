@@ -182,5 +182,9 @@ public class SSHClient implements ICommandRunner {
 		log.fine("File ["+srcPath+"] copied from "+getHost()+":"+destDir);
 		
 	}
+	@Override
+	public boolean isRemote() {
+		return true;
+	}
 	
 }

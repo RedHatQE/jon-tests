@@ -67,16 +67,19 @@
 	</classes>
 </test>
 
+<test name="Samples from CLI client">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.samples.SamplesFromCliClientCliTest">
+		</class>
+	</classes>
+</test>
+
 
 <test name="operation scheduling test">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.operation.GroupOperationCliTest">
 		</class>
 		<class name="com.redhat.qe.jon.clitest.tests.operation.ResourceOperationCliTest">
-			<methods>
-            	<include name=".*"></include>
-            	<exclude name="runJSfile"></exclude>
-          	</methods>
 		</class>
 	</classes>
 </test>

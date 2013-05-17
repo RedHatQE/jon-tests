@@ -181,6 +181,7 @@ public class CliTestRunner {
 	validate();
 	if (this.cliArgs!=null) { // we support named arguments only at this time
 	    this.cliArgs = "--args-style=named"+this.cliArgs;
+	    log.finer("Adding following cli arguments: " + cliArgs);
 	}
 	CliEngine.runListener = this.runListener;
 	String jsDepends = prepareArrayArgs(this.jsDepends);

@@ -95,8 +95,10 @@ public abstract class CliTestScript extends TestScript{
 		// download from target server
 		CliTasks.getCliTasks().runCommand("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
 		// detect CLI_HOME from zip content
-		String cliHome = CliTasks.getCliTasks().runCommand("unzip -l rhq-cli.zip | head -n4 | tail -1 | grep cli | awk '{print $4}'").trim();
-		CliTest.cliShLocation = cliHome+"bin/rhq-cli.sh";
+		String cliHomeRel = CliTasks.getCliTasks().runCommand("unzip -l rhq-cli.zip | head -n4 | tail -1 | grep cli | awk '{print $4}'").trim();
+		String workingDir = CliTasks.getCliTasks().runCommand("pwd").trim();
+		File cliHome = new File(workingDir,cliHomeRel);
+		CliTest.cliShLocation = cliHome+"/bin/rhq-cli.sh";
 		// unzip CLI
 		CliTasks.getCliTasks().runCommand("rm -rf "+cliHome+" && unzip rhq-cli.zip; rm -f rhq-cli.zip");
 		_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was autodetected to "+CliTest.cliShLocation);
@@ -109,9 +111,9 @@ public abstract class CliTestScript extends TestScript{
 		
 		gatherServerLog(CliTest.rhqTarget, System.getProperty("jon.server.log.path"));
 		
-		String agents = System.getProperty("jon.agent.hosts");
+		String agents = System.getProperty("jon.agent.log.hosts");
 		if(agents == null){
-			_logger.log(Level.INFO, "IPs of RHQ/JON agents not defined, skipping gathering.");
+			_logger.log(Level.INFO, "IPs of RHQ/JON agents (jon.agent.log.hosts property) not defined, skipping gathering.");
 		}else{
 			String[] ips = agents.split(",");
 			for(String ip : ips){

@@ -8,6 +8,7 @@
 criteria = new ResourceCriteria();
 criteria.addFilterResourceTypeName('Linux');
 var resources = ResourceManager.findResourcesByCriteria(criteria);
+assertTrue(resources.size() > 0,"At least one Linux type resource is expected to be imported!!");
 
 // search for the resource type to use in the metrics definition
 var rt = ResourceTypeManager.getResourceTypeByNameAndPlugin("Linux", "Platforms");
@@ -17,6 +18,8 @@ var mdc = MeasurementDefinitionCriteria();
 mdc.addFilterDisplayName("Free Memory");
 mdc.addFilterResourceTypeId(rt.id);
 var mdefs =  MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(mdc);
+assertTrue(mdefs.size() > 0,"At least one measurement definition for measurement with display name: "+
+		"Free Memory, and resource type id: " +rt.id+" is expected!!");
 
 //get the data
 var metrics = MeasurementDataManager.findLiveData(resources.get(0).id, [mdefs.get(0).id]);

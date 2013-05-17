@@ -29,4 +29,13 @@ public class ResourceCliTest extends RhqapiCliTest {
     public void scheduleOperation() {
 	createJSRunner("rhqapi/resource_scheduleOperation.js").run();
     }
+    
+    @Test 
+    public void snippetTest() {
+    	String snippet = "if(!resources.platform()){" +
+    			"throw \"At least one imported platform is expected!!\"}";
+    	createJSSnippetRunner(snippet).
+    	dependsOn("/rhqapi.js").
+    	run();
+    }
 }
