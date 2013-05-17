@@ -6,10 +6,8 @@ from proboscis import before_class
 from proboscis import SkipTest
 
 class RHQRestTest(object):
-    """
-    This is a base class for all tests, provides methods for sending requests
-    to RHQ server
-    """
+    '''This is a base class for all tests, provides methods for sending requests
+    to RHQ server'''
 
     def __init__(self):
         self.log = logging.getLogger(self.__class__.__name__)
@@ -26,6 +24,7 @@ class RHQRestTest(object):
         self.headers = {'accept':'application/json','content-type': 'application/json'} 
 
     def url(self,resource):
+        '''Returns an absolute URL to server for given resource (URI)'''
         if resource.find('http') >= 0:
             return resource
         return self.endpoint+resource.lstrip('./')
@@ -67,15 +66,19 @@ class RHQRestTest(object):
         return resp 
 
     def find_resource_agent(self):
+        '''Finds RHQ Agent resource within inventory, returns first found instance'''
         return self.__find_resource({'q':'RHQ Agent','category':'SERVER'})
 
     def find_resource_eap6standalone(self):
+        '''Finds EAP6 Standalone Server in inventory, returns first found instance'''
         return self.__find_resource({'q':'EAP (0.0.0.0:9990)','category':'SERVER'})
 
     def find_resource_platform(self):
+        '''Finds a Platform in inventory, returns first found instance'''
         return self.__find_resource({'category':'PLATFORM'})
 
     def __find_resource(self,query):
+        '''Finds a resource by given query in inventory'''
         self.log.debug('GET %s' %(self.endpoint+'resource'))
         resp = requests.get(self.endpoint+'resource', params=query, auth=self.auth, headers = self.headers)
         self.log.debug('Response HEADERS:%s' % str(resp.headers))
@@ -91,14 +94,16 @@ class RHQRestTest(object):
         return resp.json()
     
     def check_fields(self,obj,keys,value_cb=None):
-        """
-        Checks whether given obj contains all given keys
+        '''Checks whether given obj contains all given keys and does basic check on its values
+        1. each value of a key ending 'Id' or 'TimeStamp' must be type of number
+        2. each value of a key ending 'Name' must not be null
+
         obj (Object) - object to be checked
         keys (Array) - array of string keys 
         value_cb (function(key,value)) - callback function that must return nothing if validation is successfull,
         otherwise a string message
-            can be used for additional asserts (when we expect not just key to be present, but some value)
-        """
+            
+        value_cb function can be used for additional asserts (when we expect not just key to be present, but some value)'''
         def _default_value_cb(key,value):
             if key.find('Id') > 0 or key.find('TimeStamp') > 0:
                 if not type(value) == type(0): # IDs and timeStamps must be number type

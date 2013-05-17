@@ -86,8 +86,10 @@ class OperationTest(RHQRestTest):
         data['params'] = {'detailedDiscovery':True}
         r = self.put('operation/%d' %(self.op_id),data)
         assert_equal(r.status_code,200)
-        self.log.info(r.json())
-        self.op_hist = r.json()['links'][0]['history']['href']
+        data = r.json()
+        assert_true(data['links'][0].has_key('history'),'Operation returned by server was not scheduled')
+        self.log.info(data)
+        self.op_hist = data['links'][0]['history']['href']
 
     @test(depends_on=[schedule])
     def get_history(self):
@@ -99,10 +101,10 @@ class OperationTest(RHQRestTest):
     def get_history_html(self):
         r = self.get(self.op_hist,accepts='text/html')
         assert_equal(r.status_code,200)
-        self.log.info(r.text)
+        #self.log.info(r.text)
         r = self.get('operation/history',accepts='text/html')
         assert_equal(r.status_code,200)
-        self.log.info(r.text)
+        #self.log.info(r.text)
     
     @test(depends_on=[schedule])
     def get_full_history(self):
