@@ -13,7 +13,7 @@ class RHQRestTest(object):
 
     def __init__(self):
         self.log = logging.getLogger(self.__class__.__name__)
-        if os.getenv('PS1'):
+        if os.getenv('PS1') or True:
             # enable console output only if we run in interactive shell
             formatter = logging.Formatter('%(asctime)s - %(levelname)s: %(message)s (%(name)s)')
             log_handler = logging.StreamHandler()
