@@ -58,7 +58,7 @@ public interface ICommandRunner {
 	
 	/**
 	 * Returns true when the instance is remote
-	 * @return
+	 * @return true when the instance is remote
 	 */
 	boolean isRemote();
 }
