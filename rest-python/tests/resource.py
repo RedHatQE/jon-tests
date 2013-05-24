@@ -9,6 +9,8 @@ from proboscis import test
 
 from testcase import RHQRestTest
 
+import link_header
+
 @test
 class CreateResourceTest(RHQRestTest):
 
@@ -48,7 +50,7 @@ class CreateResourceTest(RHQRestTest):
     def create_child_content(self):
         body = {'resourceName':'deploy.war'}
 
-@test
+@test(groups=['getresource'])
 class GetResourceTest(RHQRestTest):
 
     @before_class
@@ -115,19 +117,75 @@ class GetResourceTest(RHQRestTest):
             assert_equal(type(r.json()),type([]),'Server did not return array of resources')
         assert_equal(self.get('resource?category=%s' % 'FOO').status_code ,406)
 
+    @test(groups=['paging'])
+    def paging_visit_using_body_links(self):
+        self._visit_page_body_links('resource?ps=13&page=0',13,0)
 
-    @test
+    def _visit_page_body_links(self,url,ps,page):
+        r = self.get(url,accepts='application/vnd.rhq.wrapped+json')
+        data = r.json()
+        assert_true(data.has_key('links'),'links must be present in response body when sending \"application/vnd.rhq.wrapped+json\" accept header')
+        assert_true(len(data['data']) <= ps)
+        links = data['links']
+        current= None
+        last = None
+        next = None
+        prev = None
+        for link in links:
+            if link.has_key('current'):
+                current = link['current']['href']
+            if link.has_key('last'):
+                last = link['last']['href']
+            if link.has_key('next'):
+                next = link['next']['href']
+            if link.has_key('prev'):
+                prev = link['prev']['href']
+        assert_is_not_none(current)
+        assert_is_not_none(last)
+        if data['currentPage'] > 0:
+            assert_is_not_none(prev)
+        if not data['lastPage'] == data['currentPage']:
+            assert_is_not_none(next)
+            assert_true(len(data['data']) == ps)
+            self._visit_page_body_links(next,ps,page+1)
+
+    @test(groups=['paging'])
+    def paging_visit_using_link_headers(self):
+        ids = []
+        self._visit_page_link_headers('resource?ps=17&page=0',[],ids)
+        assert_equal(len(ids),len(set(ids)),'Server listed same resoruces on different pages')
+        
+    def _visit_page_link_headers(self,url,visited,ids):
+        url = self.url(url) # make URL absolute
+        r = self.get(url)
+        assert_equal(r.status_code,200)
+        data = r.json()
+        id_list = map(lambda r: r['resourceId'],data)
+        ids += id_list
+        self.log.info('Request %s returned %s' % (url,str(id_list)))
+        visited.append(url)
+        links = link_header.parse_link_value(r.headers['link'])
+        self.log.info('Parsed link headers : %s' % str(links))
+        for link in links.keys():
+            assert_true(links[link].has_key('rel'))
+            assert_true(links[link]['rel'] in ['current','next','prev','last'])
+            if not link in visited:
+                self._visit_page_link_headers(link,visited,ids)
+
+    @test(groups=['paging'])
+    @blockedBy('966559')
     def paging(self):
         self._paging(1,2)
         self._paging(6,2)
         self._paging(15,1)
-        self._paging(3,5)
+        self._paging(3,6)
 
     def _paging(self,ps,pages):
         ids = []
         for page in xrange(pages):
             request = 'resource?ps=%d&page=%d' % (ps,page)
-            data = self.get(request).json()
+            r = self.get(request)
+            data = r.json()
             assert_equal(len(data),ps,'Server returned %d items on page, pagesize %d' % (len(data),ps))
             id_list = map(lambda r: r['resourceId'],data)
             ids += id_list

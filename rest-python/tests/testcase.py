@@ -32,7 +32,9 @@ class RHQRestTest(object):
     def get(self,resource,accepts='application/json'):
         url = self.url(resource)
         self.log.debug('GET %s' % url)
-        resp = requests.get(url, auth=self.auth, headers = {'accept':accepts,'content-type': accepts})
+        headers = {'accept':accepts,'content-type': accepts}
+        self.log.debug('Request HEADERS:%s' % str(headers))
+        resp = requests.get(url, auth=self.auth, headers = headers)
         self.log.debug('Response HEADERS:%s' % str(resp.headers))
         self.log.debug('Response BODY: %s' %(resp.text))
         return resp
@@ -107,7 +109,7 @@ class RHQRestTest(object):
         def _default_value_cb(key,value):
             if key.find('Id') > 0 or key.find('TimeStamp') > 0:
                 if not type(value) == type(0): # IDs and timeStamps must be number type
-                    return '%s field must be number type' % key
+                    return '%s field must be number type but is %s' % (key,str(type(value)))
             if key.find('Name') > 0: 
                 if not value: # *Name fields must not be NULL
                     return '%s field must NOT be null' % key
