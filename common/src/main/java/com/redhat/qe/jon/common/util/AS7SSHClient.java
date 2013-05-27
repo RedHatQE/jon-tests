@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.common.util;
 
+import com.redhat.qe.jon.common.Platform;
 import com.redhat.qe.tools.SSHCommandResult;
 
 import java.io.File;
@@ -15,6 +16,7 @@ public class AS7SSHClient extends SSHClient {
 	private final String asHome;
 	private static final SimpleDateFormat sdfServerLog = new SimpleDateFormat("HH:mm:ss");
     private String asIdentifier;
+    private static final Platform platform = new Platform();
 
 	public AS7SSHClient(String asHome) {
 		super();
@@ -168,24 +170,35 @@ public class AS7SSHClient extends SSHClient {
 	 */
 	public Date getStartupTime(String logFile) {
         String dateStringFilteringCommand = "";
-        if (logFile.endsWith("server.log")) {
-            dateStringFilteringCommand += "grep '\\[org\\.jboss\\.modules\\]' " +asHome+"/"+logFile +" | tail -1 | awk -F, '{print $1}'";
+        String startupTimeFilter = "\"\\[org\\.jboss\\.modules\\]\"";
+        String startupTimesFilteringCommand = "";
+        String filteringUtil;
+        if (platform.isWindows()) {
+            filteringUtil = "FINDSTR";
         } else {
-             dateStringFilteringCommand += "head -n1 "+asHome+"/"+logFile+" | awk -F, '{print $1}' ";
+            filteringUtil = "grep";
         }
-        String dateStrOut = runAndWait(dateStringFilteringCommand).getStdout().trim();
+
+        // getting all the lines with the specific String
+        startupTimesFilteringCommand = filteringUtil + " " + startupTimeFilter + " " + asHome + File.separator + logFile;
+        String startupTimesStrOut = runAndWait(startupTimesFilteringCommand).getStdout().trim();
+
         try {
-            if (dateStrOut.isEmpty() && logFile.endsWith("boot.log")) { // done for managing that boot.log information are put in server.log since EAP 6.1 boot.log no longer exists
+            if (startupTimesStrOut.isEmpty() && logFile.endsWith("boot.log")) { // done for managing that boot.log information are put in server.log since EAP 6.1 boot.log no longer exists
                 return getStartupTime(logFile.replace("boot.log", "server.log"));
             } else {
-                // on Solaris sparc 11 the dateStrOut contains also an error message (from unknown reason), filtering is out by taking only the last item into an account, which is the startup time
-                String[] dateStrArray = dateStrOut.split("\\s+"); // splitting by whitespace
-                String dateStr = dateStrArray[dateStrArray.length-1];
+                // retrieve only the last line:
+                String[] dateStrArray = startupTimesStrOut.split("\\s+\\n+\\s+");
+                String lastStartupDateStr = dateStrArray[dateStrArray.length-1];
+
+                // retrive only the date time part
+                String dateStr = lastStartupDateStr.split(",")[0];
                 return sdfServerLog.parse(dateStr);
             }
+
         } catch (ParseException e) {
-			throw new RuntimeException("Unable to determine server startup time", e);
-		}
+            throw new RuntimeException("Unable to determine server startup time", e);
+        }
 	}
 
 
