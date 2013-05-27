@@ -108,7 +108,7 @@ class RHQRestTest(object):
         value_cb function can be used for additional asserts (when we expect not just key to be present, but some value)'''
         def _default_value_cb(key,value):
             if key.find('Id') > 0 or key.find('TimeStamp') > 0:
-                if not type(value) == type(0): # IDs and timeStamps must be number type
+                if not (isinstance(value,int) or isinstance(value,long)): # IDs and timeStamps must be number type
                     return '%s field must be number type but is %s' % (key,str(type(value)))
             if key.find('Name') > 0: 
                 if not value: # *Name fields must not be NULL
