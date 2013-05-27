@@ -33,7 +33,7 @@ class MetricsTest(RHQRestTest):
         r = self.put('metric/schedule/%d' % self.sid,sch)
         assert_equal(r.status_code,200)
         self.log.info('Waiting 2minutes to get any metric data')
- #       time.sleep(120)
+        time.sleep(120)
 
     @test
     def get_schedule_invalid_id(self):
