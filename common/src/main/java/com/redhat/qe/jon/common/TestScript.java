@@ -16,8 +16,8 @@ import com.redhat.qe.tools.compare.CollectionSorter;
 public class TestScript {
 	protected static boolean initialized = false;
 	protected static Logger log = Logger.getLogger(TestScript.class.getName());
-	protected static final String defaultAutomationPropertiesFile=System.getenv("HOME")+"/automation.properties"; 
-	protected static final String defaultLogPropertiesFile=System.getProperty("user.home")+ "/log.properties"; 
+	protected static final String defaultAutomationPropertiesFile=System.getenv("HOME")+File.separator + "automation.properties";
+	protected static final String defaultLogPropertiesFile=System.getProperty("user.home")+ File.separator + "log.properties";
 
 	public TestScript() {
 		if (initialized) return; //only need to run this stuff once per jvm
@@ -127,41 +127,41 @@ public class TestScript {
 			log.log(Level.SEVERE, "Could not load automation properties from "+propFile, e);
 		}
 	}
-	public static void checkRequiredProperties(String... names) {
-	    StringBuilder failed = new StringBuilder();
-	    if (names!=null) {
-		log.info("Checking required system properties");
-		for (String prop : names) {
-		    String value = System.getProperty(prop,null);
-		    String msg = "Property ["+prop+"] ... ";
-		    if (value==null) {
-			msg+="no";
-			failed.append(prop+",");
-		    }
-		    else {
-			msg+="yes ["+value+"]";
-		    }
-		    log.info(msg);
-		}		
-	    }
-	    if (failed.length()>0) {
-		throw new RuntimeException("Some required properties are not defined : "+failed.toString());
-	    }
-	}
-	public static void checkOptionalProperties(String... names) {
-	    if (names!=null) {
-		log.info("Checking optional system properties");
-		for (String prop : names) {
-		    String value = System.getProperty(prop,null);
-		    String msg = "Property ["+prop+"] ... ";
-		    if (value==null) {
-			msg+="no";
-		    }
-		    else {
-			msg+="yes ["+value+"]";
-		    }
-		    log.info(msg);
-		}		
-	    }
-	}
+
+    public static void checkRequiredProperties(String... names) {
+        StringBuilder failed = new StringBuilder();
+        if (names != null) {
+            log.info("Checking required system properties");
+            for (String prop : names) {
+                String value = System.getProperty(prop, null);
+                String msg = "Property [" + prop + "] ... ";
+                if (value == null) {
+                    msg += "no";
+                    failed.append(prop + ",");
+                } else {
+                    msg += "yes [" + value + "]";
+                }
+                log.info(msg);
+            }
+        }
+        if (failed.length() > 0) {
+            throw new RuntimeException("Some required properties are not defined : " + failed.toString());
+        }
+    }
+
+    public static void checkOptionalProperties(String... names) {
+        if (names != null) {
+            log.info("Checking optional system properties");
+            for (String prop : names) {
+                String value = System.getProperty(prop, null);
+                String msg = "Property [" + prop + "] ... ";
+                if (value == null) {
+                    msg += "no";
+                } else {
+                    msg += "yes [" + value + "]";
+                }
+                log.info(msg);
+            }
+        }
+    }
 }
