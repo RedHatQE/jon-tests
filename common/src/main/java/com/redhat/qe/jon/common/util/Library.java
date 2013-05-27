@@ -24,7 +24,7 @@ public class Library {
      * * 'MY_GREAT_PROPERTY' in environment variables
      * * 'myGreatProperty'   in system properties
      */
-    public static String getUniversalProperty(String propName) {
+    public static String getUniversalProperty(String propName, String defaultValue) {
         String propName2 = propName.replaceAll("\\.", "_");
         String propName3 = propName.replaceAll("\\.", "_").toUpperCase();
         String propName4 = null;
@@ -40,7 +40,7 @@ public class Library {
             val = System.getenv(propName);
         }
         if (val == null) {
-           val = System.getProperty(propName2);
+            val = System.getProperty(propName2);
         }
         if (val == null) {
             val = System.getenv(propName2);
@@ -57,7 +57,15 @@ public class Library {
         if (val == null && propName4 != null) {
             val = System.getenv(propName4);
         }
-        return val;
+        if (val == null) {
+            return defaultValue;
+        } else {
+            return val;
+        }
+    }
+
+    public static String getUniversalProperty(String propName) {
+        return getUniversalProperty(propName, null);
     }
 
     public static String capitalize(String s) {
