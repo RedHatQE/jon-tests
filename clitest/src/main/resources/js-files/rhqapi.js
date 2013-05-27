@@ -1714,6 +1714,31 @@ var metricsTemplates = (function() {
       	});
       	MeasurementScheduleManager.disableSchedulesForResourceType(definitionIds, true);
     },
+    
+    /**
+     * enables metrics 
+     * @public
+     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param filter - filter function - see {@link metricsTemplates.predicates}
+     * @example metricsTemplates.enable(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), metricTemplates.predicates.isCallTime);
+     * @example metricsTemplates.enable(resourceTypes.find());
+     */
+    enable: function(resTypes, filter) {
+    	common.trace("metricsTemplates.enable(resTypes="+resTypes+",filter="+filter+")");
+    	resTypes = fetchMetricDefs(resTypes);
+    	if (resTypes.length == 0) {
+    		common.error("Failed to find resource types for " + resTypes);
+        	return;
+      	}
+    	var definitionIds = [];
+      	forEachMetricDef(resTypes, function(rt,metricDef) {
+      		if (typeof filter == "undefined" || filter(metricDef)) {
+      			common.debug("Preparing to enable metric template " + metricDef + " for " +rt.name);
+      			definitionIds.push(metricDef.id);
+        	}
+      	});
+      	MeasurementScheduleManager.enableSchedulesForResourceType(definitionIds, true);
+    },
 
     /**
      * sets collection interval for metrics 
