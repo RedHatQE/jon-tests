@@ -167,7 +167,7 @@ public class SSHClient implements ICommandRunner {
 	 */
 	public void copyFile(String srcPath, String destDir, String destFileName)throws IOException  {
 		scpClient.put(srcPath, destFileName, destDir, "0600");
-		log.fine("File ["+srcPath+"] copied to "+getHost()+":"+destDir+"/"+destFileName);
+		log.fine("File ["+srcPath+"] copied to "+getHost()+":"+destDir+File.separator+destFileName);
 		
 	}
 	/**
