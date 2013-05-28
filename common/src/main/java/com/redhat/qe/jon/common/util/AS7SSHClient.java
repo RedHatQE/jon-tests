@@ -188,7 +188,7 @@ public class AS7SSHClient extends SSHClient {
                 return getStartupTime(logFile.replace("boot.log", "server.log"));
             } else {
                 // retrieve only the last line:
-                String[] dateStrArray = startupTimesStrOut.split("\\s+\\n+\\s+");
+                String[] dateStrArray = startupTimesStrOut.split(Platform.nl);
                 String lastStartupDateStr = dateStrArray[dateStrArray.length-1];
 
                 // retrive only the date time part
