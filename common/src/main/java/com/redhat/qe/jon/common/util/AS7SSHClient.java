@@ -188,12 +188,12 @@ public class AS7SSHClient extends SSHClient {
                 return getStartupTime(logFile.replace("boot.log", "server.log"));
             } else {
                 // retrieve only the last line:
-                String[] dateStrArray = startupTimesStrOut.split(Platform.nl);
+                String[] dateStrArray = startupTimesStrOut.split("[\r\n]+");
                 String lastStartupDateStr = dateStrArray[dateStrArray.length-1];
 
                 // retrive only the date time part
                 String dateStr = lastStartupDateStr.split(",")[0];
-                return sdfServerLog.parse(dateStr);
+                return sdfServerLog.parse(dateStr.trim());
             }
 
         } catch (ParseException e) {
