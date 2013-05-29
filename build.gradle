@@ -192,8 +192,10 @@ project(":common") {
 //      "org.jacoco:org.jacoco.ant:0.6.2.201302030002",
       "org.jacoco:org.jacoco.ant:0.5.10.201208310627",
 			"com.report.engine:report-engine-client:0.0.4"
-	}
-
+                compile("com.redhat.qe:bz-checker:1.0.3-SNAPSHOT"){
+                    force = true
+                }	
+        }
 }
 // rest-groovy project also uses "groovy" plugin
 project(":rest-groovy") {
