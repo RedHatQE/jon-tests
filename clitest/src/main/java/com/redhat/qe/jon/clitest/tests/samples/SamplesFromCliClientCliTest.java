@@ -11,7 +11,6 @@ import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
 import com.redhat.qe.jon.clitest.tests.OnAgentCliTest;
-import com.redhat.qe.jon.common.util.SSHClient;
 
 public class SamplesFromCliClientCliTest extends OnAgentCliTest {
 	

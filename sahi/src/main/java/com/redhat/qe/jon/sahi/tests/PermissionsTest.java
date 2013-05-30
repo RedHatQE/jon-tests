@@ -1,19 +1,9 @@
 package com.redhat.qe.jon.sahi.tests;
 
 import org.testng.annotations.Test;
+
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 import com.redhat.qe.jon.sahi.tasks.SahiTasksException;
-
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-
-
-import com.redhat.qe.Assert;
-
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PermissionsTest extends SahiTestScript{
 	

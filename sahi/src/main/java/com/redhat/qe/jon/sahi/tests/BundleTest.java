@@ -1,16 +1,14 @@
 package com.redhat.qe.jon.sahi.tests;
 
-import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.testng.annotations.Test;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import com.redhat.qe.auto.testng.TestNGUtils;
-
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
+import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 public class BundleTest extends SahiTestScript{
 	@Test (groups="bundleTest", dataProvider="bundleData")

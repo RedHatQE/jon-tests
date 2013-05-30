@@ -10,7 +10,6 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import com.redhat.qe.Assert;
-import org.apache.xmlrpc.client.TimingOutCallback;
 
 public class HTTPClient {
     private static final Logger log = Logger.getLogger(HTTPClient.class.getName());

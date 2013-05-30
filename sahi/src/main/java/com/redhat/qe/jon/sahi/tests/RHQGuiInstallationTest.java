@@ -1,9 +1,7 @@
 package com.redhat.qe.jon.sahi.tests;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Optional;
@@ -19,8 +17,6 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
  * Nov 02, 2011
  */
 public class RHQGuiInstallationTest  extends SahiTestScript{
-	private static Logger _logger = Logger.getLogger(RHQGuiInstallationTest.class.getName());
-	
 	public static String DB_TYPE						= "dbType";
 	public static String DB_DETAILS 					= "dbDetails";
 	public static String DB_USER_PASSWORD				= "dbUserPassword";
