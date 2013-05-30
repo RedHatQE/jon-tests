@@ -23,6 +23,7 @@ import com.redhat.qe.jon.common.util.RestClient;
 import com.redhat.qe.jon.common.util.RestClient.URIs;
 import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
 import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
+import com.redhat.qe.jon.sahi.base.inventory.alerts.Alerts;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 /**

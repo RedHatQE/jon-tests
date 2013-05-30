@@ -6,6 +6,8 @@ import net.sf.sahi.client.ElementStub;
 
 import org.testng.Assert;
 
+import com.redhat.qe.jon.sahi.base.editor.ConfigEditor;
+import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -45,13 +47,13 @@ public class Configuration extends ResourceTab {
 
 	public static class CurrentConfig {
 		private final SahiTasks tasks;
-		private final Editor editor;
+		private final ConfigEditor editor;
 		private final Logger log = Logger.getLogger(this.getClass().getName());
 		private CurrentConfig(SahiTasks tasks) {
 			this.tasks = tasks;
-			this.editor = new Editor(tasks);
+			this.editor = new ConfigEditor(tasks);
 		}
-		public Editor getEditor() {
+		public ConfigEditor getEditor() {
 			return editor;
 		}
 		/**
@@ -126,7 +128,7 @@ public class Configuration extends ResourceTab {
 		private final Logger log = Logger.getLogger(this.getClass().getName());
 		private final SahiTasks tasks;
 		private final Editor editor;
-		ConfigEntry(SahiTasks tasks) {
+		public ConfigEntry(SahiTasks tasks) {
 			this.tasks = tasks;
 			this.editor = new Editor(tasks);
 		}

@@ -10,6 +10,7 @@ import net.sf.sahi.client.ElementStub;
 
 import org.testng.Assert;
 
+import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
