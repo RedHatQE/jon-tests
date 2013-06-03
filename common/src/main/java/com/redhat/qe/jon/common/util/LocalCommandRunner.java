@@ -7,9 +7,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import com.redhat.qe.jon.common.Platform;
+import com.redhat.qe.jul.TestRecords;
 import com.redhat.qe.tools.SSHCommandResult;
 /**
  * this class is a local command runner (currently works on linux only) that runs all commands locally
@@ -145,6 +147,23 @@ public class LocalCommandRunner implements ICommandRunner {
 	public void disconnect() {
 
 	}
+
+
+    public void runCommand(String command, File workDir){
+        Platform platform = new Platform();
+        String[] cmd;
+        try {
+
+            if (platform.isWindows()) {
+                cmd = new String[] {"cmd", "/C", command};
+            } else {
+                cmd = new String[] {"/bin/sh", "-c", command};
+            }
+            final Process p = Runtime.getRuntime().exec(cmd, null, workDir);
+        } catch (IOException ioEx) {
+          throw new RuntimeException("IOException encountered while executing command: " + command, ioEx);
+        }
+    }
 
 	private static void copyFile(File sourceFile, File destFile)
 			throws IOException {

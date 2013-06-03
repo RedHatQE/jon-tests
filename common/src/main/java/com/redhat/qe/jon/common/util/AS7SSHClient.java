@@ -10,7 +10,7 @@ import java.util.Date;
 
 
 
-public class AS7SSHClient extends SSHClient {
+public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
 
     private String serverConfig; // allows to recognize the correct AS7 server process
 	private final String asHome;
@@ -101,7 +101,7 @@ public class AS7SSHClient extends SSHClient {
 
 		if (pids!=null && pids.length()>0) {
 			for (String pid : pids.split("\n")) {
-				runAndWait("kill -9 "+pid);
+				killProcess(pid);
 			}
 		}
 	}
@@ -138,6 +138,11 @@ public class AS7SSHClient extends SSHClient {
             javaHome = "";
         }
         return javaHome;
+    }
+
+    @Override
+    public void killProcess(String pid) {
+        runAndWait("kill -9 " + pid);
     }
 
     /**
