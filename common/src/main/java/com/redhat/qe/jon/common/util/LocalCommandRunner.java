@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import com.redhat.qe.jon.common.Platform;
 import com.redhat.qe.jul.TestRecords;
 import com.redhat.qe.tools.SSHCommandResult;
+import org.apache.commons.io.FileUtils;
+
 /**
  * this class is a local command runner (currently works on linux only) that runs all commands locally
  * works by default in current user's home directory!
@@ -25,6 +27,8 @@ public class LocalCommandRunner implements ICommandRunner {
 			.getLogger(LocalCommandRunner.class.getName());
 
 	private final String workDir;
+
+    protected final Platform platform = new Platform();
 
 	public LocalCommandRunner() {
 		this(System.getProperty("user.home"));
@@ -61,7 +65,7 @@ public class LocalCommandRunner implements ICommandRunner {
 	public SSHCommandResult runAndWait(String command) {
 		SSHCommandResult result = new SSHCommandResult(-1, "", "");
 		try {
-            Platform platform = new Platform();
+
 			String[] cmd;
             if (platform.isWindows()) {
                 cmd = new String[] {"cmd", "/C", command};
@@ -145,15 +149,20 @@ public class LocalCommandRunner implements ICommandRunner {
 
 	@Override
 	public void disconnect() {
-
 	}
 
+    /**
+     * Creates directory including ancestors if they don't exist
+     * @param dir directory to be created
+     */
+    public boolean mkdirs(String dir) {
+        File dirAsFile = new File(dir);
+        return dirAsFile.mkdirs();
+    }
 
     public void runCommand(String command, File workDir){
-        Platform platform = new Platform();
         String[] cmd;
         try {
-
             if (platform.isWindows()) {
                 cmd = new String[] {"cmd", "/C", command};
             } else {

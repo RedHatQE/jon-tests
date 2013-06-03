@@ -206,5 +206,11 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
         }
 	}
 
-
+    /**
+     * Creates directory including ancestors if they don't exist
+     * @param dir directory to be created
+     */
+    public boolean mkdirs(String dir) {
+        return runAndWait("mkdir -p " + dir).getExitCode()==0;
+    }
 }
