@@ -1,5 +1,5 @@
 /**
- * This imports RHQ agent and invokes promt command 'discovery -f'
+ * This imports all RHQ agents and invokes promt command 'discovery -f'
  **/
 
 
@@ -12,13 +12,11 @@ var verbose = 3; // logging level
 var common = new _common(); // object with common methods
 timeout = 240  // timeout for operations set to 4 minutes
 
-var platforms = findPlatforms();
-if(platforms.length == 0){
-    common.info("No imported platforms found, importing a new one...");
-    var platforms = Inventory.discoveryQueue.listPlatforms();
-    assertTrue(platforms.length>0,"There is no platform in discovery queue!!");
+var platforms = Inventory.discoveryQueue.listPlatforms();
+for(i in platforms){
+    common.info("Importing platform with name "+platforms[i].getProxy().getName());
     // using importPlatform, we import it without children resources
-    var imported = Inventory.discoveryQueue.importPlatform(platforms[0].getProxy().getName(),false);
+    var imported = Inventory.discoveryQueue.importPlatform(platforms[i].getProxy().getName(),false);
     assertTrue(imported.exists(),"Imported platform does not exist in inventory!!");
     // let's wait until our platform becomes available
     imported.waitForAvailable();
@@ -26,38 +24,22 @@ if(platforms.length == 0){
     common.info("Platform is imported and available");
 }
 
-var agents = findAgents();
-if(agents.length == 0){
-    common.info("No agent imported, importing new agent..");
-    agents = Inventory.discoveryQueue.importResources({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
-    assertTrue(agents.length > 0, "Importing agents failed!!");
+var newAgents = Inventory.discoveryQueue.list({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
+// import agents if there are any in discovery queue
+if(newAgents.length >0){
+	var agents = Inventory.discoveryQueue.importResources({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
+	for(i in agents){
+		agents[i].waitForAvailable();
+		assertTrue(agents[i].isAvailable(),"Imported agent is not available!!");
+		common.info("Agent is imported and available");
+		
+		// invoke 'discovery' prompt command
+		common.info("Invoking discovery scan...");
+		var history = agents[i].invokeOperation("executePromptCommand",{command:"discovery -f"});
+		timeout = 120  // timeout back to default
+		
+		// check result of operation
+		assertTrue(history.status == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.status + ", error message: " + history.error);
+	}
 }
 
-var agent = agents[0];
-agent.waitForAvailable();
-assertTrue(agent.isAvailable(),"Imported agent is not available!!");
-common.info("Agent is imported and available");
-
-// invoke 'discovery' prompt command
-common.info("Invoking discovery scan...");
-var history = agent.invokeOperation("executePromptCommand",{command:"discovery -f"});
-timeout = 120  // timeout back to default
-
-// check result of operation
-assertTrue(history.status == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.status + ", error message: " + history.error);
-
-// find all imported RHQ agents
-function findAgents(){
-    var agents = Inventory.find({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
-    common.debug(agents.length + " imported agent(s) found");
-    
-    return agents;
-}
-
-// find all imported platforms
-function findPlatforms(){
-    var platforms = Inventory.find({resourceCategories:ResourceCategory.PLATFORM});
-    common.debug(platforms.length + " imported platform(s) found");
-
-    return platforms;
-}
