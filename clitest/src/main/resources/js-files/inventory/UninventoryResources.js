@@ -1,4 +1,4 @@
-// With the help of this test case can uninventory all the resouce(s) from Server
+// With the help of this test case can uninventory all (except RHQ Storage Node)the resouce(s) from Server
 
 /**
  * @author lzoubek@redhat.com (Libor Zoubek)
@@ -21,5 +21,6 @@ Inventory.platforms().forEach(function (p) {
 println("Sleeping 10sec to sync!!");
 sleep(1000*10);
  
-assertEquals(Inventory.platforms().length, 0, "Number of Discovered platforms,");
-println("All Platforms successfully removed from server");
+// 1 platform always stays in inventory because the resource RHQ Storage Node can't be uninventorized
+assertEquals(Inventory.platforms().length, 1, "Number of Discovered platforms,");
+println("Platforms successfully removed from server");

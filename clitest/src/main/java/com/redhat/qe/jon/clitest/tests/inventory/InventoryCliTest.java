@@ -27,7 +27,7 @@ public class InventoryCliTest extends CliTest {
 	public void uninventoryAllResourcesTest() throws IOException, CliTasksException{
 		runJSfile("inventory/UninventoryResources.js",
 				null,
-				"Login successful,All Platforms successfully removed from server",
+				"Login successful,Platforms successfully removed from server",
 				"rhqapi.js");
 	}
 }
