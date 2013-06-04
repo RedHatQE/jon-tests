@@ -103,7 +103,10 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
         }
         if (pids!=null && pids.length()>0) {
             for (String pid : pids.split("[\r\n]+")) {
-                killProcess(pid.trim());
+                pid = pid.trim();
+                if (!pid.equalsIgnoreCase("processid")) {
+                  killProcess(pid);
+                }
             }
         }
     }
