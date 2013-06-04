@@ -24,22 +24,33 @@ for(i in platforms){
     common.info("Platform is imported and available");
 }
 
+
+// get all imported agents and invoke discovery scan
+var importedAgents = resources.find({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
+for(i in importedAgents){
+	invokeDiscoveryScan(importedAgents[i]);
+}
+
+//get all agents from discovery queue
 var newAgents = Inventory.discoveryQueue.list({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
-// import agents if there are any in discovery queue
+// import agents if there are any in discovery queue and invoke operation
 if(newAgents.length >0){
 	var agents = Inventory.discoveryQueue.importResources({resourceTypeName:"RHQ Agent",parentResourceCategory:ResourceCategory.PLATFORM});
 	for(i in agents){
 		agents[i].waitForAvailable();
 		assertTrue(agents[i].isAvailable(),"Imported agent is not available!!");
 		common.info("Agent is imported and available");
-		
-		// invoke 'discovery' prompt command
-		common.info("Invoking discovery scan...");
-		var history = agents[i].invokeOperation("executePromptCommand",{command:"discovery -f"});
-		timeout = 120  // timeout back to default
-		
-		// check result of operation
-		assertTrue(history.status == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.status + ", error message: " + history.error);
+		invokeDiscoveryScan(agents[i]);
 	}
 }
 
+
+function invokeDiscoveryScan(resource){
+	// invoke 'discovery' prompt command
+	common.info("Invoking discovery scan...");
+	var history = resource.invokeOperation("executePromptCommand",{command:"discovery -f"});
+	timeout = 120  // timeout back to default
+	
+	// check result of operation
+	assertTrue(history.status == OperationRequestStatus.SUCCESS, "Discovery operation failed, status: " + history.status + ", error message: " + history.error);
+}
