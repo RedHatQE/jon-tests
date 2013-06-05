@@ -22,6 +22,25 @@ public class LoginLogoutTest extends SahiTestScript {
 		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
 	}
 	
+	@Parameters({ "gui.username", "gui.password" })
+	@Test (groups={"functional","sanity","setup","login"})
+	public void ldapLoginTest(String guiUsername, String guiPassword){
+		_logger.finer("Logging into RHQ system");
+		Assert.assertTrue(sahiTasks.login(guiUsername, guiPassword), "Login status");
+		String loginErrorMessgae = "The username or password provided does not match our records.";
+		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
+		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
+		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
+		// if user is logging for the first time a registration form should pop-up
+		// in this case it is enough to just cancel it
+		try {
+		    sahiTasks.cell("Cancel").click();
+		}
+		catch (Exception ex) {
+		    
+		}
+	}
+	
 	@Test (groups={"functional","sanity","setup","logout"})
 	public void logoutTest(){
 		_logger.finer("Logging out RHQ system");

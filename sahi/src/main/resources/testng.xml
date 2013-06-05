@@ -374,5 +374,16 @@
 			</class>
 		</classes>
   	</test>
-	
+
+  	<test name="GuiLDAPUserLoginTest">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
+			<parameter name="gui.username" value="jonqa"/>
+			<parameter name="gui.password" value="jonqa"/>			
+			<methods>
+				 <include name="ldapLoginTest"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
 </suite>
