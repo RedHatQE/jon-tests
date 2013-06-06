@@ -268,7 +268,7 @@ task jacocoreport() << {
     def agentPlugins = ["**"]
     if (System.properties["only.jon.plugins"] && System.properties["only.jon.plugins"] == "true") {
       logger.info("Only JON agent plugins will be included")
-      agentPlugins = ["ant-bundle","apache","database","iis","jmx","platform","postgres","script","rhq-agent"]
+      agentPlugins = ["ant-bundle","apache","cassandra","database","iis","jmx","platform","postgres","script","rhq-agent"]
       def pluginPacks = ["jboss-as","jboss-as-5","jboss-as-7","jboss-cache","jboss-cache-v3"]
       agentPlugins = agentPlugins + pluginPacks
     }
