@@ -165,7 +165,7 @@ class MetricsTest(RHQRestTest):
     @test(groups=['putmetric'])
     def put_data_raw(self):
         t = int(time.time() * 1000) # python represents timestamp with float and different precision
-        r = self.put('metric/data/%d/raw/%d' % (self.sid,t),{'timeStamp':t,'value':0.5})
+        r = self.put('metric/data/%d/raw/%d' % (self.sid,t),{'value':0.5})
         assert_equal(r.status_code,201)
         r = self.get(r.headers['location'])
         assert_equal(r.status_code,200)
@@ -176,13 +176,13 @@ class MetricsTest(RHQRestTest):
     @blockedBy('964227')
     def put_data_raw_old_time(self):
         t = 12345  # set time to very long past
-        r = self.put('metric/data/%d/raw/%d' % (self.sid,t),{'timeStamp':t,'value':0.5})
+        r = self.put('metric/data/%d/raw/%d' % (self.sid,t),{'value':0.5})
         assert_equal(r.status_code,406,'Server allowed to PUT data with very old timestamp')
     
     @test(groups=['putmetric'])
     def put_data_raw_invalid_id(self):
         t = int(time.time() * 1000)
-        r = self.put('metric/data/%d/raw/%d' % (9999,t),{'timeStamp':t,'value':0.5})
+        r = self.put('metric/data/%d/raw/%d' % (9999,t),{'value':0.5})
         assert_equal(r.status_code,404)
 
 
@@ -192,5 +192,5 @@ class MetricsTest(RHQRestTest):
         if sid == None:
             raise Exception('Schedule not found')
         t = int(time.time() * 1000) 
-        r = self.put('metric/data/%d/raw/%d' % (sid,t),{'timeStamp':t,'value':0.5})
+        r = self.put('metric/data/%d/raw/%d' % (sid,t),{'value':0.5})
         assert_equal(r.status_code,406)
