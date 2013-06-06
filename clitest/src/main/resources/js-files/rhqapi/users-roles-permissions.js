@@ -9,6 +9,8 @@ roles.deleteRoles([guestRoleName,bossRoleName]);
 //clean users from previous failed tests
 users.deleteUsers(jramboName);
 
+// remember already created users
+var allUsersBefore = users.getAllUsers();
 
 // permissions
 println("Print all available permissions.");
@@ -62,7 +64,8 @@ println("Getting all users.");
 var allUsers = users.getAllUsers();
 println("Found users: ");
 p(allUsers);
-assertTrue(allUsers.length == 2, "Incorrent number of all users, expected: 2, actual: " + allUsers.length);
+assertTrue(allUsers.length == allUsersBefore.length, 
+		"Incorrent number of all users, expected: "+allUsersBefore.length+", actual: " + allUsers.length);
 
 // incorrect creations
 println("Creating a user with incorrect argument.");
@@ -92,7 +95,8 @@ println("Getting all users.");
 allUsers = users.getAllUsers();
 println("Found users: ");
 p(allUsers);
-assertTrue(allUsers.length == 3, "Incorrent number of all users, expected: 3, actual: " + allUsers.length);
+assertTrue(allUsers.length == (allUsersBefore.length + 1), 
+		"Incorrent number of all users, expected: "+(allUsersBefore.length + 1)+", actual: " + allUsers.length);
 
 println("Get nonexistent user.");
 var user = users.getUser("incorrectName");
