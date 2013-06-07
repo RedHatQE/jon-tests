@@ -1667,7 +1667,9 @@ public class SahiTasks extends ExtendedSahi {
     //************************************************************************************************
     //* Metric Collection Schedules For Resources [enable/disable/update]
     //************************************************************************************************
-    public void selectRowOnTable(String divName, int divMaxIndex) {    	
+    public void selectRowOnTable(String divName){
+    	//Auto fix the max count of DIV
+    	int divMaxIndex = this.div("divName").countSimilar();
     	for(int i=divMaxIndex; i>=0; i--){
     		if(this.div(divName+"["+i+"]").exists()){
     			this.div(divName+"["+i+"]").click();
@@ -1797,7 +1799,7 @@ public class SahiTasks extends ExtendedSahi {
         	}
     	}
     	
-    	selectRowOnTable(metricName,2);
+    	selectRowOnTable(metricName);
     	if(updateCollectionInterval){
     		this.textbox("interval").setValue(collectionInterval[0].trim());
     		if(!collectionInterval[1].trim().equalsIgnoreCase("minutes")){
