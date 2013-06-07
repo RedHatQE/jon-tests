@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.sahi.tests;
 
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
@@ -49,6 +50,9 @@ public class PermissionsTest extends SahiTestScript{
 		
 	}
 	
-	
-	
+	@AfterClass
+	public void checkAdminUser(){
+		sahiTasks.relogin("rhqadmin", "rhqadmin");
+	}
+		
 }

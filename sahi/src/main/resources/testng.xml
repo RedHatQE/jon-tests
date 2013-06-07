@@ -375,11 +375,25 @@
 		</classes>
   	</test>
 
+  	<test name="Setup LDAP">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
+			<parameter name="ldap.url" value="ldap://10.16.23.153:10389"/>
+			<parameter name="ldap.search.base" value="ou=Users,dc=jboss,dc=org"/>
+			<parameter name="ldap.login.property" value="uid"/>
+			<parameter name="ldap.enable.ssl" value="false"/>
+			<methods>
+				 <include name="setupLdapServer"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
   	<test name="GuiLDAPUserLoginTest">
   	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
-			<parameter name="gui.username" value="jonqa"/>
-			<parameter name="gui.password" value="jonqa"/>			
+			<parameter name="ldap.username" value="jonqa"/>
+			<parameter name="ldap.password" value="jonqa"/>			
 			<methods>
 				 <include name="ldapLoginTest"></include> 
 			</methods>

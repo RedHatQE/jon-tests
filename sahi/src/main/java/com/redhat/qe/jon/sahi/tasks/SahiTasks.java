@@ -69,6 +69,29 @@ public class SahiTasks extends ExtendedSahi {
 			login(userName, password);
 		}
     }
+    
+    //-----------------------------------------------------------------------------------------------------------
+    // Register LDAP
+    //-----------------------------------------------------------------------------------------------------------
+    public boolean registerLdapServer(String ldapUrl, String ldapSearchBase, String ldapLoginProperty, boolean enableSSL){
+    	if(this.selectPage("Administration-->System Settings", this.cell("Server Details"), 1000*5, 3)){
+    		this.selectComboBoxes("Jump to Section-->LDAP Configuration Properties");
+    		this.textbox("CAM_LDAP_LOGIN_PROPERTY").setValue(ldapUrl);
+    		this.textbox("CAM_LDAP_BASE_DN").setValue(ldapSearchBase);
+    		this.textbox("CAM_LDAP_LOGIN_PROPERTY").setValue(ldapLoginProperty);
+    		if(enableSSL){
+    			this.radio("CAM_LDAP_PROTOCOL[0]").click();
+    		}else{
+    			this.radio("CAM_LDAP_PROTOCOL[1]").click();
+    		}
+    		this.cell("Save").near(this.cell("Dump System Info")).click();
+    		return true;
+    	}else{
+    		return false;
+    	}
+    		
+    	
+    }
 
     /**
      * Method which add column Last Modified Time and sort descending  the table by this column
@@ -723,68 +746,90 @@ public class SahiTasks extends ExtendedSahi {
 
     //************************************************************
     // Recent Operations
-    //*************************************************************
-    public void createRecentOperationsSchedule() {
-
-        this.link("Inventory").click();
-        this.cell("Servers").click();
-        this.link("RHQ Agent").click();
+    //************************************************************
+    public void gotoReportRecentOperationsPage() {
+    	this.selectPage("Reports-->Recent Operations", this.cell("Date Submitted"), 1000*5, 3);
+    }
+    
+    public void gotoOperationsSchedulesPage(String resourceName, boolean selectHistory) {
+    	selectResource(resourceName);
         this.cell("Operations").click();
+        if (selectHistory) {
+            this.xy(this.cell("History"), 3, 3).click();
+        } else {
+            this.xy(this.cell("Schedules"), 3, 3).click();
+        }
+    }
+    
+    public boolean createRecentOperationsSchedule() {
+    	this.gotoOperationsSchedulesPage("Servers=RHQ Agent", false);
         this.cell("New").click();
-        this.div("selectItemText").setValue("g");
-        this.waitFor(5000);
-        this.div("selectItemText").setValue("g");
+    	this.radio("now");
         this.cell("Schedule").click();
-
+        this.gotoOperationsSchedulesPage("Servers=RHQ Agent", true);
+        if(!this.div("Get Info On All Plugins").exists()){
+        	_logger.log(Level.WARNING, "[Get Info On All Plugins] is not available!");
+        	return false;
+        }
+        return true;
     }
 
-    public void deleteRecentOperationsSchedule() {
-        this.link("Reports").click();
-        this.cell("Recent Operations").click(); 
-        this.div("RHQ Agent").click();
+    public boolean deleteRecentOperationsSchedule() {
+    	this.gotoReportRecentOperationsPage();
+        this.div("Get Info On All Plugins").click();
         this.cell("Delete").click();
         this.cell("Yes").click();
-        this.link("Inventory").click();
-
+        if(this.div("Get Info On All Plugins").exists()){
+        	_logger.log(Level.WARNING, "[Get Info On All Plugins] is available!");
+        	return false;
+        }
+        return true;
     }
 
-    public void recentOperationsForceDelete() {
+    public boolean recentOperationsForceDelete() {
         createRecentOperationsSchedule();
-        this.link("Reports").click();
-        this.cell("Recent Operations").click();
-        this.div("RHQ Agent").click();
+        this.gotoReportRecentOperationsPage();
+        this.div("Get Info On All Plugins").click();
         this.cell("Force Delete").click();
         this.cell("Yes").click();
-        this.link("Inventory").click();
-
+        if(this.div("Get Info On All Plugins").exists()){
+        	_logger.log(Level.WARNING, "[Get Info On All Plugins] is available!");
+        	return false;
+        }
+        return true;
     }
 
-    public void recentOperationsQuickLinks() {
-        createRecentOperationsSchedule();
-        this.link("Reports").click();
-        this.cell("Recent Operations").click();
+    public boolean recentOperationsQuickLinks() {
+    	this.gotoReportRecentOperationsPage();
         this.link("RHQ Agent").click();
-        this.image("row_collapsed.png").click();
-        this.link("Reports").click();
-        this.cell("Recent Operations").click();
-        this.div("Get Info On All Plugins").click();
-        this.cell("Delete").click();
-        this.cell("Yes").click();
-        this.link("Inventory").click();
+        ElementStub expandElement = this.image("row_collapsed.png").near(this.bold("Tags:"));
+        ElementStub collapsedElement = this.image("row_expanded.png").near(this.bold("Tags:"));
+        if(!expandElement.exists()){
+        	expandElement.click();
+        }
+        int formTitleCoint = this.cell("formTitle").countSimilar();
+        HashMap<String, String> formDetail = new HashMap<String, String>();
+        for(int i=0; i<formTitleCoint; i++){
+        	formDetail.put(this.cell("formTitle["+i+"]").getText(), this.cell("formCell["+i+"]").getText());
+        }
+        _logger.log(Level.INFO, "Form Data: "+formDetail);
+        if(!collapsedElement.exists()){
+        	_logger.log(Level.WARNING, "Collapsed Image not found!");
+        	return false;
+        }
+        return true;
 
     }
 
-    public void opreationsWithRefreshButtonFunctionality() {
-        createRecentOperationsSchedule();
-        this.link("Reports").click();
-        this.cell("Recent Operations").click();
+    public boolean opreationsWithRefreshButtonFunctionality() {
+    	this.gotoReportRecentOperationsPage();
         this.cell("Refresh").click();
         this.div("Get Info On All Plugins").click();
-        this.cell("Delete").click();
-        this.cell("Yes").click();
-        this.cell("Inventory").click();
-
-
+        if(!this.div("Get Info On All Plugins").exists()){
+        	_logger.log(Level.WARNING, "[Get Info On All Plugins] is available!");
+        	return false;
+        }
+        return true;
     }
 
     //************************************************************
