@@ -52,6 +52,6 @@ public class LoginLogoutTest extends SahiTestScript {
 		if(enableSSLStr.trim().equalsIgnoreCase("true")){
 			enableSSL = true;
 		}
-		Assert.assertTrue(sahiTasks.registerLdapServer(ldapUrl, ldapSearchBase, ldapLoginProperty, enableSSL), "LDAP Setup Status");
+		Assert.assertTrue(sahiTasks.registerLdapServer(ldapUrl, ldapSearchBase, ldapLoginProperty, enableSSL, true), "LDAP Setup Status");
 	}
 }

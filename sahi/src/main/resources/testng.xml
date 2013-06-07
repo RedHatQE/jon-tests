@@ -365,16 +365,6 @@
 		</classes>
   	</test>
 	
-	 <test name="GuiLogoutTest">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
-			<methods>
-				 <include name="logoutTest"></include> 
-			</methods>
-			</class>
-		</classes>
-  	</test>
-
   	<test name="Setup LDAP">
   	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
@@ -400,4 +390,15 @@
 			</class>
 		</classes>
   	</test>
+  	
+  	<test name="GuiLogoutTest">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
+			<methods>
+				 <include name="logoutTest"></include> 
+			</methods>
+			</class>
+		</classes>
+  	</test>
+  	
 </suite>

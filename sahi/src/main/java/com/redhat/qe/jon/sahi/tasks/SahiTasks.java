@@ -73,7 +73,7 @@ public class SahiTasks extends ExtendedSahi {
     //-----------------------------------------------------------------------------------------------------------
     // Register LDAP
     //-----------------------------------------------------------------------------------------------------------
-    public boolean registerLdapServer(String ldapUrl, String ldapSearchBase, String ldapLoginProperty, boolean enableSSL){
+    public boolean registerLdapServer(String ldapUrl, String ldapSearchBase, String ldapLoginProperty, boolean enableSSL, boolean enableLdap){
     	if(this.selectPage("Administration-->System Settings", this.cell("Server Details"), 1000*5, 3)){
     		this.selectComboBoxes("Jump to Section-->LDAP Configuration Properties");
     		this.textbox("CAM_LDAP_LOGIN_PROPERTY").setValue(ldapUrl);
@@ -83,6 +83,11 @@ public class SahiTasks extends ExtendedSahi {
     			this.radio("CAM_LDAP_PROTOCOL[0]").click();
     		}else{
     			this.radio("CAM_LDAP_PROTOCOL[1]").click();
+    		}
+    		if(enableLdap){
+    			this.radio("CAM_JAAS_PROVIDER[0]").click();
+    		}else{
+    			this.radio("CAM_JAAS_PROVIDER[1]").click();
     		}
     		this.cell("Save").near(this.cell("Dump System Info")).click();
     		return true;
