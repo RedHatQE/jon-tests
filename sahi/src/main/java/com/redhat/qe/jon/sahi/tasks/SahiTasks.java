@@ -203,7 +203,7 @@ public class SahiTasks extends ExtendedSahi {
         this.link("Inventory").click();
         this.waitFor(5000);
         this.cell(groupPanelName).click();
-        selectDivElement(groupName, 2);
+        selectDivElement(groupName);
         this.cell("Delete").click();
         this.cell("Yes").click();
     }
@@ -793,7 +793,7 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Force Delete").click();
         this.cell("Yes").click();
         if(this.div("Get Info On All Plugins").exists()){
-        	_logger.log(Level.WARNING, "[Get Info On All Plugins] is available!");
+        	_logger.log(Level.WARNING, "[Get Info On All Plugins] is available! Deletion failed...");
         	return false;
         }
         return true;
@@ -956,7 +956,9 @@ public class SahiTasks extends ExtendedSahi {
     	}
 		return false;    	
     }
-    public boolean selectDivElement(String elementName, int divMaxIndex){    	
+    public boolean selectDivElement(String elementName){
+    	//Set max div count on dynamic
+    	int divMaxIndex = this.div(elementName).countSimilar();
     	for(int i=divMaxIndex; i>=0; i--){
     		if(this.div(elementName+"["+i+"]").exists()){
     			this.div(elementName+"["+i+"]").click();
@@ -2263,7 +2265,7 @@ public class SahiTasks extends ExtendedSahi {
     	
     }
     public boolean deleteAlertDefinitionTemplate(String templateName){
-    	if(!selectDivElement(templateName, 2)){
+    	if(!selectDivElement(templateName)){
     		return false;
     	}
     	this.cell("Delete").near(this.cell("Disable")).click();
