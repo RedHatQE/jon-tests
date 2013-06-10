@@ -123,6 +123,9 @@ class OperationTest(RHQRestTest):
 
     @test(depends_on=[get_history_wait_for_result])
     def delete_op_history(self):
+        self.create_draft()
+        self.schedule()
+        self.get_history_wait_for_result()
         r = self.delete(self.op_hist)
         assert_equal(r.status_code,204)
 
