@@ -129,8 +129,8 @@ class OperationTest(RHQRestTest):
     @test(depends_on=[get_history_wait_for_result])
     @blockedBy('962855')
     def delete_op_history_invalid(self):
-        r = self.delete(self.op_hist+'foo')
-        assert_equal(r.status_code,406)
+        r = self.delete(self.op_hist+'foo?validate=true')
+        assert_equal(r.status_code,404)
 
 @test(groups=['opdef'])
 class OperationDefinitionsTest(RHQRestTest):
