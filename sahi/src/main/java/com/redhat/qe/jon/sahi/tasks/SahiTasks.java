@@ -1777,7 +1777,7 @@ public class SahiTasks extends ExtendedSahi {
     	_logger.log(Level.INFO,"Number of Row: "+metricDetails.size());
     	return metricDetails;
     }
-    public boolean enableDisableUpdateMetric(String resourceName, String metricName, LinkedList<HashMap<String, String>> metricDetails, boolean updateCollectionInterval, String collectionIntervalValue, boolean enable, int tableOffset){
+    public boolean enableDisableUpdateMetric(String resourceName, String metricName, String descrition, LinkedList<HashMap<String, String>> metricDetails, boolean updateCollectionInterval, String collectionIntervalValue, boolean enable, int tableOffset){
     	if(resourceName != null){
     		selectSchedules(resourceName);
     	}    
@@ -1862,7 +1862,9 @@ public class SahiTasks extends ExtendedSahi {
         	}
     	}
     	
-    	selectRowOnTable(metricName);
+    	//selectRowOnTable(metricName);
+    	this.div(metricName).near(this.div(descrition)).click();
+    	
     	if(updateCollectionInterval){
     		this.textbox("interval").setValue(collectionInterval[0].trim());
     		if(!collectionInterval[1].trim().equalsIgnoreCase("minutes")){
