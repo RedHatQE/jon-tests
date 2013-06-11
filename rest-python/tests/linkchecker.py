@@ -48,6 +48,10 @@ class LinkCheckerTest(RHQRestTest):
         if follow:
             for m in re.finditer(regex,r.text,re.DOTALL | re.IGNORECASE):
                 href = m.group(1)
+                if href.find('reports') >= 0 and href.find('csv') <= 0:
+                    # https://bugzilla.redhat.com/show_bug.cgi?id=972774
+                    # reports are "just" in csv
+                    continue
                 if href.find('/') == 0:
                     href = self.server_url.rstrip('/')+href
                 if href.find('http') < 0:

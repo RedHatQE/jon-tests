@@ -36,7 +36,7 @@ class AlertDefinitionTest(RHQRestTest):
         for sch in schedules:
             self.log.info(sch['scheduleName'])
             if name == sch['scheduleName']:
-                return int(sch['scheduleId'])
+                return int(sch['definitionId'])
     
     def _check_opdef(self,opDef):
         def cb_value(key,value):
@@ -63,9 +63,9 @@ class AlertDefinitionTest(RHQRestTest):
         body['name'] = 'rest-condition-operationResult'
         body['conditions'] = [{'name':'discovery','option':'SUCCESS','category':'CONTROL'}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
 
 
     @test
@@ -78,9 +78,9 @@ class AlertDefinitionTest(RHQRestTest):
                 {'name':'AVAIL_GOES_NOT_UP','category':'AVAILABILITY'},
                 {'name':'AVAIL_GOES_UNKNOWN','category':'AVAILABILITY'}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
 
     @test
     def create_alertdef_condition_avail_duration(self):
@@ -89,9 +89,9 @@ class AlertDefinitionTest(RHQRestTest):
         body['conditions'] = [{'name':'AVAIL_DURATION_DOWN','category':'AVAIL_DURATION','option':'600'},
                 {'name':'AVAIL_DURATION_NOT_UP','category':'AVAIL_DURATION','option':'600'}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
 
     @test
     @blockedBy('967742')
@@ -100,9 +100,9 @@ class AlertDefinitionTest(RHQRestTest):
         body['name'] = 'rest-condition-drift-detection'
         body['conditions'] = [{'name':'drift.*','category':'DRIFT','option':'.*'}]
         r = self.post('alert/definitions?resourceId=%d'%self.plat_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
         
     @test
     @blockedBy('967744')
@@ -111,73 +111,85 @@ class AlertDefinitionTest(RHQRestTest):
         body['name'] = 'rest-condition-event'
         body['conditions'] = [{'name':'INFO','category':'EVENT','option':'.*'}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
         
     @test
     @blockedBy('967832')
     def create_alertdef_condition_threshold(self):
         body = self.body.copy()
         body['name'] = 'rest-condition-measurement-threshold'
-        body['conditions'] = [{'name':'LESS_THAN','category':'THRESHOLD','option':'2','threshold':12345, 'comparator':'<','measurementDefinition':self.sched_id}]
+        body['conditions'] = [{'category':'THRESHOLD','threshold':12345, 'comparator':'<','measurementDefinition':self.sched_id}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
         # assertion for BZ 967832
         assert_equal(data['conditions'][0]['measurementDefinition'],self.sched_id)
     
     @test
-    def create_alertdef_resource_config(self):
+    def create_alertdef_condition_resource_config(self):
         body = self.body.copy()
         body['name'] = 'rest-condition-resource-config'
         body['conditions'] = [{'category':'RESOURCE_CONFIG'}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
         
     @test
-    def create_alertdef_trait(self):
+    def create_alertdef_condition_trait(self):
         body = self.body.copy()
         body['name'] = 'rest-condition-trait'
         body['conditions'] = [{'category':'TRAIT','option':'xx.*','measurementDefinition':self.trait_id}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
 
     @test
-    def create_alertdef_change(self):
+    def create_alertdef_condition_change(self):
         body = self.body.copy()
         body['name'] = 'rest-condition-change'
         body['conditions'] = [{'category':'CHANGE','measurementDefinition':self.sched_id}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
         
         
     @test
-    def create_alertdef_range(self):
+    def create_alertdef_condition_range(self):
         body = self.body.copy()
         body['name'] = 'rest-condition-range'
-        body['conditions'] = [{'category':'RANGE','option':'7','threshold':'3.0','operator':'<','measurementDefinition':self.sched_id}]
+        body['conditions'] = [{'category':'RANGE','option':'7','threshold':'0.3','comparator':'<','measurementDefinition':self.sched_id}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
     
     @test    
-    def create_alertdef_baseline(self):
+    def create_alertdef_condition_baseline(self):
         body = self.body.copy()
         body['name'] = 'rest-condition-baseline'
-        body['conditions'] = [{'category':'BASELINE','option':'mean','threshold':'3.0','operator':'<','measurementDefinition':self.sched_id}]
+        body['conditions'] = [{'category':'BASELINE','option':'max','threshold':'0.4','comparator':'<','measurementDefinition':self.sched_id}]
         r = self.post('alert/definitions?resourceId=%d'%self.res_id,body)
-        assert_equal(r.status_code,201)
         data = r.json()
         self.log.info(data)
+        assert_equal(r.status_code,201)
+    
+    @test
+    @blockedBy('973102')
+    def create_alertdef_condition_incorrect_measurement_def(self):
+        body = self.body.copy()
+        body['name'] = 'rest-condition-incorrect-mdef'
+        body['conditions'] = [{'category':'BASELINE','option':'max','threshold':'0.2','comparator':'<','measurementDefinition':self.sched_id}]
+        r = self.post('alert/definitions?resourceId=%d'%self.plat_id,body)
+        data = r.json()
+        self.log.info(data)
+        assert_equal(r.status_code,406)
+        
         
 @test(groups=['alert'])
 class AlertTest(RHQRestTest):
