@@ -117,7 +117,7 @@ public class SahiTasks extends ExtendedSahi {
     		this.textbox("CAM_LDAP_BIND_DN").setValue("");
 
     		//Set password
-    		this.textbox("CAM_LDAP_BIND_PW").setValue("");
+    		this.password("CAM_LDAP_BIND_PW").setValue("");
 
     		//Search Filter
     		this.textbox("CAM_LDAP_FILTER").setValue("");
