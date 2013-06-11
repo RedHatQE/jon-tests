@@ -206,22 +206,22 @@ public class SahiTasks extends ExtendedSahi {
     private void selectResourceOnGroup(String resourceName, int maxIndex){
     	for(int i=maxIndex; i>=0; i--){
     		if(this.textbox("search["+i+"]").exists()){
-    			this.textbox("search["+i+"]").click();
     			this.textbox("search["+i+"]").setValue(resourceName);
-    			_logger.log(Level.INFO, "Clciked on the element:  search["+i+"]");
+    			_logger.log(Level.INFO, "Value set on:  search["+i+"]: "+resourceName);
     			break;
     		}   			
     	}  
     	this.waitFor(5*1000);
+    	if(!this.byText(resourceName, "nobr").exists()){
+    		_logger.log(Level.WARNING, "Resource["+resourceName+"] not available to select..");
+    	}
         this.xy(this.byText(resourceName, "nobr"), 3,3).doubleClick();
         this.waitFor(2*1000);
     }
     public void createGroup(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList) {
-        this.link("Inventory").click();
-        this.waitFor(5000);
-        this.cell(groupPanelName).click();
-        this.cell("New").click();
-        this.textbox("name").setValue(groupName);
+    	this.selectPage("Inventory-->Compatible Groups", this.textbox("search"), 1000*5, 3);
+    	this.cell("New").click();
+    	this.textbox("name").setValue(groupName);
         this.textarea("description").setValue(groupDesc);
         this.cell("Next").click();
         for (String resource : resourceList) {
@@ -825,6 +825,7 @@ public class SahiTasks extends ExtendedSahi {
     public boolean createRecentOperationsSchedule() {
     	this.gotoOperationsSchedulesPage("Servers=RHQ Agent", false);
         this.cell("New").click();
+        this.selectComboBoxDivDiv(this, "/selectItemText/", "Get Info On All Plugins");
     	this.radio("now");
         this.cell("Schedule").click();
         this.gotoOperationsSchedulesPage("Servers=RHQ Agent", true);
@@ -848,16 +849,18 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public boolean recentOperationsForceDelete() {
-        createRecentOperationsSchedule();
-        this.gotoReportRecentOperationsPage();
-        this.div("Get Info On All Plugins").click();
-        this.cell("Force Delete").click();
-        this.cell("Yes").click();
-        if(this.div("Get Info On All Plugins").exists()){
-        	_logger.log(Level.WARNING, "[Get Info On All Plugins] is available! Deletion failed...");
-        	return false;
+        if(createRecentOperationsSchedule()){
+        	this.gotoReportRecentOperationsPage();
+            this.div("Get Info On All Plugins").click();
+            this.cell("Force Delete").click();
+            this.cell("Yes").click();
+            if(this.div("Get Info On All Plugins").exists()){
+            	_logger.log(Level.WARNING, "[Get Info On All Plugins] is available! Deletion failed...");
+            	return false;
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     public boolean recentOperationsQuickLinks() {
