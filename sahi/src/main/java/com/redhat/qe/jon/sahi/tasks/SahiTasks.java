@@ -70,25 +70,81 @@ public class SahiTasks extends ExtendedSahi {
 		}
     }
     
+    //LDAP login check with first time login
+    public boolean ldapLogin(String userName, String password, String firstName, String lastName, String email, String phoneNumber, String department) {
+    	if(this.login(userName, password)){
+    		//check:: Is LDAP user logged in first time?
+    		if(this.cell("Register User").exists()){
+    			_logger.log(Level.INFO, "user["+userName+"] logged in first time, registeration required...");    			
+    			//Set First Name
+    			this.textbox("first").setValue(firstName);
+    			//set Last Name
+    			this.textbox("last").setValue(lastName);
+    			//set email
+    			this.textbox("email").setValue(email);
+    			//set phone number
+    			this.textbox("phone").setValue(phoneNumber);
+    			//set Department
+    			this.textbox("department").setValue(department);
+    			
+    			//Click OK
+    			this.cell("OK").click();
+    			return true;
+    		}
+    		return true;
+    	}
+    	return false;
+    }
+    
     //-----------------------------------------------------------------------------------------------------------
     // Register LDAP
     //-----------------------------------------------------------------------------------------------------------
     public boolean registerLdapServer(String ldapUrl, String ldapSearchBase, String ldapLoginProperty, boolean enableSSL, boolean enableLdap){
     	if(this.selectPage("Administration-->System Settings", this.cell("Server Details"), 1000*5, 3)){
     		this.selectComboBoxes("Jump to Section-->LDAP Configuration Properties");
-    		this.textbox("CAM_LDAP_LOGIN_PROPERTY").setValue(ldapUrl);
-    		this.textbox("CAM_LDAP_BASE_DN").setValue(ldapSearchBase);
-    		this.textbox("CAM_LDAP_LOGIN_PROPERTY").setValue(ldapLoginProperty);
-    		if(enableSSL){
-    			this.radio("CAM_LDAP_PROTOCOL[0]").click();
-    		}else{
-    			this.radio("CAM_LDAP_PROTOCOL[1]").click();
-    		}
+    		
+    		// Enable/Disable LDAP
     		if(enableLdap){
     			this.radio("CAM_JAAS_PROVIDER[0]").click();
     		}else{
     			this.radio("CAM_JAAS_PROVIDER[1]").click();
     		}
+
+    		//Set Search base
+    		this.textbox("CAM_LDAP_BASE_DN").setValue(ldapSearchBase);
+
+    		//Set username
+    		this.textbox("CAM_LDAP_BIND_DN").setValue("");
+
+    		//Set password
+    		this.textbox("CAM_LDAP_BIND_PW").setValue("");
+
+    		//Search Filter
+    		this.textbox("CAM_LDAP_FILTER").setValue("");
+
+    		//Group Search Filter
+    		this.textbox("CAM_LDAP_GROUP_FILTER").setValue("");
+
+    		//Group Member filter
+    		this.textbox("CAM_LDAP_GROUP_MEMBER").setValue(ldapSearchBase);
+
+    		//Is PosixGroup enabled/disabled
+    		//Disabled
+    			this.radio("CAM_LDAP_GROUP_USE_POSIX[1]").click();
+    		
+    		// Login Property 
+    		this.textbox("CAM_LDAP_LOGIN_PROPERTY").setValue(ldapLoginProperty);
+    		
+    		//LDAP URL
+    		this.textbox("CAM_LDAP_NAMING_PROVIDER_URL").setValue(ldapLoginProperty);
+    		
+    		//Enable/Disable SSL
+    		if(enableSSL){
+    			this.radio("CAM_LDAP_PROTOCOL[0]").click();
+    		}else{
+    			this.radio("CAM_LDAP_PROTOCOL[1]").click();
+    		}
+    		
     		this.cell("Save").near(this.cell("Dump System Info")).click();
     		return true;
     	}else{

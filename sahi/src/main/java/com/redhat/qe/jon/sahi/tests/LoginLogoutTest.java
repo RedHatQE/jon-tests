@@ -2,6 +2,7 @@ package com.redhat.qe.jon.sahi.tests;
 
 import java.util.logging.Logger;
 
+import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -10,30 +11,26 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 public class LoginLogoutTest extends SahiTestScript {
 	private static Logger _logger = Logger.getLogger(LoginLogoutTest.class.getName());
+	private static String loginErrorMessgae = "The username or password provided does not match our records.";
 	
 	@Parameters({ "gui.username", "gui.password" })
 	@Test (groups={"functional","sanity","setup","login"})
 	public void loginTest(String guiUsername, String guiPassword){
 		_logger.finer("Logging into RHQ system");
 		Assert.assertTrue(sahiTasks.login(guiUsername, guiPassword), "Login status");
-		String loginErrorMessgae = "The username or password provided does not match our records.";
 		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
 		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
 		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
 	}
 	
-	@Parameters({ "ldap.username", "ldap.password" })
+	@Parameters({ "ldap.username", "ldap.password", "ldap.first.name", "ldap.last.name", "ldap.email", "ldap.phone.number", "ldap.department" })
 	@Test (groups={"functional","sanity","setup","login"})
-	public void ldapLoginTest(String guiUsername, String guiPassword){
-		loginTest(guiUsername, guiPassword);
-		// if user is logging for the first time a registration form should pop-up
-		// in this case it is enough to just cancel it
-		try {
-		    sahiTasks.cell("Cancel").click();
-		}
-		catch (Exception ex) {
-		    
-		}
+	public void ldapLoginTest(String guiUsername, String guiPassword, @Optional String firstName, @Optional String lastName, @Optional String email, @Optional String phoneNumber, @Optional String department){
+		_logger.finer("Logging into RHQ system");
+		Assert.assertTrue(sahiTasks.ldapLogin(guiUsername, guiPassword, firstName, lastName, email, phoneNumber, department), "Login status");
+		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
+		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
+		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
 	}
 	
 	@Test (groups={"functional","sanity","setup","logout"})

@@ -383,7 +383,12 @@
   	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
 			<parameter name="ldap.username" value="jonqa"/>
-			<parameter name="ldap.password" value="jonqa"/>			
+			<parameter name="ldap.password" value="jonqa"/>
+			<parameter name="ldap.first.name" value="JON"/>	
+			<parameter name="ldap.last.name" value="QA"/>	
+			<parameter name="ldap.email" value="jonqa@redhat.com"/>	
+			<parameter name="ldap.phone.number" value="9999999999"/>	
+			<parameter name="ldap.department" value="QE"/>	
 			<methods>
 				 <include name="ldapLoginTest"></include> 
 			</methods>
