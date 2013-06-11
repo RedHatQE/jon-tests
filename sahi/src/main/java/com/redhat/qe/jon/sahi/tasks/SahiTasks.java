@@ -136,7 +136,7 @@ public class SahiTasks extends ExtendedSahi {
     		this.textbox("CAM_LDAP_LOGIN_PROPERTY").setValue(ldapLoginProperty);
     		
     		//LDAP URL
-    		this.textbox("CAM_LDAP_NAMING_PROVIDER_URL").setValue(ldapLoginProperty);
+    		this.textbox("CAM_LDAP_NAMING_PROVIDER_URL").setValue(ldapUrl);
     		
     		//Enable/Disable SSL
     		if(enableSSL){
