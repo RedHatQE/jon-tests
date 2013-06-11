@@ -21,8 +21,8 @@ class RestClientTest extends TestScript{
 	@BeforeClass
 	def baseSetUp() {
 		// print '[jon.server.url] = '+System.properties['jon.server.url']
-		client = new RESTClient( System.properties['jon.server.url'] + '/rest/1/' )
-		// check wheter JON is UP
+		client = new RESTClient( System.properties['jon.server.url'] + '/rest' )
+		// check if JON is UP
 		try {
 			client.get( path : 'status.json' )
 		}
