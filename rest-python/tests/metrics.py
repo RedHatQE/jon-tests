@@ -81,7 +81,7 @@ class MetricsTest(RHQRestTest):
     @test(depends_on=[set_schedule])
     @blockedBy('963804')
     def get_data_multi(self):
-        r = self.get('metric/data/?sid=%d&hideEmpty=true&dataPoints=5' % (self.sid))
+        r = self.get('metric/data/?sid=%d&hideEmpty=false&dataPoints=5' % (self.sid))
         assert_equal(r.status_code,200)
         result = r.json()
         assert_equal(len(result),1)
@@ -169,7 +169,8 @@ class MetricsTest(RHQRestTest):
         assert_equal(r.status_code,201)
         r = self.get(r.headers['location'])
         assert_equal(r.status_code,200)
-        assert_equal(len(r.json()),1,'Should return exactly 1 data we just pushed')
+        size = len(r.json())
+        assert_equal(size,1,'Should return exactly 1 data we just pushed, but server returned %d' % size)
         assert_equal(r.json()[0]['value'],0.5,'Unexpected returned value')
     
     @test(groups=['putmetric'])
