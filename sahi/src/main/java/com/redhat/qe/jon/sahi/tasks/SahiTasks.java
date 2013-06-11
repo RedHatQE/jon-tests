@@ -126,7 +126,7 @@ public class SahiTasks extends ExtendedSahi {
     		this.textbox("CAM_LDAP_GROUP_FILTER").setValue("");
 
     		//Group Member filter
-    		this.textbox("CAM_LDAP_GROUP_MEMBER").setValue(ldapSearchBase);
+    		this.textbox("CAM_LDAP_GROUP_MEMBER").setValue("");
 
     		//Is PosixGroup enabled/disabled
     		//Disabled
