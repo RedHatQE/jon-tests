@@ -31,15 +31,15 @@ class ResourceTest extends RestClientTest {
 			println "Visited ${json.resourceId} : ${json.resourceName}"
 			json.links.each { link ->
 				// find link to resource's children
-				if (link.get('rel') == 'children') {
+				if (link.containsKey('children')) {
 					// list children
-					client.get( path : link.get('href')) { resp2, json2 ->
+					client.get( path : link.get('children').get('href')) { resp2, json2 ->
 						for (child in json2) {
 							println "Found child ${child.resourceId}"
 							// find each child link & recurse
 							child.links.each { l ->
-								if (l.get('rel') == 'self') {
-									visitResource(l.get('href'))
+								if (l.containsKey('self')) {
+									visitResource(l.get('self').get('href'))
 								}
 							}
 						}
@@ -67,8 +67,8 @@ class ResourceTest extends RestClientTest {
 		client.get( path : 'resource/platforms.json' ) { resp, json ->
 			json.each {
 				it.links.each { link ->
-					if (link.get('rel') == 'self') {
-						visitResource(link.get('href'))
+					if (link.containsKey('self')) {
+						visitResource(link.get('self').get('href'))
 					}
 				}
 			}
