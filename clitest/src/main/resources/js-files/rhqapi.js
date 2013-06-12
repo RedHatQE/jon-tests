@@ -1242,6 +1242,11 @@ var ResGroup = function(param) {
 		params.explicitGroupIds = [_id];
 		return resources.find(params);
 	}
+	var _resourcesImpl = function(params){
+		params = params || {};
+		params.implicitGroupIds = [_id];
+		return resources.find(params);
+	}
 	var _waitForOperationResult = function(groupOpShedule) {
 		var opHistCriteria = new GroupOperationHistoryCriteria();
 		if (groupOpShedule)
@@ -1380,13 +1385,21 @@ var ResGroup = function(param) {
 			ResourceGroupManager.deleteResourceGroup(_id);
 		},
 		/**
-		 * get resources contained in this group
+		 * get explicit resources contained in this group
 		 * @param params - you can filter child resources same way as in {@link resources.find()} function
-		 * @returns array of resources
+		 * @returns array of explicit resources
 		 * @type Resrouce[]
 		 * @function
 		 */
 		resources : _resources,
+		/**
+		 * get implicit resources contained in this group
+		 * @param params - you can filter child resources same way as in {@link resources.find()} function
+		 * @returns array of implicit resources
+		 * @type Resrouce[]
+		 * @function
+		 */
+		resourcesImpl : _resourcesImpl,
 		/**
 		 * schedules operation on this group using cron expression. In contrast to invokeOperation this is 
 		 * not blocking operation.
@@ -1766,6 +1779,62 @@ var metricsTemplates = (function() {
     }
   };
 })();
+
+
+/**
+ * @namespace provides access to dynamic group definitions
+ */
+var dynaGroupDefs = (function(){
+	var common = new _common();
+	
+	return{
+		findDynaGroupDefinitions : function(params){
+			params = params || {};
+			common.trace("dynaGroupDefs.findDynaGroupDefinitions("+common.objToString(params)+")");
+			var cri = common.createCriteria(new ResourceGroupDefinitionCriteria(),params);
+			cri.fetchManagedResourceGroups(true);
+			var result = GroupDefinitionManager.findGroupDefinitionsByCriteria(cri);
+		
+			return common.pageListToArray(result).map(function(x){return new DynaGroupDef(x);});
+		}
+	};
+})();
+/**
+ * @class
+ * @constructor
+ */
+var DynaGroupDef = function(param) {
+	var common = new _common();
+	common.trace("new DynaGroupDef("+param+")");
+	if (!param) {
+		throw "org.rhq.core.domain.resource.group.GroupDefinition parameter is required";
+	}
+	var _id = param.id;
+	var _obj = param;
+	
+	return {
+		/**
+		 * GroupDefinition id
+		 */
+		id : _id,
+		/**
+		 * org.rhq.core.domain.resource.group.GroupDefinition instance
+		 */
+		obj : _obj,
+		/**
+		 * GroupDefinition name
+		 */
+		name : _obj.getName(),
+		/**
+		 * Returns groups managed by this group definition.
+		 * @type ResGroup[]
+		 */
+		getManagedGroups : function() {
+			var groups =  _obj.getManagedResourceGroups();
+			return groups.toArray().map(function(x){return new ResGroup(x);});
+		}
+	}
+}
 
 /**
  * @namespace provides access to drift subsystem
