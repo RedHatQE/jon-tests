@@ -17,7 +17,7 @@ class RHQRestTest(object):
         log_handler.setLevel('INFO')
         self.log.addHandler(log_handler)        
         # set parameters to our test class instance
-        self.server_url = 'http://%s:7080/' % os.getenv('RHQ_TARGET','localhost')
+        self.server_url = 'http://%s:7080/' % os.getenv('RHQ_HOST','localhost')
         self.endpoint = '%srest/' % self.server_url
         self.auth = (os.getenv('RHQ_USER','rhqadmin'),os.getenv('RHQ_PASSWORD','rhqadmin'))
         self.headers = {'accept':'application/json','content-type': 'application/json'} 

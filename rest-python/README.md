@@ -22,7 +22,7 @@ nose```,
 
     Export environment variable with a hostname of your RHQ instance
 
-    ```export RHQ_TARGET=<your host>```
+    ```export RHQ_HOST=<your host>```
 
 ### Execute all tests and get xunit/junit report
 
