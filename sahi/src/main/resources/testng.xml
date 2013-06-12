@@ -365,6 +365,13 @@
 		</classes>
   	</test>
 	
+	<test name="StorageAutoInventory">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventory">
+			</class>
+		</classes>
+  	</test>
+  	
   	<test name="Setup LDAP">
   	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">

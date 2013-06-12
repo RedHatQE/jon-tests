@@ -19,13 +19,13 @@ public class DriftDefinitionTemplateTest extends SahiTestScript{
 		
 	}
 	
-	@Test (groups="driftDefinitionTemplate")
+	@Test (groups="driftDefinitionTemplate", dependsOnMethods={"createDriftDefinitionTemplate"})
 	public void editDriftDefinitionTemplate( ){
 		sahiTasks.editDriftDefinitionTemplate(testDriftDefTmpName);
 		
 	}
 	
-	@Test (groups="driftDefinitionTemplate")
+	@Test (groups="driftDefinitionTemplate", dependsOnMethods={"editDriftDefinitionTemplate"})
 	public void deleteDriftDefinitionTemplate( ){
 		sahiTasks.deleteDriftDefinitionTemplate(testDriftDefTmpName);
 		

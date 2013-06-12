@@ -20,24 +20,9 @@
   	</test>
   	  	
   
-  <test name="SubNavigationMenuTests">
+	<test name="StorageAutoInventory">
   	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.SubNavigationMenuTests">
-			<methods>
-				<include name="subNavigationMenuLinksExist"></include>
-				<include name="checkAutoGroupSubnavigation"></include> 
-			</methods>
-			</class>
-		</classes>
-  	</test>
-  	
-	
-	 <test name="GuiLogoutTest">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
-			<methods>
-				 <include name="logoutTest"></include> 
-			</methods>
+			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventory">
 			</class>
 		</classes>
   	</test>

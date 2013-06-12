@@ -807,6 +807,17 @@ public class Resource {
 	}
     
 	
+	public void inventoryAll(String platformName){
+		tasks.link("Inventory").click();
+		tasks.cell("Discovery Queue").click();
+		tasks.waitFor(Timing.WAIT_TIME);
+		
+		tasks.image("unchecked.png").near(tasks.cell(platformName)).click();
+		tasks.cell("Yes").click();
+		tasks.cell("Import").click();
+	}
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
