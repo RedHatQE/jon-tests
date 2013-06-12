@@ -812,20 +812,21 @@ public class SahiTasks extends ExtendedSahi {
     	this.selectPage("Reports-->Recent Operations", this.cell("Date Submitted"), 1000*5, 3);
     }
     
-    public void gotoOperationsSchedulesPage(String resourceName, boolean selectHistory) {
+    public void gotoOperationsSchedulesPage(String resourceName, boolean selectSchedules) {
     	selectResource(resourceName);
         this.cell("Operations").click();
-        if (selectHistory) {
-            this.xy(this.cell("History"), 3, 3).click();
-        } else {
+        if (selectSchedules) {
             this.xy(this.cell("Schedules"), 3, 3).click();
+        } else {
+            this.xy(this.cell("History"), 3, 3).click();
         }
     }
     
     public boolean createRecentOperationsSchedule() {
-    	this.gotoOperationsSchedulesPage("Servers=RHQ Agent", false);
+    	this.gotoOperationsSchedulesPage("Servers=RHQ Agent", true);
         this.cell("New").click();
-        this.selectComboBoxDivDiv(this, "/selectItemText/", "Get Info On All Plugins");
+        this.div("selectItemText").click();
+        this.div("Get Info On All Plugins").click();
     	this.radio("now");
         this.cell("Schedule").click();
         this.gotoOperationsSchedulesPage("Servers=RHQ Agent", true);
