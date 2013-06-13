@@ -131,7 +131,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
         if (platform.isWindows()) {
             String winFilter = "Commandline like '%" + asIdentifier + "%' AND Commandline like '%java%'";
             if (serverConfig != null) {
-                winFilter += "AND Commandline like '%" + serverConfig + "%'";
+                winFilter += " AND Commandline like '%" + serverConfig + "%'";
             }
             String pids = runAndWait("wmic process where \"" + winFilter + " AND name!='WMIC.exe'\" get Processid").getStdout();
             running = !(pids.trim().isEmpty());
