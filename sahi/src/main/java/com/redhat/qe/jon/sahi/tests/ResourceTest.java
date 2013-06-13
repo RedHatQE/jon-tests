@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 
@@ -42,7 +44,7 @@ public class ResourceTest extends SahiTestScript{
 
 	@Test (groups="resourceSearchTest", dataProvider="roleUserAndGroupCreationData")
 	public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, String desc, String compTestGroup, String searchQueryName){
-		sahiTasks.resourceSearch(searchRoleName, password, firstName, secondName, emailId, searchRoleName, desc, compTestGroup,searchQueryName);
+		sahiTasks.resourceSearch(searchTestuser, password, firstName, secondName, emailId, searchRoleName, desc, compTestGroup,searchQueryName);
 	}
 	
 	@Test (groups="resourceSearchTest")
@@ -73,5 +75,4 @@ public class ResourceTest extends SahiTestScript{
 		return data;
 	}
 	
-
 }

@@ -561,8 +561,8 @@ public class SahiTasks extends ExtendedSahi {
         this.textbox("name").setValue(groupName);
         this.textarea("description").setValue(groupDesc);
         this.textarea("expression").setValue("" +
-        		"groupby resource.trait[jboss.system:type=Server:VersionName]\n" +
-        		"resource.type.plugin = JBossAS\n" +
+        		"groupby resource.trait[jboss.system:type=Server:VersionName] \n\r" +
+        		"resource.type.plugin = JBossAS \n\r" +
         		"resource.type.name = JBossAS Server");
         this.cell("Save & Recalculate").click();
         org.testng.Assert.assertTrue(this.waitForElementExists(this, this.cell("You have successfully recalculated this group definition"), "Cell: You have successfully recalculated this group definition", 1000*20), "Successful message check"); //Wait 20 seconds

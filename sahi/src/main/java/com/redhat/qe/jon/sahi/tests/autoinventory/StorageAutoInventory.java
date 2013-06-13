@@ -2,8 +2,8 @@ package com.redhat.qe.jon.sahi.tests.autoinventory;
 
 import java.util.logging.Logger;
 
-import org.junit.AfterClass;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -29,26 +29,28 @@ public class StorageAutoInventory extends SahiTestScript {
 	}
 
 	@Test
-	public void checkStorageNodeElementInventoried()
-			throws InterruptedException {
+	public void checkStorageNodeElementAutoInventoried() {
 
 		log.info(platformName);
-		// sleep for 2 sec
-		Thread.sleep(2000);
+//		 sleep for 2 sec
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		// wait for platform auto-inventory
 		sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("Platforms"),
 				platformName, Timing.WAIT_TIME);
 		// call platform manual auto-discovery
 		platform.operations().newOperation("Manual Autodiscovery");
 		// navigate to inventory
-		platform.inventory().navigateFull();
+		platform.inventory();
 		// wait for storage node auto-inventory
 		sahiTasks.waitForElementVisible(sahiTasks,
 				sahiTasks.cell("RHQ Storage Node"),
 				sahiTasks.cell("RHQ Storage Node").text(), Timing.WAIT_TIME);
 		Assert.assertTrue(platform.inventory().hasChildren());
 
-		platform.inventoryAll(platformName);
 	}
 
 	@AfterClass()
