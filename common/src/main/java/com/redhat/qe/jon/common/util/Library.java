@@ -1,5 +1,8 @@
 package com.redhat.qe.jon.common.util;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 /**
  * @author rhatlapa@redhat.com
  */
@@ -74,5 +77,21 @@ public class Library {
         } else {
           return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
         }
+    }
+
+    /**
+     * tries to translate IP address to hostname, if it fails, the ipAddress is returned
+     * @param ipAddress
+     * @return
+     */
+    public static String ipToHostname(String ipAddress) {
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getByName(ipAddress);
+            return addr.getHostName();
+        } catch (UnknownHostException e) {
+            return ipAddress;
+        }
+
     }
 }
