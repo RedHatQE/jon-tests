@@ -34,7 +34,7 @@ if( mdefs != null ) {
   if( mdefs.size() > 1 ) {
      for( i =0; i < mdefs.size(); ++i) {
           mdef = mdefs.get(i);
-          var data = MeasurementDataManager.findDataForResource(resources.get(0).id,[mdef.id],start,end,"")
+          var data = MeasurementDataManager.findDataForResource(resources.get(0).id,[mdef.id],start,end,1)
 
       exporter.write(data.get(0)); // write the data to the CSV file
      }
