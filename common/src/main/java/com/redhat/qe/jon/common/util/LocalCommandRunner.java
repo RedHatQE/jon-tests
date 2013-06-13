@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.redhat.qe.jon.common.Platform;
@@ -133,6 +134,10 @@ public class LocalCommandRunner implements ICommandRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+        log.info("Stdout: " + result.getStdout());
+        log.info("Stderr: " + result.getStderr());
+        log.info("ExitCode: " + result.getExitCode());
 		
 		return result;
 	}
