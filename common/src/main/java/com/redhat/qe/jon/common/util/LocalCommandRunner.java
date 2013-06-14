@@ -140,9 +140,9 @@ public class LocalCommandRunner implements ICommandRunner {
 			e.printStackTrace();
 		}
 
-        log.info("Stdout: " + result.getStdout());
-        log.info("Stderr: " + result.getStderr());
-        log.info("ExitCode: " + result.getExitCode());
+        log.fine("Stdout: " + result.getStdout());
+        log.fine("Stderr: " + result.getStderr());
+        log.fine("ExitCode: " + result.getExitCode());
 		
 		return result;
 	}
