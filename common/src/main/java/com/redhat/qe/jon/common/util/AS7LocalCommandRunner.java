@@ -1,5 +1,6 @@
 package com.redhat.qe.jon.common.util;
 
+import com.redhat.qe.jon.common.Constants;
 import com.redhat.qe.jon.common.Platform;
 import com.redhat.qe.tools.SSHCommandResult;
 
@@ -47,6 +48,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
         } else {
             this.asIdentifier = asHomeDir.getName();
         }
+        this.asIdentifier = this.asIdentifier.replaceAll(Constants.TWO_DOUBLE_BACKSLASHES, Constants.FOUR_DOUBLE_BACKSLASHES);
     }
 
 
