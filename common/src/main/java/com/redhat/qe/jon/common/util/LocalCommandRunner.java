@@ -62,8 +62,12 @@ public class LocalCommandRunner implements ICommandRunner {
 				+ destFileName);
 	}
 
-	@Override
-	public SSHCommandResult runAndWait(String command) {
+    @Override
+    public SSHCommandResult runAndWait(String command) {
+        return runAndWait(command, this.workDir);
+    }
+
+	public SSHCommandResult runAndWait(String command, String workDir) {
 		SSHCommandResult result = new SSHCommandResult(-1, "", "");
 		try {
 
@@ -73,6 +77,7 @@ public class LocalCommandRunner implements ICommandRunner {
             } else {
                 cmd = new String[] {"/bin/sh", "-c", command};
             }
+            log.info("Running command: " + Arrays.toString(cmd));
 			final Process p = Runtime.getRuntime().exec(cmd,null,new File(workDir));
 			final StringBuilder output = new StringBuilder("");
 			final StringBuilder error = new StringBuilder("");
