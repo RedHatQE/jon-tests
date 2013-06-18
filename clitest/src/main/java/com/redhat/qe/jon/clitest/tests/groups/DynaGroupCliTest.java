@@ -46,5 +46,12 @@ public class DynaGroupCliTest extends CliEngine {
 		addDepends("/groups/utils.js").
 		run();
 	}
+	@Test
+	public void deleteDynaGroupDefinitionNegativeTest(){
+		createJSRunner("groups/deleteDynaGroupDefNegative.js").
+		addDepends("/rhqapi.js").
+		addDepends("/groups/utils.js").
+		run();
+	}
 
 }
