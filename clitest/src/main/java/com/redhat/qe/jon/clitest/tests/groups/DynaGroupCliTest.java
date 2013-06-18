@@ -14,7 +14,15 @@ public class DynaGroupCliTest extends CliEngine {
 			run();
 	}
 	
-	@Test(dependsOnMethods={"createDynaGroupDefinition"})
+	@Test(groups={"blockedByBug-974501","blockedByBug-974540"})
+	public void createDynaGroupDefinitionNegativeTest(){
+		createJSRunner("groups/createDynaGroupDefNegative.js").
+		addDepends("/rhqapi.js").
+		addDepends("/groups/utils.js").
+		run();
+	}
+	
+	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=0)
 	public void editDynaGroupDefinition(){
 		createJSRunner("groups/editDynaGroupDef.js").
 		addDepends("/rhqapi.js").
@@ -22,7 +30,16 @@ public class DynaGroupCliTest extends CliEngine {
 		run();
 	}
 	
-	@Test(dependsOnMethods={"editDynaGroupDefinition"})
+	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=1,
+			groups={"blockedByBug-974501","blockedByBug-974540"})
+	public void editDynaGroupDefinitionNegativeTest(){
+		createJSRunner("groups/editDynaGroupDefNegative.js").
+		addDepends("/rhqapi.js").
+		addDepends("/groups/utils.js").
+		run();
+	}
+	
+	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=2)
 	public void deleteDynaGroupDefinition(){
 		createJSRunner("groups/deleteDynaGroupDef.js").
 		addDepends("/rhqapi.js").
