@@ -97,6 +97,8 @@ public class Operations extends ResourceTab {
         Assert.assertTrue(existsImage, "Operation [" + opName + "] result: " + succ);
         log.fine("Getting operation result");
         tasks.image(resultImage).in(tasks.div(opName + "[0]").parentNode("tr")).doubleClick();
+        log.finer("Waiting " + Timing.toString(Timing.WAIT_TIME) + " for loading results of the operation");
+        tasks.waitFor(Timing.WAIT_TIME);
         log.finest("The property element: " + tasks.cell("Property").fetch());
         List<ElementStub> headerCells = tasks.cell("Property").collectSimilar();
         for (ElementStub el : headerCells) {
