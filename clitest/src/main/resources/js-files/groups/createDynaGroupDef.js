@@ -3,6 +3,8 @@
  * June 17, 2013   
  * 
  * This test creates new dynaGroup definitions.
+ * 
+ * Requires: group/utils.js, rhqapi.js
  *   
  **/
 
@@ -11,10 +13,11 @@ var common = new _common();
 
 
 // delete all found dynaGroups definitions and all groups
-removeAllDynaGroupDefs();
 groups.find().forEach(function(b){
 	b.remove();
 });
+removeAllDynaGroupDefs();
+
 
 
 //find all imported agents and platforms

@@ -4,6 +4,8 @@
  * 
  * This test tries to create dynaGroup definitions with incorrect parameters.
  *   
+ * Requires: group/utils.js, rhqapi.js
+ * 
  **/
 
 verbose = 2;
