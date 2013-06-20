@@ -4,6 +4,7 @@
  * 
  * This test tries to delete dynaGroup definitions with incorrect ids.
  *   
+ * Requires: group/utils.js, rhqapi.js
  *   
  **/
 

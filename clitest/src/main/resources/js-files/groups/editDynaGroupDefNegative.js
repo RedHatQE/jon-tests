@@ -3,6 +3,8 @@
  * June 17, 2013   
  * 
  * This test tries to edit dynaGroup definitions with incorrect parameters.
+ * 
+ * Requires: group/utils.js, rhqapi.js
  *   
  **/
 
@@ -66,13 +68,3 @@ for(var i in recalIntervals){
 	existingDef2.setRecalculationInterval(recalIntervals[i]);
 	expectException(updateDynaGroupDefinition,[existingDef2]);
 }
-
-
-function updateDynaGroupDefinition(dynaGroupDefinition){
-	common.info("Editing dynaGroup definition with name " +dynaGroupDefinition.name +
-			" and expression " + dynaGroupDefinition.getExpression() +
-			" and recalculation interval " + dynaGroupDefinition.getRecalculationInterval());
-	
-	return GroupDefinitionManager.updateGroupDefinition(dynaGroupDefinition);
-}
-

@@ -3,7 +3,9 @@
  * June 17, 2013   
  * 
  * This file contains common methods used in dynaGroup tests.
- *   
+ * 
+ * Requires: rhqapi.js 
+ *  
  **/
 
 
@@ -127,4 +129,13 @@ function expectException(func,params,expectedErrMsg) {
 	}
 	
 	return exception;
+}
+
+
+function updateDynaGroupDefinition(dynaGroupDefinition){
+	common.info("Editing dynaGroup definition with name " +dynaGroupDefinition.name +
+			" and expression " + dynaGroupDefinition.getExpression() +
+			" and recalculation interval " + dynaGroupDefinition.getRecalculationInterval());
+	
+	return GroupDefinitionManager.updateGroupDefinition(dynaGroupDefinition);
 }

@@ -3,6 +3,8 @@
  * June 17, 2013   
  * 
  * This test edits dynaGroup definitions.
+ * 
+ * Requires: group/utils.js, rhqapi.js  
  *   
  **/
 
