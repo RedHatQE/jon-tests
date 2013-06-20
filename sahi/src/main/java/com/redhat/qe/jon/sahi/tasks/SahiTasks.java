@@ -1874,7 +1874,12 @@ public class SahiTasks extends ExtendedSahi {
     		if(!collectionInterval[1].trim().equalsIgnoreCase("minutes")){
     			selectComboBoxes("minutes --> "+collectionInterval[1].trim());
     		}
-            this.xy(cell("Set[1]"),3,3).click();
+    		if(this.cell("Set[1]").exists()){
+    			this.xy(cell("Set[1]"),3,3).click();
+    		}else{
+    			this.xy(cell("Set"),3,3).click();
+    		}
+            
             if(!collectionInterval[1].trim().equalsIgnoreCase("minutes")){
             		selectComboBoxes(collectionInterval[1].trim()+" --> minutes");            	
             }
