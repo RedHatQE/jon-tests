@@ -99,7 +99,7 @@ public abstract class ResourceTab {
 	 */
 	protected void navigateUnderResource(String uri) {
 		if (Resource.HAVE_REST_API) {
-		navigateDirectly(uri);
+		    navigateDirectly(uri);
 		}
 		else {
 			navigateByClick(uri);
