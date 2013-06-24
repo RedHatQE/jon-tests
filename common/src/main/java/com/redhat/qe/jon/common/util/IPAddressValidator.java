@@ -45,7 +45,7 @@ public class IPAddressValidator {
      * @param ip IPv4 address for validation
      * @return true valid IPv4 address, false invalid IPv4 address
      */
-    public static boolean isValidIPv4Address(final String ip) {
+    public static boolean validateIPv4Address(final String ip) {
         Matcher matcher = ipv4Pattern.matcher(ip);
         return matcher.matches();
     }
@@ -55,12 +55,12 @@ public class IPAddressValidator {
      * @param ip IPv6 address for validation
      * @return true valid IPv6 address, false invalid IPv6 address
      */
-    public static boolean isValidIPv6Address(final String ip) {
+    public static boolean validateIPv6Address(final String ip) {
         Matcher matcher = ipv6Pattern.matcher(ip);
         return matcher.matches();
     }
 
-    public static boolean isValidIPAddress(final String ip) {
-        return isValidIPv4Address(ip) || isValidIPv6Address(ip);
+    public static boolean validateIPAddress(final String ip) {
+        return validateIPv4Address(ip) || validateIPv6Address(ip);
     }
 }
