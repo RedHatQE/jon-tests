@@ -24,21 +24,36 @@ removeAllDynaGroupDefs();
 var allAgents = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 var allLinuxPlat = resources.find({resourceTypeName:"Linux"});
 
+var emptyGroup = groups.create("empty");
+var allMemPools = resources.find({resourceTypeName: "Memory Pool"});
+var allMemPoolsGName = "all mem pools";
+var allMemoPoolsGroup = groups.create(allMemPoolsGName,allMemPools);
+
 
 // arrays with input parameters
 var defNames = ["All agents",
                 "All linux platforms",
                 "All agents - recursive",
                 "Agents by platform name",
-                "Agents by hostname"];
+                "Agents by hostname - recursive",
+                "Narrowing from all agents - recursive",
+                "Narrowing from union of all agents",
+                "Narrowing from duplicite unions",
+                "Narrowing from nonexisting",
+                "Narrowing from empty"];
+var narrowingExpr = "";
+for(var i in allLinuxPlat){
+	narrowingExpr = narrowingExpr +"memberof="+generateCompleteDynaGroupName(defNames[4],allLinuxPlat[i].name) + "\n";
+}
+
 var defDescriptions = ["This definition creates just one group with all found agents",
 		"This definition creates just one group with all found linux platforms",
-		null,null,""];
+		null,null,"",null,,null,null,null,null];
 var expressions = ["resource.name=RHQ Agent\n" +
 		"resource.type.name = RHQ Agent\n" +
 		"resource.availability = UP",
 		
-		"resource.type.name=Linux \n   " +
+		"resource.type.name=Linux \n  \n " +
 		"resource.type.category = Platform",
 		
 		"resource.name=RHQ Agent\n" +
@@ -49,12 +64,26 @@ var expressions = ["resource.name=RHQ Agent\n" +
 		"resource.type.name = RHQ Agent",
 		
 		"resource.type.name = RHQ Agent\n" +
-		"groupby resource.parent.trait[Trait.hostname]"];
-var isRecursive = [false,false,true,false,false];
-var recalInterval = [1000 * 60,1000 * 120,0,0,0];
+		"groupby resource.parent.trait[Trait.hostname]",
+		
+		"resource.type.name = Memory Pool\n" +
+		"memberof = "+generateCompleteDynaGroupName(defNames[2]),
+		
+		"resource.type.name = Memory Pool\n" + narrowingExpr,
+		
+		"resource.type.name = Memory Pool\n" +
+		"memberof = "+generateCompleteDynaGroupName(defNames[2])+"\n"+
+		"memberof = "+generateCompleteDynaGroupName(defNames[6]),
+		
+		"memberof = nonexistingGroup",
+		
+		"resource.type.name=Linux \n" +
+		"memberof = empty"];
+var isRecursive = [false,false,true,false,true,false,false,false,false,false];
+var recalInterval = [1000 * 60,1000 * 120,0,0,0,0,0,0,0,0];
 // expected number of groups which will be managed by created dynaGroup definition
-var expectedNumberOfManagedGroups = [1,1,1,allAgents.length,allAgents.length];
-var expectedNumberOfGroups = 3 + 2*allAgents.length;
+var expectedNumberOfManagedGroups = [1,1,1,allAgents.length,allAgents.length,1,1,1,1,1];
+var expectedNumberOfGroups = 10 + 2*allAgents.length;
 
 
 // create new dynaGroup definitions according to input parameters and check results
@@ -80,7 +109,10 @@ checkNumberOfResourcesInGroup(getManagedGroup(defNames[0]), allAgents.length,1);
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[1]), allLinuxPlat.length,1);
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[2]), allAgents.length,10);
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[3]), 1,1);
-checkNumberOfResourcesInGroup(getManagedGroup(defNames[4]), 1,1);
+checkNumberOfResourcesInGroup(getManagedGroup(defNames[4]), 1,10);
+checkNumberOfResourcesInGroup(getManagedGroup(defNames[5]), allAgents.length * 5,allAgents.length * 5);
+checkNumberOfResourcesInGroup(getManagedGroup(defNames[6]), allAgents.length * 5,allAgents.length * 5);
+checkNumberOfResourcesInGroup(getManagedGroup(defNames[7]), allAgents.length * 5,allAgents.length * 5);
 
 
 
@@ -112,4 +144,13 @@ function getManagedGroup(groupDefName){
 	var defs = dynaGroupDefs.findDynaGroupDefinitions({name:groupDefName});
 	var def = defs[0];
 	return def.getManagedGroups();
+}
+
+
+function generateCompleteDynaGroupName(dynaGroupName,platformName){
+	if(platformName){
+		return "DynaGroup - "+ dynaGroupName +" ( "+platformName+" )";
+	}else{
+		return "DynaGroup - "+ dynaGroupName;
+	}
 }

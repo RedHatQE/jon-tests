@@ -23,7 +23,15 @@ var expressionsDuringRecalculation = ["bla","resource.name=","resource.type.na=L
                                       "groupby resource.type.name =",
                                       "resource.name",
                                       "<html>???</html>",
-                                      "groupby resource.type.name\n resource.type.name = RHQ Agent"];
+                                      "groupby resource.type.name\n resource.type.name = RHQ Agent",
+                                      
+                                      "resource.type.name=Linux \n" +
+                                      "memberof = ",
+                                      "resource.type.name=Linux \n" +
+                                      "memberof",
+                                      "memberof",
+                                      "memberof = groupName\n" +
+                                      "memberof  groupName"];
 var recalIntervals = ["haha",null,.5,0.5,-5];
 var expressionsDuringCreation = [null,""]
 

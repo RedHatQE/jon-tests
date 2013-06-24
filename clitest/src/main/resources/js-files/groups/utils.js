@@ -85,7 +85,9 @@ function assertDynaGroupDefParams(name, description, expression,expectedNumberOf
 		assertTrue(def.getExpression() == expression,"DynaGroup defintion with name: "+name+
 				" has incorrect expression. Expected: " +expression + ", actual: "+ def.getExpression());
 	}
-	if(expectedNumberOfManagedGroups){
+	if(expectedNumberOfManagedGroups != null){
+		common.debug("Number of managed groups, expected: "+expectedNumberOfManagedGroups+", actual: "+
+				def.getManagedResourceGroups().size());
 		assertTrue(def.getManagedResourceGroups().size() == expectedNumberOfManagedGroups,
 				"DynaGroup defintion with name: "+name+" has incorrect number of managed groups. Expected: " +
 				expectedNumberOfManagedGroups + ", actual: "+ def.getManagedResourceGroups().size());
