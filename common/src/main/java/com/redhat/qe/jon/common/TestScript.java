@@ -73,6 +73,19 @@ public class TestScript {
 		initialized = true;
 
 	}
+	/**
+	 * creates 2-dimensional array of object required when being TestNG's dataProvider
+	 * assuming your test method requires only 1 parameter
+	 * @param list of parameter values
+	 * @return 2-dimensional array of object parameters
+	 */
+	public static Object[][] getDataProviderArray(List<?> list) {
+	    Object[][] output = new Object[list.size()][];
+		for (int i=0;i<list.size();i++) {
+			output[i] = new Object[] {list.get(i)};
+		}
+		return output;
+	}
 
 	public static void loadProperties(){
 		String propFile = "";
