@@ -1793,6 +1793,7 @@ var dynaGroupDefs = (function(){
 			common.trace("dynaGroupDefs.findDynaGroupDefinitions("+common.objToString(params)+")");
 			var cri = common.createCriteria(new ResourceGroupDefinitionCriteria(),params);
 			cri.fetchManagedResourceGroups(true);
+			cri.setStrict(true);
 			var result = GroupDefinitionManager.findGroupDefinitionsByCriteria(cri);
 		
 			return common.pageListToArray(result).map(function(x){return new DynaGroupDef(x);});
