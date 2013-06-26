@@ -21,7 +21,8 @@ var expressions = ["groupby resource.type.plugin\n" +
 var name = "test";
 removeDynaGroupDef(name);
 
-for(var i=0;i<10;i++){
+for(var i=0;i<5;i++){
+	common.info("Cycle number "+i);
 	common.info("Creating dynaGroup definition with name: "+name);
 	def = createDynagroupDef(name,expressions[0],"desc");
 	common.info("Calculating group membership");
