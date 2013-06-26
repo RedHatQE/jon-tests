@@ -8,14 +8,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.redhat.qe.jon.clitest.base.CliEngine;
 import com.redhat.qe.jon.clitest.base.CliTestRunner;
-import com.redhat.qe.jon.clitest.tests.CliTest;
 /**
  * Tests creating Bundle from distribution file via URL including HTTP Basic Auth, and trusted/untrusted SSL 
  * @author lzoubek
  *
  */
-public class CreateBundle extends CliTest {
+public class CreateBundle extends CliEngine {
 
     /**
      * name of bundle-dist file we expect 
@@ -41,6 +41,8 @@ public class CreateBundle extends CliTest {
 	List<BundleCase> cases = new ArrayList<BundleCase>();
 	// public url without auth
 	cases.add(new BundleCase("http://"+bundleServer+"/"+bundleFile,"","","name=Bundle App"));
+	// public url with auth
+	cases.add(new BundleCase("http://"+bundleServer+"/"+bundleFile,"foo","bar","name=Bundle App"));
 	// with basic auth
 	cases.add(new BundleCase("http://"+bundleServer+"/basic/"+bundleFile,"name=Bundle App"));	
 	// unreachable host

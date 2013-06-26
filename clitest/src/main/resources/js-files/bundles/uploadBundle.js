@@ -33,3 +33,8 @@ catch (ex) {
 	println(ex.message);
 }
 
+println("Removing all existing bundles");
+bundles.find().forEach(function(b) {
+	b.remove();
+});
+
