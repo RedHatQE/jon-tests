@@ -146,7 +146,11 @@
 		</class>
 	</classes>
 </test>
-
+<test name="Bundles">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.bundles.CreateBundle" />
+	</classes>
+</test>
 <test name="schedule_Management_For_RHQ_Agent">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">

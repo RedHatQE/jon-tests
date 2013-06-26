@@ -1930,15 +1930,22 @@ var bundles = (function() {
 		/**
 		 * creates a bundle
 		 *
-		 * @param {String} dist - path to bundle distribution ZIP file or URL. 
+		 * @param {String} dist - path to bundle distribution ZIP file or URL.
+		 * @param {String} username - basic HTTP auth username (use when 'dist' is URL) 
+		 * @param {String} password - basic HTTP auth password (use when 'dist' is URL)
 		 * If URL it must be reachable by RHQ server
 		 * @type Bundle
 		 */
-    createFromDistFile : function(dist) {
+    createFromDistFile : function(dist,username,password) {
     	if (dist==null) {
     		throw "parameter dist must not be null"
     	}
     	if (dist.indexOf("http")==0) {
+    		password =  password || null;
+    		if (username!=null && password!=null) {
+    			var version = BundleManager.createBundleVersionViaURL(dist,username,password);
+    		    return new Bundle(version.bundle);	
+    		}
     		var version = BundleManager.createBundleVersionViaURL(dist);
 		    return new Bundle(version.bundle);
     	}
