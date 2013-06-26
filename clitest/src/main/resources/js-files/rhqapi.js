@@ -1878,8 +1878,9 @@ var alerts = (function(){
 			params = params || {};
 			common.trace("alerts.findAlertDefinition("+common.objToString(params)+")");
 			var cri = common.createCriteria(new AlertDefinitionCriteria(),params);
-//			cri.fetchDriftDefinitions(true);
-//			cri.fetchResourceType(true);
+			cri.fetchConditions(true);
+			cri.fetchAlerts(true);
+			cri.fetchAlertNotifications(true);
 			var result = AlertDefinitionManager.findAlertDefinitionsByCriteria(cri);
 		
 			// TODO: create and return javascript-only driftDefinitionTemplates type
