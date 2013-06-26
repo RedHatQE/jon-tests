@@ -1868,6 +1868,28 @@ var drifts = (function(){
 })();
 
 /**
+ * @namespace provides access to alert subsystem
+ */
+var alerts = (function(){
+	var common = new _common();
+	
+	return{
+		findAlertDefinition : function(params){
+			params = params || {};
+			common.trace("alerts.findAlertDefinition("+common.objToString(params)+")");
+			var cri = common.createCriteria(new AlertDefinitionCriteria(),params);
+//			cri.fetchDriftDefinitions(true);
+//			cri.fetchResourceType(true);
+			var result = AlertDefinitionManager.findAlertDefinitionsByCriteria(cri);
+		
+			// TODO: create and return javascript-only driftDefinitionTemplates type
+			return result;
+		}
+	};
+})();
+
+
+/**
  * @namespace provides access to Bundle subsystem
  */
 var bundles = (function() {
