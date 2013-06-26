@@ -15,6 +15,7 @@ var common = new _common();
 var defName = "incorrect";
 var existingName = dynaGroupDefs.findDynaGroupDefinitions()[0].name;
 var incorrectDefNames = ["<html>hahaha</html>"];
+var incorrectDefDescr = ["<html>hahaha</html>"];
 
 removeDynaGroupDef(defName);
 
@@ -33,7 +34,7 @@ var expressionsDuringRecalculation = ["bla","resource.name=","resource.type.na=L
                                       "memberof = groupName\n" +
                                       "memberof  groupName"];
 var recalIntervals = ["haha",null,.5,0.5,-5];
-var expressionsDuringCreation = [null,""]
+var expressionsDuringCreation = [null,"","<html>hahaha</html>"]
 
 
 /**
@@ -54,6 +55,15 @@ for(var i in incorrectDefNames){
 	assertDynaGroupDefIsNotFound(incorrectDefNames[i]);
 }
 
+
+/**
+ * Incorrect descriptions
+ */
+//pass incorrect definition description and check that exception was thrown
+for(var i in incorrectDefDescr){
+	expectException(createDynagroupDef,[incorrectDefDescr[i],"resource.type.name=Linux"]);
+	assertDynaGroupDefIsNotFound(defName);
+}
 
 /**
  * Incorrect recalculation intervals

@@ -40,7 +40,8 @@ var defNames = ["All agents",
                 "Narrowing from union of all agents",
                 "Narrowing from duplicite unions",
                 "Narrowing from nonexisting",
-                "Narrowing from empty"];
+                "Narrowing from empty",
+                "Test&spec&chars12!!\"\"^()@%#ěěěěěščřžýáíé"];
 var narrowingExpr = "";
 for(var i in allLinuxPlat){
 	narrowingExpr = narrowingExpr +"memberof="+generateCompleteDynaGroupName(defNames[4],allLinuxPlat[i].name) + "\n";
@@ -48,7 +49,7 @@ for(var i in allLinuxPlat){
 
 var defDescriptions = ["This definition creates just one group with all found agents",
 		"This definition creates just one group with all found linux platforms",
-		null,null,"",null,,null,null,null,null];
+		null,null,"",null,,null,null,null,null,"Test&spec&chars12!!\"\"^()@%#ěěěěěščřžýáíé"];
 var expressions = ["resource.name=RHQ Agent\n" +
 		"resource.type.name = RHQ Agent\n" +
 		"resource.availability = UP",
@@ -78,12 +79,14 @@ var expressions = ["resource.name=RHQ Agent\n" +
 		"memberof = nonexistingGroup",
 		
 		"resource.type.name=Linux \n" +
-		"memberof = empty"];
-var isRecursive = [false,false,true,false,true,false,false,false,false,false];
-var recalInterval = [1000 * 60,1000 * 120,0,0,0,0,0,0,0,0];
+		"memberof = empty",
+		
+		"resource.name=RHQ Agent"];
+var isRecursive = [false,false,true,false,true,false,false,false,false,false,false];
+var recalInterval = [1000 * 60,1000 * 120,0,0,0,0,0,0,0,0,0];
 // expected number of groups which will be managed by created dynaGroup definition
-var expectedNumberOfManagedGroups = [1,1,1,allAgents.length,allAgents.length,1,1,1,1,1];
-var expectedNumberOfGroups = 10 + 2*allAgents.length;
+var expectedNumberOfManagedGroups = [1,1,1,allAgents.length,allAgents.length,1,1,1,1,1,1];
+var expectedNumberOfGroups = 11 + 2*allAgents.length;
 
 
 // create new dynaGroup definitions according to input parameters and check results
