@@ -148,7 +148,8 @@
 </test>
 <test name="Bundles">
 	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.bundles.CreateBundle" />
+		<class name="com.redhat.qe.jon.clitest.tests.bundles.CreateBundleTest" />
+		<class name="com.redhat.qe.jon.clitest.tests.bundles.BundleWorkflowTest" />
 	</classes>
 </test>
 <test name="schedule_Management_For_RHQ_Agent">

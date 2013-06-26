@@ -15,7 +15,7 @@ import com.redhat.qe.jon.clitest.base.CliTestRunner;
  * @author lzoubek
  *
  */
-public class CreateBundle extends CliEngine {
+public class CreateBundleTest extends CliEngine {
 
     /**
      * name of bundle-dist file we expect 
