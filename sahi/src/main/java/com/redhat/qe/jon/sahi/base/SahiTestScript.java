@@ -45,6 +45,7 @@ public abstract class SahiTestScript extends TestScript {
 		sahiTasks.open();
 		log.finer("Loading RHQ system page: "+System.getProperty("jon.server.url"));
 		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);
+        sahiTasks.execute("_sahi._selectWindow();");
 	}
 
 	@AfterSuite(groups={"teardown"})
