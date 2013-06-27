@@ -8,12 +8,14 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
 public class StorageAutoInventory extends SahiTestScript {
 
 	protected Resource platform;
+	
 	String platformName;
 	Logger log = Logger.getLogger(this.getClass().getName());
 
@@ -43,16 +45,15 @@ public class StorageAutoInventory extends SahiTestScript {
 				platformName, Timing.WAIT_TIME);
 		// call platform manual auto-discovery
 		platform.operations().newOperation("Manual Autodiscovery");
-		// navigate to inventory
-		platform.inventory();
-		// wait for storage node auto-inventory
-		sahiTasks.waitForElementVisible(sahiTasks,
-				sahiTasks.cell("RHQ Storage Node"),
-				sahiTasks.cell("RHQ Storage Node").text(), Timing.WAIT_TIME);
-		Assert.assertTrue(platform.inventory().hasChildren());
+		// navigate to platform		
+		platform.navigate();
+		//assert Storage Node exist
+		platform.assertChildExists("RHQ Storage Node", true);
 
 	}
 
+
+	
 	@AfterClass()
 	protected void inventoryAllResources() {
 
