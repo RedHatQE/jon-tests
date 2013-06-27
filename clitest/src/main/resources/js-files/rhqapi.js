@@ -533,12 +533,12 @@ var _common = function() {
 			return hashSet;
 		},
 		pageListToArray : function(pageList) {
-			var resourcesArray = new Array();
+			var array = new Array();
 		    var i = 0;
 		    for(i = 0;i < pageList.size(); i++){
-		    	resourcesArray[i] = pageList.get(i);
+		    	array[i] = pageList.get(i);
 		    }
-		    return resourcesArray;
+		    return array;
 		},
 		/**
 		 * @param conditionFunc -
@@ -2129,16 +2129,18 @@ var Bundle = function(param) {
 			 */
 			obj : _obj,
 			/**
-			 * removes this version of bundle from server (not yet implemented)
+			 * removes this version of bundle from server
 			 */
 			remove : function() {
-
+				BundleManager.deleteBundleVersion(_id,false);
 			},
 			/**
 			 * returns all files contained in this version of bundle (not yet implemented)
+			 * @return array of filenames contained
+			 * @type String[]
 			 */
 			files : function() {
-
+				return BundleManager.getBundleVersionFilenames(_id,false).toArray().map(function (x) {return String(x);});
 			},
 		};
 	};
@@ -2227,7 +2229,6 @@ var Bundle = function(param) {
 			// we need to fetch version object with configuration definition
 			var criteria = common.createCriteria(new BundleVersionCriteria(),{id:version.id});
 			criteria.fetchConfigurationDefinition(true);
-			println(BundleManager.findBundleVersionsByCriteria(criteria));
 			version.obj = BundleManager.findBundleVersionsByCriteria(criteria).get(0);
 			var configuration = new Configuration();
 			// so if the bundle has come configuration, we create default
