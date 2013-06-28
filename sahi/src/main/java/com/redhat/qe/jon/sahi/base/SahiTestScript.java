@@ -1,5 +1,8 @@
 package com.redhat.qe.jon.sahi.base;
 
+import com.redhat.qe.jon.common.Platform;
+import com.redhat.qe.jon.common.util.Library;
+import com.redhat.qe.jon.common.util.LocalCommandRunner;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 
@@ -46,6 +49,14 @@ public abstract class SahiTestScript extends TestScript {
 		log.finer("Loading RHQ system page: "+System.getProperty("jon.server.url"));
 		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);
         sahiTasks.execute("_sahi._selectWindow();");
+        Platform pl = new Platform();
+        String nircmdUtil = Library.getUniversalProperty("nircmd.path", null);
+        if (pl.isWindows() && nircmdUtil != null && new File(nircmdUtil).exists()) {
+            LocalCommandRunner commandRunner = new LocalCommandRunner(new File(nircmdUtil).getParent());
+            // implement running nircd to maximize firefox window
+            commandRunner.runAndWait(nircmdUtil + " win activate ititle 'JBoss ON'");
+            commandRunner.runAndWait(nircmdUtil + " win max ititle 'JBoss ON'");
+        }
 	}
 
 	@AfterSuite(groups={"teardown"})
