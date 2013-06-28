@@ -48,14 +48,14 @@ public abstract class SahiTestScript extends TestScript {
 		sahiTasks.open();
 		log.finer("Loading RHQ system page: "+System.getProperty("jon.server.url"));
 		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);
-        sahiTasks.execute("_sahi._selectWindow();");
         Platform pl = new Platform();
         String nircmdUtil = Library.getUniversalProperty("nircmd.path", null);
-        if (pl.isWindows() && nircmdUtil != null && new File(nircmdUtil).exists()) {
+        log.finer("Checking existence of nircmdUtil: " + nircmdUtil);
+        if (pl.isWindows() && (nircmdUtil != null) && new File(nircmdUtil).exists()) {
             LocalCommandRunner commandRunner = new LocalCommandRunner(new File(nircmdUtil).getParent());
             // implement running nircd to maximize firefox window
-            commandRunner.runAndWait(nircmdUtil + " win activate ititle 'JBoss ON'");
-            commandRunner.runAndWait(nircmdUtil + " win max ititle 'JBoss ON'");
+            commandRunner.runAndWait(nircmdUtil + " win activate ititle \"JBoss ON\"");
+            commandRunner.runAndWait(nircmdUtil + " win max ititle \"JBoss ON\"");
         }
 	}
 
