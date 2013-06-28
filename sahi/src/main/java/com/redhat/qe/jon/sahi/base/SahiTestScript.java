@@ -49,7 +49,7 @@ public abstract class SahiTestScript extends TestScript {
 		log.finer("Loading RHQ system page: "+System.getProperty("jon.server.url"));
 		sahiTasks.navigateTo(System.getProperty("jon.server.url"), true);
         Platform pl = new Platform();
-        String nircmdUtil = Library.getUniversalProperty("nircmd.path", null);
+        String nircmdUtil = System.getProperty("nircmd.path", null);
         log.finer("Checking existence of nircmdUtil: " + nircmdUtil);
         if (pl.isWindows() && (nircmdUtil != null) && new File(nircmdUtil).exists()) {
             LocalCommandRunner commandRunner = new LocalCommandRunner(new File(nircmdUtil).getParent());
