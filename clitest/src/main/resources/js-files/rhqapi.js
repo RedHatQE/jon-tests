@@ -2504,7 +2504,14 @@ discoveryQueue = (function () {
 		 * @returns Array of resources in discovery queue matching given filter
 		 * @type Resource[]
 		 */
-    list : find,
+    list : function (params) {
+			params = params || {};
+			common.trace("discoveryQueue.list("+common.objToString(params)+")");
+			params["status"] = "NEW";
+			var criteria = resources.createCriteria(params);
+			var res = ResourceManager.findResourcesByCriteria(criteria);
+			return common.pageListToArray(res).map(function(x){return new Resource(x);});
+		},
 	
 		/**
 		 * lists platforms from discovery queue
