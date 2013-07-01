@@ -3,8 +3,23 @@
  * @name RHQ API
  * @version 0.2
  * @author Libor Zoubek (lzoubek@redhat.com), Filip Brychta (fbrychta@redhat.com), John Sanda (jsanda@redhat.com)
+ * 
+ * 
+ * If you want to contribute this code, please note following things
+ * 
+ * - do not return RHQ Domain objects out of rhqapi functions, always create a wrapper object which can hold and expose RHQ Domain object
+ * - create namespace for each valid subsystem (resources, resourceTypes) and make sure that each subsystem has find() method that follows
+ *   same criteria/query pattern as resources.find()
+ * - If there is an asynchronous operation/method defined by RHQ remote API, make it synchronous and implement waiting
+ * - enable logging 
+ *   - make rhqapi log at TRACE level on every JS function you write
+ *   - make rhqapi log at DEBUG level in case you think it might help understand what is going on
+ *   - make rhqapi log at INFO level in case you need to inform user about some progress/status
+ * - think of rhqapi the way it can be consumed interactively by human (if there are wrong inputs provided and there is a way to advise correct ones, do that)
+ * - write JSDoc with examples
+ * - don't forget to expose your subsystem/class to commonjs (look at the end of this file)
+ * 
  */
-
 
 // jsdoc-toolkit takes care of generating documentation
 // please follow http://code.google.com/p/jsdoc-toolkit/wiki/TagReference for adding correct tag
