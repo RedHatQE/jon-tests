@@ -2455,7 +2455,7 @@ discoveryQueue = (function () {
 	};
 	var _importResources = function (params){
 		params = params || {};
-		common.trace("discoveryQueue._importResources("+common.objToString(params)+")");
+		common.trace("discoveryQueue.importResources("+common.objToString(params)+")");
 		params.status="NEW";
 		var criteria = resources.createCriteria(params);
 	    common.info("Waiting until desired resources become NEW");
@@ -2468,7 +2468,7 @@ discoveryQueue = (function () {
 	    criteria = resources.createCriteria(params);
 	    common.info("Waiting until resources become COMMITTED");
 	    var committed = _waitForResources(criteria);
-	    assertTrue(committed.size() > 0, "COMMITED resources size > 0");
+	    //assertTrue(committed.size() > 0, "COMMITED resources size > 0");
 	    // return only imported resources
 	    return common.pageListToArray(res).map(function(x){return new Resource(x);});
 	};
@@ -2489,7 +2489,7 @@ discoveryQueue = (function () {
 		 * @returns Array of resources in discovery queue matching given filter
 		 * @type Resource[]
 		 */
-    list : function (params) {
+    find : function (params) {
 			params = params || {};
 			common.trace("discoveryQueue.list("+common.objToString(params)+")");
 			params["status"] = "NEW";
@@ -2497,6 +2497,15 @@ discoveryQueue = (function () {
 			var res = ResourceManager.findResourcesByCriteria(criteria);
 			return common.pageListToArray(res).map(function(x){return new Resource(x);});
 		},
+		/**
+		 * lists discovery queue
+		 * @deprecated use find() instead
+		 * @param {Object} params - filter
+		 * @returns Array of resources in discovery queue matching given filter
+		 * @type Resource[]
+		 */
+    list : find,
+	
 		/**
 		 * lists platforms from discovery queue
 		 *
@@ -2576,6 +2585,7 @@ discoveryQueue = (function () {
    * @param param - filter resources being imported similar to {@link resources.find()}
 	 * @type Resource[]
 	 * @function
+	 * 	 * @example discovery.importResources() // import all resources in discovery queue
 	 */
 		importResources : _importResources,
 	};
