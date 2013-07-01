@@ -2,7 +2,7 @@
 // this test shows how to use discovery queue
 
 // print all resources in discovery queue
-p(Inventory.discoveryQueue.list());
+p(Inventory.discoveryQueue.find());
 
 // print platforms only
 p(discoveryQueue.listPlatforms());
