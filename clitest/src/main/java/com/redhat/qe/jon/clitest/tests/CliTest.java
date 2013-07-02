@@ -25,6 +25,8 @@ public class CliTest extends CliEngine {
 	 * @param resDst comma-separated list of source paths (must be same size as resSrc)
 	 * @throws IOException
 	 * @throws CliTasksException
+	 * @deprecated please extend {@link CliEngine} class instead of this class and use {@link CliEngine#createJSRunner(String)} builder
+	 * to run CLI tests 
 	 */
 	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure","js.depends","res.src","res.dst"})
 	@Test	
