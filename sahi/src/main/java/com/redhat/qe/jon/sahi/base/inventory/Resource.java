@@ -64,9 +64,22 @@ public class Resource {
 		}
 	}
 
+	/**
+	 * 
+	 * @param tasks
+	 * @param path of the resource in inventory (e.g. [platformName,EAP 6 (127.0.0.1:9990),web,http] 
+	 * gets http connector under EAP's web subsystem)
+	 */
 	public Resource(SahiTasks tasks, String... path) {
 		this(null,tasks,Arrays.asList(path));
 	}
+	/**
+	 * 
+	 * @param id of a resource on RHQ server
+	 * @param tasks
+	 * @param path of the resource in inventory (e.g. [platformName,EAP 6 (127.0.0.1:9990),web,http] 
+	 * gets http connector under EAP's web subsystem)
+	 */
 	public Resource(String id,SahiTasks tasks, String... path) {
 		this(id,tasks,Arrays.asList(path));
 	}
@@ -79,7 +92,8 @@ public class Resource {
 	/**
 	 * creates new instance of resource, no actions (navigation etc) are performed
 	 * @param tasks
-	 * @param path
+	 * @param path of the resource in inventory (e.g. [platformName,EAP 6 (127.0.0.1:9990),web,http] 
+	 * gets http connector under EAP's web subsystem)
 	 */
 	private Resource(String id,SahiTasks tasks, List<String> path) {
 		this.tasks = tasks;
