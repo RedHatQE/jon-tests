@@ -187,8 +187,7 @@ public class CliEngine extends CliTestScript{
 				command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
 			}
 		}
-		// workaround #913135 for JON 3.2 ALPHA build !!!! export RHQ_CLI_ADDITIONAL_JAVA_OPTS=-Drhq.client.version-check=false;
-		command += "export RHQ_CLI_ADDITIONAL_JAVA_OPTS=-Drhq.client.version-check=false; "+CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName;
+		command += CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName;
 		if(cliArgs != null){
 			command +=" "+cliArgs;
 		}
