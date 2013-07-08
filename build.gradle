@@ -139,7 +139,7 @@ project(":clitest") {
 project(":sahi") {
 	dependencies {
 		compile project(":common"),
-			"net.sf.sahi:sahi:4.3"
+			"net.sf.sahi:sahi:4.4"
 		testCompile  project(":common")
 	}
 
