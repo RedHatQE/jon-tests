@@ -33,6 +33,11 @@ public class Operations extends ResourceTab {
         raiseErrorIfCellDoesNotExist("Operations");
     }
 
+    public void history() {
+        navigateUnderResource("Operations/History");
+        raiseErrorIfCellDoesNotExist("Operations");
+    }
+
     /**
      * Creates new Operation of given name, also selects it in <b>Operation:</b> combo
      *
@@ -61,14 +66,14 @@ public class Operations extends ResourceTab {
             succ = "Success";
         }
         log.fine("Asserting operation [" + opName + "] result, expecting " + succ);
-        getResource().summary();
+        getResource().operations().history();
         int timeout = 20 * Timing.TIME_1M;
         int time = 0;
         while (time < timeout && tasks.image("Operation_inprogress_16.png").in(tasks.div(opName + "[0]").parentNode("tr")).exists()) {
             time += Timing.TIME_10S;
             log.fine("Operation [" + opName + "] in progress, waiting " + Timing.toString(Timing.TIME_10S));
             tasks.waitFor(Timing.TIME_10S);
-            getResource().summary();
+            getResource().operations().history();
         }
         if (tasks.image("Operation_inprogress_16.png").in(tasks.div(opName + "[0]").parentNode("tr")).exists()) {
             log.info("Operation [" + opName + "] did NOT finish after " + Timing.toString(time) + "!!!");
@@ -92,11 +97,15 @@ public class Operations extends ResourceTab {
                 Assert.assertTrue(existsImage, "Operation [" + opName + "] result: " + succ + " errorMessage:\n" + message);
                 return null;
             }
-
         }
         Assert.assertTrue(existsImage, "Operation [" + opName + "] result: " + succ);
         log.fine("Getting operation result");
-        tasks.image(resultImage).in(tasks.div(opName + "[0]").parentNode("tr")).doubleClick();
+        ElementStub linkToOperationResults = tasks.link(0).near(tasks.image(resultImage).in(tasks.div(opName + "[0]").parentNode("tr")));
+        linkToOperationResults.click();
+        if (!tasks.cell("Execution ID :").isVisible()) {
+            log.fine("Operation results not opened correctly");
+            tasks.xy(tasks.image(resultImage).in(tasks.div(opName + "[0]").parentNode("tr")), 3, 3).doubleClick();
+        }
         log.finest("The property element: " + tasks.cell("Property").fetch());
         List<ElementStub> headerCells = tasks.cell("Property").collectSimilar();
         for (ElementStub el : headerCells) {

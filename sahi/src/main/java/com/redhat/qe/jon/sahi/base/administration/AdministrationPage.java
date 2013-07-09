@@ -62,7 +62,7 @@ public class AdministrationPage {
 		/**
 		 * Creates a new repository with given name.
 		 * @param name
-		 * @return
+		 * @return this
 		 */
 		public Repositories createNewRepository(String name){
 			tasks.submit("CREATE NEW").click();
@@ -80,7 +80,7 @@ public class AdministrationPage {
 		/**
 		 * Deletes a repository with given name.
 		 * @param name
-		 * @return
+		 * @return this
 		 */
 		public Repositories deleteRepository(String name){
 			log.fine("Deleting a repository with name: " + name);

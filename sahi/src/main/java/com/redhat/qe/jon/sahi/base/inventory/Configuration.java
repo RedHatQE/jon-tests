@@ -86,7 +86,7 @@ public class Configuration extends ResourceTab {
 		 */
 		public ConfigEntry getEntry(String name) {
 			int entries = tasks.image("edit.png").in(tasks.cell(name).parentNode("tr")).countSimilar();
-			log.info("Found entries :"+entries);
+			log.info("Found entries: "+entries);
 			tasks.xy(tasks.image("edit.png").in(tasks.cell(name).parentNode("tr")),3,3).click();
 			//tasks.execute("_sahi._keyPress(_sahi._image('edit.png', _sahi._in(_sahi._parentRow(_sahi._cell('"+name+"')))), 32);");
 			return new ConfigEntry(tasks);
@@ -98,6 +98,9 @@ public class Configuration extends ResourceTab {
 		 */
 		public void removeEntry(String name) {
 			tasks.xy(tasks.image("remove.png").in(tasks.cell(name).parentNode("tr")),3,3).click();
+            if (!tasks.cell("OK").exists()) {
+                tasks.image("remove.png").in(tasks.cell(name)).click();
+            }
 			tasks.xy(tasks.cell("OK"), 3, 3).click();
 		}
 		/**

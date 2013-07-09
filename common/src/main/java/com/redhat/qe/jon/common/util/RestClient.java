@@ -179,7 +179,7 @@ public class RestClient {
         	    return (String) jsonObject.get("SERVER_INSTALL_DIR");
 	    }
 	    catch (Exception ex) {
-		_logger.severe("Unable to detect server install dir via REST: "+ex.getMessage());
+		_logger.log(Level.SEVERE, "Unable to detect server install dir via REST:", ex);
 		return null;
 	    }
 

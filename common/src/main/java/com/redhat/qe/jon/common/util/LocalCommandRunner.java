@@ -7,9 +7,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.redhat.qe.jon.common.Platform;
+import com.redhat.qe.jul.TestRecords;
 import com.redhat.qe.tools.SSHCommandResult;
+import org.apache.commons.io.FileUtils;
+
 /**
  * this class is a local command runner (currently works on linux only) that runs all commands locally
  * works by default in current user's home directory!
@@ -22,9 +28,13 @@ public class LocalCommandRunner implements ICommandRunner {
 			.getLogger(LocalCommandRunner.class.getName());
 
 	private final String workDir;
+
+    protected final Platform platform = new Platform();
+
 	public LocalCommandRunner() {
 		this(System.getProperty("user.home"));
 	}
+
 	public LocalCommandRunner(String workDir) {
 		this.workDir = workDir;
 		log.fine("Creating local command runner");
@@ -45,18 +55,29 @@ public class LocalCommandRunner implements ICommandRunner {
 	@Override
 	public void copyFile(String srcPath, String destDir, String destFileName)
 			throws IOException {
-	    log.fine("Copying [" + srcPath + "] to " + destDir + "/" + destFileName);
+	    log.fine("Copying [" + srcPath + "] to " + destDir + File.separator + destFileName);
 	    copyFile(new File(srcPath), new File(destDir + File.separator
-				+ destFileName));
-		log.fine("File [" + srcPath + "] copied to " + destDir + "/"
+                + destFileName));
+		log.fine("File [" + srcPath + "] copied to " + destDir + File.separator
 				+ destFileName);
 	}
 
-	@Override
-	public SSHCommandResult runAndWait(String command) {
+    @Override
+    public SSHCommandResult runAndWait(String command) {
+        return runAndWait(command, this.workDir);
+    }
+
+	public SSHCommandResult runAndWait(String command, String workDir) {
 		SSHCommandResult result = new SSHCommandResult(-1, "", "");
 		try {
-			String[] cmd = new String[] {"/bin/sh","-c",command};
+
+			String[] cmd;
+            if (platform.isWindows()) {
+                cmd = new String[] {"cmd", "/C", command};
+            } else {
+                cmd = new String[] {"/bin/sh", "-c", command};
+            }
+            log.info("Running command: " + Arrays.toString(cmd));
 			final Process p = Runtime.getRuntime().exec(cmd,null,new File(workDir));
 			final StringBuilder output = new StringBuilder("");
 			final StringBuilder error = new StringBuilder("");
@@ -70,7 +91,7 @@ public class LocalCommandRunner implements ICommandRunner {
 							new InputStreamReader(p.getInputStream()));
 					try {
 						while ((line = input.readLine()) != null) {
-							output.append(line+"\n");
+							output.append(line+Platform.nl);
 						}
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
@@ -94,7 +115,7 @@ public class LocalCommandRunner implements ICommandRunner {
 							new InputStreamReader(p.getErrorStream()));
 					try {
 						while ((line = input.readLine()) != null) {
-							error.append(line+"\n");
+							error.append(line+Platform.nl);
 						}
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
@@ -118,6 +139,10 @@ public class LocalCommandRunner implements ICommandRunner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+        log.fine("Stdout: " + result.getStdout());
+        log.fine("Stderr: " + result.getStderr());
+        log.fine("ExitCode: " + result.getExitCode());
 		
 		return result;
 	}
@@ -134,8 +159,30 @@ public class LocalCommandRunner implements ICommandRunner {
 
 	@Override
 	public void disconnect() {
-
 	}
+
+    /**
+     * Creates directory including ancestors if they don't exist
+     * @param dir directory to be created
+     */
+    public boolean mkdirs(String dir) {
+        File dirAsFile = new File(dir);
+        return dirAsFile.mkdirs();
+    }
+
+    public void runCommand(String command, File workDir){
+        String[] cmd;
+        try {
+            if (platform.isWindows()) {
+                cmd = new String[] {"cmd", "/C", command};
+            } else {
+                cmd = new String[] {"/bin/sh", "-c", command};
+            }
+            final Process p = Runtime.getRuntime().exec(cmd, null, workDir);
+        } catch (IOException ioEx) {
+          throw new RuntimeException("IOException encountered while executing command: " + command, ioEx);
+        }
+    }
 
 	private static void copyFile(File sourceFile, File destFile)
 			throws IOException {
@@ -163,6 +210,7 @@ public class LocalCommandRunner implements ICommandRunner {
 			}
 		}
 	}
+
 	@Override
 	public void connect() {
 		// TODO Auto-generated method stub
