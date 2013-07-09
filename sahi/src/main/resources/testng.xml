@@ -347,7 +347,7 @@
 	
 	<test name="CheckAlertDefTempCreated">
   	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.alerts.CheckAlertDefTempCreated">
+			<class name="com.redhat.qe.jon.sahi.tests.alerts.CheckAlertDefTempCreatedTest">
 			</class>
 		</classes>
   	</test>

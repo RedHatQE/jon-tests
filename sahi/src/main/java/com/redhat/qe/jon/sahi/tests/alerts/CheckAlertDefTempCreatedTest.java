@@ -16,7 +16,7 @@ import org.testng.Assert;
 
 
 
-public class CheckAlertDefTempCreated extends SahiTestScript {
+public class CheckAlertDefTempCreatedTest extends SahiTestScript {
         
         
         protected Resource platform;
