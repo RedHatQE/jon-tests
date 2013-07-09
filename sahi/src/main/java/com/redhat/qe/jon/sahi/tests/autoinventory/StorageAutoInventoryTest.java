@@ -12,7 +12,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
-public class StorageAutoInventory extends SahiTestScript {
+public class StorageAutoInventoryTest extends SahiTestScript {
 
 	protected Resource platform;
 	

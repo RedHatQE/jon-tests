@@ -373,9 +373,9 @@
 		</classes>
   	</test>
 	-->
-	<test name="StorageAutoInventory">
+	<test name="StorageAutoInventoryTest">
   	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventory">
+			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventoryTest">
 			</class>
 		</classes>
   	</test>
