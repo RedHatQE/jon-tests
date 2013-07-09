@@ -380,6 +380,13 @@
 		</classes>
   	</test>
   	
+  	<test name="StorageNode">
+  	  	<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.StorageNodesTest">
+			</class>
+		</classes>
+  	</test>
+  	
   	<test name="Setup LDAP">
   	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
