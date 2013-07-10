@@ -191,7 +191,7 @@ project(":common") {
 			"org.apache.commons:commons-lang3:3.1",
 //      "org.jacoco:org.jacoco.ant:0.6.2.201302030002",
       "org.jacoco:org.jacoco.ant:0.5.10.201208310627",
-			"com.report.engine:report-engine-client:0.0.4"
+			"com.report.engine:java-client:0.0.2-SNAPSHOT"
                 compile("com.redhat.qe:bz-checker:1.0.3-SNAPSHOT"){
                     force = true
                 }	
