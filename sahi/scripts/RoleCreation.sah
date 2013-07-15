@@ -1,6 +1,0 @@
-_click(_link("Administration"));
-_click(_cell("Roles"));
-_click(_cell("New"));
-_setValue(_textbox("name"), "Role1");
-_click(_image("permission_disabled_11.png[3]"));
-_click(_cell("Save"));

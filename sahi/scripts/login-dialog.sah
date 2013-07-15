@@ -1,3 +1,0 @@
-_click(_image("rhq_logo_28px.png[1]"));
-_click(_label("User"));
-_click(_label("Password"));

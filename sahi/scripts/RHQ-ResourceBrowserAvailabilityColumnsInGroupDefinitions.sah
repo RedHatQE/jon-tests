@@ -1,7 +1,0 @@
-_click(_link("Inventory"));
-_click(_cell("Dynagroup Definitions"));
-_assertExists(_cell("Name"));
-_assertExists(_cell("Description"));
-_assertExists(_cell("Expression Set"));
-_assertExists(_cell("Last Calculation Time"));
-_assertExists(_cell("Next Calculation Time"));
