@@ -3,6 +3,7 @@ package com.redhat.qe.jon.sahi.base.inventory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +65,35 @@ public class Resource {
 		}
 	}
 
+	/**
+	 * creates a new Resource instance using it's ID
+	 * @param id
+	 * @return new resource
+	 * @throws RuntimeException when REST API is not enabled/accessible or 
+	 * when there was an issue with parsing REST response
+	 */
+	public static Resource createUsingId(SahiTasks tasks, String id) throws ParseException {
+	    if (!HAVE_REST_API) {
+		throw new RuntimeException("REST API support not enabled/detected, cannot create Resource using it's ID");
+	    }
+	    RestClient rc = RestClient.getDefault();
+	    List<String> path = new ArrayList<String>();
+	    
+	    JSONObject jsonObject = getResourceBody(rc, id);
+	    int parentId = (Integer) jsonObject.get("parentId");
+	    path.add(jsonObject.get("resourceName").toString());
+	    while (parentId > 0) {
+		jsonObject = getResourceBody(rc, String.valueOf(parentId));
+		parentId = (Integer)jsonObject.get("parentId");
+		path.add(jsonObject.get("resourceName").toString());
+	    }
+	    Collections.reverse(path);
+	    return new Resource(id, tasks, path);
+	}
+	private static JSONObject getResourceBody(RestClient rc, String id) throws ParseException {
+	    Map<String, Object> result = rc.getResponse("resource/"+id+".json");
+	    return rc.getJSONObject((String)result.get("response.content"));	    
+	}
 	/**
 	 * 
 	 * @param tasks
