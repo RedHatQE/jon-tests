@@ -1,14 +1,19 @@
 package com.redhat.qe.jon.sahi.base.administration;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import net.sf.sahi.client.ElementStub;
 
 import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.base.storage.StorageNode;
+import com.redhat.qe.jon.sahi.base.storage.StorageNodeMetric;
+import com.redhat.qe.jon.sahi.base.storage.StorageNodeMetricConst;
 import com.redhat.qe.jon.sahi.tasks.Navigator;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
@@ -17,10 +22,6 @@ public class StorageNodesAdministration {
 	private static Logger log = Logger.getLogger(Navigator.class.getName());
 	protected SahiTasks tasks = null;
 	protected Editor editor = null;
-	//private static String storageIP = System.getProperty("jon.server.host");
-	private static final int ROW_START_INDEX = 1;
-	private static final int COLUMN_START_INDEX = 2;
-	private static final int TABLE_COLUMNS = 7;
 	
 	public StorageNodesAdministration(SahiTasks tasks) {
 		this.tasks = tasks;
@@ -42,55 +43,67 @@ public class StorageNodesAdministration {
 	}
 	
 	private int getStorageNodeCount() {
-		ElementStub storageNodeElements = tasks.byXPath("//a[contains(@href,'Administration/Topology/StorageNodes')]");
+		ElementStub storageNodeElements = tasks.image("row_collapsed.png");
 		return storageNodeElements.countSimilar();
 	}
 	
 	public List<StorageNode> getStorageNodes() {
-		int tableRowCount = getStorageNodeCount() + ROW_START_INDEX;
+		int tableRowCount = getStorageNodeCount();
 		List<StorageNode> storageNodes = new LinkedList<StorageNode>();
-		for(int i = ROW_START_INDEX; i < tableRowCount; i++) {
+		for(int i = 0; i < tableRowCount; i++) {
 			StorageNode storageNode = new StorageNode();
-			for (int j = COLUMN_START_INDEX; j <= TABLE_COLUMNS; j++) {
-				String xPath = "//tbody[2]/tr[" + i + "]/td[" + j + "]/div";
-				if  (j == COLUMN_START_INDEX || j == TABLE_COLUMNS) {
-					xPath += "/a";
-				}
-				ElementStub element = tasks.byXPath(xPath);
-				
-				switch(j) {
-					case 2:
-						storageNode.setEndpointAddress(element.getText());
-						break;
-					case 3:
-						storageNode.setJmxPort(element.getText());
-						break;
-					case 4:
-						storageNode.setMode(element.getText());
-						break;
-					case 5:
-						storageNode.setInstallationDate(element.getText());
-						break;
-					case 6:
-						storageNode.setLastUpdateTime(element.getText());
-						break;
-					case 7:
-						storageNode.setResource(element.getText());
-						storageNode.setResourceLink(tasks.link(element.getText()+"["+(i-1)+"]"));
-						break;
-				}
-					
-			}
+			ElementStub img = tasks.image("row_collapsed.png[" + i + "]");
+			ElementStub trElem = img.parentNode("tr");
+			
+			storageNode.setEndpointAddress(tasks.cell(1).in(trElem).getText());
+			storageNode.setJmxPort(tasks.cell(2).in(trElem).getText());
+			storageNode.setMode(tasks.cell(3).in(trElem).getText());
+			storageNode.setInstallationDate(tasks.cell(4).in(trElem).getText());
+			storageNode.setLastUpdateTime(tasks.cell(5).in(trElem).getText());
+			storageNode.setResourceLinkText(tasks.cell(6).in(trElem).getText());
+			
+			String setResourceLink = tasks.link("").in(tasks.cell(6).in(trElem)).fetch("href");
+			storageNode.setResourceLink(setResourceLink);
 			storageNodes.add(storageNode);
 		}
 		return storageNodes;
 	}
 	
-	public StorageNodesAdministration navigateToStorageNodesDetails(final String storageIP) {
-		log.fine("Clicking on Storage Node endpoint address - Storage Node Details page will be displayed.");
+	public void navigateToStorageNodesDetails(final String storageIP) {
+		log.fine("Clicking on Storage Node with IP " + storageIP + " - Storage Node Details page will be displayed.");
 		tasks.link(storageIP).click();
-		return this;
 	}
 	
-
+	private StorageNodeMetric createAndFillStorageNodeMetric(final String metricName) {
+		StorageNodeMetric storageNodeMetric = new StorageNodeMetric();
+		ElementStub trElem = tasks.cell(metricName).parentNode("tr");
+		storageNodeMetric.setMin(tasks.cell(1).in(trElem).getText()); 
+		storageNodeMetric.setAvg(tasks.cell(2).in(trElem).getText());
+		storageNodeMetric.setMax(tasks.cell(3).in(trElem).getText());
+		return storageNodeMetric;
+	}
+	
+	private Map<String, StorageNodeMetric> createAndFillStorageNodeDetails() {
+		Map<String, StorageNodeMetric> storageNodeDetails = new HashMap<String, StorageNodeMetric>();
+		storageNodeDetails.put(StorageNodeMetricConst.HEAP_MAXIMUM, createAndFillStorageNodeMetric(StorageNodeMetricConst.HEAP_MAXIMUM));
+		storageNodeDetails.put(StorageNodeMetricConst.HEAP_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.HEAP_USED));
+		storageNodeDetails.put(StorageNodeMetricConst.HEAP_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.HEAP_PERCENT_USED));
+		storageNodeDetails.put(StorageNodeMetricConst.LOAD, createAndFillStorageNodeMetric(StorageNodeMetricConst.LOAD));
+		storageNodeDetails.put(StorageNodeMetricConst.DISK_SPACE_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.DISK_SPACE_PERCENT_USED));
+		storageNodeDetails.put(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED));
+		storageNodeDetails.put(StorageNodeMetricConst.OWNERSHIP, createAndFillStorageNodeMetric(StorageNodeMetricConst.OWNERSHIP));
+		storageNodeDetails.put(StorageNodeMetricConst.NUMBER_OF_TOKENS, createAndFillStorageNodeMetric(StorageNodeMetricConst.NUMBER_OF_TOKENS));
+		return storageNodeDetails;
+	}
+	
+	public StorageNode getStorageNodesDetails(final StorageNode storageNode) {
+		navigateToStorageNodesDetails(storageNode.getEndpointAddress());
+		storageNode.setStorageNodeDetails(createAndFillStorageNodeDetails());
+		return storageNode;
+	}
+	
+	public boolean isStorageNodeResourceLinkCorrect(final StorageNode storageNode) {
+		String resourceLinkPattern = ".*#Resource/\\d+";
+		return Pattern.compile(resourceLinkPattern).matcher(storageNode.getResourceLink()).matches();
+	}
 }

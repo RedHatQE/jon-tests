@@ -80,11 +80,11 @@ public class Resource {
 	    List<String> path = new ArrayList<String>();
 	    
 	    JSONObject jsonObject = getResourceBody(rc, id);
-	    int parentId = (Integer) jsonObject.get("parentId");
+	    int parentId = ((Number) jsonObject.get("parentId")).intValue();
 	    path.add(jsonObject.get("resourceName").toString());
 	    while (parentId > 0) {
 		jsonObject = getResourceBody(rc, String.valueOf(parentId));
-		parentId = (Integer)jsonObject.get("parentId");
+		parentId = ((Number) jsonObject.get("parentId")).intValue();
 		path.add(jsonObject.get("resourceName").toString());
 	    }
 	    Collections.reverse(path);
