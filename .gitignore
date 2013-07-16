@@ -3,7 +3,7 @@ classes
 test-output
 *~
 \#*
-clitest/src/main/resources/testng-dev.xml
+clitest/src/test/resources/testng-dev.xml
 .gradle
 build
 */.gradle

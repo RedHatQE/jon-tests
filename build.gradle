@@ -69,13 +69,13 @@ subprojects {
   }
   task test(dependsOn: "testClasses",overwrite:true) << {
     def workspace = System.getProperty("workspace.dir", System.getenv("WORKSPACE") ?: System.properties["user.dir"])
-    def xmlSuite = "src/main/resources/testng.xml"
+    def xmlSuite = "src/test/resources/testng.xml"
 		if ( System.properties["testng.suite"] ) {
 		  xmlSuite = System.properties["testng.suite"]
 		}
     ant.taskdef( resource: 'testngtasks', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
     ant.testng(
-      classpath: sourceSets.main.runtimeClasspath.asPath, 
+      classpath: sourceSets.test.runtimeClasspath.asPath, 
       listeners: "com.redhat.qe.auto.testng.TestNGListener,org.uncommons.reportng.HTMLReporter,org.uncommons.reportng.JUnitXMLReporter",
       outputdir: "$buildDir/reports/tests",
       workingDir: "$buildDir"
