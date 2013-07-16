@@ -8,10 +8,11 @@ var platform = platforms[0];
 
 platform.invokeOperation("viewProcessList");
 
-// search for the operation
+// search for the operation (slightly changed)
 var c = new ResourceOperationHistoryCriteria()
 c.addFilterResourceIds(platform.id);
-c.fetchResults(true)
+c.fetchResults(true);
+c.addSortStartTime(PageOrdering.DESC);
 var r = OperationManager.findResourceOperationHistoriesByCriteria(c)
 assertTrue(r.size() >0, "Didn't get any operation histories");
 
