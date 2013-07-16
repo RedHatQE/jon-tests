@@ -11,7 +11,6 @@ import org.testng.annotations.BeforeSuite;
 import com.redhat.qe.jon.clitest.base.Configuration.PARAM;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.clitest.tests.CliTest;
 import com.redhat.qe.jon.common.TestScript;
 import com.redhat.qe.jon.common.util.LocalCommandRunner;
 import com.redhat.qe.jon.common.util.SSHClient;
@@ -79,29 +78,29 @@ public abstract class CliTestScript extends TestScript{
 			throw new RuntimeException("No target RHQ/JON server defined!If you are not using dynamic provisioning, " +
 					"please set "+PARAM.RHQ_TARGET+" environment variable or 'jon.server.host' java system property");
 		}
-		CliTest.rhqTarget = rhqTarget;
+		CliEngine.rhqTarget = rhqTarget;
 		CliTasks.getCliTasks().initialize(cliHost,cliHostUser,cliHostPasswd);
-		CliTest.cliShLocation = cliShLocation;
-		if (StringUtils.trimToNull(CliTest.cliShLocation)==null) {
+		CliEngine.cliShLocation = cliShLocation;
+		if (StringUtils.trimToNull(CliEngine.cliShLocation)==null) {
 			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was not defined");
 			CLIClientAutoInstall();
 		}
-		CliTest.rhqCliJavaHome = cliJavaHome;
+		CliEngine.rhqCliJavaHome = cliJavaHome;
 	}
 	
 	private void CLIClientAutoInstall() throws CliTasksException{
 		_logger.info("Auto-installing CLI and auto-detecting");
 		// auto-install and setup cli executable
 		// download from target server
-		CliTasks.getCliTasks().runCommand("wget -nv http://"+CliTest.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
+		CliTasks.getCliTasks().runCommand("wget -nv http://"+CliEngine.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
 		// detect CLI_HOME from zip content
 		String cliHomeRel = CliTasks.getCliTasks().runCommand("unzip -l rhq-cli.zip | head -n4 | tail -1 | grep cli | awk '{print $4}'").trim();
 		String workingDir = CliTasks.getCliTasks().runCommand("pwd").trim();
 		File cliHome = new File(workingDir,cliHomeRel);
-		CliTest.cliShLocation = cliHome+"/bin/rhq-cli.sh";
+		CliEngine.cliShLocation = cliHome+"/bin/rhq-cli.sh";
 		// unzip CLI
 		CliTasks.getCliTasks().runCommand("rm -rf "+cliHome+" && unzip rhq-cli.zip; rm -f rhq-cli.zip");
-		_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was autodetected to "+CliTest.cliShLocation);
+		_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was autodetected to "+CliEngine.cliShLocation);
 	}
 
 	@AfterSuite
@@ -109,7 +108,7 @@ public abstract class CliTestScript extends TestScript{
 		_logger.log(Level.INFO, "Executing after Suite");
 		CliTasks.getCliTasks().closeConnection();
 		
-		gatherServerLog(CliTest.rhqTarget, System.getProperty("jon.server.log.path"));
+		gatherServerLog(CliEngine.rhqTarget, System.getProperty("jon.server.log.path"));
 		
 		String agents = System.getProperty("jon.agent.log.hosts");
 		if(agents == null){

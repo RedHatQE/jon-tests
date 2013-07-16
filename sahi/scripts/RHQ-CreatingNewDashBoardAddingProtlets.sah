@@ -1,7 +1,0 @@
-_click(_cell("New Dashboard"));
-_click(_image("menu_button.png[1]"));
-_click(_cell("Alerted or Unavailable Resources[1]"));
-_click(_cell("Add Column"));
-_click(_cell("Remove Column"));
-_click(_image("close.png[1]"));
-_click(_cell("Yes"));

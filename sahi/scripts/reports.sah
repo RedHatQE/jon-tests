@@ -1,3 +1,0 @@
-_setValue(_textbox("user"), "hqadmin");
-_setValue(_password("password"), "rhqadmin");
-_click(_cell("Login"));
