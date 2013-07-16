@@ -2,22 +2,25 @@ package com.redhat.qe.jon.sahi.tests;
 
 import java.util.List;
 
+import org.json.simple.parser.ParseException;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 import com.redhat.qe.jon.sahi.base.administration.StorageNodesAdministration;
+import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.storage.StorageNode;
+import com.redhat.qe.jon.sahi.base.storage.StorageNodeMetric;
+import com.redhat.qe.jon.sahi.base.storage.StorageNodeMetricConst;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
 public class StorageNodesTest extends SahiTestScript {
 
-	protected static String storageNodeName;
-	protected static List<StorageNode> storageNodes;
-	protected static StorageNodesAdministration storageNodesAdmin;
-
 	@Test
-	public void checkStorageNodeDetails() {
+	public void checkStorageNodes() throws ParseException {
+		String storageNodeName;
+		List<StorageNode> storageNodes;
+		StorageNodesAdministration storageNodesAdmin;
 		storageNodeName = System.getProperty("jon.server.host");
 		storageNodesAdmin = new StorageNodesAdministration(sahiTasks);
 		storageNodesAdmin.navigate();
@@ -25,29 +28,33 @@ public class StorageNodesTest extends SahiTestScript {
 		storageNodes = storageNodesAdmin.getStorageNodes();
 		// check at least one storage node exist
 		Assert.assertTrue(storageNodes.size() >= 1, "Storage node count");
-
 		// get first storage node
 		StorageNode storageNode = storageNodes.get(0);
-
 		// check the first storage node properties
-		Assert.assertEquals(storageNode.getEndpointAddress(), storageNodeName);
-		Assert.assertEquals(storageNode.getJmxPort(), "7299");
-		Assert.assertEquals(storageNode.getMode(), "NORMAL");
+		Assert.assertEquals(storageNode.getEndpointAddress(), storageNodeName,
+				"Endpoint address");
+		Assert.assertEquals(storageNode.getJmxPort(), "7299", "JMX port");
+		Assert.assertEquals(storageNode.getMode(), "NORMAL", "Mode");
 		Assert.assertNotNull(storageNode.getInstallationDate(),
-				"Installation Date");
+				"Installation date");
 		Assert.assertNotNull(storageNode.getLastUpdateTime(),
-				"last Update Time");
-		Assert.assertEquals(storageNode.getResource(), "Link to Resource");
+				"Last update time");
+		Assert.assertEquals(storageNode.getResourceLinkText(),
+				"Link to Resource");
 		Assert.assertNotNull(storageNode.getResourceLink(),
-				"Link to Resource in Inventory");
+				"Link to resource in inventory");
 
 		storageNodesAdmin.navigateToStorageNodesDetails(storageNodeName);
 
 		Assert.assertTrue(
-				sahiTasks.cell("RHQ Storage Node(" + storageNodeName + ")")
-						.exists(), "Associated Resource checked.");
-		sahiTasks.link("RHQ Storage Node(" + storageNodeName + ")").click();
+				sahiTasks.link("RHQ Storage Node(" + storageNodeName + ")")
+						.exists(), "Associated Resource checked");
+		Assert.assertTrue(
+				storageNodesAdmin.isStorageNodeResourceLinkCorrect(storageNode),
+				"Link to resource in inventory");
 
+		Resource.createUsingId(sahiTasks, storageNodes.get(0).getId())
+				.navigate();
 		// assert storage node resource is selected/visible in Inventory
 		sahiTasks.waitForElementVisible(sahiTasks,
 				sahiTasks.cell("RHQ Storage Node(" + storageNodeName + ")"),
@@ -56,27 +63,41 @@ public class StorageNodesTest extends SahiTestScript {
 				"RHQ Storage Node(" + storageNodeName + ")").exists());
 	}
 
+	private void checkStorageNodeMetric(StorageNode storageNode, String metric) {
+		// get certain metric values
+		StorageNodeMetric storageNodeMetric = storageNode
+				.getStorageNodeDetails().get(metric);
+		Assert.assertNotNull(storageNodeMetric, "Metric " + metric);
+		Assert.assertNotNull(storageNodeMetric.getMin(), metric + " min value");
+		Assert.assertNotNull(storageNodeMetric.getAvg(), metric + " avg value");
+		Assert.assertNotNull(storageNodeMetric.getMax(), metric + " max value");
+	}
+
 	@Test
-	public void checkStorageNodeResourceInInventory() {
+	public void checkStorageNodeDetails() {
+		List<StorageNode> storageNodes;
+		StorageNodesAdministration storageNodesAdmin;
+		storageNodesAdmin = new StorageNodesAdministration(sahiTasks);
 		storageNodesAdmin.navigate();
 		// get list of storage nodes
 		storageNodes = storageNodesAdmin.getStorageNodes();
 		// check at least one storage node exist
 		Assert.assertTrue(storageNodes.size() >= 1, "Storage node count");
+		// get storage node with details
+		StorageNode storageNode = storageNodesAdmin
+				.getStorageNodesDetails(storageNodes.get(0));
 
-		storageNodesAdmin.navigateToStorageNodesDetails(storageNodeName);
-		sahiTasks.bold("Back to List").click();
-		sahiTasks.waitForElementVisible(sahiTasks, storageNodes.get(0)
-				.getResourceLink(), storageNodes.get(0).getEndpointAddress(),
-				Timing.WAIT_TIME);
-		storageNodes.get(0).getResourceLink().click();
-		// assert storage node resource is selected/visible in Inventory
-		sahiTasks.waitForElementVisible(sahiTasks,
-				sahiTasks.cell("RHQ Storage Node(" + storageNodeName + ")"),
-				"RHQ Storage Node(" + storageNodeName + ")", Timing.WAIT_TIME);
-
-		Assert.assertTrue(sahiTasks.cell(
-				"RHQ Storage Node(" + storageNodeName + ")").exists());
-
+		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.HEAP_MAXIMUM);
+		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.HEAP_USED);
+		checkStorageNodeMetric(storageNode,
+				StorageNodeMetricConst.HEAP_PERCENT_USED);
+		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.LOAD);
+		checkStorageNodeMetric(storageNode,
+				StorageNodeMetricConst.DISK_SPACE_PERCENT_USED);
+		checkStorageNodeMetric(storageNode,
+				StorageNodeMetricConst.TOTAL_DISK_SPACE_USED);
+		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.OWNERSHIP);
+		checkStorageNodeMetric(storageNode,
+				StorageNodeMetricConst.NUMBER_OF_TOKENS);
 	}
 }
