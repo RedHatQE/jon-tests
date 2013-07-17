@@ -1,45 +1,45 @@
 package com.redhat.qe.jon.clitest.tests.manager;
 
-import java.io.IOException;
-
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.base.CliEngine;
 
-public class ManagerCliTest extends CliTest {
+public class ManagerCliTest extends CliEngine {
 	
 	@Test
-	public void systemManagerTest() throws IOException, CliTasksException{
-		runJSfile("managers/systemmanager.js");
+	public void systemManagerTest() {
+		createJSRunner("managers/systemmanager.js").
+			run();
 	}
 	
 	@Test
-	public void resourceTypeManagerTest() throws IOException, CliTasksException{
-		runJSfile("managers/resourcetypemanager.js");
+	public void resourceTypeManagerTest() {
+		createJSRunner("managers/resourcetypemanager.js").
+			run();
 	}
 	
 	@Test
-	public void dataAccessManagerTest() throws IOException, CliTasksException{
-		runJSfile("managers/dataaccessmanager.js");
+	public void dataAccessManagerTest() {
+		createJSRunner("managers/dataaccessmanager.js").
+			run();
 	}
 	
 	@Test
-	public void repoManagerTest() throws IOException, CliTasksException{
-		runJSfile("managers/repo.js");
+	public void repoManagerTest() {
+		createJSRunner("managers/repo.js").
+			run();
 	}
 	
 	@Test
-	public void operationManagerTest() throws IOException, CliTasksException{
-		runJSfile("managers/viewProcessList.js",
-				null,
-				"Login successful",
-				"rhqapi.js");
+	public void operationManagerTest() {
+		createJSRunner("managers/viewProcessList.js").
+			addDepends("rhqapi.js").
+			run();
 	}
 	
 	@Test
-	public void measurementDefinitionManagerTest() throws IOException, CliTasksException{
-		runJSfile("managers/measurementdefinitions.js");
+	public void measurementDefinitionManagerTest() {
+		createJSRunner("managers/measurementdefinitions.js").
+			run();
 	}
-
 }

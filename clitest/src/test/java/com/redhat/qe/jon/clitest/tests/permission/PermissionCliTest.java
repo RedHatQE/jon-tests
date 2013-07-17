@@ -1,86 +1,98 @@
 package com.redhat.qe.jon.clitest.tests.permission;
 
-import java.io.IOException;
-
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.base.CliEngine;
 
-public class PermissionCliTest extends CliTest {
+public class PermissionCliTest extends CliEngine {
 
 	@Test(groups={"blockedByBug-841625"})
-	public void createChildResourceTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-CreateChildResource.js");
+	public void createChildResourceTest() {
+		createJSRunner("permissions/testPermissions-CreateChildResource.js").
+			run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void deleteChildResourceTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-DeleteChildResource.js");
+	public void deleteChildResourceTest() {
+		createJSRunner("permissions/testPermissions-DeleteChildResource.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void manageBundlesTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ManageBundles.js");
+	public void manageBundlesTest() {
+		createJSRunner("permissions/testPermissions-ManageBundles.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void manageContentTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ManageContent.js");
+	public void manageContentTest() {
+		createJSRunner("permissions/testPermissions-ManageContent.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void manageDriftTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ManageDrift.js");
+	public void manageDriftTest() {
+		createJSRunner("permissions/testPermissions-ManageDrift.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void manageInventoryTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ManageInventory.js");
+	public void manageInventoryTest() {
+		createJSRunner("permissions/testPermissions-ManageInventory.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void manageMeasurementsTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ManageMeasurements.js");
+	public void manageMeasurementsTest() {
+		createJSRunner("permissions/testPermissions-ManageMeasurements.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void manageRepositoriesTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ManageRepositories.js");
+	public void manageRepositoriesTest() {
+		createJSRunner("permissions/testPermissions-ManageRepositories.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void manageSecurityTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ManageSecurity.js");
+	public void manageSecurityTest() {
+		createJSRunner("permissions/testPermissions-ManageSecurity.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void manageSettingsTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ManageSettings.js");
+	public void manageSettingsTest() {
+		createJSRunner("permissions/testPermissions-ManageSettings.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void resourceConfigurationTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ResourceConfiguration.js");
+	public void resourceConfigurationTest() {
+		createJSRunner("permissions/testPermissions-ResourceConfiguration.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void resourceControlTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ResourceControl.js");
+	public void resourceControlTest() {
+		createJSRunner("permissions/testPermissions-ResourceControl.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void resourceGroupTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ResourceGroup.js");
+	public void resourceGroupTest() {
+		createJSRunner("permissions/testPermissions-ResourceGroup.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void resourcePermissionsInventoryTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ResourcePermissionsInventory.js");
+	public void resourcePermissionsInventoryTest() {
+		createJSRunner("permissions/testPermissions-ResourcePermissionsInventory.js").
+		run();
 	}
 	
 	@Test(groups={"blockedByBug-841625"})
-	public void viewUserTest() throws IOException, CliTasksException{
-		runJSfile("permissions/testPermissions-ViewUsers.js");
+	public void viewUserTest() {
+		createJSRunner("permissions/testPermissions-ViewUsers.js").
+		run();
 	}
 }

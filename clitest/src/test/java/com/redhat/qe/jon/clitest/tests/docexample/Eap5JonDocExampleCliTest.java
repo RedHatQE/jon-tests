@@ -1,60 +1,53 @@
 package com.redhat.qe.jon.clitest.tests.docexample;
 
-import java.io.IOException;
-
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.base.CliEngine;
 
-public class Eap5JonDocExampleCliTest extends CliTest {
+
+public class Eap5JonDocExampleCliTest extends CliEngine {
 
 	@Test
-	public void gettingDataForSingleAndMultipleResTest()throws IOException, CliTasksException{
-		runJSfile("docExample/jon/short/gettingDataForSingleAndMultipleRes.js",
-				null,
-				"Login successful",
-				"rhqapi.js");
+	public void gettingDataForSingleAndMultipleResTest(){
+		createJSRunner("docExample/jon/short/gettingDataForSingleAndMultipleRes.js").
+			dependsOn("rhqapi.js").
+			run();
 	}
 	
 	@Test
-	public void creatingContentBackedResTest()throws IOException, CliTasksException{
-		runJSfile("docExample/jon/short/creatingContentBackedRes.js",
-				"--args-style=named deployment=/tmp/MiscBeans-3.2.2.ear",
-				"Login successful",
-				"rhqapi.js",
-				"/deployments/MiscBeans-3.2.2.ear",
-				"/tmp/MiscBeans-3.2.2.ear");
-		
+	public void creatingContentBackedResTest(){
+		createJSRunner("docExample/jon/short/creatingContentBackedRes.js").
+			dependsOn("rhqapi.js").
+			withArg("deployment", "/tmp/MiscBeans-3.2.2.ear").
+			resourceSrcs("/deployments/MiscBeans-3.2.2.ear").
+			resourceDests("/tmp/MiscBeans-3.2.2.ear").
+			run();
 	}
 	
 	@Test(groups={"blockedByBug-851145"},
 			dependsOnMethods = { "creatingContentBackedResTest" },
 			priority=1)
-	public void updatingContentBackedResTest()throws IOException, CliTasksException{
-		runJSfile("docExample/jon/short/updatingContentBackedRes.js",
-				"--args-style=named deployment=/tmp/MiscBeans-3.2.5.ear",
-				"Login successful",
-				"rhqapi.js",
-				"/deployments/MiscBeans-3.2.5.ear",
-				"/tmp/MiscBeans-3.2.5.ear");
-		
+	public void updatingContentBackedResTest(){
+		createJSRunner("docExample/jon/short/updatingContentBackedRes.js").
+			dependsOn("rhqapi.js").
+			withArg("deployment", "/tmp/MiscBeans-3.2.5.ear").
+			resourceSrcs("/deployments/MiscBeans-3.2.5.ear").
+			resourceDests("/tmp/MiscBeans-3.2.5.ear").
+			run();
 	}
 	
 	@Test(dependsOnMethods = { "creatingContentBackedResTest" },
 			priority=2)
-	public void deletingContentBackedResTest()throws IOException, CliTasksException{
-		runJSfile("docExample/jon/short/deletingContentBackedRes.js",
-				null,
-				"Login successful",
-				"rhqapi.js");
+	public void deletingContentBackedResTest(){
+		createJSRunner("docExample/jon/short/deletingContentBackedRes.js").
+			dependsOn("rhqapi.js").
+			run();
 	}
 	
 	@Test
-	public void startingArrayTest()throws IOException, CliTasksException{
-		runJSfile("docExample/jon/short/startingArray.js",
-				null,
-				"Login successful",
-				"rhqapi.js");
+	public void startingArrayTest(){
+		createJSRunner("docExample/jon/short/startingArray.js").
+			dependsOn("rhqapi.js").
+			run();
 	}
 }

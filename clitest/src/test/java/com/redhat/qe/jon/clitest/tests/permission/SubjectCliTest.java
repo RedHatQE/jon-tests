@@ -1,22 +1,21 @@
 package com.redhat.qe.jon.clitest.tests.permission;
 
-import java.io.IOException;
-
 import org.testng.annotations.Test;
 
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.clitest.tests.CliTest;
+import com.redhat.qe.jon.clitest.base.CliEngine;
 
-public class SubjectCliTest extends CliTest {
+public class SubjectCliTest extends CliEngine {
 	
 	@Test
-	public void subjectTest() throws IOException, CliTasksException{
-		runJSfile("permissions/subjects.js");
+	public void subjectTest() {
+		createJSRunner("permissions/subjects.js").
+		run();
 	}
 	
 	@Test
-	public void subjectUserCreateTest() throws IOException, CliTasksException{
-		runJSfile("permissions/subjectsusercreate.js");
+	public void subjectUserCreateTest() {
+		createJSRunner("permissions/subjectsusercreate.js").
+		run();
 	}
 
 }

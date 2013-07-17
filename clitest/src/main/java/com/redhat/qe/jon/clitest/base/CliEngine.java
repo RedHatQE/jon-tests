@@ -217,22 +217,6 @@ public class CliEngine extends CliTestScript{
 	    return createJSRunner(null).jsSnippet(jsSnippet);
 	}
 	
-	public void runJSfile(String jsFile,String cliArgs,String expectedResult,String jsDepends,String resSrc, String resDes) 
-			throws IOException, CliTasksException{
-		runJSfile(null, "rhqadmin", "rhqadmin", jsFile, cliArgs, expectedResult, null, jsDepends, resSrc, resDes);
-	}
-	public void runJSfile(String jsFile,String cliArgs,String expectedResult,String jsDepends) throws IOException, CliTasksException{
-		runJSfile(jsFile, cliArgs, expectedResult, jsDepends, null, null);
-	}
-	public void runJSfile(String jsFile,String cliArgs,String expectedResult) throws IOException, CliTasksException{
-		runJSfile(jsFile, cliArgs, expectedResult, null);
-	}
-	public void runJSfile(String jsFile,String expectedResult) throws IOException, CliTasksException{
-		runJSfile(jsFile, null, expectedResult);
-	}
-	public void runJSfile(String jsFile) throws IOException, CliTasksException{
-		runJSfile(jsFile, "Login successful");
-	}
 	/**
 	 * runs given javascript snippet
 	 * @param snippet
