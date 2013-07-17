@@ -1,19 +1,16 @@
-package com.redhat.qe.jon.clitest.tests;
+package com.redhat.qe.jon.clitest.base;
 
 import org.testng.annotations.BeforeSuite;
 
-import com.redhat.qe.jon.clitest.base.CliEngine;
-import com.redhat.qe.jon.clitest.base.CliTestRunner;
-
 /**
- * this class is extending {@link CliTest} class the way that it requires
+ * this class is extending {@link CliEngine} class the way that it requires
  * <strong>jon.agent.name</strong> system property to be defined and passes it's
  * value to each JS test as a named param <strong>agent</strong>.
  * 
  * @author lzoubek
  * 
  */
-public class OnAgentCliTest extends CliEngine {
+public class OnAgentCliEngine extends CliEngine {
 
     protected static String agentName;
 

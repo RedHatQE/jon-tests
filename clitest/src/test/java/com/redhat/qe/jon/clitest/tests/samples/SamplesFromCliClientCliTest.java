@@ -7,12 +7,12 @@ import java.util.logging.Logger;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.redhat.qe.jon.clitest.base.OnAgentCliEngine;
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.clitest.tests.CliTest;
-import com.redhat.qe.jon.clitest.tests.OnAgentCliTest;
 
-public class SamplesFromCliClientCliTest extends OnAgentCliTest {
+public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 	
 	private static Logger LOG = Logger.getLogger(SamplesFromCliClientCliTest.class.getName());
 	private File cliSamplesDir = null;
