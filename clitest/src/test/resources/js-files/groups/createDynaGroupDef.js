@@ -119,36 +119,6 @@ checkNumberOfResourcesInGroup(getManagedGroup(defNames[7]), allAgents.length * 5
 
 
 
-/**
- * Checks number of implicit and explicit resources in given group. 
- * @param group
- * @param expectedNumberOfExplRes
- * @param expectedMinimalNumberOfImplRes
- */
-function checkNumberOfResourcesInGroup(groups, expectedNumberOfExplRes,expectedMinimalNumberOfImplRes){
-	for(var i in groups){
-	common.info("Checking number of resources in group with id: " + groups[i].id);
-		assertTrue(expectedNumberOfExplRes == groups[i].resources().length,"Group with name " + groups[i].name+
-				", contain incorrect number of explicit resources."+" Expected: " + 
-				expectedNumberOfExplRes + ", actual:" +groups[i].resources().length);
-		assertTrue(expectedMinimalNumberOfImplRes <= groups[i].resourcesImpl().length,"Group with name " + groups[i].name+
-				", contain incorrect number of implicit resources."+" Expected minimal: " + 
-				expectedMinimalNumberOfImplRes + ", actual:" +groups[i].resourcesImpl().length);
-	}
-}
-
-
-/**
- * Returns found managed groups which are managed by dynaGroup definition with given name.
- * @param groupDefName
- * @returns found managed groups
- */
-function getManagedGroup(groupDefName){
-	var defs = dynaGroupDefs.findDynaGroupDefinitions({name:groupDefName});
-	var def = defs[0];
-	return def.getManagedGroups();
-}
-
 
 function generateCompleteDynaGroupName(dynaGroupName,platformName){
 	if(platformName){

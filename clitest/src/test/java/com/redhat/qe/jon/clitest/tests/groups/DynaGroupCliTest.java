@@ -7,6 +7,14 @@ import com.redhat.qe.jon.clitest.base.CliEngine;
 public class DynaGroupCliTest extends CliEngine {
 	
 	@Test
+	public void staticMembershipTest(){
+		createJSRunner("groups/staticMembership.js").
+			addDepends("/rhqapi.js").
+			addDepends("/groups/utils.js").
+			run();
+	}
+	/*
+	@Test
 	public void createDynaGroupDefinition(){
 		createJSRunner("groups/createDynaGroupDef.js").
 			addDepends("/rhqapi.js").
@@ -53,7 +61,7 @@ public class DynaGroupCliTest extends CliEngine {
 		addDepends("/groups/utils.js").
 		run();
 	}
-	
+	/*
 	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=3)
 	public void createEditRecalculateDeleteStressTest(){
 		createJSRunner("groups/createEditRecalculateDeleteStressTest.js").
@@ -61,4 +69,5 @@ public class DynaGroupCliTest extends CliEngine {
 		addDepends("/groups/utils.js").
 		run();
 	}
+	*/
 }
