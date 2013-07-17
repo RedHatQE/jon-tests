@@ -13,7 +13,7 @@ public class DynaGroupCliTest extends CliEngine {
 			addDepends("/groups/utils.js").
 			run();
 	}
-	/*
+	
 	@Test
 	public void createDynaGroupDefinition(){
 		createJSRunner("groups/createDynaGroupDef.js").
@@ -61,7 +61,7 @@ public class DynaGroupCliTest extends CliEngine {
 		addDepends("/groups/utils.js").
 		run();
 	}
-	/*
+	
 	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=3)
 	public void createEditRecalculateDeleteStressTest(){
 		createJSRunner("groups/createEditRecalculateDeleteStressTest.js").
@@ -69,5 +69,4 @@ public class DynaGroupCliTest extends CliEngine {
 		addDepends("/groups/utils.js").
 		run();
 	}
-	*/
 }
