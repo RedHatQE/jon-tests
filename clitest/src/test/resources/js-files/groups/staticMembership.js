@@ -64,7 +64,7 @@ allAgents = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 
 defName = "All agents";
 removeDynaGroupDef(defName);
-var allAgentsDef = createDynagroupDef(defName,"resource.type.name = RHQ Agent");
+var allAgentsDef = createDynagroupDef(defName,"resource.type.name = RHQ Agent","all agents",true);
 GroupDefinitionManager.calculateGroupMembership(allAgentsDef.getId());
 
 //check that dynagroup was created
@@ -84,7 +84,7 @@ assertDynaGroupDefParams(defName2);
 checkNumberOfResourcesInGroup(getManagedGroup(defName2), allAgents.length *5,0);
 
 
-// import all platforms
+// wait for agent to appear in discovery queue
 for(var i = 0;i<10;i++){
 	uninventoriedAgents = discoveryQueue.list({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 	if(uninventoriedAgents.length >0){
@@ -99,14 +99,18 @@ if(uninventoriedAgents.length == 0){
 	throw "No agent found in discovery queue!!";
 }
 
-discoveryQueue.importResource(uninventoriedAgents[0]);
+// import found agent
+discoveryQueue.importResource(uninventoriedAgents[0],false);
 
+
+// check that agent was imported
 allAgentsNow = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 assertTrue(allAgents < allAgentsNow,"No new agent was imported!!");
 
+// recalculate managed groups for 'All agents' definition
 GroupDefinitionManager.calculateGroupMembership(allAgentsDef.getId());
 checkNumberOfResourcesInGroup(getManagedGroup(defName), allAgentsNow.length,1);
 
-
+// recalculate managed groups for 'All mem pools from All agents dynagroup' definition
 GroupDefinitionManager.calculateGroupMembership(allMemPoolsDef.getId());
 checkNumberOfResourcesInGroup(getManagedGroup(defName2), allAgentsNow.length * 5,1);
