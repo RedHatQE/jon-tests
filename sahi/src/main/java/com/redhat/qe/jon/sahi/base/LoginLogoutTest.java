@@ -1,4 +1,4 @@
-package com.redhat.qe.jon.sahi.tests;
+package com.redhat.qe.jon.sahi.base;
 
 import java.util.logging.Logger;
 
@@ -7,7 +7,6 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.Assert;
-import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 public class LoginLogoutTest extends SahiTestScript {
 	private static Logger _logger = Logger.getLogger(LoginLogoutTest.class.getName());
