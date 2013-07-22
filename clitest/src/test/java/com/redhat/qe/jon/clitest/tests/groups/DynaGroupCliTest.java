@@ -52,6 +52,13 @@ public class DynaGroupCliTest extends CliEngine {
 			addDepends("/groups/utils.js").
 			run();
 	}
+	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=3)
+	public void propagateOperationScheduleTest(){
+		createJSRunner("groups/propagateOperationSchedule.js").
+			addDepends("/rhqapi.js").
+			addDepends("/groups/utils.js").
+			run();
+	}
 	@Test
 	public void deleteDynaGroupDefinitionNegativeTest(){
 		createJSRunner("groups/deleteDynaGroupDefNegative.js").
@@ -59,13 +66,12 @@ public class DynaGroupCliTest extends CliEngine {
 		addDepends("/groups/utils.js").
 		run();
 	}
-	/*
-	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=3)
+	
+	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=10)
 	public void createEditRecalculateDeleteStressTest(){
 		createJSRunner("groups/createEditRecalculateDeleteStressTest.js").
 		addDepends("/rhqapi.js").
 		addDepends("/groups/utils.js").
 		run();
 	}
-	*/
 }

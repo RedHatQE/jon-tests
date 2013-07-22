@@ -137,7 +137,7 @@ function expectException(func,params,expectedErrMsg) {
  * Checks number of implicit and explicit resources in given group. 
  * @param group
  * @param expectedNumberOfExplRes
- * @param expectedMinimalNumberOfImplRes
+ * @param expectedMinimalNumberOfImplRes (optional)
  */
 function checkNumberOfResourcesInGroup(groups, expectedNumberOfExplRes,expectedMinimalNumberOfImplRes){
 	for(var i in groups){
@@ -145,9 +145,11 @@ function checkNumberOfResourcesInGroup(groups, expectedNumberOfExplRes,expectedM
 		assertTrue(expectedNumberOfExplRes == groups[i].resources().length,"Group with name " + groups[i].name+
 				", contain incorrect number of explicit resources."+" Expected: " + 
 				expectedNumberOfExplRes + ", actual:" +groups[i].resources().length);
-		assertTrue(expectedMinimalNumberOfImplRes <= groups[i].resourcesImpl().length,"Group with name " + groups[i].name+
-				", contain incorrect number of implicit resources."+" Expected minimal: " + 
-				expectedMinimalNumberOfImplRes + ", actual:" +groups[i].resourcesImpl().length);
+		if(expectedMinimalNumberOfImplRes){
+			assertTrue(expectedMinimalNumberOfImplRes <= groups[i].resourcesImpl().length,"Group with name " + groups[i].name+
+					", contain incorrect number of implicit resources."+" Expected minimal: " + 
+					expectedMinimalNumberOfImplRes + ", actual:" +groups[i].resourcesImpl().length);
+		}
 	}
 }
 
