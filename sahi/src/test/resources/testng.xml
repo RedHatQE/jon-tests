@@ -389,7 +389,7 @@
   	
   	<test name="Setup LDAP">
   	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
+			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
 			<parameter name="ldap.url" value="ldap://10.16.23.153:10389"/>
 			<parameter name="ldap.search.base" value="ou=Users,dc=jboss,dc=org"/>
 			<parameter name="ldap.login.property" value="uid"/>
@@ -403,7 +403,7 @@
   	
   	<test name="GuiLDAPUserLoginTest">
   	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.LoginLogoutTest">
+			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
 			<parameter name="ldap.username" value="jonqa"/>
 			<parameter name="ldap.password" value="jonqa"/>
 			<parameter name="ldap.first.name" value="JON"/>	
