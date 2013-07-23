@@ -21,7 +21,7 @@
   	  	
   	<test name="Version Information">
   	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.BuildVersionInfoTest">
+			<class name="com.redhat.qe.jon.sahi.base.BuildVersionInfoTest">
 			<methods>
 				 <include name="getBuildInfo"></include> 
 			</methods>
