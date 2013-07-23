@@ -2,7 +2,7 @@
 
   	<listeners>
   		<!-- Listener to make tests annotated with @SkipIf skipped -->
-  		<listener class-name="com.redhat.qe.auto.testng.SkipTestNGListener"
+      <listener class-name="com.redhat.qe.auto.testng.SkipTestNGListener" />
   	  	<!-- Listener to send report to Report Engine Server -->
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener" />
   	  	<!-- Listener to clear pop-up's if any on test failure-->
