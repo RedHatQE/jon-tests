@@ -7,6 +7,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.Assert;
+import com.redhat.qe.auto.testng.SkipIf;
 
 public class LoginLogoutTest extends SahiTestScript {
 	private static Logger _logger = Logger.getLogger(LoginLogoutTest.class.getName());
@@ -22,6 +23,7 @@ public class LoginLogoutTest extends SahiTestScript {
 		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
 	}
 	
+	@SkipIf(property="ldap.configured",notEquals="true")
 	@Parameters({ "ldap.username", "ldap.password", "ldap.first.name", "ldap.last.name", "ldap.email", "ldap.phone.number", "ldap.department" })
 	@Test (groups={"functional","sanity","setup","login"})
 	public void ldapLoginTest(String guiUsername, String guiPassword, @Optional String firstName, @Optional String lastName, @Optional String email, @Optional String phoneNumber, @Optional String department){

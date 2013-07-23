@@ -1,6 +1,8 @@
 <suite name="RHQ 4.x core UI Test">
 
   	<listeners>
+  		<!-- Listener to make tests annotated with @SkipIf skipped -->
+  		<listener class-name="com.redhat.qe.auto.testng.SkipTestNGListener"
   	  	<!-- Listener to send report to Report Engine Server -->
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener" />
   	  	<!-- Listener to clear pop-up's if any on test failure-->
@@ -383,20 +385,6 @@
   	<test name="StorageNode">
   	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.StorageNodesTest">
-			</class>
-		</classes>
-  	</test>
-  	
-  	<test name="Setup LDAP">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
-			<parameter name="ldap.url" value="ldap://10.16.23.153:10389"/>
-			<parameter name="ldap.search.base" value="ou=Users,dc=jboss,dc=org"/>
-			<parameter name="ldap.login.property" value="uid"/>
-			<parameter name="ldap.enable.ssl" value="false"/>
-			<methods>
-				 <include name="setupLdapServer"></include> 
-			</methods>
 			</class>
 		</classes>
   	</test>
