@@ -15,7 +15,7 @@ import com.redhat.qe.jon.sahi.base.storage.StorageNodeMetricConst;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
 public class StorageNodesTest extends SahiTestScript {
-
+	
 	@Test
 	public void checkStorageNodes() throws ParseException {
 		String storageNodeName;
@@ -99,5 +99,48 @@ public class StorageNodesTest extends SahiTestScript {
 		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.OWNERSHIP);
 		checkStorageNodeMetric(storageNode,
 				StorageNodeMetricConst.NUMBER_OF_TOKENS);
+	}
+	
+	@Test
+	public void checkStoragesInCluster() {
+		String count = System.getProperty("jon.storage.count");
+		if (count != null) {
+			int storagesCount = Integer.parseInt(count);
+
+			StorageNodesAdministration storageNodesAdmin;
+			storageNodesAdmin = new StorageNodesAdministration(sahiTasks);
+			storageNodesAdmin.navigate();
+
+			for (int i = 0; i < storagesCount; i++) {
+				String storageIP = System.getProperty("rhq.storage.name"
+						+ (i + 1));
+				StorageNode storageNode = storageNodesAdmin.getStorageNodes()
+						.get(i);
+				Assert.assertEquals(storageNode.getEndpointAddress(),
+						storageIP, "Check storage node with endpoint address "
+								+ storageIP);
+
+				storageNodesAdmin.navigateToStorageNodesDetails(storageIP);
+				Assert.assertTrue(
+						sahiTasks.link("RHQ Storage Node(" + storageIP + ")")
+								.exists(),
+						"Check associated resource with storage node endpoint address "
+								+ storageIP);
+
+				// check the storage node ownership
+				StorageNodeMetric storageNodeMetric = storageNodesAdmin
+						.getStorageNodesDetails(storageNode)
+						.getStorageNodeDetails()
+						.get(StorageNodeMetricConst.OWNERSHIP);
+				Assert.assertEquals(storageNodeMetric.getMin(), "100.0 %",
+						"Check ownership min value of storage node with endpoint address " + storageIP);
+				Assert.assertEquals(storageNodeMetric.getAvg(), "100.0 %",
+						"Check ownership avg value of storage node with endpoint address " + storageIP);
+				Assert.assertEquals(storageNodeMetric.getMax(), "100.0 %",
+						"Check ownership max value of storage node with endpoint address " + storageIP);
+				
+				storageNodesAdmin.navigate();
+			}
+		}
 	}
 }
