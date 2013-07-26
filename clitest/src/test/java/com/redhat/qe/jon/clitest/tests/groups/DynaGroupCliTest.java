@@ -67,7 +67,7 @@ public class DynaGroupCliTest extends CliEngine {
 		run();
 	}
 	
-	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=10)
+	@Test(dependsOnMethods={"createDynaGroupDefinition"},priority=10,groups={"blockedByBug-976265"})
 	public void createEditRecalculateDeleteStressTest(){
 		createJSRunner("groups/createEditRecalculateDeleteStressTest.js").
 		addDepends("/rhqapi.js").

@@ -20,7 +20,7 @@ public class InventoryCliTest extends CliEngine {
 			run();
 	}
 	
-	@Test
+	@Test(groups={"blockedByBug-983210"})
 	public void uninventoryAllResourcesTest() {
 		createJSRunner("inventory/UninventoryResources.js").
 			addDepends("rhqapi.js").
