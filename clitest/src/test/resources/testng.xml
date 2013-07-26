@@ -140,6 +140,16 @@
 	</classes>
 </test>
 
+<test name="StorageNodesTest">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.storageNodes.StorageNodesTest">	
+			<methods>
+				<include name="StorageNodesTest"></include>
+			</methods>
+		</class>
+	</classes>
+</test>
+
 <!-- RHQ Resource  Configuration Update -->
 <!-- test name="Test_Update_Agent_Configuration">
   	<classes>
