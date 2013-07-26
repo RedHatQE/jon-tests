@@ -13,6 +13,12 @@ import com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.AlertDefinition;
 import com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.AlertDefinitionCreator;
 import com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.AlertDefinitionsPage;
 
+/**
+ * Purpose of this simple test is to show and test abstraction layer for alert definitions.
+ * 
+ * @author fbrychta
+ *
+ */
 public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 	private final Logger log = Logger.getLogger(this.getClass().getName());
 	private Resource agent;

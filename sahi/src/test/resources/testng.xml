@@ -366,15 +366,17 @@
 				</methods>
 			</class>
 		</classes>
-	</test>
 
-	<!-- <test name="AlertDefinitionTest">  <classes>
+	</test>
+  	
+  	<test name="AlertDefinitionTest">
+  	  	<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.alerts.AlertDefinitioinTest">
-			
 			</class>
 		</classes>
-		</test>
-	-->
+	</test>
+
+
 	<test name="StorageAutoInventoryTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventoryTest">
