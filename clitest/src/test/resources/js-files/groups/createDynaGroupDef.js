@@ -13,9 +13,7 @@ var common = new _common();
 
 
 // delete all found dynaGroups definitions and all groups
-groups.find().forEach(function(b){
-	b.remove();
-});
+removeAllGroups();
 removeAllDynaGroupDefs();
 
 

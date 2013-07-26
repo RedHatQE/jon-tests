@@ -102,9 +102,7 @@ if(uninventoriedAgents.length == 0){
 // import found agent
 var imported = discoveryQueue.importResource(uninventoriedAgents[0],false);
 imported.waitForAvailable();
-
-// wait for child resources to be discovered
-sleep(10 * 1000);
+imported.invokeOperation("executeAvailabilityScan");
 
 // check that agent was imported
 allAgentsNow = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
