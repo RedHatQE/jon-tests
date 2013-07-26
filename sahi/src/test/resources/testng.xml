@@ -1,58 +1,60 @@
 <suite name="RHQ 4.x core UI Test">
 
-  	<listeners>
-  		<!-- Listener to make tests annotated with @SkipIf skipped -->
-      <listener class-name="com.redhat.qe.auto.testng.SkipTestNGListener" />
-  	  	<!-- Listener to send report to Report Engine Server -->
-  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener" />
-  	  	<!-- Listener to clear pop-up's if any on test failure-->
-    	<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener" />
-  	</listeners>
+	<listeners>
+		<!-- Listener to make tests annotated with @SkipIf skipped -->
+		<listener class-name="com.redhat.qe.auto.testng.SkipTestNGListener" />
+		<!-- Listener to send report to Report Engine Server -->
+		<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener"
+			/>
+		<!-- Listener to clear pop-up's if any on test failure-->
+		<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener"
+			/>
+	</listeners>
 
-  	<test name="GuiLoginTest">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
-			<parameter name="gui.username" value="rhqadmin"/>
-			<parameter name="gui.password" value="rhqadmin"/>			
-			<methods>
-				 <include name="loginTest"></include> 
-			</methods>
-			</class>
-		</classes>
-  	</test>
-  	  	
-  <test name="Version Information">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.base.BuildVersionInfoTest">
-			<methods>
-				 <include name="getBuildInfo"></include> 
-			</methods>
-			</class>
-		</classes>
-  	</test>
-  	  	
-  	<test name="Metric Collection Schedules validation">
+	<test name="GuiLoginTest">
 		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
-			<methods>
-				 <include name="enableMetric"></include>
-				 <include name="disableMetric"></include>
-				 <include name="updateMetric"></include> 
-			</methods>
+			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
+				<parameter name="gui.username" value="rhqadmin"/>
+				<parameter name="gui.password" value="rhqadmin"/>
+				<methods>
+					<include name="loginTest"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
-	
-  	<test name="AlertDefinitionCreationTest">
+
+	<test name="Version Information">
 		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
-			<methods>
-				<include name="createAlert"></include>
-			</methods>
+			<class name="com.redhat.qe.jon.sahi.base.BuildVersionInfoTest">
+				<methods>
+					<include name="getBuildInfo"></include>
+				</methods>
 			</class>
 		</classes>
-	</test>	
-	
+	</test>
+
+	<test name="Metric Collection Schedules validation">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
+				<methods>
+					<include name="enableMetric"></include>
+					<include name="disableMetric"></include>
+					<include name="updateMetric"></include>
+				</methods>
+			</class>
+		</classes>
+	</test>
+
+	<test name="AlertDefinitionCreationTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
+				<methods>
+					<include name="createAlert"></include>
+				</methods>
+			</class>
+		</classes>
+	</test>
+
 	<test name="InventoryTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.InventoryTest"/>
@@ -64,7 +66,7 @@
 				<include name="inventoryTest"/>
 				<include name="inventoryConfiguration"/>
 				<!--include name ="messageCenter"/-->
-								
+
 			</run>
 		</groups>
 	</test>
@@ -92,8 +94,8 @@
 			</run>
 		</groups>
 	</test>
-	
-	
+
+
 	<test name="ReportsTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.ReportsTest" />
@@ -147,11 +149,11 @@
 			</run>
 		</groups>
 	</test>
-    <test name="HelpTest">
+	<test name="HelpTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.HelpTest" />
 		</classes>
-		<groups> 
+		<groups>
 			<run>
 				<include name="setup"/>
 				<include name="teardown"/>
@@ -184,85 +186,85 @@
 			</run>
 		</groups>
 	</test>
-	
+
 	<test name="PluginsTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.PluginsTest">
-			<methods>
-				 <include name="validateAgentPlugins"></include>
-				 <include name="validateServerPlugins"></include>
-			</methods>
+				<methods>
+					<include name="validateAgentPlugins"></include>
+					<include name="validateServerPlugins"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
-		
+
 	<test name="Individualconfig">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.IndividualConfigTest">
-			<methods>
-				<include name="individualconfig"></include>
-			</methods>
+				<methods>
+					<include name="individualconfig"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
-	
+
 	<test name="Configuration History">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.ConfiurationHistoryTest">
-			<methods>
-				<include name="configuration history"></include>
-			</methods>
+				<methods>
+					<include name="configuration history"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
-			
+
 	<test name="Group Config">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.GroupConfigTest">
-			<methods>
-				<include name="group config "></include>
-			</methods>
+				<methods>
+					<include name="group config "></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
 
 	<test name="SubNavigationMenuTests">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.SubNavigationMenuTests">
-			<methods>
-				<include name="subNavigationMenuLinksExist"></include>
-				<include name="checkAutoGroupSubnavigation"></include> 
-			</methods>
-			</class>
-		</classes>
-  	</test>
-  	
-  	
-	<test name="Administration JSP page validation">
 		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.AdministrationPages">
-			<methods>
-				 <include name="pageServers"></include>
-				 <include name="pageAgents"></include>
-				 <include name="pageAffinityGroups"></include>
-				 <include name="pagePartitionEvents"></include>
-				 <include name="pageContentSources"></include>
-				 <include name="pageRepositories"></include> 
-			</methods>
+			<class name="com.redhat.qe.jon.sahi.tests.SubNavigationMenuTests">
+				<methods>
+					<include name="subNavigationMenuLinksExist"></include>
+					<include name="checkAutoGroupSubnavigation"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
-	
+
+
+	<test name="Administration JSP page validation">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.AdministrationPages">
+				<methods>
+					<include name="pageServers"></include>
+					<include name="pageAgents"></include>
+					<include name="pageAffinityGroups"></include>
+					<include name="pagePartitionEvents"></include>
+					<include name="pageContentSources"></include>
+					<include name="pageRepositories"></include>
+				</methods>
+			</class>
+		</classes>
+	</test>
+
 	<test name="Drift management-Create-[add/change/remove]-Delete">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.DriftManagementTest">
-			<methods>
-				 <include name="createDrift"></include>
-				 <include name="driftActionFileAdd"></include>
-				 <include name="driftActionFileChange"></include>
-				 <include name="driftActionFileRemove"></include>
-				<include name="trashDrift"></include>
-			</methods>
+				<methods>
+					<include name="createDrift"></include>
+					<include name="driftActionFileAdd"></include>
+					<include name="driftActionFileChange"></include>
+					<include name="driftActionFileRemove"></include>
+					<include name="trashDrift"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
@@ -270,40 +272,40 @@
 	<test name="AlertHistoryValidationTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
-			<methods>
-				<include name="validateAlertHistoryPage"></include>
-			</methods>
+				<methods>
+					<include name="validateAlertHistoryPage"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
-	
-  	<test name="AlertHistoryDeletionTest">
+
+	<test name="AlertHistoryDeletionTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
-			<methods>
-				<include name="deleteAlertHistory"></include>
-			</methods>
+				<methods>
+					<include name="deleteAlertHistory"></include>
+				</methods>
 			</class>
 		</classes>
-	</test>	
-  	
+	</test>
+
 	<test name="AlertDefinitionDeletionTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AlertTest">
-			<methods>
-				<include name="deleteAlertDefinition"></include>
-			</methods>
+				<methods>
+					<include name="deleteAlertDefinition"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
-	
-	
+
+
 	<test name="Scheduling Groups">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForGroupsTest">
-			<methods>
-				<include name="schedule groups"></include>
-  			</methods>
+				<methods>
+					<include name="schedule groups"></include>
+				</methods>
 			</class>
 		</classes>
 	</test>
@@ -311,109 +313,117 @@
 	<test name="Search groups...">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SearchTest">
-			<methods>
-				<include name="search"></include>
-				<include name="delete"></include>
-			</methods>
+				<methods>
+					<include name="search"></include>
+					<include name="delete"></include>
+				</methods>
 			</class>
 		</classes>
-		
+
 	</test>
-	
+
 	<test name="Permissions Test">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.PermissionsTest">
-			<methods>
-				<include name="checkManageSecurity"></include>
-				<include name="checkManageInventory"></include>
-				<include name="checkManageRespository"></include>
-				<include name="checkViewUsers"></include>
-				<include name="checkManageSettings"></include>
-				<include name="checkManageBundles"></include>
-				<include name="checkGroupsPermission"></include>
-			</methods>
+				<methods>
+					<include name="checkManageSecurity"></include>
+					<include name="checkManageInventory"></include>
+					<include name="checkManageRespository"></include>
+					<include name="checkViewUsers"></include>
+					<include name="checkManageSettings"></include>
+					<include name="checkManageBundles"></include>
+					<include name="checkGroupsPermission"></include>
+				</methods>
 			</class>
 		</classes>
-		
+
 	</test>
 	<test name="Alert Definition Template">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AlertDefinitionTemplateTest">
-			<methods>
-				<include name="alertDefinitionsTemplate"></include>
-			</methods>
+				<methods>
+					<include name="alertDefinitionsTemplate"></include>
+				</methods>
 			</class>
 		</classes>
-		
+
 	</test>
-	
+
 	<test name="CheckAlertDefTempCreated">
-  	  	<classes>
+		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.alerts.CheckAlertDefTempCreatedTest">
 			</class>
 		</classes>
-  	</test>
-	
-	  <test name="Drift Definition Template">
-  	  	<classes>
+	</test>
+
+	<test name="Drift Definition Template">
+		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.DriftDefinitionTemplateTest">
-			<methods>
-				 <include name="createDriftDefinitionTemplate"></include> 
-				 <include name="editDriftDefinitionTemplate"></include> 
-				 <include name="deleteDriftDefinitionTemplate"></include> 
-			</methods>
+				<methods>
+					<include name="createDriftDefinitionTemplate"></include>
+					<include name="editDriftDefinitionTemplate"></include>
+					<include name="deleteDriftDefinitionTemplate"></include>
+				</methods>
 			</class>
 		</classes>
-  	</test>
-  	
-  	<!--
-  	<test name="AlertDefinitionTest">
-  	  	<classes>
+	</test>
+
+	<!-- <test name="AlertDefinitionTest">  <classes>
 			<class name="com.redhat.qe.jon.sahi.tests.alerts.AlertDefinitioinTest">
 			
 			</class>
 		</classes>
-  	</test>
+		</test>
 	-->
 	<test name="StorageAutoInventoryTest">
-  	  	<classes>
+		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventoryTest">
 			</class>
 		</classes>
-  	</test>
-  	
-  	<test name="StorageNode">
-  	  	<classes>
+	</test>
+
+	<test name="StorageNode">
+		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.StorageNodesTest">
 			</class>
 		</classes>
-  	</test>
-  	
-  	<test name="GuiLDAPUserLoginTest">
-  	  	<classes>
+	</test>
+
+	<test name="Setup LDAP">
+		<classes>
 			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
-			<parameter name="ldap.username" value="jonqa"/>
-			<parameter name="ldap.password" value="jonqa"/>
-			<parameter name="ldap.first.name" value="JON"/>	
-			<parameter name="ldap.last.name" value="QA"/>	
-			<parameter name="ldap.email" value="jonqa@redhat.com"/>	
-			<parameter name="ldap.phone.number" value="9999999999"/>	
-			<parameter name="ldap.department" value="QE"/>	
-			<methods>
-				 <include name="ldapLoginTest"></include> 
-			</methods>
+				<methods>
+					<include name="setupLdapServer"/>
+				</methods>
 			</class>
 		</classes>
-  	</test>
-  	
-  	<test name="GuiLogoutTest">
-  	  	<classes>
+	</test>
+
+	<test name="GuiLDAPUserLoginTest">
+		<classes>
 			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
-			<methods>
-				 <include name="logoutTest"></include> 
-			</methods>
+				<parameter name="ldap.username" value="jonqa"/>
+				<parameter name="ldap.password" value="jonqa"/>
+				<parameter name="ldap.first.name" value="JON"/>
+				<parameter name="ldap.last.name" value="QA"/>
+				<parameter name="ldap.email" value="jonqa@redhat.com"/>
+				<parameter name="ldap.phone.number" value="9999999999"/>
+				<parameter name="ldap.department" value="QE"/>
+				<methods>
+					<include name="ldapLoginTest"></include>
+				</methods>
 			</class>
 		</classes>
-  	</test>
-  	
+	</test>
+
+	<test name="GuiLogoutTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
+				<methods>
+					<include name="logoutTest"></include>
+				</methods>
+			</class>
+		</classes>
+	</test>
+
 </suite>

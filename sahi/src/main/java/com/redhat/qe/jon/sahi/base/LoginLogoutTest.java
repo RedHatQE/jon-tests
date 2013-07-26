@@ -41,8 +41,9 @@ public class LoginLogoutTest extends SahiTestScript {
 		Assert.assertTrue(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
 		Assert.assertTrue(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
 		Assert.assertTrue(sahiTasks.cell("Login").exists(), "Login button available?: "+sahiTasks.cell("Login").exists());
-	}	
+	}
 	
+	@SkipIf(property="ldap.url", isNull=true)
 	@Parameters({ "ldap.url", "ldap.search.base", "ldap.login.property", "ldap.enable.ssl" })
 	@Test
 	public void setupLdapServer(String ldapUrl, String ldapSearchBase, String ldapLoginProperty, String enableSSLStr){
@@ -51,5 +52,6 @@ public class LoginLogoutTest extends SahiTestScript {
 			enableSSL = true;
 		}
 		Assert.assertTrue(sahiTasks.registerLdapServer(ldapUrl, ldapSearchBase, ldapLoginProperty, enableSSL, true), "LDAP Setup Status");
+		System.setProperty("ldap.configured", "true");
 	}
 }

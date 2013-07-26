@@ -1226,7 +1226,8 @@ public class SahiTasks extends ExtendedSahi {
         updateTextBoxValues(conditionTextBox);
 
 
-        this.cell("OK").click();
+        //Modified OK Button access, since JON 3.2 Alpha 53 release.
+        this.cell("OK").in(this.div("OKCancel")).click();
 
         //Add notifications
         this.cell("Notifications").click();
