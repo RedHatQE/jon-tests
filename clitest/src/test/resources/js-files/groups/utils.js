@@ -41,6 +41,13 @@ function createDynagroupDef(name, expression, description, isRecursive,recalcInt
 	return GroupDefinitionManager.createGroupDefinition(dynaGroupDef);
 }
 
+function removeAllGroups(){
+	groups.find().forEach(function(b){
+		common.info("Removing group with name " + b.name);
+		b.remove();
+	});
+}
+
 function removeAllDynaGroupDefs(){
 	var defs = dynaGroupDefs.findDynaGroupDefinitions();
 	for(var i in defs){

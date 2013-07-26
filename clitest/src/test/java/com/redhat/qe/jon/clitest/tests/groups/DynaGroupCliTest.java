@@ -57,6 +57,7 @@ public class DynaGroupCliTest extends CliEngine {
 		createJSRunner("groups/propagateOperationSchedule.js").
 			addDepends("/rhqapi.js").
 			addDepends("/groups/utils.js").
+			addDepends("/operations/common.js").
 			run();
 	}
 	@Test

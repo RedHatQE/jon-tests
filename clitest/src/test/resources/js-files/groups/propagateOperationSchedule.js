@@ -10,6 +10,10 @@
  *   
  **/
 
+// remove all groups and dynagroup definitions, we don't want to have any scheduled operations on tested resources
+removeAllGroups();
+removeAllDynaGroupDefs();
+
 // check that there is at least one platform imported 
 var allLinuxPlat = resources.find({resourceTypeName:"Linux"});
 assertTrue(allLinuxPlat.length > 0,"At least one platform must be imported!!");
@@ -67,9 +71,13 @@ checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allLinuxP
 
 // schedule operation on dynagroup
 var opName = "executeAvailabilityScan";
-var agentsDynaGroup = groups.find({name:"DynaGroup - "+agentsDynaGroupDefName});
-assertTrue(agentsDynaGroup.length > 0,"Group with name 'DynaGroup - "+agentsDynaGroupDefName+"' not found!!");
-agentsDynaGroup[0].scheduleOperationUsingCron(opName,"0 * * * * ?");
+var agentsDynaGroups = groups.find({name:"DynaGroup - "+agentsDynaGroupDefName});
+assertTrue(agentsDynaGroups.length > 0,"Group with name 'DynaGroup - "+agentsDynaGroupDefName+"' not found!!");
+var agents = agentsDynaGroups[0].resources();
+for(var i in agents){
+	deleteAllScheduledOp(agents[i].id);
+}
+agentsDynaGroups[0].scheduleOperationUsingCron(opName,"0 * * * * ?");
 
 
 // import another platform with children
@@ -88,7 +96,7 @@ checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allLinuxP
 
 // check that original scheduled operation is invoked on newly added agent as well
 // clear operation history for all agents in the group
-var agents = agentsDynaGroup[0].resources();
+var agents = agentsDynaGroups[0].resources();
 for(var i in agents){
 	clearOpHistory(agents[i].id);
 }
@@ -100,7 +108,7 @@ sleep(65 * 1000);
 for(var i in agents){
 	common.info("Checking operation history of resource with id: " + agents[i].id);
 	var hist = getOpHistory(agents[i].id);
-	assertTrue(hist.size() == 1,"Only one operatioin in history of resource with id: " +agents[i].id+" is expected!!");
+	assertTrue((hist.size() == 1 || hist.size() == 2),"Only one or two operations in history of resource with id: " +agents[i].id+" are expected!!");
 	var actualName = hist.get(0).getOperationDefinition().getName();
 	assertTrue(actualName == opName,"Expected operation name is: " +opName+", but actual is: "+actualName);
 }
@@ -160,7 +168,7 @@ function getOpHistory(resourceId){
 	var resOpHistCri = new ResourceOperationHistoryCriteria();
 	resOpHistCri.addFilterResourceIds(resourceId);
 	resOpHistCri.fetchResults(true);
-	resOpHistCri.addSortStartTime(PageOrdering.ASC);
+	resOpHistCri.addSortStartTime(PageOrdering.DESC);
 	
 	return OperationManager.findResourceOperationHistoriesByCriteria(resOpHistCri);
 }
