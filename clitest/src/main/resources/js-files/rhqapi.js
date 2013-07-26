@@ -1901,6 +1901,17 @@ var storageNodes = (function() {
 			return new StorageNode(x);
 		});
 	};
+	
+	var _allAlerts = function(params){
+		params = params || {};
+		common.trace("storageNodes.allAlerts(" + common.objToString(params)
+				+ ")");
+		var result = StorageNodeManager.findAllStorageNodeAlerts();
+		common.debug("Found " + result.size() + " storageNodes ");
+		return common.pageListToArray(result).map(function(x) {
+			return new Alert(x);
+		});
+	};
 	/**
 	@lends storageNodes
 	*/
@@ -1932,7 +1943,15 @@ var storageNodes = (function() {
 		 * @function
 		 */
 		find : _find,
-
+		
+		/**
+		 * gets all alerts for all storage nodes
+		 * 
+		 * @type Alert[]
+		 * @function
+		 */
+		allAlerts : _allAlerts
+		
 	};
 })();
 
@@ -2015,29 +2034,208 @@ var StorageNode = function(param) {
 	};
 };
 
+var Alert = function(param){
+	
+	return {
+		/**
+		 * id of Alert
+		 * @field
+		 * @type String
+		 */
+		id : param.id,
+		/**
+		 * AlertDefinition instance
+		 * @field
+		 * @type AlertDefinition
+		 */
+		alertDefinition: param.alertDefinition,
+		/**
+		 * alert notification logs
+		 * @field
+		 * @type String[]
+		 */
+		alertNotificationLogs: param.alertNotificationLogs
+	}
+	
+};
+
 
 /**
- * @namespace provides access to alert subsystem
+ * @namespace provides access to AlertDefinition subsystem
  */
-var alerts = (function(){
+var alertDefinitions = (function() {
 	var common = new _common();
-	
-	return{
-		findAlertDefinition : function(params){
+
+	var _find = function(params) {
+		params = params || {};
+		common.trace("alertDefinitions.find(" + common.objToString(params)
+				+ ")");
+		var criteria = alertDefinitions.createCriteria(params);
+		var result = AlertDefinitionManager
+				.findAlertDefinitionsByCriteria(criteria);
+		common.debug("Found " + result.size() + " alertDefinitions ");
+		return common.pageListToArray(result).map(function(x) {
+			return new AlertDefinition(x);
+		});
+	};
+	/**
+	@lends alertDefinitions
+	*/
+	return {
+
+		/**
+		 * creates AlertDefinitionCriteria object based on given params
+		 * 
+		 * @param {Object}
+		 *            params - filter parameters
+		 * @ignore
+		 */
+		createCriteria : function(params) {
 			params = params || {};
-			common.trace("alerts.findAlertDefinition("+common.objToString(params)+")");
-			var cri = common.createCriteria(new AlertDefinitionCriteria(),params);
-			cri.fetchConditions(true);
-			cri.fetchAlerts(true);
-			cri.fetchAlertNotifications(true);
-			var result = AlertDefinitionManager.findAlertDefinitionsByCriteria(cri);
-		
-			// TODO: create and return javascript-only driftDefinitionTemplates type
-			return result;
-		}
+			common.trace("alertDefinitions.createCriteria("
+					+ common.objToString(params) + ")");
+			var criteria = common.createCriteria(new AlertDefinitionCriteria(),
+					params);
+			return criteria;
+		},
+
+		/**
+		 * finds alertDefinitions based on query parameters
+		 * 
+		 * @param {Object}
+		 *            params - hash of query params See AlertDefinitionCriteria
+		 *            class for available params
+		 * @type AlertDefinition[]
+		 * @function
+		 */
+		find : _find,
+
 	};
 })();
 
+/**
+ * @class
+ * @constructor
+ */
+var AlertDefinition = function(param) {
+	var common = new _common();
+	// we define AlertDefinition child classes as hidden types
+
+	var _id = param.id;
+	var _obj = param;
+
+	/**
+	 * @name AlertDefinition-Condition
+	 * @class
+	 * @constructor
+	 */
+	var Condition = function(param) {
+		common.trace("new Condition(" + param + ")");
+		if (!param) {
+			throw "either Number or org.rhq.core.domain.alert.AlertDefinition parameter is required";
+		}
+		var _id = param.id;
+		var _obj = param;
+
+		/**
+		 * @lends AlertDefinition-Condition.prototype
+		 */
+		return {
+			/**
+			 * Condition id
+			 * 
+			 * @field
+			 */
+			id : param.id,
+			/**
+			 * Condition instance
+			 * 
+			 * @field
+			 * @type Condition
+			 */
+			obj : _obj,
+			/**
+			 * threshold of condition
+			 * @field
+			 * @type String
+			 */
+			threshold : param.threshold,
+			/**
+			 * name of condition
+			 * 
+			 * @field
+			 * @type String
+			 */
+			name : param.name,
+			/**
+			 * comparator of condition
+			 * @field
+			 * @type String
+			 */
+			comparator : param.comparator,
+			/**
+			 * alertDefinition of condition
+			 * @field
+			 * @type AlertDefinition
+			 */
+
+			alertDefinition : param.alertDefinition,
+			/**
+			 * triggerId of condition
+			 * @field
+			 * @type String
+			 */
+			triggerId : param.triggerId
+
+		};
+
+	};
+	/**
+	 *@lends AlertDefinition
+	 */
+	return {
+		/**
+		 * id of AlertDefinition
+		 * @field
+		 * @type String
+		 *  
+		 */
+		id : _id,
+		/**
+		 * AlertDefinition instance
+		 * @field
+		 * @type AlertDefinition
+		 */
+		obj : _obj,
+		/**
+		 * name of AlertDefinition
+		 * @field
+		 * @type String
+		 *  
+		 */
+		name : param.name,
+		/**
+		 * gets conditions of AlertDefinition
+		 */
+		conditions : function() {
+			common.trace("AlertDefinition(" + _id + ").conditions()");
+			var criteria = alertDefinitions.createCriteria({
+				id : _id
+			});
+			criteria.fetchConditions(true);
+			var result = AlertDefinitionManager
+					.findAlertDefinitionsByCriteria(criteria);
+			if (result.size() == 1 && result.get(0).conditions) {
+				result = result.get(0).conditions.toArray();
+				return result.map(function(x) {
+					return new Condition(x);
+				});
+			};
+			
+		}
+
+	};
+};
 
 /**
  * @namespace provides access to Bundle subsystem
