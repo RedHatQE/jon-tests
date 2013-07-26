@@ -1882,6 +1882,140 @@ var drifts = (function(){
 	};
 })();
 
+
+
+/**
+ * @namespace provides access to StorageNodes subsystem
+ */
+var storageNodes = (function() {
+	var common = new _common();
+
+	var _find = function(params) {
+		params = params || {};
+		common.trace("storageNodes.find(" + common.objToString(params)
+				+ ")");
+		var criteria = storageNodes.createCriteria(params);
+		var result = StorageNodeManager.findStorageNodesByCriteria(criteria);
+		common.debug("Found " + result.size() + " storageNodes ");
+		return common.pageListToArray(result).map(function(x) {
+			return new StorageNode(x);
+		});
+	};
+	/**
+	@lends storageNodes
+	*/
+	return {
+
+		/**
+		 * creates StorageNodeCriteria object based on given params
+		 * 
+		 * @param {Object}
+		 *            params - filter parameters
+		 * @ignore
+		 */
+		createCriteria : function(params) {
+			params = params || {};
+			common.trace("storageNodes.createCriteria("
+					+ common.objToString(params) + ")");
+			var criteria = common.createCriteria(new StorageNodeCriteria(),
+					params);
+			return criteria;
+		},
+
+		/**
+		 * finds storageNodes based on query parameters
+		 * 
+		 * @param {Object}
+		 *            params - hash of query params See StorageNodeCriteria
+		 *            class for available params
+		 * @type StorageNode[]
+		 * @function
+		 */
+		find : _find,
+
+	};
+})();
+
+/**
+ * @class
+ * @constructor
+ */
+var StorageNode = function(param) {
+	var common = new _common();
+	// we define StorageNode child classes as hidden types
+
+	
+	/**
+	 *@lends StorageNode
+	 */
+	return {
+		/**
+		 * id of StorageNode
+		 * @field
+		 * @type String
+		 *  
+		 */
+		id : param.id,
+		/**
+		 * StorageNode instance
+		 * @field
+		 * @type StorageNode
+		 */
+		obj : param,
+		
+		/**
+		 * JMXConnectionURL of StorageNode
+		 * @field
+		 * @type String
+		 */
+		JMXConnectionURL : param.JMXConnectionURL,
+		/**
+		 * address of StorageNode
+		 * @field
+		 * @type String
+		 */
+		address : param.address,
+		/**
+		 * cqlPort of StorageNode
+		 * @field
+		 * @type String
+		 */
+		cqlPort : param.cqlPort,
+		/**
+		 * ctime of StorageNode
+		 * @field
+		 * @type String
+		 */
+		ctime : param.ctime,
+		/**
+		 * jmxPort of StorageNode
+		 * @field
+		 * @type String
+		 */
+		jmxPort : param.jmxPort,
+		/**
+		 * mtime of StorageNode
+		 * @field
+		 * @type String
+		 */
+		mtime : param.mtime,
+		/**
+		 * operationMode of StorageNode
+		 * @field
+		 * @type String
+		 */
+		operationMode : param.operationMode,
+		/**
+		 * resource of StorageNode
+		 * @field
+		 * @type Resource
+		 */
+		resource : param.resource
+
+	};
+};
+
+
 /**
  * @namespace provides access to alert subsystem
  */
