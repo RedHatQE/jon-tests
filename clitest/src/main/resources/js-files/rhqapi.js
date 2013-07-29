@@ -3844,7 +3844,7 @@ var Resource = function (param) {
 						return true;
 					}
 				}
-			},20,240);
+			},20,480);
 			
 			if(!result){
 				throw "Failed to uninventory. See previous errors."

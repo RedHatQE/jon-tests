@@ -104,6 +104,9 @@ var imported = discoveryQueue.importResource(uninventoriedAgents[0],false);
 imported.waitForAvailable();
 imported.invokeOperation("executeAvailabilityScan");
 
+common.debug("Waiting 30 sec for avail report");
+sleep(30 * 1000);
+
 // check that agent was imported
 allAgentsNow = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 assertTrue(allAgents < allAgentsNow,"No new agent was imported!!");

@@ -68,7 +68,6 @@ GroupDefinitionManager.calculateGroupMembership(defAllAgents.getId());
 assertDynaGroupDefParams(agentsDynaGroupDefName);
 checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allLinuxPlat.length);
 
-
 // schedule operation on dynagroup
 var opName = "executeAvailabilityScan";
 var agentsDynaGroups = groups.find({name:"DynaGroup - "+agentsDynaGroupDefName});
@@ -76,6 +75,7 @@ assertTrue(agentsDynaGroups.length > 0,"Group with name 'DynaGroup - "+agentsDyn
 var agents = agentsDynaGroups[0].resources();
 for(var i in agents){
 	deleteAllScheduledOp(agents[i].id);
+	clearOpHistory(agents[i].id);
 }
 agentsDynaGroups[0].scheduleOperationUsingCron(opName,"0 * * * * ?");
 
@@ -94,16 +94,10 @@ GroupDefinitionManager.calculateGroupMembership(defAllAgents.getId());
 checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allLinuxPlat.length +1);
 
 
-// check that original scheduled operation is invoked on newly added agent as well
-// clear operation history for all agents in the group
-var agents = agentsDynaGroups[0].resources();
-for(var i in agents){
-	clearOpHistory(agents[i].id);
-}
-
 common.debug("Going sleep for 65s");
 sleep(65 * 1000);
 
+// check that original scheduled operation is invoked on newly added agent as well
 // check operation history on all agents in the group
 for(var i in agents){
 	common.info("Checking operation history of resource with id: " + agents[i].id);
