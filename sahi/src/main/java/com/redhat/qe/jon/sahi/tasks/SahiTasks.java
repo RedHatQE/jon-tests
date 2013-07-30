@@ -42,7 +42,7 @@ public class SahiTasks extends ExtendedSahi {
     	if(this.waitForElementExists(this, this.link("Logout"), "Link: Logout", 1000*3)){
     		this.link("Logout").click();
     	}    	
-    	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*180)){
+    	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*240)){
     		return false;
     	}
         this.textbox("user").setValue(userName);
