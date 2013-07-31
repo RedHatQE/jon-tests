@@ -2,13 +2,11 @@ package com.redhat.qe.jon.sahi.tests.autoinventory;
 
 import java.util.logging.Logger;
 
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
-import com.redhat.qe.jon.sahi.base.inventory.Inventory;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 

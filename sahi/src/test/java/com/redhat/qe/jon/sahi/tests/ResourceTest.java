@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
 

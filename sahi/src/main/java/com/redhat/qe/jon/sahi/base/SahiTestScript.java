@@ -1,21 +1,20 @@
 package com.redhat.qe.jon.sahi.base;
 
-import com.redhat.qe.jon.common.Platform;
-import com.redhat.qe.jon.common.util.Library;
-import com.redhat.qe.jon.common.util.LocalCommandRunner;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
-
-import com.redhat.qe.jon.common.TestScript;
-import com.redhat.qe.jon.common.util.HTTPClient;
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
+
+import com.redhat.qe.jon.common.Platform;
+import com.redhat.qe.jon.common.TestScript;
+import com.redhat.qe.jon.common.util.HTTPClient;
+import com.redhat.qe.jon.common.util.LocalCommandRunner;
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 
 public abstract class SahiTestScript extends TestScript {
 	private static Logger log = Logger.getLogger(SahiTestScript.class.getName());
