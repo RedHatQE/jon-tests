@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.clitest.base.CliEngine;
 
 public class DynaGroupCliTest extends CliEngine {
-	@Test
+	@Test(groups={"blockedByBug-990466"})
 	public void createDynaGroupDefinition(){
 		createJSRunner("groups/createDynaGroupDef.js").
 			addDepends("/rhqapi.js").
