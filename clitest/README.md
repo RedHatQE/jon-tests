@@ -26,12 +26,13 @@ Generally, you need a properly configured environment (have JDK (1.6+), setup JA
 
 #### Optional properties & environment variables
 
-  Below environment variables are typed wih CAPITALS, properties are normal.
+Below environment variables are typed wih CAPITALS, properties are normal.
+
 * **automation.propertiesfile** - path to your automation.properties (overrides default location)
-  * **jon.server.log.path** -  this property defines where to find a server log. The server log is then copied to the local system and stored to build/logs directory.
-  * **CLI_AGENT_BIN_SH** - path to RHQ CLI binary. Use if you want to run custom version. If not defined, CLI is downloaded from server at test runtime.
-  * **RHQ_CLI_JAVA_HOME** - java home for RHQ CLI. Use if you want to run it with different JVM. If not defined, JAVA_HOME environment variable is used. 
-  * **REPORT_ENGINE_PROPERTY_FILE** - path to [Report Engine](https://github.com/jkandasa/report-engine) client property file
+* **jon.server.log.path** -  this property defines where to find a server log. The server log is then copied to the local system and stored to build/logs directory.
+* **CLI_AGENT_BIN_SH** - path to RHQ CLI binary. Use if you want to run custom version. If not defined, CLI is downloaded from server at test runtime.
+* **RHQ_CLI_JAVA_HOME** - java home for RHQ CLI. Use if you want to run it with different JVM. If not defined, JAVA_HOME environment variable is used. 
+* **REPORT_ENGINE_PROPERTY_FILE** - path to [Report Engine](https://github.com/jkandasa/report-engine) client property file
 
 #### Ready? Go!
   You can execute automation from this folder by running
