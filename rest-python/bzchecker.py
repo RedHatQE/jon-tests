@@ -3,7 +3,7 @@ import json
 import os
 from proboscis import SkipTest
 import traceback
-
+import logging
 BUGZILLA='https://bugzilla.redhat.com/'
 class blockedBy(object):
     def __init__(self,bz):
@@ -23,7 +23,9 @@ class blockedBy(object):
                 for bug in r.json()['result']['bugs']:
                     if bug['status'] in ['NEW','MODIFIED','ASSIGNED','ON_DEV']:
                         bzLink = '%sshow_bug.cgi?id=%s' % (BUGZILLA,bug['id'])
-                        raise SkipTest('BZ [%s] %s (%s)' % (bug['status'],bug['summary'],bzLink))
+                        msg = 'BZ [%s] %s (%s)' % (bug['status'],bug['summary'],bzLink)
+                        logging.getLogger(__name__).info(msg)
+                        raise SkipTest(msg)
             f(*args)
         wrap.func_name = f.func_name
         return wrap
