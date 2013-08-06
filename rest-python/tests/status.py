@@ -8,7 +8,10 @@ from testcase import RHQRestTest
 
 @test(groups=['status'])
 class StatusTest(RHQRestTest):
+
     @test
     def test_status(self):
         r = self.get('status')
         assert_equal(r.status_code, 200)
+        data = r.json()['values']
+        os.environ['RHQ_BUILD_VERSION'] = '%s (%s)' % (data['SERVER_VERSION'],data['BuildNumber'])
