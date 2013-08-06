@@ -795,7 +795,11 @@ public class Resource {
                     + agentName
                     + "\" found in Autodiscovery queue.");
         } else {
-            tasks.image("opener_closed.png").near(elmUpper).click();
+            // could be already opened via the double click in previous step
+            if (tasks.image("opener_closed.png").near(elmUpper).exists()) {
+                tasks.image("opener_closed.png").near(elmUpper).click();
+            }
+
             elm = tasks.image("unchecked.png").near(
                     tasks.cell(resourceName));
             if (elm.exists()) {
