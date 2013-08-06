@@ -144,7 +144,8 @@
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.storageNodes.StorageNodesTest">	
 			<methods>
-				<include name="StorageNodesTest"></include>
+				<include name="getStorageNodesList"></include>	
+				<include name="checkStorageNodeDiskUtilization"></include>	
 			</methods>
 		</class>
 	</classes>

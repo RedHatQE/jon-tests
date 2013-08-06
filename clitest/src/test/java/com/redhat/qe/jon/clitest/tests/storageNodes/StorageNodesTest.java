@@ -12,4 +12,11 @@ public class StorageNodesTest extends CliEngine {
 				.addDepends("rhqapi.js").run();
 
 	}
+	
+	@Test
+	public void checkStorageNodeDiskUtilization() {
+		createJSRunner("storageNodes/testStorageNodeDiskUtilization.js")
+		.addDepends("rhqapi.js").withArg("host", System.getProperty("jon.server.host")).run();
+
+	}
 }
