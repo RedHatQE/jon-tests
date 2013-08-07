@@ -87,8 +87,11 @@ public class StorageNodesTest extends SahiTestScript {
 				metric.equals(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED) ||
 				metric.equals(StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED) ||
 				metric.equals(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED) ||
-				metric.equals(StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO)) {
-			// check disk metrics relations
+				metric.equals(StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO) ||
+				metric.equals(StorageNodeMetricConst.HEAP_MAXIMUM) ||
+				metric.equals(StorageNodeMetricConst.HEAP_USED) ||
+				metric.equals(StorageNodeMetricConst.HEAP_PERCENT_USED)) {
+			// check disk and memory metrics relations
 			checkMetricRelation(storageNodeMetric, metric);
 		}
 	}
