@@ -19,4 +19,11 @@ public class StorageNodesTest extends CliEngine {
 		.addDepends("rhqapi.js").withArg("host", System.getProperty("jon.server.host")).run();
 
 	}
+	
+	@Test
+	public void checkStorageNodeMemoryUtilization() {
+		createJSRunner("storageNodes/testStorageNodeMemoryUtilization.js")
+		.addDepends("rhqapi.js").withArg("host", System.getProperty("jon.server.host")).run();
+
+	}
 }
