@@ -63,6 +63,17 @@ public class StorageNodesTest extends SahiTestScript {
 				"RHQ Storage Node(" + storageNodeName + ")").exists());
 	}
 
+	private void checkMetricRelation(StorageNodeMetric storageNodeMetric, String metric) {
+		// remove from strings units and then convert them to double
+		double min = Double.valueOf(storageNodeMetric.getMin().split(" ")[0]);
+		double avg = Double.valueOf(storageNodeMetric.getAvg().split(" ")[0]);
+		double max = Double.valueOf(storageNodeMetric.getMax().split(" ")[0]);
+		
+		Assert.assertTrue(min <= avg, metric + " min value relation");
+		Assert.assertTrue(avg >= min && avg <= max, metric + " avg value relation");
+		Assert.assertTrue(max >= avg, metric + " max value relation");
+	}
+	
 	private void checkStorageNodeMetric(StorageNode storageNode, String metric) {
 		// get certain metric values
 		StorageNodeMetric storageNodeMetric = storageNode
@@ -71,6 +82,15 @@ public class StorageNodesTest extends SahiTestScript {
 		Assert.assertNotNull(storageNodeMetric.getMin(), metric + " min value");
 		Assert.assertNotNull(storageNodeMetric.getAvg(), metric + " avg value");
 		Assert.assertNotNull(storageNodeMetric.getMax(), metric + " max value");
+		
+		if (metric.equals(StorageNodeMetricConst.LOAD) ||
+				metric.equals(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED) ||
+				metric.equals(StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED) ||
+				metric.equals(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED) ||
+				metric.equals(StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO)) {
+			// check disk metrics relations
+			checkMetricRelation(storageNodeMetric, metric);
+		}
 	}
 
 	@Test
@@ -93,12 +113,16 @@ public class StorageNodesTest extends SahiTestScript {
 				StorageNodeMetricConst.HEAP_PERCENT_USED);
 		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.LOAD);
 		checkStorageNodeMetric(storageNode,
-				StorageNodeMetricConst.DISK_SPACE_PERCENT_USED);
+				StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED);
+		checkStorageNodeMetric(storageNode,
+				StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED);
 		checkStorageNodeMetric(storageNode,
 				StorageNodeMetricConst.TOTAL_DISK_SPACE_USED);
 		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.OWNERSHIP);
 		checkStorageNodeMetric(storageNode,
 				StorageNodeMetricConst.NUMBER_OF_TOKENS);
+		checkStorageNodeMetric(storageNode,
+				StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO);
 	}
 	
 	@Test

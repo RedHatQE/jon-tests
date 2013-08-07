@@ -89,10 +89,12 @@ public class StorageNodesAdministration {
 		storageNodeDetails.put(StorageNodeMetricConst.HEAP_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.HEAP_USED));
 		storageNodeDetails.put(StorageNodeMetricConst.HEAP_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.HEAP_PERCENT_USED));
 		storageNodeDetails.put(StorageNodeMetricConst.LOAD, createAndFillStorageNodeMetric(StorageNodeMetricConst.LOAD));
-		storageNodeDetails.put(StorageNodeMetricConst.DISK_SPACE_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.DISK_SPACE_PERCENT_USED));
+		storageNodeDetails.put(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED));
+		storageNodeDetails.put(StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED));
 		storageNodeDetails.put(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED));
 		storageNodeDetails.put(StorageNodeMetricConst.OWNERSHIP, createAndFillStorageNodeMetric(StorageNodeMetricConst.OWNERSHIP));
 		storageNodeDetails.put(StorageNodeMetricConst.NUMBER_OF_TOKENS, createAndFillStorageNodeMetric(StorageNodeMetricConst.NUMBER_OF_TOKENS));
+		storageNodeDetails.put(StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO, createAndFillStorageNodeMetric(StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO));
 		return storageNodeDetails;
 	}
 	
