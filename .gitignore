@@ -4,6 +4,7 @@ test-output
 *~
 \#*
 clitest/src/test/resources/testng-dev.xml
+sahi/src/test/resources/testng-dev.xml
 .gradle
 build
 */.gradle
