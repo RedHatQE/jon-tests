@@ -1,11 +1,11 @@
 package com.redhat.qe.jon.sahi.base.inventory.alerts.definitions;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import net.sf.sahi.client.ElementStub;
 
+import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.alerts.Alerts;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
@@ -19,10 +19,11 @@ import com.redhat.qe.jon.sahi.tasks.Timing;
  */
 public class AlertDefinitionsPage extends Alerts {
 	private final Logger log = Logger.getLogger(this.getClass().getName());
-	
+	private final Editor editor;
 	
 	public AlertDefinitionsPage(SahiTasks tasks, Resource resource) {
 		super(tasks, resource);
+		this.editor = new Editor(tasks);
 	}
 	
 	/**
@@ -37,14 +38,18 @@ public class AlertDefinitionsPage extends Alerts {
 	}
 	
 	/**
-	 * Returns a helper object used for creation of a new alert definition. 
+	 * Returns a helper object used for filling alert definition dialog. 
 	 * @param alertName name of the alert definition to be created
-	 * @return <class>AlertDefinitionCreator</class>
+	 * @return <class>AlertDefinitionEditor</class>
 	 */
-	public AlertDefinitionCreator getAlertDefCreator(String alertName) {
+	public AlertDefinitionEditor createAlarmDefinition(String alertName) {
     	log.finer("Creating a new alarm definition " + alertName);
+    	tasks.cell("New").click();
+    	tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
+    	AlertDefinitionEditor alDefEd = new AlertDefinitionEditor(tasks);
+    	alDefEd.setName(alertName);
     	
-    	return new AlertDefinitionCreator(tasks, alertName);
+    	return alDefEd;
     }
    
 	/**
@@ -125,6 +130,26 @@ public class AlertDefinitionsPage extends Alerts {
     }
     
     /**
+	 * Returns a helper object used for setting/getting values from alert definition dialog. 
+	 * @param alertName name of the alert definition to be edited.
+	 * @return <class>AlertDefinitionEditor</class>
+	 */
+    public AlertDefinitionEditor editAlertDefinition(String alertDefName){
+    	log.fine("Editing alert definitions with name " + alertDefName);
+    	int rows = tasks.cell(alertDefName).countSimilar();
+    	if(rows == 0){
+    		throw new RuntimeException("Alert definition with name '"+alertDefName+"' not found on the page!!");
+    	}
+    	tasks.xy(tasks.cell(alertDefName+"[0]"),3,3).doubleClick();
+    	tasks.waitForElementVisible(tasks, tasks.cell("Edit"), "Edit button", Timing.WAIT_TIME);
+    	tasks.cell("Edit").click();
+    	
+    	tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
+    	
+    	return new AlertDefinitionEditor(tasks);
+    }
+    
+    /**
      * Deletes all alert definitions with given name.
      * @param alertDefName
      * @return this object
@@ -132,13 +157,13 @@ public class AlertDefinitionsPage extends Alerts {
      */
     public AlertDefinitionsPage deleteAlertDefinition(String alertDefName){
     	log.fine("Deleting alert definitions with name " + alertDefName);
-        while(selectRow(alertDefName,0)){
-        	ElementStub delBut = getVisibleElement(tasks.cell("Delete"));
+        while(editor.selectRow(alertDefName,0)){
+        	ElementStub delBut = editor.getVisibleElement(tasks.cell("Delete"));
         	if(delBut == null){
         		throw new RuntimeException("No visible Delete button found!");
         	}
         	delBut.click();
-        	serveConfirmDialog("Yes");
+        	editor.serveConfirmDialog("Yes");
         	tasks.waitForElementVisible(tasks, tasks.cell("/Successfully deleted.*/"), "Successful message", Timing.WAIT_TIME);
         }
     	
@@ -156,13 +181,13 @@ public class AlertDefinitionsPage extends Alerts {
     	log.fine("Disabling alert definitions with name " + alertDefName);
     	int rows = tasks.cell(alertDefName).countSimilar();
     	for(int i=0;i<rows;i++){
-            selectRow(alertDefName,i);
-            ElementStub disBut = getVisibleElement(tasks.cell("Disable"));
+    		editor.selectRow(alertDefName,i);
+            ElementStub disBut = editor.getVisibleElement(tasks.cell("Disable"));
         	if(disBut == null){
         		throw new RuntimeException("No visible Disable button found!");
         	}
         	disBut.click();
-        	serveConfirmDialog("Yes");
+        	editor.serveConfirmDialog("Yes");
         	tasks.waitForElementVisible(tasks, tasks.cell("/Successfully disabled.*/"), "Successful message", Timing.WAIT_TIME);
     	}
     	return this;
@@ -178,68 +203,16 @@ public class AlertDefinitionsPage extends Alerts {
     	log.fine("Enabling alert definition with name " + alertDefName);
     	int rows = tasks.cell(alertDefName).countSimilar();
     	for(int i=0;i<rows;i++){
-        	selectRow(alertDefName,i);
-        	 ElementStub enBut = getVisibleElement(tasks.cell("Enable"));
+    		editor.selectRow(alertDefName,i);
+        	 ElementStub enBut = editor.getVisibleElement(tasks.cell("Enable"));
           	if(enBut == null){
           		throw new RuntimeException("No visible Enable button found!");
           	}
           	enBut.click();
-        	serveConfirmDialog("Yes");
+          	editor.serveConfirmDialog("Yes");
         	tasks.waitForElementVisible(tasks, tasks.cell("/Successfully enabled.*/"), "Successful message", Timing.WAIT_TIME);
     	}
     	
     	return this;
-    }
-    
-    /**
-     * Selects row with given index witch contains cell with given locator. 
-     * @param name cell locator
-     * @param index index of a row to be selected when more rows were found
-     * @return true when at least one row was found, false otherwise
-     * @throws <class>RuntimeException</class> when a selection of given row failed
-     */
-    private boolean selectRow(String name,int index){
-    	int rows = tasks.cell(name).countSimilar();
-        log.finer("Matched cells " + rows);
-        if(rows==0){
-        	return false;
-        }
-        tasks.xy(tasks.cell(name+"["+index+"]"),3,3).click();
-        int sel = tasks.cell("/tallCellSelected.*/").countSimilar();
-        if(sel == 0){
-        	throw new RuntimeException("Failed to select given row!!");
-        }
-        
-        return true;
-    }
-    
-    /**
-     * Clicks on a button with given label in confirmation dialog.
-     * @param buttonLabel
-     */
-    private void serveConfirmDialog(String buttonLabel){
-    	log.finer("Serving confirmation dialog, button with label " + buttonLabel);
-    	tasks.waitForElementVisible(tasks, tasks.cell(buttonLabel), buttonLabel+" button", Timing.WAIT_TIME);
-    	tasks.cell(buttonLabel).click();
-    }
-    
-    /**
-     * Returns first visible element similar to given or null when there is no visible element.
-     * @param elementToFind
-     * @return first visible element similar to given or null when there is no visible element.
-     */
-    private ElementStub getVisibleElement(ElementStub elementToFind){
-    	ElementStub elem = null;
-    	List<ElementStub> elements = elementToFind.collectSimilar();
-    	log.finer("Found following count of simmilar elements:" + elements.size());
-    	
-    	for(int i=0;i<elements.size();i++){
-    		if(elements.get(i).isVisible()){
-    			elem = elements.get(i);
-    			break;
-    		}
-    	}
-    	
-    	return elem;
     }
 }

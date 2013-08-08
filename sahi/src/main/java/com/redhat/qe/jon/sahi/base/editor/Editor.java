@@ -49,6 +49,19 @@ public class Editor {
     	tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME);
     	elem.setValue(value);
     }
+    
+    /**
+     * Returns value from text field with given locator near cell with given locator.
+     * @param fieldSelection
+     * @param cellSelection
+     * @return value from text field
+     */
+    public String getTextNearCell(String fieldSelection,String cellSelection) {
+    	ElementStub elem =tasks.textbox(fieldSelection).near(tasks.cell(cellSelection));
+    	log.finer("Count of similar elements: " + elem.countSimilar());
+    	tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME);
+    	return elem.getValue();
+    }
 
     /**
      * Returns value in specified textbox field
@@ -82,6 +95,18 @@ public class Editor {
     	ElementStub elem = tasks.textarea(selection).near(tasks.cell(cellSelection));
     	tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME);
         elem.setValue(value);
+    }
+    
+    /**
+     * Returns value of text area with given locator near cell with given locator.
+     * @param selection
+     * @param cellSelection
+     * @return value of text area
+     */
+    public String getTextInTextAreaNearCell(String selection,String cellSelection) {
+    	ElementStub elem = tasks.textarea(selection).near(tasks.cell(cellSelection));
+    	tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME);
+        return elem.getValue();
     }
 
     /**
@@ -126,6 +151,18 @@ public class Editor {
     	ElementStub elem = tasks.radio(radioSelection).near(tasks.cell(cellSelection));
     	tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME);
     	elem.check();
+    }
+    
+    /**
+     * Returns true if given radio button is checked. False otherwise.
+     * @param radioSelection
+     * @param cellSelection
+     * @return true if given radio button is checked. False otherwise.
+     */
+    public boolean isRadionNearCellChecked(String radioSelection,String cellSelection){
+    	ElementStub elem = tasks.radio(radioSelection).near(tasks.cell(cellSelection));
+    	tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME);
+    	return elem.checked();
     }
 
     /**
@@ -258,6 +295,70 @@ public class Editor {
         tasks.image(checkBox).parentNode().focus();
         log.fine("Sending keypress to " + checkBox);
         tasks.execute("_sahi._keyPress(_sahi._image('" + checkBox + "'), 32);");
+    }
+    
+    
+    /**
+     * Returns first visible element similar to given or null when there is no visible element.
+     * @param elementToFind
+     * @return first visible element similar to given or null when there is no visible element.
+     */
+    public ElementStub getVisibleElement(ElementStub elementToFind){
+    	ElementStub elem = null;
+    	List<ElementStub> elements = elementToFind.collectSimilar();
+    	log.finer("Found following count of simmilar elements:" + elements.size());
+    	
+    	for(int i=0;i<elements.size();i++){
+    		if(elements.get(i).isVisible()){
+    			elem = elements.get(i);
+    			break;
+    		}
+    	}
+    	
+    	return elem;
+    }
+    
+    /**
+     * Clicks on a button with given label in confirmation dialog.
+     * @param buttonLabel
+     */
+    public void serveConfirmDialog(String buttonLabel){
+    	log.finer("Serving confirmation dialog, button with label " + buttonLabel);
+    	long waitTimeMilliSeconds = Timing.WAIT_TIME;
+    	while(waitTimeMilliSeconds >=  0){
+    		if(getVisibleElement(tasks.cell(buttonLabel)) != null){
+    			getVisibleElement(tasks.cell(buttonLabel)).click();
+    			break;
+    		}else{
+				tasks.waitFor(500);
+				waitTimeMilliSeconds -= 500;
+				if((waitTimeMilliSeconds%(1000*5)) <= 0){
+					log.finer("Waiting for the button: ["+buttonLabel+"], Remaining wait time: "+(waitTimeMilliSeconds/1000)+" Second(s)...");
+				}
+			}
+		}
+    }
+    
+    /**
+     * Selects row with given index witch contains cell with given locator. 
+     * @param name cell locator
+     * @param index index of a row to be selected when more rows were found
+     * @return true when at least one row was found, false otherwise
+     * @throws <class>RuntimeException</class> when a selection of given row failed
+     */
+    public boolean selectRow(String name,int index){
+    	int rows = tasks.cell(name).countSimilar();
+        log.finer("Matched cells " + rows);
+        if(rows==0){
+        	return false;
+        }
+        tasks.xy(tasks.cell(name+"["+index+"]"),3,3).click();
+        int sel = tasks.cell("/tallCellSelected.*/").countSimilar();
+        if(sel == 0){
+        	throw new RuntimeException("Failed to select given row!!");
+        }
+        
+        return true;
     }
 
 }

@@ -63,6 +63,10 @@ public class ExtendedSahi extends Browser {
 		selectDropDownByElementStub(browser, browser.div(comboBoxIdentifier).near(browser.cell(nearElement)), optionToSelect);
 	}
 	
+	public String getSelectedTextFromComboNearCell(Browser browser, String comboBoxIdentifier, String nearElement){
+		return browser.div(comboBoxIdentifier).near(browser.cell(nearElement)).getText();
+	}
+	
 	//Getting array value from String
 	public String[] getCommaToArray(String commaValue){
 		return commaValue.split(",");
@@ -154,6 +158,27 @@ public class ExtendedSahi extends Browser {
 			}
 		}		
 		_logger.warning("Failed to get the element! ["+element+"]");
+		return false;
+	}
+	
+	
+	/**
+	 * Clicks on first found visible element.
+	 * i.e. if there are two buttons with the same label but only one is visible,
+	 * this will click on the visible one.
+	 * @param elementStub
+	 * @return true if at least one visible element was found on the page
+	 */
+	public boolean clickOnFirstVisibleElement(ElementStub elementStub){
+		List<ElementStub> elements = elementStub.collectSimilar();
+		_logger.finer("Count of similar elements: " +elements.size());
+		for(ElementStub el : elements){
+			if(el.isVisible()){
+				_logger.finer("Clicking on " + el.toString());
+				el.click();
+				return true;
+			}
+		}
 		return false;
 	}
 }
