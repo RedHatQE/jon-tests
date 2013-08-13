@@ -49,7 +49,7 @@ println("Get previously created "+bossRoleName+" role.");
 var bossRole = roles.getRole(bossRoleName);
 assertTrue(bossRole != null, "Previously created role "+bossRoleName+" not found!!");
 assertTrue(bossRole.name == bossRoleName, "Previously created role "+bossRoleName+" not found!!");
-assertTrue(bossRole.getPermissions().length  == 18, "Previously created role "+bossRoleName+" should have 18 permissions but actually has "
+assertTrue(bossRole.getPermissions().length  == 29, "Previously created role "+bossRoleName+" should have 29 permissions but actually has "
 		+bossRole.getPermissions().length+"!!");
 
 println("Get nonexistent role.");
