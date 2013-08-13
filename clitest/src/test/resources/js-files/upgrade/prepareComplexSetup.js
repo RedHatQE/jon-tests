@@ -155,8 +155,6 @@ function prepareUsers(){
 	var bossRole = roles.getRole(bossRoleName);
 	assertTrue(bossRole != null, "Previously created role "+bossRoleName+" not found!!");
 	assertTrue(bossRole.name == bossRoleName, "Previously created role "+bossRoleName+" not found!!");
-	assertTrue(bossRole.getPermissions().length  == 18, "Previously created role "+bossRoleName+" should have 18 permissions but actually has "
-			+bossRole.getPermissions().length+"!!");
 	
 	
 	// creating user with defined role
