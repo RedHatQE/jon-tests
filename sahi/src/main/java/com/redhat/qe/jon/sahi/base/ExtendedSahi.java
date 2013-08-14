@@ -29,13 +29,30 @@ public class ExtendedSahi extends Browser {
 	//Core Drop Down selector
 	public void selectDropDownByElementStub(Browser browser, ElementStub dropDownBox, ElementStub optionToSelect){
 		browser.xy(dropDownBox, 3,3).click();
+		_logger.log(Level.INFO, "Drop Down Box ["+dropDownBox+"]");
+		_logger.log(Level.INFO, "Selecting the element ["+optionToSelect+"]");
 		List<ElementStub> optionToSelectSimilar = optionToSelect.collectSimilar();
+		
+		// if the given option is not found, wait for a while and try it again
+		if(optionToSelectSimilar.size() == 0){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		optionToSelectSimilar = optionToSelect.collectSimilar();
+		
+		
+		if(optionToSelectSimilar.size() == 0){
+			throw new RuntimeException("Option "+optionToSelect.getText()+" not found in drop down box " +dropDownBox);
+		}
+		
 		optionToSelect = optionToSelectSimilar.get(optionToSelectSimilar.size()-1);
 		_logger.log(Level.INFO, "Selected Option Name: "+optionToSelect.getText());
 		browser.xy(optionToSelect, 3,3).click();
 		
-		_logger.log(Level.INFO, "Drop Down Box ["+dropDownBox+"]");
-		_logger.log(Level.INFO, "Selected the element ["+optionToSelect+"]");
+		
 	}
 	
 	//This method is used to select drop down on GWT web (Example- RHQ 4.x)
