@@ -42,6 +42,7 @@ public class AlertDefinitionEditor {
 	 */
 	public AlertDefinitionEditor setName(String alertDefinitionName){
 		tasks.cell("General Properties").click();
+		log.fine("Setting alert definition name to: " +alertDefinitionName);
 		editor.setTextNearCell(TEXT_FIELD_SELECTOR, alertDefinitionName, "Name :");
 		
 		return this;
@@ -65,6 +66,8 @@ public class AlertDefinitionEditor {
 	 */
 	public AlertDefinitionEditor setGeneralProp(String description,AlertDefinition.Priority priority,boolean enabled){
 		tasks.cell("General Properties").click();
+		log.fine("Setting general options of alert definition: description:" +description+", priority: " +
+				priority.toString()+", enabled: " +Boolean.toString(enabled));
 		editor.setTextInTextAreaNearCell(TEXT_FIELD_SELECTOR, description, "Description :");
     	tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Priority :", priority.toString());
     	
@@ -110,6 +113,7 @@ public class AlertDefinitionEditor {
 	 * @return this object
 	 */
 	public AlertDefinitionEditor setConditionOperator(Condition.Operator fireWhen){
+		log.fine("Setting condition operator: " +fireWhen.toString());
 		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Fire alert when :", fireWhen.toString());
 		
 		return this;
@@ -142,6 +146,7 @@ public class AlertDefinitionEditor {
 	public AlertDefinitionEditor addCondition(Condition condition){
 		tasks.cell("Conditions").click();
 		tasks.cell("Add[0]").click();
+		log.fine("Adding new alert condition of following type " + condition.getType());
 		fillCondition(condition);
 		
 		return this;
@@ -341,6 +346,7 @@ public class AlertDefinitionEditor {
 			String repository,String existingScript,String newScript,String newScriptVersion){
 		tasks.cell("Notifications").click();
 		tasks.cell("Add[1]").click();
+		log.fine("Adding cli script notificantion");
 		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Notification Sender :", "CLI Script");
 		
 		// TODO check that all the fields were filled successfully
@@ -392,6 +398,7 @@ public class AlertDefinitionEditor {
 	 */
 	public AlertDefinitionEditor setRecovery(String recoveryAlert,boolean disabledWhenFired){
 		tasks.cell("Recovery").click();
+		log.fine("Setting recovery alert to: " + recoveryAlert+". Disabled when fired: " +Boolean.toString(disabledWhenFired));
 		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Recover Alert :", recoveryAlert);
 		if(disabledWhenFired){
 			editor.checkRadioNearCell("disableWhenFired", "Yes");
@@ -430,6 +437,7 @@ public class AlertDefinitionEditor {
 	 */
 	public AlertDefinitionEditor setDampening(String dampening){
 		tasks.cell("Dampening").click();
+		log.fine("Setting dampening to: " + dampening);
 		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Dampening :", dampening);
 		
 		return this;
@@ -449,6 +457,7 @@ public class AlertDefinitionEditor {
 	 * Saves this alert definition.
 	 */
 	public void save(){
+		log.fine("Saving alert definition");
 		tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
 		tasks.cell("Save").click();
 		tasks.waitForElementVisible(tasks, tasks.cell("/Alert definition successfully.*/"), 
@@ -459,6 +468,7 @@ public class AlertDefinitionEditor {
 	 * Cancel this alert definition.
 	 */
 	public void cancel(){
+		log.fine("Canceling alert definition");
 		tasks.waitForElementVisible(tasks, tasks.cell("Cancel"), "Cancel button", Timing.WAIT_TIME);
 		tasks.cell("Cancel").click();
 	}
