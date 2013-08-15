@@ -28,6 +28,11 @@ public class ExtendedSahi extends Browser {
 	
 	//Core Drop Down selector
 	public void selectDropDownByElementStub(Browser browser, ElementStub dropDownBox, ElementStub optionToSelect){
+		List<ElementStub> similarDropDownBoxes = dropDownBox.collectSimilar();
+		if(similarDropDownBoxes.size() > 1){
+			_logger.warning("More then 1 drop down box with given locator found on the page. Make sure " +
+					"that correct one is picked. Using the one with following inner text: "+dropDownBox.getText());
+		}
 		browser.xy(dropDownBox, 3,3).click();
 		_logger.log(Level.INFO, "Drop Down Box ["+dropDownBox+"]");
 		_logger.log(Level.INFO, "Selecting the element ["+optionToSelect+"]");
@@ -45,6 +50,10 @@ public class ExtendedSahi extends Browser {
 		
 		
 		if(optionToSelectSimilar.size() == 0){
+			_logger.severe("Option "+optionToSelect.getText()+" not found in drop down box " +dropDownBox+
+					"Check that option locator is correct! Hint: count of similar options using row locator: "+
+					browser.row(optionToSelect.getText()).countSimilar()+", count of similar options using div locator: "+
+					browser.div(optionToSelect.getText()).countSimilar());
 			throw new RuntimeException("Option "+optionToSelect.getText()+" not found in drop down box " +dropDownBox);
 		}
 		
