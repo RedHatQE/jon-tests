@@ -376,11 +376,7 @@ public class AlertDefinitionEditor {
 		ElementStub okBut = tasks.cell("OK");
 		tasks.waitForElementVisible(tasks, okBut, "OK button", Timing.WAIT_TIME);
 		okBut.click();
-		// this is a hack, sometimes first click simply doesn't work
-		tasks.waitFor(100);
-		if(okBut.isVisible()){
-			okBut.click();
-		}
+		
 		
 		if(tasks.isVisible(tasks.cell("formCellError"))){
 			throw new RuntimeException("Form which you are submitting contains validation errors!");
