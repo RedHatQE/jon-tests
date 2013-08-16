@@ -482,9 +482,9 @@ public class AlertDefinitionEditor {
 			switch (f.getType()){
 				case COMBO:
 					if(f.getFieldLocator()==null){
-						tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR,f.getNearLocator(), f.getValue());
+						tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR,f.getNearLocator(), f.getValue());
 					}else{
-						tasks.selectComboBoxByNearCellOptionByDiv(tasks, f.getFieldLocator(),f.getNearLocator(), f.getValue());
+						tasks.selectComboBoxByNearCellOptionByRow(tasks, f.getFieldLocator(),f.getNearLocator(), f.getValue());
 					}
 					break;
 				case TEXT:
