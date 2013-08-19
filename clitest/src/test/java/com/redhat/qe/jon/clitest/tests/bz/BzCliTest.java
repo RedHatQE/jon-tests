@@ -25,4 +25,11 @@ public class BzCliTest extends CliEngine {
 		createJSRunner("bugs/bug907897.js").
 			run();
 	}
+	
+	@Test(groups={"blockedByBug-855674"})
+	public void bz855674() {
+	    createJSRunner("bugs/bug855674.js")
+	    	.addDepends("/rhqapi.js")
+	    	.run();
+	}
 }
