@@ -30,7 +30,7 @@ public class StorageNodesAdministration {
 	
 	/**
 	 * Navigates to Storage Nodes page
-	 * @return
+	 * @return this object
 	 */
 	public StorageNodesAdministration navigate() {
 		String serverBaseUrl = tasks.getNavigator().getServerBaseUrl();

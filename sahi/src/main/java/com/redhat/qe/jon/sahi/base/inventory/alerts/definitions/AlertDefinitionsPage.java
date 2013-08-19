@@ -131,7 +131,7 @@ public class AlertDefinitionsPage extends Alerts {
     
     /**
 	 * Returns a helper object used for setting/getting values from alert definition dialog. 
-	 * @param alertName name of the alert definition to be edited.
+	 * @param alertDefName name of the alert definition to be edited.
 	 * @return <class>AlertDefinitionEditor</class>
 	 */
     public AlertDefinitionEditor editAlertDefinition(String alertDefName){

@@ -20,7 +20,7 @@ import com.redhat.qe.jon.sahi.tasks.SahiTasks;
  * </code>
  * <p>
  * You can see that a label next to the combo box was used as a near cell locator.
- * @see AlertDefinitionEditor.Field  
+ * @see <class>com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.AlertDefinitionEditor.Field</class>  
  *
  */
 public abstract class Condition {
