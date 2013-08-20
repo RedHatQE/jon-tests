@@ -1,6 +1,5 @@
 // create criteria with using storage node IP
 var crit = new StorageNodeCriteria();
-crit.addFilterAddress(host);
 
 // get list of storage nodes by criteria
 var nodes = StorageNodeManager.findStorageNodesByCriteria(crit);

@@ -16,14 +16,21 @@ public class StorageNodesTest extends CliEngine {
 	@Test
 	public void checkStorageNodeDiskUtilization() {
 		createJSRunner("storageNodes/testStorageNodeDiskUtilization.js")
-		.addDepends("rhqapi.js").withArg("host", System.getProperty("jon.server.host")).run();
+		.addDepends("rhqapi.js").run();
 
 	}
 	
 	@Test
 	public void checkStorageNodeMemoryUtilization() {
 		createJSRunner("storageNodes/testStorageNodeMemoryUtilization.js")
-		.addDepends("rhqapi.js").withArg("host", System.getProperty("jon.server.host")).run();
+		.addDepends("rhqapi.js").run();
+
+	}
+	
+	@Test
+	public void checkStorageNodeHeapSizeValuesUpdate() {
+		createJSRunner("storageNodes/testStorageNodeHeapSizeValuesUpdate.js")
+		.addDepends("rhqapi.js").run();
 
 	}
 }
