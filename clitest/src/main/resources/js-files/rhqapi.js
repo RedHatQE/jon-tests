@@ -1615,7 +1615,25 @@ var ResourceType = function(rhqType) {
 		 * plugin name defining this resource type
 		 * @type String
 		 */
-		plugin: _obj.plugin
+		plugin: _obj.plugin,
+		/**
+		 * @function
+		 * Returns default configuration for this resource type.
+		 * 
+		 * @type hash
+		 * @return default configuration for this resource type as hash
+		 */
+		getDefaultConfiguration : function(){
+			common.trace("resourceType.getDefaultConfiguration()");
+			var configuration = new Configuration();
+	    	var template = _obj.resourceConfigurationDefinition.defaultTemplate;
+			if (template) {
+				configuration = template.createConfiguration();
+			}
+			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(_obj.id);
+			
+			return common.configurationAsHash(configuration,configDef);
+		}
 	};
 };
 
@@ -1646,6 +1664,9 @@ var resourceTypes = (function() {
 			// by default only 200 items are returned, this line discards it ..
 			// so we get unlimited list
 			criteria.clearPaging();
+			criteria.fetchResourceConfigurationDefinition(true);
+			criteria.fetchPluginConfigurationDefinition(true);
+			
 			return criteria;
 		},
 		/**
