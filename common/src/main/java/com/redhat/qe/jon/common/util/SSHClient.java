@@ -155,6 +155,7 @@ public class SSHClient implements ICommandRunner {
 	 * @throws IOException
 	 */
 	public void copyFile(String srcPath, String destDir) throws IOException {
+	    	log.fine("Uploading ["+srcPath+"] to ["+connection.getHostname()+":"+destDir+"]");
 		scpClient.put(srcPath, destDir);
 		log.fine("File ["+srcPath+"] copied to "+connection.getHostname()+":"+destDir);
 	}
@@ -166,7 +167,8 @@ public class SSHClient implements ICommandRunner {
 	 * @throws IOException
 	 */
 	public void copyFile(String srcPath, String destDir, String destFileName)throws IOException  {
-		scpClient.put(srcPath, destFileName, destDir, "0600");
+	    	log.fine("Uploading ["+srcPath+"] to ["+connection.getHostname()+":"+destDir+File.separator+destFileName+"]");
+	    	scpClient.put(srcPath, destFileName, destDir, "0600");
 		log.fine("File ["+srcPath+"] copied to "+getHost()+":"+destDir+File.separator+destFileName);
 		
 	}
@@ -178,6 +180,7 @@ public class SSHClient implements ICommandRunner {
 	 */
 	@Override
 	public void getFile(String srcPath, String destDir) throws IOException {
+	    	log.fine("Get file ["+srcPath+"] to ["+destDir+"]");
 		scpClient.get(srcPath, destDir);
 		log.fine("File ["+srcPath+"] copied from "+getHost()+":"+destDir);
 		
