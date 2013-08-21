@@ -23,6 +23,7 @@ import org.testng.annotations.Optional;
 
 import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
+import com.redhat.qe.jon.common.util.WebUtils;
 
 public class CliEngine extends CliTestScript{
 	private static Logger _logger = Logger.getLogger(CliEngine.class.getName());
@@ -247,53 +248,64 @@ public class CliEngine extends CliTestScript{
 	return consoleOutput;
     }
 
-	protected void prepareResources(String resSrc, String resDst)
-			throws CliTasksException, IOException {
-		_logger.info("Processing additional resources...");
-		String[] sources = resSrc.split(",");
-		String[] dests = resDst.split(",");
-		if (sources.length!=dests.length) {
-			throw new CliTasksException("res.src parameter must be same length as res.dst, please update your testng configuration!");
-		}
-		for (int i=0;i<sources.length;i++) {
-			String src = sources[i];
-			File dst = new File(dests[i]);
-			String destDir = dst.getParent();
-			
-			if (destDir==null) {
-				destDir="/tmp";
-			}
-			else if (!dst.isAbsolute()) {
-				destDir="/tmp/"+destDir;
-			}
-							
-			cliTasks.runCommand("mkdir -p "+destDir);
-			if (src.startsWith("http")) {
-				cliTasks.runCommand("wget -nv "+src+" -O "+destDir+"/"+dst.getName()+" 2>&1");
-			}
-			else {
-				String resource = getResourceFileName(src);
-				if (resource==null) {
-					throw new CliTasksException("Resource file "+src+" does not exist!");
-				}
-				if (runListener!=null) {
-				    try {
-					File newResource = runListener.onResourceProcessed(src, new File(resource));						
-					if (newResource!=null && newResource.exists() && newResource.isFile()) {
-    					_logger.fine("Resource ["+resource+"] has been processed by listener, new result ["+newResource.getAbsolutePath()+"]");
-    					resource = newResource.getAbsolutePath();
-					}
-					else {
-					    throw new Exception("Resource file processed by listener is invalid (either null, non-existing or non-file)");
-					}
-				    } catch (Exception ex) {
-					_logger.log(Level.WARNING, "CliTestRunListener failed, using original resource. Error : "+ex.getMessage(), ex);
-				    }
-				}
-				cliTasks.copyFile(resource, destDir,dst.getName());
-			}
-		}
+    protected void prepareResources(String resSrc, String resDst) throws CliTasksException, IOException {
+	_logger.info("Processing additional resources...");
+	String[] sources = resSrc.split(",");
+	String[] dests = resDst.split(",");
+	if (sources.length != dests.length) {
+	    throw new CliTasksException("res.src parameter must be same length as res.dst, please update your testng configuration!");
 	}
+	for (int i = 0; i < sources.length; i++) {
+	    String src = sources[i];
+	    File dst = new File(dests[i]);
+	    String destDir = dst.getParent();
+
+	    if (destDir == null) {
+		destDir = "/tmp";
+	    } else if (!dst.isAbsolute()) {
+		destDir = "/tmp/" + destDir;
+	    }
+
+	    cliTasks.runCommand("mkdir -p " + destDir);
+	    String resource = null;
+	    // try listener to provide resource file
+	    if (runListener != null) {
+		File resFile = runListener.prepareResource(src);
+		if (resFile != null) {
+		    resource = resFile.getAbsolutePath();
+		    _logger.fine("Resource [" + src + "] has been handled by listener and outputed to [" + resource + "]");
+		}
+	    }
+	    // try http location
+	    if (resource == null && src.startsWith("http")) {
+		WebUtils.downloadFile(src, new File (destDir+File.separator+dst.getName()+".tmp"));
+		resource = destDir + "/" + dst.getName() + ".tmp";
+	    }
+	    // try project resources
+	    else if (resource == null) {
+		resource = getResourceFileName(src);
+		if (resource == null) {
+		    throw new CliTasksException("Resource file " + src + " does not exist!");
+		}
+	    }
+	    if (runListener != null) {
+		try {
+		    File newResource = runListener.onResourceProcessed(src, new File(resource));
+		    if (newResource != null && newResource.exists() && newResource.isFile()) {
+			_logger.fine("Resource [" + resource + "] has been processed by listener, new result [" + newResource.getAbsolutePath() + "]");
+			resource = newResource.getAbsolutePath();
+		    } else {
+			throw new Exception("Resource file processed by listener is invalid (either null, non-existing or non-file)");
+		    }
+		} catch (Exception ex) {
+		    _logger.log(Level.WARNING, "CliTestRunListener failed, using original resource. Error : " + ex.getMessage(), ex);
+		}
+	    }
+	    // finally copy resource to destination place
+	    cliTasks.copyFile(resource, destDir, dst.getName());
+
+	}
+    }
 
 	protected void prepareDependencies(String jsFile, String jsDepends, String mainJsFilePath)
 			throws IOException, CliTasksException {

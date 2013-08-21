@@ -3,6 +3,14 @@ package com.redhat.qe.jon.clitest.base;
 import java.io.File;
 
 public interface CliTestRunListener {
+    
+    /**
+     * implementing this method your listener can prepare resources. For example your listener can be interested in 
+     * names starting "quickstart:"(that is not regular file or url) and be able to obtain quickstart from anywhere and make it ready for cli-engine. 
+     * @param name i a resourceSrc name required by cli test
+     * @return non-null file of you handled this resource
+     */
+    File prepareResource(String name);
 
     /**
      * by implementing this method you can additionally process resources 
