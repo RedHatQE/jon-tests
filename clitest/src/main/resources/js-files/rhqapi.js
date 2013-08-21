@@ -655,6 +655,7 @@ var _common = function() {
 			        }
 			    }
 			}
+			criteria.setStrict(true);
 			return criteria;
 		}
 	};
