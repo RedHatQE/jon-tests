@@ -219,7 +219,7 @@ var _common = function() {
 					for(var i = 0; i < value.length; ++i) {
 						var v = value[i];
 						if (v != null) {
-							// me(prop, key, v);
+							 me(prop, key, v);
 						}
 					}
 				} else if (isHash(value)) {
@@ -227,7 +227,7 @@ var _common = function() {
 					for(var i in value) {
 						var v = value[i];
 						if (value != null) {
-							// me(prop, i, v);
+							 me(prop, i, v);
 						}
 					}
 				}
