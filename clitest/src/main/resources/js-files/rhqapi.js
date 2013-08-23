@@ -1631,6 +1631,9 @@ var ResourceType = function(rhqType) {
 				configuration = template.createConfiguration();
 			}
 			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(_obj.id);
+			// TODO compare results with this approach:
+			// var conf = org.rhq.core.domain.configuration.ConfigurationUtility.createDefaultConfiguration(configDef);
+	
 			
 			return common.configurationAsHash(configuration,configDef);
 		}
