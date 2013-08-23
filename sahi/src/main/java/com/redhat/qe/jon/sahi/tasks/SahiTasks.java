@@ -867,8 +867,8 @@ public class SahiTasks extends ExtendedSahi {
     public boolean recentOperationsQuickLinks() {
     	this.gotoReportRecentOperationsPage();
         this.link("RHQ Agent").click();
-        ElementStub expandElement = this.image("row_collapsed.png").near(this.bold("Tags:"));
-        ElementStub collapsedElement = this.image("row_expanded.png").near(this.bold("Tags:"));
+        ElementStub expandElement = this.image("row_collapsed.png");
+        ElementStub collapsedElement = this.image("row_expanded.png");
         if(!expandElement.exists()){
         	expandElement.click();
         }
