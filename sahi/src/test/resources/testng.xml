@@ -9,6 +9,8 @@
 		<!-- Listener to clear pop-up's if any on test failure-->
 		<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener"
 			/>
+		<!-- Listener to ignore tests which reproduce known and still unfixed bugs -->
+  	  	<listener class-name="com.redhat.qe.auto.bugzilla.BugzillaTestNGListener"/>
 	</listeners>
 
 	<test name="GuiLoginTest">
