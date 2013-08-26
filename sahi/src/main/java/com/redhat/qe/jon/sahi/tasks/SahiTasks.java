@@ -3,6 +3,7 @@ package com.redhat.qe.jon.sahi.tasks;
 import com.redhat.qe.jon.sahi.base.ExtendedSahi;
 import com.redhat.qe.Assert;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -1076,14 +1077,23 @@ public class SahiTasks extends ExtendedSahi {
     /**
      * 
      * @param fileInputIdent indentify file input field (name,id)
-     * @param path to file to be uploaded - relative to /automatjon/jon/sahi/resources/
+     * @param path to file to be uploaded (can be either resource file or a regular file - resource file has higher priority)
      */
     public void setFileToUpload(String fileInputIdent, String path) {
-    	URL resource = SahiTasks.class.getResource(path);
+    	URL resource = SahiTasks.class.getResource(path);    	
+    	String fullPath = null;
     	if (resource==null) {
-    		throw new RuntimeException("Unable to find resource ["+path+"] on classpath");
+    	    File resFile = new File(path);	
+    	    if (resFile.exists() && resFile.canRead()) {
+    	    	    fullPath = resFile.getAbsolutePath();
+    	    }
+    	    else {
+    		throw new RuntimeException("Unable to find resource/file ["+path+"] on either classpath or filesystem");
+    	    }
     	}
-    	String fullPath = resource.getPath();
+    	else {
+    	    fullPath = resource.getPath();
+    	}
     	this.file(fileInputIdent).setFile(fullPath);
     	this.execute("_sahi._call(_sahi._file(\""+fileInputIdent+"\").type = \"text\");");
 		this.textbox(fileInputIdent).setValue(fullPath);
