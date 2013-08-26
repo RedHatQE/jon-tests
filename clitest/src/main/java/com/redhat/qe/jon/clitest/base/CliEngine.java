@@ -290,9 +290,13 @@ public class CliEngine extends CliTestScript{
 	    }
 	    if (runListener != null) {
 		try {
-		    File newResource = runListener.onResourceProcessed(src, new File(resource));
+		    File oldResource = new File(resource);
+		    File newResource = runListener.onResourceProcessed(src, oldResource);
 		    if (newResource != null && newResource.exists() && newResource.isFile()) {
-			_logger.fine("Resource [" + resource + "] has been processed by listener, new result [" + newResource.getAbsolutePath() + "]");
+			if (!oldResource.equals(newResource)) {
+			    // do not output when listener didn't touch resource
+			    _logger.fine("Resource [" + resource + "] has been processed by listener, new result [" + newResource.getAbsolutePath() + "]");
+			}
 			resource = newResource.getAbsolutePath();
 		    } else {
 			throw new Exception("Resource file processed by listener is invalid (either null, non-existing or non-file)");
