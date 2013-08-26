@@ -57,8 +57,9 @@ public class ZipUtils {
      * @param targetZip zip archive to be updated
      * @param fileToUpdate file which is supposed to be put to zip archive
      * @param nameOfFileInZip the location in zip archive to put the file into including the name (e.g. filename or some/relative/path/filename)
+     * @throws IOException whenever there is issue in updating file in zip archive
      */
-    public static void updateOneFileInZip(File targetZip, File fileToUpdate, String nameOfFileInZip) {
+    public static void updateOneFileInZip(File targetZip, File fileToUpdate, String nameOfFileInZip) throws IOException {
         ZipInputStream zin = null;
         ZipOutputStream zout = null;
         InputStream in = null;
@@ -89,8 +90,8 @@ public class ZipUtils {
                 }
             }
             tmpZip.delete();
-        } catch (IOException ex) {
-            throw new RuntimeException("Unable to update " + nameOfFileInZip + " in " + targetZip.getAbsolutePath() + " using " + fileToUpdate.getAbsolutePath());
+        } catch (Exception ex) {
+            throw new IOException("Unable to update " + nameOfFileInZip + " in " + targetZip.getAbsolutePath() + " using " + fileToUpdate.getAbsolutePath());
         } finally {
             try {
                 if (in != null) {
