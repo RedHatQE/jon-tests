@@ -1,5 +1,7 @@
 package com.redhat.qe.jon.common.util;
 
+import org.apache.commons.io.*;
+
 import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -66,9 +68,7 @@ public class ZipUtils {
         try {
             File tmpZip = File.createTempFile(targetZip.getName(), null);
             tmpZip.delete();
-            if (!targetZip.renameTo(tmpZip)) {
-                throw new RuntimeException("Could not make temp file (" + targetZip.getName() + ")");
-            }
+            FileUtils.moveFile(targetZip, tmpZip);
             byte[] buffer = new byte[4096];
             zin = new ZipInputStream(new FileInputStream(tmpZip));
             zout = new ZipOutputStream(new FileOutputStream(targetZip));
@@ -91,7 +91,7 @@ public class ZipUtils {
             }
             tmpZip.delete();
         } catch (Exception ex) {
-            throw new IOException("Unable to update " + nameOfFileInZip + " in " + targetZip.getAbsolutePath() + " using " + fileToUpdate.getAbsolutePath());
+            throw new IOException("Unable to update " + nameOfFileInZip + " in " + targetZip.getAbsolutePath() + " using " + fileToUpdate.getAbsolutePath(), ex);
         } finally {
             try {
                 if (in != null) {
