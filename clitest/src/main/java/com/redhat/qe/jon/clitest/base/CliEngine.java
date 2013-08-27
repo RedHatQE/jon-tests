@@ -195,7 +195,7 @@ public class CliEngine extends CliTestScript{
 		// get live output in log file on server
 		command +=" | tee -a /tmp/cli-automation.log";
 		consoleOutput = cliTasks.runCommand(command);
-		_logger.log(Level.INFO, consoleOutput);
+		//_logger.log(Level.INFO, consoleOutput);
 		if(!isVersionSet && consoleOutput.length()>25){
 			System.setProperty("rhq.build.version", consoleOutput.substring(consoleOutput.indexOf("Remote server version is:")+25, consoleOutput.indexOf("Login successful")).trim());
 			isVersionSet = true;
