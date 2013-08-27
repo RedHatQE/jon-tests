@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author: rhatlapa@redhat.com
+ * @author rhatlapa@redhat.com
  */
 public class IPAddressValidator {
 

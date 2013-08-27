@@ -82,7 +82,7 @@ public class Library {
     /**
      * tries to translate IP address to hostname, if it fails, the ipAddress is returned
      * @param ipAddress
-     * @return
+     * @return hostname if possible or ipAddres as fallback
      */
     public static String ipToHostname(String ipAddress) {
         InetAddress addr = null;

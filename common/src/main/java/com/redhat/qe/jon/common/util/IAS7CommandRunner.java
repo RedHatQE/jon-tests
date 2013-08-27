@@ -5,7 +5,7 @@ import com.redhat.qe.tools.SSHCommandResult;
 import java.util.Date;
 
 /**
- * @author: rhatlapa@redhat.com
+ * @author rhatlapa@redhat.com
  */
 public interface IAS7CommandRunner {
 

@@ -11,7 +11,7 @@ import java.util.Date;
 
 /**
  * AS7LocalCommandRunner provides platform independent implementation of IAS7CommandRunner
- * @author: rhatlapa@redhat.com
+ * @author rhatlapa@redhat.com
  */
 public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7CommandRunner {
 

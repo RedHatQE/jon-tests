@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author: rhatlapa@redhat.com
+ * @author rhatlapa@redhat.com
  * @author Jiri Sedlacek <jsedlace@redhat.com>
  * @author Jan Stefl     <jstefl@redhat.com>
  */

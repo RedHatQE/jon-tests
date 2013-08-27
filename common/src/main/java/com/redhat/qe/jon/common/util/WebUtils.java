@@ -1,15 +1,12 @@
 package com.redhat.qe.jon.common.util;
 
+import java.io.File;
+import java.net.URL;
+
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-
 /**
- * @author: rhatlapa@redhat.com
+ * @author rhatlapa@redhat.com
  */
 public class WebUtils {
 
