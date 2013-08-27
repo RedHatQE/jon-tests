@@ -1,7 +1,7 @@
 package com.redhat.qe.jon.common;
 
 /**
- * @author: rhatlapa@redhat.com
+ * @author rhatlapa@redhat.com
  */
 public class Constants {
     public static final String TWO_DOUBLE_BACKSLASHES = "\\\\";
