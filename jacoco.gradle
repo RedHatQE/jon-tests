@@ -1,0 +1,189 @@
+def jacocoVersion = '0.6.3.201306030806'
+
+def repos = [
+"https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads",
+"http://clojars.org/repo",
+"http://download.java.net/maven/2/",
+"http://repository.codehaus.org",
+"http://snapshots.repository.codehaus.org",
+"http://repo1.maven.org/maven2/",
+"https://repository.jboss.org/nexus/content/groups/public-jboss/"]
+
+configurations { jacoco } 
+
+dependencies {
+  jacoco "org.jacoco:org.jacoco.agent:$jacocoVersion"
+  jacoco "org.jacoco:org.jacoco.ant:$jacocoVersion"
+}
+
+
+repositories {
+  mavenCentral()
+    mavenLocal()			
+    repos.each { repo ->  
+      maven {
+        url repo
+      }
+    }
+}
+task pluginreport << {
+  if (System.properties["classes.dir"] 
+      && System.properties["jacoco.dump.dir"] 
+      && System.properties["output.dir"]
+      && System.properties["report.name"]
+     ) {
+    if (!System.properties["sources.dir"]) {
+      logger.info("Property [sources.dir] not defined, coverage report will not include covered lines of code")
+        // set it to some value
+        System.properties["sources.dir"] = ""
+    }
+    ant.taskdef(name:'jacocoreport', classname: 'org.jacoco.ant.ReportTask', classpath: configurations.jacoco.asPath)
+      ant.jacocoreport() {
+        executiondata() {
+          fileset(dir:System.properties["jacoco.dump.dir"],includes:"**/*.exec")
+        }
+        structure(name:System.properties["report.name"]) {
+          group(name:"Plugin") {
+            classfiles() {
+              fileset(dir:System.properties["classes.dir"]) {
+                include(name:"target/classes/**")
+                exclude(name:"**/*Test*")
+              }
+            }
+            sourcefiles() {
+              dirset(dir:System.properties["sources.dir"]) {
+                include(name:"**/src/main/java")
+                include(name:"**/target/generated-sources/**")
+              }
+            }
+          }
+        }
+        html(destdir:"$buildDir/"+System.properties["output.dir"])
+          // xml(destfile:"$buildDir/"+System.properties["output.dir"]+"/coverage-report.xml")
+          // csv(destfile:"$buildDir/"+System.properties["output.dir"]+"/coverage-report.csv")
+      }
+  }
+  else {
+    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir output.dir report.name], optionally [sources.dir]")
+  }
+
+}
+
+task rhqreport() << {
+  if (System.properties["classes.dir"] 
+      && System.properties["jacoco.dump.dir"] 
+      && System.properties["output.dir"]
+      && System.properties["report.name"]
+     ) {
+    if (!System.properties["sources.dir"]) {
+      logger.info("Property [sources.dir] not defined, coverage report will not include covered lines of code")
+        // set it to some value
+        System.properties["sources.dir"] = ""
+    }
+    def agentPlugins = ["**"]
+      if (System.properties["only.jon.plugins"] && System.properties["only.jon.plugins"] == "true") {
+        logger.info("Only JON agent plugins will be included")
+          agentPlugins = ["ant-bundle","apache","cassandra","database","iis","jmx","platform","postgres","script","rhq-agent"]
+          def pluginPacks = ["jboss-as","jboss-as-5","jboss-as-7","jboss-cache","jboss-cache-v3"]
+          agentPlugins = agentPlugins + pluginPacks
+      }
+    ant.taskdef(name:'jacocoreport', classname: 'org.jacoco.ant.ReportTask', classpath: configurations.jacoco.asPath)
+      ant.jacocoreport() {
+        executiondata() {
+          fileset(dir:System.properties["jacoco.dump.dir"],includes:"**/*.exec")
+        }
+        structure(name:System.properties["report.name"]) {
+          group(name:"Plugins") {
+            classfiles() {
+              fileset(dir:System.properties["classes.dir"]) {
+                for (def plugin : agentPlugins) {
+                  include(name:"modules/plugins/$plugin/target/classes/org/rhq/**")
+                    include(name:"modules/plugins/$plugin/target/generated-classes/org/rhq/**")
+                }
+                exclude(name:"**/*Test*")
+              }
+            }
+            sourcefiles() {
+              dirset(dir:System.properties["sources.dir"]) {
+                include(name:"**/src/main/java")
+                  include(name:"**/target/generated-sources/**")
+              }
+            }
+          }
+          group(name:"Core") {
+            classfiles() {
+              fileset(dir:System.properties["classes.dir"]) {
+                include(name:"modules/core/**/target/classes/org/rhq/**")
+                  include(name:"modules/core/**/target/generated-classes/org/rhq/**")
+                  exclude(name:"**/*Test*")
+              }
+            }
+            sourcefiles() {
+              dirset(dir:System.properties["sources.dir"]) {
+                include(name:"**/src/main/java")
+                  include(name:"**/target/generated-sources/**")
+              }
+            }
+          }
+          group(name:"Enterprise") {
+            classfiles() {
+              fileset(dir:System.properties["classes.dir"]) {
+                include(name:"modules/enterprise/**/target/classes/org/rhq/**")
+                  include(name:"modules/enterprise/**/target/generated-classes/org/rhq/**")
+                  exclude(name:"**/*Test*")
+                  exclude(name:"modules/enterprise/gui/**")
+              }
+            }
+            sourcefiles() {
+              dirset(dir:System.properties["sources.dir"]) {
+                include(name:"**/src/main/java")
+                  include(name:"**/target/generated-sources/**")
+              }
+            }
+          }
+          group(name:"GUI") {
+            classfiles() {
+              fileset(dir:System.properties["classes.dir"]) {
+                include(name:"modules/enterprise/gui/**/target/classes/org/rhq/enterprise/gui/coregui/server/**")
+                  include(name:"modules/enterprise/gui/**/target/generated-classes/org/rhq/enterprise/gui/coregui/server/**")
+                  exclude(name:"**/*Test*")
+              }
+            }
+            sourcefiles() {
+              dirset(dir:System.properties["sources.dir"]) {
+                include(name:"**/src/main/java")
+                  include(name:"**/target/generated-sources/**")
+              }
+            }
+          }
+          group(name:"Miscellaneous") {
+            classfiles() {
+              fileset(dir:System.properties["classes.dir"]) {
+                include(name:"modules/**/target/classes/org/rhq/**")
+                  include(name:"modules/**/target/generated-classes/org/rhq/**")
+                  exclude(name:"modules/plugins/**/target/classes/org/rhq/**")
+                  exclude(name:"modules/plugins/**/target/generated-classes/org/rhq/**")
+                  exclude(name:"modules/core/**/target/classes/org/rhq/**")
+                  exclude(name:"modules/core/**/target/generated-classes/org/rhq/**")
+                  exclude(name:"modules/enterprise/**/target/classes/org/rhq/**")
+                  exclude(name:"modules/enterprise/**/target/generated-classes/org/rhq/**")
+                  exclude(name:"**.*Test*")
+              }
+            }
+            sourcefiles() {
+              dirset(dir:System.properties["sources.dir"]) {
+                include(name:"**/src/main/java")
+                  include(name:"**/target/generated-sources/**")
+              }
+            }
+          }
+        }
+        html(destdir:"$buildDir/"+System.properties["output.dir"])
+          // xml(destfile:"$buildDir/"+System.properties["output.dir"]+"/coverage-report.xml")
+          // csv(destfile:"$buildDir/"+System.properties["output.dir"]+"/coverage-report.csv")
+      }
+  }
+  else {
+    throw new GradleException("Missing required properties [classes.dir jacoco.dump.dir output.dir report.name], optionally [sources.dir only.jon.plugins]")
+  }
+}
