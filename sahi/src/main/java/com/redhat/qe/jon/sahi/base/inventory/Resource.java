@@ -288,7 +288,7 @@ public class Resource {
 				}
 				log.fine("Resource "+toString()+" fetched ID="+this.id);
 			} catch (Exception e) {
-				e.printStackTrace();
+				throw new RuntimeException("Unable to fetch ID for resource "+toString()+" using REST!!",e);
 			}
 		}
 		if (this.id==null) {
