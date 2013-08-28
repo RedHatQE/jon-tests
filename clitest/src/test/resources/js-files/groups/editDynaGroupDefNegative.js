@@ -18,7 +18,9 @@ var existingDef1 = allDynaGroupDefs[0].obj;
 var existingDef2 = allDynaGroupDefs[1].obj;
 
 // try to edit non-existing definition
-expectException(updateDynaGroupDefinition,[new GroupDefinition("nonexisting")],
+var groupDef = new GroupDefinition("nonexisting");
+groupDef.setExpression("resource.type.name=Linux");
+expectException(updateDynaGroupDefinition,[groupDef],
 		"Group definition with specified id does not exist");
 
 
@@ -61,10 +63,19 @@ for(var i in expressions){
 /**
  * Incorrect recalculation intervals
  */
-var recalIntervals = ["haha",null,.5,0.5,-5];
+//decimal intervals (0.5) are automatically truncated without exception
+var recalIntervalsDuringUpdate = [-5,5];
+var recalIntervalsDuringSetterInvocation = ["haha",null];
 existingDef2.setExpression("resource.type.name=Linux");
 // pass incorrect recalculation intervals and check that exception was thrown
-for(var i in recalIntervals){
-	existingDef2.setRecalculationInterval(recalIntervals[i]);
+for(var i in recalIntervalsDuringSetterInvocation){
+	expectException(setRecalInt,[existingDef2,recalIntervalsDuringSetterInvocation[i]]);
+}
+
+for(var i in recalIntervalsDuringUpdate){
+	existingDef2.setRecalculationInterval(recalIntervalsDuringUpdate[i]);
 	expectException(updateDynaGroupDefinition,[existingDef2]);
+}
+function setRecalInt(def,int){
+	def.setRecalculationInterval(int);
 }

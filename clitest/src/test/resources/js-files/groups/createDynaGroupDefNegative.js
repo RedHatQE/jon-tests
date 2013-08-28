@@ -13,28 +13,30 @@ var common = new _common();
 
 
 var defName = "incorrect";
-var existingName = dynaGroupDefs.findDynaGroupDefinitions()[0].name;
+var dynaGroupDefsArr = dynaGroupDefs.findDynaGroupDefinitions();
+assertTrue(dynaGroupDefsArr.length > 0, "More than 1 group defintion is expected!!");
 var incorrectDefNames = ["<html>hahaha</html>"];
-var incorrectDefDescr = ["<html>hahaha</html>"];
+var incorrectDefDescr = [];
 
 removeDynaGroupDef(defName);
 
-var expressionsDuringRecalculation = ["bla","resource.name=","resource.type.na=Linux",
-                                      "groupby resource.type.name = service-a",
-                                      "groupby resource.type.name =",
-                                      "resource.name",
-                                      "<html>???</html>",
-                                      "groupby resource.type.name\n resource.type.name = RHQ Agent",
-                                      
-                                      "resource.type.name=Linux \n" +
-                                      "memberof = ",
-                                      "resource.type.name=Linux \n" +
-                                      "memberof",
-                                      "memberof",
-                                      "memberof = groupName\n" +
-                                      "memberof  groupName"];
-var recalIntervals = ["haha",null,.5,0.5,-5];
-var expressionsDuringCreation = [null,"","<html>hahaha</html>"]
+var expressionsDuringCreation = [null,"","<html>hahaha</html>","bla",
+									  "resource.name=","resource.type.na=Linux",
+									  "groupby resource.type.name = service-a",
+									  "groupby resource.type.name =",
+									  "resource.name",
+									  "<html>???</html>",
+									  "groupby resource.type.name\n resource.type.name = RHQ Agent",
+									  
+									  "resource.type.name=Linux \n" +
+									  "memberof = ",
+									  "resource.type.name=Linux \n" +
+									  "memberof",
+									  "memberof",
+									  "memberof = groupName\n" +
+									  "memberof  groupName"];
+// decimal intervals (0.5) are automatically truncated without exception
+var recalIntervals = ["haha",null,-5,5];
 
 
 /**
@@ -47,7 +49,9 @@ expectException(createDynagroupDef,[null,"resource.type.name=Linux"],"Name is a 
 expectException(createDynagroupDef,["","resource.type.name=Linux"],"Name is a required property");
 
 // pass already existing name
+var existingName = dynaGroupDefsArr[0].name;
 expectException(createDynagroupDef,[existingName,"resource.type.name=Linux"]);
+
 
 //pass incorrect definition names and check that exception was thrown
 for(var i in incorrectDefNames){
@@ -61,7 +65,7 @@ for(var i in incorrectDefNames){
  */
 //pass incorrect definition description and check that exception was thrown
 for(var i in incorrectDefDescr){
-	expectException(createDynagroupDef,[incorrectDefDescr[i],"resource.type.name=Linux"]);
+	expectException(createDynagroupDef,[defName,"resource.type.name=Linux",incorrectDefDescr[i]]);
 	assertDynaGroupDefIsNotFound(defName);
 }
 
@@ -83,16 +87,6 @@ for(var i in expressionsDuringCreation){
 	expectException(createDynagroupDef,[defName,expressionsDuringCreation[i]]);
 	assertDynaGroupDefIsNotFound(defName);
 }
-
-
-// pass incorrect expressions, exception is expected during recalculation of group membership
-for(var i in expressionsDuringRecalculation){
-	var def = createDynagroupDef(defName,expressionsDuringRecalculation[i]);
-	expectException(recalculateGroups,[def]);
-	removeDynaGroupDef(defName);
-}
-
-
 
 
 function assertDynaGroupDefIsNotFound(dynaGroupDefName){

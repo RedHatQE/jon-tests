@@ -23,7 +23,7 @@ var common = new _common();
  * @returns created dynaGroup definition
  */
 function createDynagroupDef(name, expression, description, isRecursive,recalcInterval){
-	common.info("Creating a new dynagroup definition with name " + name);
+	common.info("Creating a new dynagroup definition with name: '" + name+"'");
 	var dynaGroupDef = new GroupDefinition(name);
 	dynaGroupDef.setExpression(expression);
 	if(!(description === undefined)){
@@ -43,7 +43,7 @@ function createDynagroupDef(name, expression, description, isRecursive,recalcInt
 
 function removeAllGroups(){
 	groups.find().forEach(function(b){
-		common.info("Removing group with name " + b.name);
+		common.info("Removing group with name: " + b.name);
 		b.remove();
 	});
 }
@@ -51,7 +51,7 @@ function removeAllGroups(){
 function removeAllDynaGroupDefs(){
 	var defs = dynaGroupDefs.findDynaGroupDefinitions();
 	for(var i in defs){
-		common.info("Removing dynaGroup definition with name: " + defs[i].name +" and id: "+defs[i].id);
+		common.info("Removing dynaGroup definition with name: '" + defs[i].name +"' and id: "+defs[i].id);
 		GroupDefinitionManager.removeGroupDefinition(defs[i].id);
 	}
 }
@@ -63,7 +63,7 @@ function removeAllDynaGroupDefs(){
 function removeDynaGroupDef(dynaGroupDefName){
 	var defs = dynaGroupDefs.findDynaGroupDefinitions({name:dynaGroupDefName});
 	for(var i in defs){
-		common.info("Removing dynaGroup definition with name: " + dynaGroupDefName +" and id: "+defs[i].id);
+		common.info("Removing dynaGroup definition with name: '" + dynaGroupDefName +"' and id: "+defs[i].id);
 		GroupDefinitionManager.removeGroupDefinition(defs[i].id);
 	}
 }
@@ -126,7 +126,7 @@ function expectException(func,params,expectedErrMsg) {
 	var exception = null;
 	try
 	{
-		common.info("Invoking function "+func.name+", with follwing params: " +params);
+		common.info("Invoking function: '"+func.name+"', with follwing params: " +params);
 		func.apply(null,params);
 	} catch (exc) {
 		exception = exc;
@@ -173,9 +173,9 @@ function getManagedGroup(groupDefName){
 
 
 function updateDynaGroupDefinition(dynaGroupDefinition){
-	common.info("Editing dynaGroup definition with name " +dynaGroupDefinition.name +
-			" and expression " + dynaGroupDefinition.getExpression() +
-			" and recalculation interval " + dynaGroupDefinition.getRecalculationInterval());
+	common.info("Editing dynaGroup definition with name: '" +dynaGroupDefinition.name +
+			"' and expression: '" + dynaGroupDefinition.getExpression() +
+			"' and recalculation interval: '" + dynaGroupDefinition.getRecalculationInterval()+"'");
 	
 	return GroupDefinitionManager.updateGroupDefinition(dynaGroupDefinition);
 }
