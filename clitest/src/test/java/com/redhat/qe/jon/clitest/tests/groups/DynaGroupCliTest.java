@@ -5,7 +5,10 @@ import org.testng.annotations.Test;
 import com.redhat.qe.jon.clitest.base.CliEngine;
 
 public class DynaGroupCliTest extends CliEngine {
-	@Test(groups={"blockedByBug-990466"})
+	
+	// this blocking bz is still not fixed, it would block tests from running so the test is 
+	// changed temporarily 
+	@Test//(groups={"blockedByBug-990466"})
 	public void createDynaGroupDefinition(){
 		createJSRunner("groups/createDynaGroupDef.js").
 			addDepends("/rhqapi.js").
