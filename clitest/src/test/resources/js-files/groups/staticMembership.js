@@ -54,7 +54,7 @@ checkNumberOfResourcesInGroup(getManagedGroup(defName), allAgents.length -1,0);
  * Case 2
  */
 
-var uninventoriedAgents = discoveryQueue.list({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
+var uninventoriedAgents = discoveryQueue.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 if(uninventoriedAgents.length == 0){
 	common.info("No rhq agent found in discovery queue, uninventoring one agent..");
 	allAgents[0].uninventory();
@@ -84,25 +84,15 @@ assertDynaGroupDefParams(defName2);
 checkNumberOfResourcesInGroup(getManagedGroup(defName2), allAgents.length *5,0);
 
 
-// wait for agent to appear in discovery queue
-for(var i = 0;i<10;i++){
-	uninventoriedAgents = discoveryQueue.list({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
-	if(uninventoriedAgents.length >0){
-		common.debug("Agent was found in discovery queue");
-		break;
-	}
-	common.debug("Waiting for agent to became NEW");
-	sleep(5000);
-}
-
-if(uninventoriedAgents.length == 0){
-	throw "No agent found in discovery queue!!";
-}
+assertTrue(waitForResourceToAppearInDiscQueue({name:"RHQ Agent",resourceTypeName:"RHQ Agent"}), 
+		"No agent was found in discovery queue!!");
 
 // import found agent
-var imported = discoveryQueue.importResource(uninventoriedAgents[0],false);
-imported.waitForAvailable();
-imported.invokeOperation("executeAvailabilityScan");
+var importedArr = discoveryQueue.importResources({name:"RHQ Agent",resourceTypeName:"RHQ Agent"},false);
+for(var i in importedArr){
+	importedArr[i].waitForAvailable();
+	importedArr[i].invokeOperation("executeAvailabilityScan");
+}
 
 common.debug("Waiting 30 sec for avail report");
 sleep(30 * 1000);

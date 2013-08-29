@@ -179,3 +179,28 @@ function updateDynaGroupDefinition(dynaGroupDefinition){
 	
 	return GroupDefinitionManager.updateGroupDefinition(dynaGroupDefinition);
 }
+
+/**
+ * Waits until given resource appears in discovery queue with status NEW.
+ * @param params
+ * @returns {Boolean} true when found, false otherwise
+ */
+function waitForResourceToAppearInDiscQueue(params){
+	common.debug("Searching for resource with following params: "+common.objToString(params)+
+			" in discovery queue.");
+	var foundResources = null;
+	for(var i = 0;i<10;i++){
+		foundResources = discoveryQueue.find(params);
+		if(foundResources.length >0){
+			common.debug("Resource was found in discovery queue");
+			break;
+		}
+		common.debug("Waiting for resource to became NEW");
+		sleep(5000);
+	}
+
+	if(foundResources.length == 0){
+		return false;
+	}
+	return true;
+}

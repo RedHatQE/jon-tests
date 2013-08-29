@@ -14,138 +14,88 @@
 removeAllGroups();
 removeAllDynaGroupDefs();
 
-// check that there is at least one platform imported 
-var allLinuxPlat = resources.find({resourceTypeName:"Linux"});
-assertTrue(allLinuxPlat.length > 0,"At least one platform must be imported!!");
+// check that there is at least one agent imported 
+var allAgents = resources.find({resourceTypeName:"RHQ Agent"});
+assertTrue(allAgents.length > 0,"At least one agent must be imported!!");
 
-// name of suitable platform will be found later
-var nameOfPlatformToBeImported = null;
-
-// check that there is at least one uninventoried platform in discovery queue
-var platformsInDiscoveryQueue = discoveryQueue.listPlatforms();
-if(platformsInDiscoveryQueue.length == 0){
-	common.debug("We have no platforms in discovery queue, uninventory one platform if possible");
-	nameOfPlatformToBeImported = uninventoryPlatform();
+// check that there is at least one uninventoried agent in discovery queue
+var agentsInDiscoveryQueue = discoveryQueue.find({resourceTypeName:"RHQ Agent"});
+if(agentsInDiscoveryQueue.length == 0){
+	common.debug("We have no agent in discovery queue, uninventoring one agent if possible");
+	if(allAgents.length <2){
+		throw "There is only one agent imported and no agent in discovery queue. At least 2 agents are required for this test!!";
+	}
+	assertTrue(allAgents[0].uninventory(),"Failed to uninventory agent!!");
 }else{
-	common.debug("We have some platforms in discovery queue, check if there is any which is not already imported");
-	for(var i in platformsInDiscoveryQueue){
-		if(!isPlatformImported(platformsInDiscoveryQueue[i].name)){
-			nameOfPlatformToBeImported = platformsInDiscoveryQueue[i].name;
-		}
-	}
-	 
-	if(nameOfPlatformToBeImported == null){
-		common.debug("We didn't find any uninventoried platform, trying to uninventory one");
-		nameOfPlatformToBeImported = uninventoryPlatform();
-	}
+	common.debug("We have some agents in discovery queue");
 }
-common.debug("Name of the platform to be imported: " + nameOfPlatformToBeImported);
+
+allAgents = resources.find({resourceTypeName:"RHQ Agent"});
 
 
-allLinuxPlat = resources.find({resourceTypeName:"Linux"});
-
-
-// create a new dynagroup definition
-var platformsDynaGroupDefName = "Platforms";
-removeDynaGroupDef(platformsDynaGroupDefName);
-var defAllLinuxPlatforms = createDynagroupDef(platformsDynaGroupDefName,
-		"resource.type.name=Linux","All linux platforms",true);
-GroupDefinitionManager.calculateGroupMembership(defAllLinuxPlatforms.getId());
-
-//check that dynagroup was created
-assertDynaGroupDefParams(platformsDynaGroupDefName);
-checkNumberOfResourcesInGroup(getManagedGroup(platformsDynaGroupDefName), allLinuxPlat.length);
-
-
-// create new dynagroup definition
-var agentsDynaGroupDefName = "Narrowing on Platforms group";
-removeDynaGroupDef(agentsDynaGroupDefName);
-var defAllAgents = createDynagroupDef(agentsDynaGroupDefName,
-		"resource.type.name = RHQ Agent \n memberof = DynaGroup - "+platformsDynaGroupDefName);
-GroupDefinitionManager.calculateGroupMembership(defAllAgents.getId());
+// create a new dynagroup definition for all agents
+var agentsDynaGroupDefName = "Agents";
+var defAgents = createDynagroupDef(agentsDynaGroupDefName,
+		"resource.type.name=RHQ Agent","All agents",true);
+GroupDefinitionManager.calculateGroupMembership(defAgents.getId());
 
 //check that dynagroup was created
 assertDynaGroupDefParams(agentsDynaGroupDefName);
-checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allLinuxPlat.length);
+checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allAgents.length);
+
+
+// create new dynagroup definition for RHQ Agent Launcher Scripts
+var launcherScriptsDynaGroupDefName = "Narrowing on Agents group";
+var defLauncherScripts = createDynagroupDef(launcherScriptsDynaGroupDefName,
+		"resource.name = RHQ Agent Launcher Script \n memberof = DynaGroup - "+agentsDynaGroupDefName);
+GroupDefinitionManager.calculateGroupMembership(defLauncherScripts.getId());
+
+//check that dynagroup was created
+assertDynaGroupDefParams(launcherScriptsDynaGroupDefName);
+checkNumberOfResourcesInGroup(getManagedGroup(launcherScriptsDynaGroupDefName), allAgents.length);
 
 // schedule operation on dynagroup
-var opName = "executeAvailabilityScan";
-var agentsDynaGroups = groups.find({name:"DynaGroup - "+agentsDynaGroupDefName});
-assertTrue(agentsDynaGroups.length > 0,"Group with name 'DynaGroup - "+agentsDynaGroupDefName+"' not found!!");
-var agents = agentsDynaGroups[0].resources();
-for(var i in agents){
-	deleteAllScheduledOp(agents[i].id);
-	clearOpHistory(agents[i].id);
+var opName = "Status";
+var launchersDynaGroups = groups.find({name:"DynaGroup - "+launcherScriptsDynaGroupDefName});
+assertTrue(launchersDynaGroups.length > 0,"Group with name 'DynaGroup - "+launcherScriptsDynaGroupDefName+"' not found!!");
+var lanchers = launchersDynaGroups[0].resources();
+for(var i in lanchers){
+	deleteAllScheduledOp(lanchers[i].id);
+	clearOpHistory(lanchers[i].id);
 }
-agentsDynaGroups[0].scheduleOperationUsingCron(opName,"0 * * * * ?");
+launchersDynaGroups[0].scheduleOperationUsingCron(opName,"0 * * * * ?");
 
 
-// import another platform with children
-var imported = discoveryQueue.importPlatform(nameOfPlatformToBeImported);
-assertTrue(imported.exists(),"Imported platform exists in inventory");
-// let's wait until our platform becomes available
-imported.waitForAvailable();
+// import another agent
+assertTrue(waitForResourceToAppearInDiscQueue({name:"RHQ Agent",resourceTypeName:"RHQ Agent"}), 
+"No agent was found in discovery queue!!");
+var importedArr = discoveryQueue.importResources({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
+assertTrue(importedArr[0].exists(),"Previously imported agent doesn't exists in inventory!!");
+// let's wait until our agent becomes available
+importedArr[0].waitForAvailable();
 
 
 // recalculate managed groups and check that new resources are added
-GroupDefinitionManager.calculateGroupMembership(defAllLinuxPlatforms.getId());
-checkNumberOfResourcesInGroup(getManagedGroup(platformsDynaGroupDefName), allLinuxPlat.length +1);
-GroupDefinitionManager.calculateGroupMembership(defAllAgents.getId());
-checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allLinuxPlat.length +1);
+GroupDefinitionManager.calculateGroupMembership(defAgents.getId());
+checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allAgents.length +importedArr.length);
+GroupDefinitionManager.calculateGroupMembership(defLauncherScripts.getId());
+checkNumberOfResourcesInGroup(getManagedGroup(launcherScriptsDynaGroupDefName), allAgents.length +importedArr.length);
 
 
 common.debug("Going sleep for 65s");
 sleep(65 * 1000);
 
-// check that original scheduled operation is invoked on newly added agent as well
-// check operation history on all agents in the group
-for(var i in agents){
-	common.info("Checking operation history of resource with id: " + agents[i].id);
-	var hist = getOpHistory(agents[i].id);
-	assertTrue((hist.size() == 1 || hist.size() == 2),"Only one or two operations in history of resource with id: " +agents[i].id+" are expected!!");
+// check that original scheduled operation is invoked on newly added resource as well
+// check operation history on all resources in the group
+for(var i in lanchers){
+	common.info("Checking operation history of resource with id: " + lanchers[i].id);
+	var hist = getOpHistory(lanchers[i].id);
+	assertTrue((hist.size() == 1 || hist.size() == 2),"Only one or two operations in history of resource with id: " +lanchers[i].id+" are expected!!");
 	var actualName = hist.get(0).getOperationDefinition().getName();
 	assertTrue(actualName == opName,"Expected operation name is: " +opName+", but actual is: "+actualName);
 }
 
 
-/**
- * Uninventories first found platform which doesn't contain RHQ Storage Node child resource.
- * Returns a name of the uninventoried platform or throws exception if there is no suitable platform to uninventory.
- * 
- * @returns name of the uninventoried platform
- */
-function uninventoryPlatform(){
-	var allLinuxPlat = resources.find({resourceTypeName:"Linux"});
-	if(allLinuxPlat.length > 1){
-		for(var i in allLinuxPlat){
-			if(!isRHQStorageNodeOnPlatform(allLinuxPlat[i])){
-				assertTrue(allLinuxPlat[i].uninventory(),"Platform with name: "+allLinuxPlat[i].name+
-						" failed to uninventory!!");
-				return allLinuxPlat[i].name;
-			}
-		}
-	}else{
-		throw "At least two platforms are required for this test!!";
-	}
-}
-
-function isPlatformImported(platformName){
-	var allLinuxPlat = resources.find({resourceTypeName:"Linux"});
-	for(var i in allLinuxPlat){
-		if(platformName == allLinuxPlat[i].name){
-			return true;
-		}
-	}
-	return false;
-}
-
-function isRHQStorageNodeOnPlatform(platform){
-	var children = platform.children({resourceTypeName:"RHQ Storage Node"});
-	if(children.length >0){
-		return true;
-	}
-	return false;
-}
 
 function clearOpHistory(resourceId){
 	var resOpHistCri = new ResourceOperationHistoryCriteria();
