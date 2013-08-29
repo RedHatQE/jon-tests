@@ -10,6 +10,7 @@ for (key in platform.metrics) {
 	var byName = platform.getMetric(metric.name);
 	assertTrue(byName != null,"Metric ["+metric.name+"] can be accessed by name");
 	assertTrue(byName.name == metric.name,"Correct metric was accessed by name");
+	assertTrue(byName.dataType != null,"DataType of metric is not null");
 	println("LiveValue : " +byName.getLiveValue());
 }
 

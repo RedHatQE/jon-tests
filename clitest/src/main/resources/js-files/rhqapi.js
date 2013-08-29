@@ -3025,6 +3025,8 @@ var Resource = function (param) {
 			return schedules.get(0);
 		};
 		
+		var _mdef = _getMDef()
+		
 		return {
 			/**
 			 * name of metric
@@ -3034,6 +3036,12 @@ var Resource = function (param) {
 			 */
 			name : param.name,
 			/**
+			 * data type of metric
+			 * @field
+			 * @type String
+			 */
+			dataType : String(_mdef.dataType),
+			/**
 			 * gets live value for metric
 			 * @type String
 			 * @returns String whatever the value is
@@ -3041,7 +3049,7 @@ var Resource = function (param) {
 			 */
 			getLiveValue : function() {
 				common.trace("Resource("+_res.id+").metrics.["+param.name+"].getLiveValue()");				
-				var defId = _getMDef().id;
+				var defId = _mdef.id;
 				var values = MeasurementDataManager.findLiveData(_res.id,[defId]).toArray()
 				// values is returned as set
 				if (values.length>0) {
