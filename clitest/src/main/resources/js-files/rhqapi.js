@@ -25,15 +25,15 @@
 // please follow http://code.google.com/p/jsdoc-toolkit/wiki/TagReference for adding correct tag
 
 /**
- * print function that recognizes arrays or JS objects (hashes) and prints each
- * item on new line, it produces JSON-like output (but NOT JSON)
+ * print function that recognizes arrays or JS objects (hashes) and prints each item on new line,
+ * it produces JSON-like output (but NOT JSON)
  */
 var p = function(object) {
 	println(new _common().objToString(object))
 };
 
-// Production steps of ECMA-262, Edition 5, 15.4.4.19
-// Reference: http://es5.github.com/#x15.4.4.19
+//Production steps of ECMA-262, Edition 5, 15.4.4.19
+//Reference: http://es5.github.com/#x15.4.4.19
 if (!Array.prototype.map) {
 	Array.prototype.map = function(callback, thisArg) {
 		var T, A, k;
@@ -128,7 +128,7 @@ var _common = function() {
 	 * enough information to restore the names of the list members.
 	 * <p>
 	 * Example: <br/>
-	 * 
+	 *
 	 * <pre><code>
 	 * {
 	 * 	simple : &quot;value&quot;,
@@ -142,7 +142,7 @@ var _common = function() {
 	 * 	} ]
 	 * }
 	 * </code></pre>
-	 * 
+	 *
 	 * gets converted to a configuration object: Configuration:
 	 * <ul>
 	 * <li> PropertySimple(name = "simple", value = "value")
@@ -253,7 +253,7 @@ var _common = function() {
 	/**
 	 * Opposite of <code>asConfiguration</code>. Converts an RHQ's
 	 * configuration object into a javascript hash.
-	 * 
+	 *
 	 * @param configuration
 	 * @param configuration
 	 *            definition - optional
@@ -351,14 +351,14 @@ var _common = function() {
 
 	/**
 	 * applies map of values to given configuration
-	 * 
+	 *
 	 * @param original -
 	 *            Configuration instance
 	 * @param definition -
 	 *            ConfigurationDefintion
 	 * @param values -
 	 *            map of values to be applied to configuration
-	 * 
+	 *
 	 * @return original Configuration object with applied values
 	 */
 	var _applyConfiguration = function(original,definition,values) {
@@ -386,24 +386,20 @@ var _common = function() {
 						propDef = definition.getPropertyDefinitions().get(key);
 					}
 
-					// this handles cases when we have property map, and it's
-					// children do not have configDefinition
+					// this handles cases when we have property map, and it's children do not have configDefinition
 					// so there may be just key/values
 
 					if (propDef==null && parent instanceof PropertyMap) {
 						propDef = new PropertyDefinitionSimple(key,"",false,PropertySimpleType.STRING);
 					}
-					// ignore properties which don't have property definition
-					// (this is legal state) // ignore properties which don't
-					// have property definition (this is legal state)
+					// ignore properties which don't have property definition (this is legal state)	// ignore properties which don't have property definition (this is legal state)
 					if (propDef==null) {
 						_warn("Unable to get PropertyDefinition for key="+key);
 						return;
 					}
 					// process all 3 possible types
 					if (propDef instanceof PropertyDefinitionSimple) {
-						// _trace("applyConfiguration(), creating simple
-						// property");
+						// _trace("applyConfiguration(), creating simple property");
 						prop = new PropertySimple(key, null);
 
 						if (value!=null) {
@@ -413,15 +409,13 @@ var _common = function() {
 							prop = new PropertySimple(key, new java.lang.String(value));
 						}
 					} else if (propDef instanceof PropertyDefinitionList) {
-						// _trace("applyConfiguration(), creating list
-						// property");
+						// _trace("applyConfiguration(), creating list property");
 						prop = new PropertyList(key);
 						for(var i = 0; i < value.length; ++i) {
 							arguments.callee(prop,propDef,"",value[i]);
 						}
 					} else if (propDef instanceof PropertyDefinitionMap) {
-						// _trace("applyConfiguration(), creating map
-						// property");
+						// _trace("applyConfiguration(), creating map property");
 						prop = new PropertyMap(propDef.name);
 						for (var i in value) {
 							if (value.hasOwnProperty(i)) {
@@ -565,11 +559,8 @@ var _common = function() {
 		 * @param conditionFunc -
 		 *            predicate waits until conditionFunc does return any
 		 *            defined value except for false
-		 * @param funcDelay -
-		 *            delay (seconds) which overwrites globally defined delay
-		 * @param funcTimeout -
-		 *            timeout (seconds) which overwrites globally defined
-		 *            timeout
+		 * @param funcDelay - delay (seconds) which overwrites globally defined delay
+		 * @param funcTimeout - timeout (seconds) which overwrites globally defined timeout 
 		 */
 		waitFor : function(conditionFunc,funcDelay,funcTimeout) {
 			var time = 0;
@@ -619,7 +610,7 @@ var _common = function() {
 		 * "addFilterInventoryStatus.InventoryStatus"+value.toUpperCase()+")"}}
 		 * so param key 'status' is processed by that returned string and this
 		 * string is evaluated on the 'criteria' object
-		 * 
+		 *
 		 * @param {Criteria}
 		 *            criteria - RHQ Criteria object
 		 * @param {Object}
@@ -682,7 +673,7 @@ var permissions = (function(){
 	var _allGlobalP = new Array();
 	var _allResourceP = new Array();
 	
-	// fill array with javascript strings
+	// fill array with javascript strings 
 	for(i in _globalPNat){
 		// make sure we have javascript string
 		_allGlobalP[i] = String(_globalPNat[i].toString());
@@ -696,33 +687,27 @@ var permissions = (function(){
 	var _allP = _allGlobalP.concat(_allResourceP); 
 
 	return{
-		/**
+		/** 
 		 * All available permission names
-		 * 
 		 * @public
 		 * @type String[]
 		 * @returns Array of all permission names
 		 */
 		all : _allP,
-		/**
-		 * All available global (global permissions do not apply to specific
-		 * resources in groups) permission names
-		 * 
+		/** 
+		 * All available global (global permissions do not apply to specific resources in groups) permission names
 		 * @public
 		 * @type String[]
 		 */
 		allGlobal : _allGlobalP,
-		/**
-		 * All available resource (resource permissions apply only to the
-		 * resources in the role's groups) permission names
-		 * 
+		/** 
+		 * All available resource (resource permissions apply only to the resources in the role's groups) permission names
 		 * @public
 		 * @type String[]
 		 */
 		allResource : _allResourceP,
-		/**
-		 * Prints names and types of all permissions
-		 * 
+		/** 
+		 * Prints names and types of all permissions 
 		 * @public
 		 */
 		printAllPermissions : function(){
@@ -735,7 +720,7 @@ var permissions = (function(){
 }) ();
 
 
-// roles
+//roles
 
 /**
  * @namespace provides access to roles
@@ -745,32 +730,24 @@ var roles = (function() {
 	
 	// all valid accepted parameters
 	var _validParams = ["description","name","permissions"];
-	/**
-	 * Checks if given parameter is part of valid parameters, throw an error
-	 * message otherwise
-	 * 
+	/** 
+	 * Checks if given parameter is part of valid parameters, throw an error message otherwise 
 	 * @private
-	 * @param {string}
-	 *            param parameter to check
-	 * @throws parameter
-	 *             is not valid
+	 * @param {string} param parameter to check
+	 * @throws parameter is not valid
 	 */
 	var _checkParam = function(param){
 		if(_validParams.indexOf(param) == -1){
         	throw "Parameter ["+param+"] is not valid, valid are : "+_validParams.valueOf();
 		}
 	};
-	/**
-	 * Sets up given native Role according to given parameters
-	 * 
+	/** 
+	 * Sets up given native Role according to given parameters 
 	 * @private
-	 * @param {org.rhq.core.domain.authz.Role}
-	 *            natRole native role to set up
-	 * @param {Object}
-	 *            params
+	 * @param {org.rhq.core.domain.authz.Role} natRole native role to set up
+	 * @param {Object} params
 	 * @returns {org.rhq.core.domain.authz.Role} prepared native role
-	 * @throws some
-	 *             of given parameters are not valid
+	 * @throws some of given parameters are not valid
 	 */
 	var _setUpNatRole = function(natRole,params){
 		for (var k in params) {
@@ -815,22 +792,18 @@ var roles = (function() {
 	}
 	
 	return {
-		/**
+		/** 
 		 * Creates a new role acorrding to given parameters.
-		 * 
 		 * @public
-		 * @param {Object}
-		 *            params - see roles.validParams for available params.
-		 * @example roles.createRole({name: "boss",description:"Role with all
-		 *          permissions.",permissions:permissions.all });
+		 * @param {Object} params - see roles.validParams for available params.
+		 * @example roles.createRole({name: "boss",description:"Role with all permissions.",permissions:permissions.all });
 		 * @returns {Role} a newly created role
 		 */
 		createRole : function(params){
 			params = params || {};
 			common.info("Creating a new role with following parameters: '"+common.objToString(params) +"'");
 			
-			// check permission names and prepare hash set with native
-			// permissions
+			// check permission names and prepare hash set with native permissions
 			if(params.permissions){
 				var permSet = new java.util.HashSet();
 				for(i in params.permissions){
@@ -849,12 +822,10 @@ var roles = (function() {
 
 			return new Role(role);
 		},
-		/**
+		/** 
 		 * Deletes given roles.
-		 * 
 		 * @public
-		 * @param {Array}
-		 *            roleNames - array with names of roles to delete
+		 * @param {Array} roleNames - array with names of roles to delete
 		 * @example roles.deleteRoles(["boss","guest"]);
 		 */
 		deleteRoles : function(roleNames){
@@ -870,31 +841,25 @@ var roles = (function() {
 				}
 			}
 		},
-		/**
+		/** 
 		 * Gets a given role. Returns found role or null.
-		 * 
 		 * @public
 		 * @function
-		 * @param {string}
-		 *            roleName - name of the role
+		 * @param {string} roleName - name of the role
 		 * @returns {Role} a found role or null
 		 */
 		getRole : _getRole,
-		/**
+		/** 
 		 * Finds all roles according to given parameters.
-		 * 
 		 * @public
 		 * @function
-		 * @param {Object}
-		 *            params - see RoleCriteria.addFilter[param] methods for
-		 *            available params
-		 * @returns Array of found roles.
+		 * @param {Object} params -  see RoleCriteria.addFilter[param] methods for available params
+		 * @returns  Array of found roles.
 		 * @type Role[]
 		 */
 		findRoles : _findRoles,
 		/**
 		 * Prints all valid accepted parameters
-		 * 
 		 * @public
 		 */
 		printValidParams : function(){
@@ -906,11 +871,9 @@ var roles = (function() {
 
 /**
  * Creates a new instance of Role
- * 
  * @class
  * @constructor
- * @param nativeRole
- *            {org.rhq.core.domain.authz.Role} native role
+ * @param nativeRole {org.rhq.core.domain.authz.Role} native role
  */
 var Role = function(nativeRole){
 	var common = new _common();
@@ -927,21 +890,18 @@ var Role = function(nativeRole){
 	return{
 		/**
 		 * Name of this role
-		 * 
 		 * @public
 		 * @field
 		 */
 		name : _name,
 		/**
 		 * Id of this role
-		 * 
 		 * @public
 		 * @field
 		 */
 		id : _id,
 		/**
 		 * Native role which this object abstracts.
-		 * 
 		 * @public
 		 * @field
 		 * @type org.rhq.core.domain.authz.Role
@@ -949,7 +909,6 @@ var Role = function(nativeRole){
 		nativeObj : _nativeRole,
 		/**
 		 * Returns array of all permissions this Role has.
-		 * 
 		 * @public
 		 * @returns {Array}
 		 */
@@ -971,32 +930,24 @@ var users = (function() {
 	
 	// all valid accepted parameters
 	var _validParams = ["department","emailAddress","factive","firstName","lastName","name","phoneNumber","roles"];
-	/**
-	 * Checks if given parameter is part of valid parameters, throw an error
-	 * message otherwise
-	 * 
+	/** 
+	 * Checks if given parameter is part of valid parameters, throw an error message otherwise 
 	 * @private
-	 * @param {string}
-	 *            param parameter to check
-	 * @throws parameter
-	 *             is not valid
+	 * @param {string} param parameter to check
+	 * @throws parameter is not valid
 	 */
 	var _checkParam = function(param){
 		if(_validParams.indexOf(param) == -1){
         	throw "Parameter ["+param+"] is not valid, valid are : "+_validParams.valueOf();
 		}
 	};
-	/**
-	 * Sets up given native Subject according to given parameters
-	 * 
+	/** 
+	 * Sets up given native Subject according to given parameters 
 	 * @private
-	 * @param {org.rhq.core.domain.auth.Subject}
-	 *            subject native subject to set up
-	 * @param {Object}
-	 *            params
+	 * @param {org.rhq.core.domain.auth.Subject} subject native subject to set up
+	 * @param {Object} params
 	 * @returns {org.rhq.core.domain.auth.Subject} prepared native subject
-	 * @throws some
-	 *             of given parameters are not valid
+	 * @throws some of given parameters are not valid
 	 */
 	var _setUpSubject = function(subject,params){
 		for (var k in params) {
@@ -1040,14 +991,11 @@ var users = (function() {
 	}
 	
 	return {
-		/**
+		/** 
 		 * Creates a new user acorrding to given parameters.
-		 * 
 		 * @public
-		 * @param {Object}
-		 *            params - see users.validParams for available params.
-		 * @param {string}
-		 *            password
+		 * @param {Object} params - see users.validParams for available params.
+		 * @param {string} password 
 		 * @example users.addUser({firstName:"John",lastName:"Rambo",name:"jrambo",password:"passw",roles:["boss","admin"]);
 		 * @returns {User} a newly created user
 		 */
@@ -1059,8 +1007,7 @@ var users = (function() {
 			}
 			
 			var roleNames = params.roles;
-			// fill it with native type, given roles will be added later using
-			// RoleManager
+			// fill it with native type, given roles will be added later using RoleManager
 			params.roles = new java.util.HashSet();
 		
 			var rawSubject = _setUpSubject(new Subject,params);
@@ -1074,12 +1021,10 @@ var users = (function() {
 
 			return user;
 		},
-		/**
+		/** 
 		 * Deletes given user.
-		 * 
 		 * @public
-		 * @param {String[]}
-		 *            userNames - array with names of users to delete
+		 * @param {String[]} userNames - array with names of users to delete
 		 * @example users.deleteUsers(["jrambo"]);
 		 */
 		deleteUsers : function(userNames){
@@ -1096,34 +1041,28 @@ var users = (function() {
 				}
 			}
 		},
-		/**
+		/** 
 		 * Finds all users according to given parameters.
-		 * 
 		 * @public
 		 * @function
-		 * @param {Object}
-		 *            params - see SubjectCriteria.addFilter[param] methods for
-		 *            available params
-		 * @returns Array of found users.
+		 * @param {Object} params -  see SubjectCriteria.addFilter[param] methods for available params
+		 * @returns  Array of found users.
 		 * @type Users[]
 		 */
 		findUsers : _findUsers,
-		/**
+		/** 
 		 * Gets a given user. Returns found user or null.
-		 * 
 		 * @public
 		 * @function
-		 * @param {string}
-		 *            userName - name of the user
+		 * @param {string} userName - name of the user
 		 * @returns {User} a found user or null
 		 */
 		getUser : _getUser,
 		/**
 		 * Gets all available users.
-		 * 
 		 * @public
 		 * @function
-		 * @returns Array of found users.
+		 * @returns  Array of found users.
 		 * @type User[]
 		 */
 		getAllUsers : function(){
@@ -1133,7 +1072,6 @@ var users = (function() {
 		},
 		/**
 		 * Prints all valid accepted parameters
-		 * 
 		 * @public
 		 */
 		printValidParams : function(){
@@ -1146,11 +1084,9 @@ var users = (function() {
 
 /**
  * Creates a new instance of User
- * 
  * @class
  * @constructor
- * @param nativeRole
- *            {org.rhq.core.domain.authz.Subject} native subject
+ * @param nativeRole {org.rhq.core.domain.authz.Subject} native subject
  */
 var User = function(nativeSubject){
 	var common = new _common();
@@ -1166,21 +1102,18 @@ var User = function(nativeSubject){
 	return{
 		/**
 		 * Id of this user
-		 * 
 		 * @public
 		 * @field
 		 */
 		id : _id,
 		/**
 		 * Name of this user
-		 * 
 		 * @public
 		 * @field
 		 */
 		name : _name,
 		/**
 		 * Native subject which this object abstracts.
-		 * 
 		 * @public
 		 * @field
 		 * @type org.rhq.core.domain.authz.Subject
@@ -1188,9 +1121,8 @@ var User = function(nativeSubject){
 		nativeObj : nativeSubject,
 		/**
 		 * Gets all roles assigned to this user.
-		 * 
 		 * @public
-		 * @returns Array of found roles.
+		 * @returns  Array of found roles.
 		 * @type Role[]
 		 */
 		getAllAssignedRoles : function(){
@@ -1201,11 +1133,8 @@ var User = function(nativeSubject){
 		},
 		/**
 		 * Assigns given roles to this user.
-		 * 
-		 * @public
-		 * @param {String[]}
-		 *            roleNames array of names of roles which will be assigned
-		 *            to this user
+		 * @public 
+		 * @param {String[]} roleNames array of names of roles which will be assigned to this user
 		 */
 		assignRoles : function(roleNames){
 			common.info("Assigning following roles '"+ common.objToString(roleNames) +"', to user '"+_name+"'");
@@ -1240,9 +1169,9 @@ var groups = (function() {
 
 	return {
 		/**
-		 * creates a org.rhq.domain.criteria.ResourceGroupCriteria object based
-		 * on given params
-		 * 
+		 * creates a org.rhq.domain.criteria.ResourceGroupCriteria object based on
+		 * given params
+		 *
 		 * @param {Obejct}
 		 *            params - criteria params
 		 * @returns ResourceGroupCriteria
@@ -1259,15 +1188,12 @@ var groups = (function() {
 		},
 		/**
 		 * finds resource groups by given params
-		 * 
-		 * @param {Object}
-		 *            params see ResourceGroupCriteria for available params
-		 *            There are also shortcuts for ENUM parameters: - you can
-		 *            use
-		 *            <ul>
-		 *            <li>{category:"platform"} insetead of
-		 *            {explicitResourceCategory:"ExplicitResourceCategory.PLATFORM"}</li>
-		 *            </ul>
+		 * @param {Object} params
+		 * see ResourceGroupCriteria for available params
+		 * There are also shortcuts for ENUM parameters: - you can use
+		 * <ul>
+		 *    <li>{category:"platform"} insetead of {explicitResourceCategory:"ExplicitResourceCategory.PLATFORM"}</li>
+		 *  </ul>
 		 * @type ResGroup[]
 		 */
 		find : function(params) {
@@ -1281,12 +1207,9 @@ var groups = (function() {
     /**
 	 * creates a new resource group. If all children are same type, COMPATIBLE
 	 * group is created
-	 * 
-	 * @param {String}
-	 *            name for a new group
-	 * @param {Resource[]}
-	 *            children - array of resources that represents content of this
-	 *            group
+	 *
+	 * @param {String} name for a new group
+	 * @param {Resource[]} children - array of resources that represents content of this group
 	 * @type ResGroup
 	 */
 		create : function(name,children) {
@@ -1450,26 +1373,22 @@ var ResGroup = function(param) {
 	return {
 		/**
 		 * gets ID of this group
-		 * 
 		 * @field
 		 */
 		id : _id,
 		/**
 		 * gets name of this group
-		 * 
 		 * @field
 		 */
 		name : _name,
 		/**
 		 * gets underlying ResourceGroup instance
-		 * 
 		 * @field
-		 * 
+		 *
 		 */
 		obj : _obj,
 		/**
 		 * returns ID of this group
-		 * 
 		 * @function
 		 * @type Number
 		 */
@@ -1483,10 +1402,7 @@ var ResGroup = function(param) {
 		},
 		/**
 		 * get explicit resources contained in this group
-		 * 
-		 * @param params -
-		 *            you can filter child resources same way as in
-		 *            {@link resources.find()} function
+		 * @param params - you can filter child resources same way as in {@link resources.find()} function
 		 * @returns array of explicit resources
 		 * @type Resrouce[]
 		 * @function
@@ -1494,29 +1410,23 @@ var ResGroup = function(param) {
 		resources : _resources,
 		/**
 		 * get implicit resources contained in this group
-		 * 
-		 * @param params -
-		 *            you can filter child resources same way as in
-		 *            {@link resources.find()} function
+		 * @param params - you can filter child resources same way as in {@link resources.find()} function
 		 * @returns array of implicit resources
 		 * @type Resrouce[]
 		 * @function
 		 */
 		resourcesImpl : _resourcesImpl,
 		/**
-		 * schedules operation on this group using cron expression. In contrast
-		 * to invokeOperation this is not blocking operation.
-		 * 
+		 * schedules operation on this group using cron expression. In contrast to invokeOperation this is 
+		 * not blocking operation.
+		 *
 		 * @param {String}
 		 *            name of operation (required)
-		 * 
-		 * @param {String}
-		 *            cronExpression (required)
+		 *            
+		 * @param {String} cronExpression (required)
 		 * @param {Object}
-		 *            opParams - hashmap for operation params (Configuration)
-		 *            (optional)
-		 * @example allAgents.scheduleOperationUsingCron("executeAvailabilityScan","5
-		 *          5 5 * * ?",{changesOnly:false});
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @example allAgents.scheduleOperationUsingCron("executeAvailabilityScan","5 5 5 * * ?",{changesOnly:false});
 		 */
 		scheduleOperationUsingCron : function(name,cronExpression,opParams) {
 			common.trace("Group("+_id+").scheduleOperationUsingCron(name="+name+", cronExpression="+cronExpression+
@@ -1543,15 +1453,13 @@ var ResGroup = function(param) {
 		 * @param {boolean}
 		 *            haltOnFailure (optional, default is true)
 		 * @param {Array}
-		 *            executionOrderResourceIds defines execution order
-		 *            (optional)
+		 *            executionOrderResourceIds defines execution order (optional)
 		 * @param {String}
 		 *            description (optional)
 		 * @param {Object}
-		 *            opParams - hashmap for operation params (Configuration)
-		 *            (optional)
-		 * @example allAgents.invokeOperation("executeAvailabilityScan");
-		 * 
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @example allAgents.invokeOperation("executeAvailabilityScan");                       
+		 *
 		 */
 		invokeOperation : function(name,haltOnFailure,executionOrderResourceIds,description,opParams){
 			var groupOpShedule = _scheduleOperation(name,0,0,0,0,haltOnFailure,executionOrderResourceIds,
@@ -1566,33 +1474,29 @@ var ResGroup = function(param) {
 			return ret;
 		},
 		/**
-		 * Schedules operation on this group. In contrast to invokeOperation
-		 * this is not blocking operation.
+		 * Schedules operation on this group. In contrast to invokeOperation this is 
+		 * not blocking operation.
 		 * 
 		 * @param {String}
 		 *            name of operation (required)
 		 * @param {int}
-		 *            delay of operation in seconds (optional, 0 is default)
+		 *            delay of operation in seconds (optional, 0 is default)       
 		 * @param {int}
-		 *            repeatInterval of operation in seconds (optional, 0 is
-		 *            default)
+		 *            repeatInterval of operation in seconds (optional, 0 is default)           
 		 * @param {int}
-		 *            repeatCount of operations (optional, 0 is default)
+		 *            repeatCount of operations (optional, 0 is default)           
 		 * @param {int}
-		 *            timeout of operation in seconds (optional, 0 is default)
+		 *            timeout of operation in seconds (optional, 0 is default)           
 		 * @param {boolean}
 		 *            haltOnFailure (optional, default is true)
 		 * @param {Array}
-		 *            executionOrderResourceIds defines execution order
-		 *            (optional)
+		 *            executionOrderResourceIds defines execution order (optional)
 		 * @param {String}
 		 *            description (optional)
 		 * @param {Object}
-		 *            opParams - hashmap for operation params (Configuration)
-		 *            (optional)
-		 * @example scheduleOperation("executeAvailabilityScan",10,10,10,0,true,null,"My
-		 *          description",{changesOnly:false});
-		 * 
+		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 * @example scheduleOperation("executeAvailabilityScan",10,10,10,0,true,null,"My description",{changesOnly:false});                       
+		 *
 		 */
 		scheduleOperation : function(name,delay,repeatInterval,repeatCount,timeout,
 				haltOnFailure,executionOrderResourceIds,description,opParams){
@@ -1600,22 +1504,20 @@ var ResGroup = function(param) {
 					haltOnFailure,executionOrderResourceIds,description,opParams);
 		},
 		/**
-		 * Returns Array with metric intervals of given metric for all resources
-		 * in this group.
+		 * Returns Array with metric intervals of given metric for all resources in this group.
 		 * 
 		 * @param {String}
-		 *            metricName
+		 *  		metricName 
 		 * 
 		 * @type {Array}
 		 * @returns Array with javascript objects (hashmap) with following keys:
-		 *          <ul>
-		 *          <li>id {String} - resource id</li>
-		 *          <li>interval {Number} - metric collection interval</li>
-		 *          <ul>
+		 * <ul>
+		 * <li>id {String} - resource id</li>
+		 * <li>interval {Number} - metric collection interval</li>
+		 * <ul>
 		 */
 		getMetricIntervals : function(metricName){
-			// TODO - for all metric methods - create inner Metric type like its
-			// done for Resource, compatible group checks, tests
+			// TODO - for all metric methods - create inner Metric type like its done for Resource, compatible group checks, tests
 			common.debug("Getting metric intervals for metric with name " + metricName);
 			var schedules = _getMetricSchedules(metricName);
 			var array = new Array();
@@ -1626,18 +1528,17 @@ var ResGroup = function(param) {
 			return array;
 		},
 		/**
-		 * Returns Array with metric statuses of given metric for all resources
-		 * in this group.
+		 * Returns Array with metric statuses of given metric for all resources in this group.
 		 * 
 		 * @param {String}
-		 *            metricName
+		 *  		metricName 
 		 * 
 		 * @type {Array}
 		 * @returns Array with javascript objects (hashmap) with following keys:
-		 *          <ul>
-		 *          <li>id {String} - resource id</li>
-		 *          <li>isEnabled {Boolean} - true when metric is enabled</li>
-		 *          <ul>
+		 * <ul>
+		 * <li>id {String} - resource id</li>
+		 * <li>isEnabled {Boolean} - true when metric is enabled</li>
+		 * <ul>
 		 */
 		getMetricStatuses : function(metricName){
 			common.debug("Getting metric statuses for metric with name " + metricName);
@@ -1650,11 +1551,10 @@ var ResGroup = function(param) {
 			return array;
 		},
 		/**
-		 * Returns true only if given metric is enabled on all resources in this
-		 * group
+		 * Returns true only if given metric is enabled on all resources in this group
 		 * 
 		 * @param {String}
-		 *            metricName
+		 *            metricName 
 		 */
 		isMetricEnabled : function(metricName){
 			var schedules = _getMetricSchedules(metricName);
@@ -1666,8 +1566,7 @@ var ResGroup = function(param) {
 			return true;
 		},
 		/**
-		 * Returns true only if given metric is disabled on all resources in
-		 * this group
+		 * Returns true only if given metric is disabled on all resources in this group
 		 * 
 		 * @param {String}
 		 *            metricName
@@ -1687,11 +1586,9 @@ var ResGroup = function(param) {
 
 /**
  * creates a new instance of Resource Type
- * 
- * @class
+ * @class 
  * @constructor
- * @param {org.rhq.core.domain.resource.ResourceType}
- *            rhqType
+ * @param {org.rhq.core.domain.resource.ResourceType} rhqType
  */
 var ResourceType = function(rhqType) {	
 	var _obj = rhqType;
@@ -1701,30 +1598,27 @@ var ResourceType = function(rhqType) {
 	return {
 		/**
 		 * resource type id
-		 * 
 		 * @type Number
 		 */
 		id : _obj.id,
 		/**
 		 * resource type name
-		 * 
 		 * @type String
 		 */
 		name: _obj.name,
 		/**
 		 * org.rhq.core.domain.resource.ResourceType instance
-		 * 
 		 * @type org.rhq.core.domain.resource.ResourceType
 		 */
 		obj: _obj,
 		/**
 		 * plugin name defining this resource type
-		 * 
 		 * @type String
 		 */
 		plugin: _obj.plugin,
 		/**
-		 * @function Returns default configuration for this resource type.
+		 * @function
+		 * Returns default configuration for this resource type.
 		 * 
 		 * @type hash
 		 * @return default configuration for this resource type as hash
@@ -1738,8 +1632,7 @@ var ResourceType = function(rhqType) {
 			}
 			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(_obj.id);
 			// TODO compare results with this approach:
-			// var conf =
-			// org.rhq.core.domain.configuration.ConfigurationUtility.createDefaultConfiguration(configDef);
+			// var conf = org.rhq.core.domain.configuration.ConfigurationUtility.createDefaultConfiguration(configDef);
 	
 			
 			return common.configurationAsHash(configuration,configDef);
@@ -1780,18 +1673,15 @@ var resourceTypes = (function() {
 			return criteria;
 		},
 		/**
-		 * @function Finds a resource type according to criteria params
-		 * @param params -
-		 *            filter params * There are also shortcuts for ENUM
-		 *            parameters: - you can use
-		 *            <ul>
-		 *            <li>{createDeletePolicy:"both"} insetead of
-		 *            {createDeletePolicy:"CreateDeletePolicy.BOTH"}</li>
-		 *            <li>{category:"platform"} instead of
-		 *            {category:"ResourceCategory.PLATTFORM"}</li>
-		 *            <li>{plugin:"Platforms"} instead of
-		 *            {pluginName:"Platforms"}</li>
-		 *            </ul>
+		 * @function
+		 * Finds a resource type according to criteria params
+		 * @param params - filter params
+		 * * There are also shortcuts for ENUM parameters: - you can use
+		 * <ul>
+		 *    <li>{createDeletePolicy:"both"} insetead of {createDeletePolicy:"CreateDeletePolicy.BOTH"}</li>
+		 *    <li>{category:"platform"} instead of {category:"ResourceCategory.PLATTFORM"}</li>
+		 *    <li>{plugin:"Platforms"} instead of {pluginName:"Platforms"}</li>
+		 *  </ul>
 		 * @type ResourceType[]
 		 * @return array of resource types
 		 */
@@ -1833,41 +1723,34 @@ var metricsTemplates = (function() {
 
   return {
     /**
-	 * @namespace metric template predicates
-	 */
+     * @namespace metric template predicates
+     */
     predicates: {
       /**
-		 * predicate that accepts metric definitions of CALLTIME DataType
-		 * 
-		 * @field
-		 */
+       * predicate that accepts metric definitions of CALLTIME DataType
+       * @field
+       */
       isCallTime: function(metricDef) { 
         return metricDef.dataType == DataType.CALLTIME;
       },
 
       /**
-		 * predicate that accepts metric definitions of MEASUREMENT DataType
-		 * 
-		 * @field
-		 */
+       * predicate that accepts metric definitions of MEASUREMENT DataType
+       * @field
+       */
       isNumeric: function(metricDef) {
         return metricDef.dataType == DataType.MEASUREMENT;
       }
     },
 
     /**
-	 * disables metrics
-	 * 
-	 * @public
-	 * @param {Object}
-	 *            params - query parameters for resource type, see
-	 *            {@link resourceTypes.find}
-	 * @param filter -
-	 *            filter function - see {@link metricsTemplates.predicates}
-	 * @example metricsTemplates.disable(resourceTypes.find({name: "server-b",
-	 *          plugin: "PerfTest"}), metricTemplates.predicates.isCallTime);
-	 * @example metricsTemplates.disable(resourceTypes.find());
-	 */
+     * disables metrics 
+     * @public
+     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param filter - filter function - see {@link metricsTemplates.predicates}
+     * @example metricsTemplates.disable(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), metricTemplates.predicates.isCallTime);
+     * @example metricsTemplates.disable(resourceTypes.find());
+     */
     disable: function(resTypes, filter) {
     	common.trace("metricsTemplates.disable(resTypes="+resTypes+",filter="+filter+")");
     	resTypes = fetchMetricDefs(resTypes);
@@ -1886,18 +1769,13 @@ var metricsTemplates = (function() {
     },
     
     /**
-	 * enables metrics
-	 * 
-	 * @public
-	 * @param {Object}
-	 *            params - query parameters for resource type, see
-	 *            {@link resourceTypes.find}
-	 * @param filter -
-	 *            filter function - see {@link metricsTemplates.predicates}
-	 * @example metricsTemplates.enable(resourceTypes.find({name: "server-b",
-	 *          plugin: "PerfTest"}), metricTemplates.predicates.isCallTime);
-	 * @example metricsTemplates.enable(resourceTypes.find());
-	 */
+     * enables metrics 
+     * @public
+     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param filter - filter function - see {@link metricsTemplates.predicates}
+     * @example metricsTemplates.enable(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), metricTemplates.predicates.isCallTime);
+     * @example metricsTemplates.enable(resourceTypes.find());
+     */
     enable: function(resTypes, filter) {
     	common.trace("metricsTemplates.enable(resTypes="+resTypes+",filter="+filter+")");
     	resTypes = fetchMetricDefs(resTypes);
@@ -1916,20 +1794,13 @@ var metricsTemplates = (function() {
     },
 
     /**
-	 * sets collection interval for metrics
-	 * 
-	 * @public
-	 * @param {Object}
-	 *            params - query parameters for resource type, see
-	 *            {@link resourceTypes.find}
-	 * @param interval -
-	 *            collection interval in seconds
-	 * @param filter -
-	 *            filter function - see {@link metricsTemplates.predicates}
-	 * @example metricsTemplates.setCollectionInterval(resourceTypes.find({name:
-	 *          "server-b", plugin: "PerfTest"}), 30,
-	 *          metricTemplates.predicates.isCallTime);
-	 */
+     * sets collection interval for metrics 
+     * @public
+     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param interval - collection interval in seconds
+     * @param filter - filter function - see {@link metricsTemplates.predicates}
+     * @example metricsTemplates.setCollectionInterval(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), 30, metricTemplates.predicates.isCallTime);
+     */
     setCollectionInterval: function(resTypes, interval, filter) {
     	common.trace("metricsTemplates.setCollectionInterval(resTypes="+resTypes+",interval="+interval+",filter="+filter+")");
     	resTypes = fetchMetricDefs(resTypes);
@@ -1997,7 +1868,6 @@ var DynaGroupDef = function(param) {
 		name : _obj.getName(),
 		/**
 		 * Returns groups managed by this group definition.
-		 * 
 		 * @type ResGroup[]
 		 */
 		getManagedGroups : function() {
@@ -2022,8 +1892,7 @@ var drifts = (function(){
 			cri.fetchResourceType(true);
 			var result = DriftTemplateManager.findTemplatesByCriteria(cri);
 		
-			// TODO: create and return javascript-only driftDefinitionTemplates
-			// type
+			// TODO: create and return javascript-only driftDefinitionTemplates type
 			return result;
 		},
 		findDriftDefinition : function(params){
@@ -2068,7 +1937,9 @@ var storageNodes = (function() {
 			return new Alert(x);
 		});
 	};
-	
+	/**
+	@lends storageNodes
+	*/
 	return {
 
 		/**
@@ -2119,20 +1990,18 @@ var StorageNode = function(param) {
 
 	
 	/**
-	 * @lends StorageNode.prototype
+	 *@lends StorageNode
 	 */
 	return {
 		/**
 		 * id of StorageNode
-		 * 
 		 * @field
 		 * @type String
-		 * 
+		 *  
 		 */
 		id : param.id,
 		/**
 		 * StorageNode instance
-		 * 
 		 * @field
 		 * @type StorageNode
 		 */
@@ -2140,91 +2009,73 @@ var StorageNode = function(param) {
 		
 		/**
 		 * JMXConnectionURL of StorageNode
-		 * 
 		 * @field
 		 * @type String
 		 */
 		JMXConnectionURL : param.JMXConnectionURL,
 		/**
 		 * address of StorageNode
-		 * 
 		 * @field
 		 * @type String
 		 */
 		address : param.address,
 		/**
 		 * cqlPort of StorageNode
-		 * 
 		 * @field
 		 * @type String
 		 */
 		cqlPort : param.cqlPort,
 		/**
 		 * ctime of StorageNode
-		 * 
 		 * @field
 		 * @type String
 		 */
 		ctime : param.ctime,
 		/**
 		 * jmxPort of StorageNode
-		 * 
 		 * @field
 		 * @type String
 		 */
 		jmxPort : param.jmxPort,
 		/**
 		 * mtime of StorageNode
-		 * 
 		 * @field
 		 * @type String
 		 */
 		mtime : param.mtime,
 		/**
 		 * operationMode of StorageNode
-		 * 
 		 * @field
 		 * @type String
 		 */
 		operationMode : param.operationMode,
 		/**
 		 * resource of StorageNode
-		 * 
 		 * @field
 		 * @type Resource
 		 */
 		resource : param.resource
-		
 
 	};
 };
 
-/**
- * @class
- * @constructor
- */
 var Alert = function(param){
-	/**
-	 * @lends Alert.prototype
-	 */
+	
 	return {
 		/**
 		 * id of Alert
-		 * 
 		 * @field
 		 * @type String
 		 */
 		id : param.id,
 		/**
 		 * AlertDefinition instance
-		 * 
 		 * @field
 		 * @type AlertDefinition
 		 */
 		alertDefinition: param.alertDefinition,
 		/**
 		 * alert notification logs
-		 * 
 		 * @field
 		 * @type String[]
 		 */
@@ -2252,7 +2103,9 @@ var alertDefinitions = (function() {
 			return new AlertDefinition(x);
 		});
 	};
-
+	/**
+	@lends alertDefinitions
+	*/
 	return {
 
 		/**
@@ -2318,7 +2171,7 @@ var AlertDefinition = function(param) {
 			 * 
 			 * @field
 			 */
-			id : _id,
+			id : param.id,
 			/**
 			 * Condition instance
 			 * 
@@ -2328,7 +2181,6 @@ var AlertDefinition = function(param) {
 			obj : _obj,
 			/**
 			 * threshold of condition
-			 * 
 			 * @field
 			 * @type String
 			 */
@@ -2342,14 +2194,12 @@ var AlertDefinition = function(param) {
 			name : param.name,
 			/**
 			 * comparator of condition
-			 * 
 			 * @field
 			 * @type String
 			 */
 			comparator : param.comparator,
 			/**
 			 * alertDefinition of condition
-			 * 
 			 * @field
 			 * @type AlertDefinition
 			 */
@@ -2357,7 +2207,6 @@ var AlertDefinition = function(param) {
 			alertDefinition : param.alertDefinition,
 			/**
 			 * triggerId of condition
-			 * 
 			 * @field
 			 * @type String
 			 */
@@ -2366,56 +2215,49 @@ var AlertDefinition = function(param) {
 		};
 
 	};
-	
-	var _conditions : function() {
-		common.trace("AlertDefinition(" + _id + ").conditions()");
-		var criteria = alertDefinitions.createCriteria({
-			id : _id
-		});
-		criteria.fetchConditions(true);
-		var result = AlertDefinitionManager
-				.findAlertDefinitionsByCriteria(criteria);
-		if (result.size() == 1 && result.get(0).conditions) {
-			result = result.get(0).conditions.toArray();
-			return result.map(function(x) {
-				return new Condition(x);
-			});
-		};
-		
-	}
 	/**
-	 * @lends AlertDefinition.prototype
+	 *@lends AlertDefinition
 	 */
 	return {
 		/**
 		 * id of AlertDefinition
-		 * 
 		 * @field
 		 * @type String
-		 * 
+		 *  
 		 */
 		id : _id,
 		/**
 		 * AlertDefinition instance
-		 * 
 		 * @field
 		 * @type AlertDefinition
 		 */
 		obj : _obj,
 		/**
 		 * name of AlertDefinition
-		 * 
 		 * @field
 		 * @type String
-		 * 
+		 *  
 		 */
 		name : param.name,
 		/**
 		 * gets conditions of AlertDefinition
-		 * 
-		 * @function
 		 */
-		conditions : _conditions
+		conditions : function() {
+			common.trace("AlertDefinition(" + _id + ").conditions()");
+			var criteria = alertDefinitions.createCriteria({
+				id : _id
+			});
+			criteria.fetchConditions(true);
+			var result = AlertDefinitionManager
+					.findAlertDefinitionsByCriteria(criteria);
+			if (result.size() == 1 && result.get(0).conditions) {
+				result = result.get(0).conditions.toArray();
+				return result.map(function(x) {
+					return new Condition(x);
+				});
+			};
+			
+		}
 
 	};
 };
@@ -2439,9 +2281,8 @@ var bundles = (function() {
   return {
 		/**
 		 * creates BundleCriteria object based on given params
-		 * 
-		 * @param {Object}
-		 *            params - filter parameters
+		 *
+		 * @param {Object} params - filter parameters
 		 * @ignore
 		 */
 	  	createCriteria : function(params) {
@@ -2452,25 +2293,20 @@ var bundles = (function() {
 		},
 		/**
 		 * finds bundles based on query parameters
-		 * 
-		 * @param {Object}
-		 *            params - hash of query params See BundleCriteria class for
-		 *            available params
+		 *
+		 * @param {Object} params - hash of query params
+		 * See BundleCriteria class for available params
 		 * @type Bundle[]
 		 * @function
-		 */
+	*/
     find : _find,
 		/**
 		 * creates a bundle
-		 * 
-		 * @param {String}
-		 *            dist - path to bundle distribution ZIP file or URL.
-		 * @param {String}
-		 *            username - basic HTTP auth username (use when 'dist' is
-		 *            URL)
-		 * @param {String}
-		 *            password - basic HTTP auth password (use when 'dist' is
-		 *            URL) If URL it must be reachable by RHQ server
+		 *
+		 * @param {String} dist - path to bundle distribution ZIP file or URL.
+		 * @param {String} username - basic HTTP auth username (use when 'dist' is URL) 
+		 * @param {String} password - basic HTTP auth password (use when 'dist' is URL)
+		 * If URL it must be reachable by RHQ server
 		 * @type Bundle
 		 */
     createFromDistFile : function(dist,username,password) {
@@ -2538,7 +2374,7 @@ var Bundle = function(param) {
 
 	// we define Bundle child classes as hidden types
 	  /**
-		 * @name Bundle-Destination
+	   *  @name Bundle-Destination
 		 * @class
 		 * @constructor
 		 */
@@ -2570,7 +2406,7 @@ var Bundle = function(param) {
 			},
       /**
 		 * reverts bundle deployment in this destination
-		 * 
+		 *
 		 * @param {boolean}
 		 *            isClean
 		 */
@@ -2618,7 +2454,6 @@ var Bundle = function(param) {
 		return {
 			/**
 			 * gets underlying BundleDeployment object
-			 * 
 			 * @field
 			 */
 			obj : _obj,
@@ -2657,13 +2492,11 @@ var Bundle = function(param) {
 		return {
 			/**
 			 * gets this ID
-			 * 
 			 * @field
 			 */
 			id : _id,
 			/**
 			 * gets underlying BundleVersion object
-			 * 
 			 * @field
 			 */
 			obj : _obj,
@@ -2674,9 +2507,7 @@ var Bundle = function(param) {
 				BundleManager.deleteBundleVersion(_id,false);
 			},
 			/**
-			 * returns all files contained in this version of bundle (not yet
-			 * implemented)
-			 * 
+			 * returns all files contained in this version of bundle (not yet implemented)
 			 * @return array of filenames contained
 			 * @type String[]
 			 */
@@ -2723,39 +2554,32 @@ var Bundle = function(param) {
 		toString : function() {return _bundle.toString();},
 		/**
 		 * returns Bundle destinations based on query params
-		 * 
+		 *
 		 * @function
-		 * @param {Object}params -
-		 *            filter See BundleResourceDeploymentCriteria class for
-		 *            available params There are also shortcuts for ENUM
-		 *            parameters: - you can use
-		 *            <ul>
-		 *            <li>{status:"success"} insetead of
-		 *            {BundleDeploymentStatus:"BundleDeploymentStatus.SUCCESS"}</li>
-		 *            </ul>
+		 * @param {Object}params - filter
+		 * See BundleResourceDeploymentCriteria class for available params
+		 * There are also shortcuts for ENUM parameters: - you can use
+		 * <ul>
+		 *    <li>{status:"success"} insetead of {BundleDeploymentStatus:"BundleDeploymentStatus.SUCCESS"}</li>
+		 *  </ul>
 		 * @type Bundle-Destination[]
 		 */
     destinations : _destinations,
 		/**
 		 * returns Bundle versions based on query params
-		 * 
+		 *
 		 * @function
-		 * @param {Object}
-		 *            params - filter See BundleVersionCriteria class for
-		 *            available params
+		 * @param {Object} params - filter
+		 * See BundleVersionCriteria class for available params
 		 * @type Bundle-Version[]
 		 */
 		versions : _versions,
     /**
 	 * deploys this bundle
-	 * 
-	 * @param {Bundle-Destination}
-	 *            destination - destination to be deployed to
-	 * @param {Object}
-	 *            params - map of input parameters required by bundle
-	 * @param {Bundle-Version|String}
-	 *            version - bundle version to be deployed, if null, latest
-	 *            version is used
+	 *
+	 * @param {Bundle-Destination} destination - destination to be deployed to
+	 * @param {Object} params - map of input parameters required by bundle
+	 * @param {Bundle-Version|String} version - bundle version to be deployed, if null, latest version is used
 	 * @type Bundle-Deployment
 	 */
 		deploy : function(destination,params,version) {
@@ -2806,21 +2630,14 @@ var Bundle = function(param) {
 		},
     /**
 	 * creates a Bundle destination
-	 * 
-	 * @param {ResGroup}
-	 *            group - must be COMPATIBLE and must contain resources
-	 *            supporting Bundle deployment
-	 * @param {String}
-	 *            name of new destination, if null, name is taken from group
-	 * @param {String}
-	 *            target - directory or path relative to `baseName` - if null,
-	 *            default is taken (this default defines ResourceType - so it
-	 *            will be based on baseName)
-	 * @param {String}
-	 *            baseName - name of property found in group's ResourceType will
-	 *            be used as base when constructing target deploy directory -
-	 *            can be null when group's ResourceType defines exactly 1
-	 *            baseName
+	 *
+	 * @param {ResGroup} group - must be COMPATIBLE and must contain resources supporting Bundle deployment
+	 * @param {String} name of new destination, if null, name is taken from group
+	 * @param {String} target - directory or path relative to `baseName` - if null,
+	 * default is taken (this default defines ResourceType - so it will be based on baseName)
+	 * @param {String} baseName - name of property found in group's ResourceType will
+	 * be used as base when constructing target deploy directory - can be null when
+	 * group's ResourceType defines exactly 1 baseName
 	 * @type Bundle-Destination
 	 */
 		createDestination : function(group,name,target,baseName) {
@@ -2895,9 +2712,8 @@ var resources = (function () {
 	return {
 		/**
 		 * creates ResourceCriteria object based on filter
-		 * 
-		 * @param {Object}
-		 *            params - query params
+		 *
+		 * @param {Object} params - query params
 		 * @ignore
 		 */
     createCriteria : function(params) {
@@ -2924,25 +2740,17 @@ var resources = (function () {
 		},
 		/**
 		 * finds resources in inventory
-		 * 
-		 * @param {Object}
-		 *            params - see ResourceCriteria.addFilter[param] methods for
-		 *            available params. There are also shortcuts for ENUM
-		 *            parameters: - you can use
-		 *            <ul>
-		 *            <li>{status:"new"} insetead of
-		 *            {InventoryStatus:"InventoryStatus.NEW"}</li>
-		 *            <li>{category:"platform"} instead of
-		 *            {ResourceCategory:"ResourceCategory.PLATTFORM"}</li>
-		 *            <li>{availability:"up"} instead of
-		 *            {AvailabilityType:"AvailabilityType.UP}</li>
-		 *            <li>{type:"RHQ Agent"} instead of {resourceTypeName:"RHQ
-		 *            Agent"}</li>
-		 *            </ul>
-		 * @example resources.find({type:"RHQ Agent",name:"RHQ
-		 *          Agent",availability:"down"});
-		 * @example resources.find({type:"JBoss AS7 Standalone
-		 *          Server",parentResourceId:12345});
+		 *
+		 * @param {Object} params - see ResourceCriteria.addFilter[param] methods for available params.
+		 * There are also shortcuts for ENUM parameters: - you can use
+		 * <ul>
+		 *    <li>{status:"new"} insetead of {InventoryStatus:"InventoryStatus.NEW"}</li>
+		 *    <li>{category:"platform"} instead of {ResourceCategory:"ResourceCategory.PLATTFORM"}</li>
+		 *    <li>{availability:"up"} instead of {AvailabilityType:"AvailabilityType.UP}</li>
+		 *    <li>{type:"RHQ Agent"} instead of {resourceTypeName:"RHQ Agent"}</li>
+		 *  </ul>
+		 * @example resources.find({type:"RHQ Agent",name:"RHQ Agent",availability:"down"});
+		 * @example resources.find({type:"JBoss AS7 Standalone Server",parentResourceId:12345});
 		 * @returns array of resources
 		 * @type Resource[]
 		 */
@@ -2956,7 +2764,7 @@ var resources = (function () {
 		    return common.pageListToArray(res).map(function(x){return new Resource(x);});
 		},
 		/**
-		 * 
+		 *
 		 * @returns array of platforms in inventory
 		 * @type Array
 		 */
@@ -2968,7 +2776,7 @@ var resources = (function () {
 		},
 		/**
 		 * returns 1st platform found based on given params or just nothing
-		 * 
+		 *
 		 * @type Resource
 		 */
 		platform : function(params) {
@@ -3017,7 +2825,7 @@ discoveryQueue = (function () {
 	    criteria = resources.createCriteria(params);
 	    common.info("Waiting until resources become COMMITTED");
 	    var committed = _waitForResources(criteria);
-	    // assertTrue(committed.size() > 0, "COMMITED resources size > 0");
+	    //assertTrue(committed.size() > 0, "COMMITED resources size > 0");
 	    // return only imported resources
 	    return common.pageListToArray(res).map(function(x){return new Resource(x);});
 	};
@@ -3033,9 +2841,8 @@ discoveryQueue = (function () {
 	return {
 		/**
 		 * lists discovery queue
-		 * 
-		 * @param {Object}
-		 *            params - filter
+		 *
+		 * @param {Object} params - filter
 		 * @returns Array of resources in discovery queue matching given filter
 		 * @type Resource[]
 		 */
@@ -3049,10 +2856,8 @@ discoveryQueue = (function () {
 		},
 		/**
 		 * lists discovery queue
-		 * 
 		 * @deprecated use find() instead
-		 * @param {Object}
-		 *            params - filter
+		 * @param {Object} params - filter
 		 * @returns Array of resources in discovery queue matching given filter
 		 * @type Resource[]
 		 */
@@ -3067,9 +2872,8 @@ discoveryQueue = (function () {
 	
 		/**
 		 * lists platforms from discovery queue
-		 * 
-		 * @param {Object}
-		 *            params - filter
+		 *
+		 * @param {Object} params - filter
 		 * @returns Array of platforms in discovery queue matching given filter
 		 * @type Resource[]
 		 * @function
@@ -3077,12 +2881,10 @@ discoveryQueue = (function () {
     listPlatforms : _listPlatforms,
     /**
 	 * imports platform by name
-	 * 
-	 * @param {String}
-	 *            name - platform name to be imported
-	 * @param {Booolean}
-	 *            children - if true (default) import also all child resources
-	 * @returns platform resource
+	 *
+	 * @param {String} name - platform name to be imported
+	 * @param {Booolean} children - if true (default) import also all child resources 
+   * @returns platform resource
 	 * @type Resource
 	 */
 		importPlatform : function(name, children) {
@@ -3116,9 +2918,8 @@ discoveryQueue = (function () {
 		},
     /**
 	 * imports resource
-	 * 
-	 * @param {Resource}
-	 *            resource or ID - to be imported
+	 *
+	 * @param {Resource} resource or ID - to be imported
 	 * @param {Booolean}
 	 *            children - if true (default) import also all child resources
 	 *            (if any)
@@ -3145,14 +2946,10 @@ discoveryQueue = (function () {
 		},
     /**
 	 * imports all resources found in discovery queue
-	 * 
-	 * @param param -
-	 *            filter resources being imported similar to
-	 *            {@link resources.find()}
+   * @param param - filter resources being imported similar to {@link resources.find()}
 	 * @type Resource[]
-	 * @function *
-	 * @example discovery.importResources() // import all resources in discovery
-	 *          queue
+	 * @function
+	 * 	 * @example discovery.importResources() // import all resources in discovery queue
 	 */
 		importResources : _importResources,
 	};
@@ -3160,12 +2957,9 @@ discoveryQueue = (function () {
 
 /**
  * creates a new instance of Resource
- * 
  * @class
  * @constructor
- * @param param
- *            {org.rhq.bindings.client.ResourceClientProxy|Number} proxy object
- *            or id
+ * @param param {org.rhq.bindings.client.ResourceClientProxy|Number} proxy object or id 
  */
 var Resource = function (param) {
 	var common = new _common();
@@ -3186,10 +2980,9 @@ var Resource = function (param) {
 	var _res = param;
 	
 	// we define a metric as an internal type
-	// TODO implement reading last metric value properly
+	//TODO implement reading last metric value properly
 	/**
 	 * creates a new instance of Metric
-	 * 
 	 * @class
 	 * @constructor
 	 * @name Metric
@@ -3237,7 +3030,6 @@ var Resource = function (param) {
 		return {
 			/**
 			 * name of metric
-			 * 
 			 * @lends Metric.prototype
 			 * @field
 			 * @type String
@@ -3245,14 +3037,12 @@ var Resource = function (param) {
 			name : param.name,
 			/**
 			 * data type of metric
-			 * 
 			 * @field
 			 * @type String
 			 */
 			dataType : String(_mdef.dataType),
 			/**
 			 * gets live value for metric
-			 * 
 			 * @type String
 			 * @returns String whatever the value is
 			 * 
@@ -3270,11 +3060,8 @@ var Resource = function (param) {
 			},
 			/**
 			 * enables/disables metric and sets its collection interval
-			 * 
-			 * @param enabled
-			 *            {Boolean} - enable or disable metric
-			 * @param interval
-			 *            {Number} - optinally set collection interval (seconds)
+			 * @param enabled {Boolean} - enable or disable metric
+			 * @param interval {Number} - optinally set collection interval (seconds)
 			 */
 			set : function(enabled,interval) {
 				common.trace("Resource("+_res.id+").metrics.["+param.name+"].set(enabled="+enabled+",interval="+interval+")");
@@ -3295,7 +3082,6 @@ var Resource = function (param) {
 			},
 			/**
 			 * gets actual metric collection interval
-			 * 
 			 * @type Number
 			 * @returns Number interval in milis
 			 */
@@ -3304,7 +3090,6 @@ var Resource = function (param) {
 			}, 
 			/**
 			 * returns true if this metrics is enabled, false otherwise
-			 * 
 			 * @type Boolean
 			 * @returns Boolean true if this metrics is enabled, false otherwise
 			 */
@@ -3427,8 +3212,7 @@ var Resource = function (param) {
 			};
 		};
 		common.debug("Waiting for result..");
-		sleep(3000); // trying to workaround
-						// https://bugzilla.redhat.com/show_bug.cgi?id=855674
+		sleep(3000); // trying to workaround https://bugzilla.redhat.com/show_bug.cgi?id=855674
 		var history = common.waitFor(pred);
 		if (!history) {
 			// timed out
@@ -3497,34 +3281,29 @@ var Resource = function (param) {
 
 	var _static =  {
 	  /**
-		 * gets resource ID
-		 * 
-		 * @type Number
-		 * @lends Resource.prototype
-		 */
+    * gets resource ID
+    * @type Number
+	  * @lends Resource.prototype
+	  */
     id : _id,
     /**
-	 * gets resource name
-	 * 
-	 * @type String
-	 */
+     * gets resource name
+     * @type String
+     */
     name : _name,
 	/**
-	 * enumerates metrics available for this resource, returned value is not an
-	 * array but a hash, where name is metric name without spaces
-	 * 
-	 * @example resource.metrics.totalSwapSpace // get's a metric called 'Total
-	 *          Swap Space'
+	 * enumerates metrics available for this resource, returned value is not an array but a hash,
+	 * where name is metric name without spaces
+	 * @example resource.metrics.totalSwapSpace // get's a metric called 'Total Swap Space'
 	 * @type Metric[]
 	 * @field
 	 */
     metrics : _metrics,
     /**
-	 * gets a metric by it's name
-	 * 
-	 * @example resource.getMetric("Total Swap Space")
-	 * @type Metric
-	 */
+     * gets a metric by it's name
+     * @example resource.getMetric("Total Swap Space")
+     * @type Metric
+     */
     getMetric : function(name) {
     	common.trace("Resource("+_id+").getMetric("+name+")");
     	var key = _shortenMetricName(name);
@@ -3536,50 +3315,46 @@ var Resource = function (param) {
     	}
     },
     /**
-	 * gets resource ID
-	 * 
-	 * @type Number
-	 */
+    * gets resource ID
+	  * @type Number
+	  */
     
     getId : function() {return _id;},
     /**
-	 * gets resource String representation
-	 * 
-	 * @type String
-	 */
+    * gets resource String representation
+    * @type String
+    */
 	toString : function() {return _res.toString();},
     /**
-	 * gets resource name
-	 * 
-	 * @type String
-	 */
+	  * gets resource name
+	  * @type String
+	  */
     getName : function() {return _getName();},
     /**
-	 * gets resource type id
-	 * 
-	 * @type Number
-	 */
+	  * gets resource type id
+	  * @type Number
+	  */
     getResourceTypeId : function(){
     	return _res.resourceType.id;
     },
 	  /**
-		 * @returns Resource proxy object
-		 */
+	  * @returns Resource proxy object
+	  */
     getProxy : function() {
 			common.trace("Resource("+_id+").getProxy()");
 			return ProxyFactory.getResource(_id);
 		},
     /**
-	 * @returns parent resource
-	 * @type Resource
-	 */
+	  * @returns parent resource
+	  * @type Resource
+	  */
 		parent : function() {
 			common.trace("Resource("+_id+").parent()");
 			return _parent();
 		},
 		/**
 		 * removes/deletes this resource from inventory.
-		 * 
+		 *
 		 * @returns true if resource no longer exists in inventory, false
 		 *          otherwise
 		 * @type Boolean
@@ -3637,10 +3412,7 @@ var Resource = function (param) {
 		},
 		/**
 		 * get's child resources
-		 * 
-		 * @param {Object}
-		 *            params - you can filter child resources same way as in
-		 *            {@link resources.find()} function
+		 * @param {Object} params - you can filter child resources same way as in {@link resources.find()} function
 		 * @returns array of child resources
 		 * @type Resource[]
 		 */
@@ -3652,10 +3424,7 @@ var Resource = function (param) {
 		},
 		/**
 		 * gets child resource by given params
-		 * 
-		 * @param {Object}
-		 *            params - you can filter child resources same way as in
-		 *            {@link resources.find()} function
+		 * @param {Object} params - you can filter child resources same way as in {@link resources.find()} function
 		 * @returns first matching child resource found
 		 * @type Resource
 		 */
@@ -3670,14 +3439,11 @@ var Resource = function (param) {
 		},
 		/**
 		 * updates configuration of this resource. You can either pass whole
-		 * configuration (retrieved by {@link Resource.getConfiguration()}) or
-		 * only params that needs to be changed
-		 * 
-		 * @example // to switch agent resource to ssl socket
-		 *          agent.updateConfiguration({'rhq.communications.connector.transport':'sslsocket'});
-		 * @param {Object}
-		 *            params - new configuration parameters, partial
-		 *            configuration is supported
+		 * configuration (retrieved by {@link Resource.getConfiguration()}) or only params that
+		 * needs to be changed
+     * @example // to switch agent resource to ssl socket
+     * agent.updateConfiguration({'rhq.communications.connector.transport':'sslsocket'});
+		 * @param {Object} params - new configuration parameters, partial configuration is supported
 		 * @returns True if configuration was updated
 		 * @type Boolean
 		 */
@@ -3726,9 +3492,8 @@ var Resource = function (param) {
 		},
 		/**
 		 * retrieves LIVE configuration of this resource
-		 * 
-		 * @returns live configuration or null if it is not available (ressource
-		 *          is DOWN or UNKNOWN)
+		 *
+		 * @returns live configuration or null if it is not available (ressource is DOWN or UNKNOWN)
 		 * @type Object
 		 */
 		getConfiguration : function() {
@@ -3739,7 +3504,7 @@ var Resource = function (param) {
 		},
 		/**
 		 * retrieves plugin configuration for this resource
-		 * 
+		 *
 		 * @returns
 		 * @type Object
 		 */
@@ -3751,29 +3516,20 @@ var Resource = function (param) {
 		},
 		/**
 		 * creates a new child resource
-		 * 
-		 * @param {Object}
-		 *            params can contain following: -
-		 *            <ul>
-		 *            <li>name [String] (required)- name for a new resource
-		 *            child, name is optional when `content` is provided</li>
-		 *            <li>type [String] (required) - resource type name to be
-		 *            created (exact name, not just filter)</li>
-		 *            <li>config [Object] (optional) - configuration map for
-		 *            new resource, if not present, default is taken</li>
-		 *            <li>pluginConfig [Object] (optional) - plugin
-		 *            configuration for new resource, if not present, default is
-		 *            taken (NOT YET IMPLEMENTED)</li>
-		 *            <li>content [String] (optional) - absolute path for
-		 *            resource's content file (typical for deployments)</li>
-		 *            <li>version [String] (optional) - version string</li>
+		 *
+		 * @param {Object} params can contain following: -
+		 * <ul>
+		 * <li>name [String] (required)- name for a new resource child, name is optional when `content` is provided</li>
+		 * <li>type [String] (required) - resource type name to be created (exact name, not just filter)</li>
+		 * <li>config [Object] (optional) - configuration map for new resource, if not present, default is taken</li>
+		 * <li>pluginConfig [Object] (optional) - plugin configuration for new resource, if not present, default is taken (NOT YET IMPLEMENTED)</li>
+		 * <li>content [String] (optional) - absolute path for resource's content file (typical for deployments)</li>
+		 * <li>version [String] (optional) - version string</li>
 		 * @example // create a deployment child on JBoss AS7
-		 *          as.createChild({name:"hello.war",type:"Deployment",content:"/tmp/hello.war"});
-		 * @example // create a network interface with configuration on JBoss
-		 *          AS7 as.createChild({name:"testinterface",type:"Network
-		 *          Interface",config:{"inet-address":"127.0.0.1","any-address":false}});
-		 * @returns new resource if it was successfully created and discovered,
-		 *          null otherwise
+     * as.createChild({name:"hello.war",type:"Deployment",content:"/tmp/hello.war"});
+		 * @example // create a network interface with configuration on JBoss AS7
+     * as.createChild({name:"testinterface",type:"Network Interface",config:{"inet-address":"127.0.0.1","any-address":false}});
+     * @returns new resource if it was successfully created and discovered, null otherwise
 		 * @type Resource
 		 */
 		createChild : function(params) {
@@ -3883,8 +3639,7 @@ var Resource = function (param) {
 				common.trace("Searching for CreateChildResourceHistory. Res id: "+_id+", startTime: "+new Date(startTime)+
 						", actualDateMilis: "+new Date(actualDateMilis));
 				var histories = ResourceFactoryManager.findCreateChildResourceHistory(_id,startTime,actualDateMilis,pageControl);
-				// TODO check this on other relevant parts or use time from
-				// server
+				//TODO check this on other relevant parts or use time from server
 				if(histories.size() == 0){
 					common.warn("No history found inside given range. The cause of this could be that time" +
 							" on machine witch CLI client and on machine with RHQ server is not synchronised.");
@@ -3941,20 +3696,18 @@ var Resource = function (param) {
 		/**
 		 * invokes operation on resource, operation status is polled 'till
 		 * timeout is reached or operation finishes
-		 * 
+		 *
 		 * @param {String}
 		 *            name of operation (required)
 		 * @param {Object}
-		 *            params - hashmap for operation params (Configuration)
-		 *            (optional)
+		 *            params - hashmap for operation params (Configuration) (optional)
 		 * @type {Object}
 		 * @returns javascript object (hashmap) with following keys:
-		 *          <ul>
-		 *          <li>status {String} - operation status
-		 *          <li>
-		 *          <li>error {String} - operation error message</li>
-		 *          <li>result {Object} - result configuration</li>
-		 *          <ul>
+		 * <ul>
+		 * <li>status {String} - operation status<li>
+		 * <li>error {String} - operation error message</li>
+		 * <li>result {Object} -  result configuration</li>
+		 * <ul>
 		 */
 		invokeOperation : function(name,params) {
 			common.trace("Resource("+_id+").invokeOperation(name="+name+",params={"+common.objToString(params)+"})");
@@ -3973,21 +3726,17 @@ var Resource = function (param) {
 			return ret;
 		},
 		/**
-		 * schedules operation on resource. In contrast to invokeOperation this
-		 * is not blocking (synchronous) operation.
-		 * 
+		 * schedules operation on resource. In contrast to invokeOperation this is
+		 * not blocking (synchronous) operation.
+		 *
 		 * @param {String}
 		 *            name of operation (required)
-		 * 
-		 * @param {long}
-		 *            delay delay in seconds (required)
-		 * @param {long}
-		 *            repeatInterval repeatInterval in seconds (required)
-		 * @param {int}
-		 *            repeatCount repeatCount in seconds (required)
+		 *            
+		 * @param {long} delay delay in seconds (required)
+		 * @param {long} repeatInterval repeatInterval in seconds (required)
+		 * @param {int} repeatCount repeatCount in seconds (required)
 		 * @param {Object}
-		 *            opParams - hashmap for operation params (Configuration)
-		 *            (optional)
+		 *            opParams - hashmap for operation params (Configuration) (optional)
 		 */
 		scheduleOperation : function(name,delay,repeatInterval,repeatCount,opParams) {
 			common.trace("Resource("+_id+").scheduleOperation(name="+name+", delay="
@@ -4007,17 +3756,15 @@ var Resource = function (param) {
 			common.info("Operation '"+name+"' scheduled");
 		},
 		/**
-		 * schedules operation on resource using crone expression. In contrast
-		 * to invokeOperation this is not blocking (synchronous) operation.
-		 * 
+		 * schedules operation on resource using crone expression. In contrast to invokeOperation this is 
+		 * not blocking (synchronous) operation.
+		 *
 		 * @param {String}
 		 *            name of operation (required)
-		 * 
-		 * @param {String}
-		 *            cronExpression (required)
+		 *            
+		 * @param {String} cronExpression (required)
 		 * @param {Object}
-		 *            opParams - hashmap for operation params (Configuration)
-		 *            (optional)
+		 *            opParams - hashmap for operation params (Configuration) (optional)
 		 */
 		scheduleOperationUsingCron : function(name,cronExpression,opParams) {
 			common.trace("Resource("+_id+").scheduleOperationUsingCron(name="+name+", cronExpression="+cronExpression+
@@ -4033,24 +3780,23 @@ var Resource = function (param) {
 		},
 		/**
 		 * Waits until operation is finished or timeout is reached.
-		 * 
+		 *
 		 * @param resOpShedule
-		 *            may be null, than the most recent job for this resource is
-		 *            picked
+		 *            may be null, than the most recent job for this resource
+		 *            is picked
 		 * @returns operation history
 		 * @function
 		 */
 		waitForOperationResult : _waitForOperationResult,
 		/**
-		 * Checks that given operation with given parameters is valid on this
-		 * resource. Default parameters are used when ommited.
-		 * 
+		 * Checks that given operation with given parameters is valid on this resource.
+		 * Default parameters are used when ommited.
+		 *
 		 * @param {String}
 		 *            name of operation (required)
-		 * 
+		 *            
 		 * @param {Object}
-		 *            opParams - hashmap for operation params (Configuration)
-		 *            (optional)
+		 *            opParams - hashmap for operation params (Configuration) (optional)
 		 * @returns checked configuration
 		 */
 		checkOperation : function(name, opParams){
@@ -4062,7 +3808,7 @@ var Resource = function (param) {
 		},
 		/**
 		 * checks whether resource exists in inventory
-		 * 
+		 *
 		 * @returns bool
 		 * @type Boolean
 		 */
@@ -4072,14 +3818,14 @@ var Resource = function (param) {
 		},
 		/**
 		 * returns true if availability == UP
-		 * 
+		 *
 		 * @function
 		 * @type Boolean
 		 */
 		isAvailable : _isAvailable,
 		/**
 		 * wait's until resource becomes UP or timeout is reached
-		 * 
+		 *
 		 * @returns true if resource became or is available, false otherwise
 		 * @type Boolean
 		 */
@@ -4093,7 +3839,7 @@ var Resource = function (param) {
 		},
 		/**
 		 * wait's until resource becomes DOWN or timeout is reached
-		 * 
+		 *
 		 * @returns true if resource became or is DOWN, false otherwise
 		 * @type Boolean
 		 */
@@ -4107,7 +3853,7 @@ var Resource = function (param) {
 		},
 		/**
 		 * unimports resource
-		 * 
+		 *
 		 * @returns true if resource is dos no longer exist in inventory, false
 		 *          otherwise
 		 * @type Boolean
@@ -4115,8 +3861,7 @@ var Resource = function (param) {
 		uninventory : function() {
 			common.trace("Resource("+_id+").uninventory()");
 			
-			// this is a workaround for
-			// https://bugzilla.redhat.com/show_bug.cgi?id=830158
+			// this is a workaround for https://bugzilla.redhat.com/show_bug.cgi?id=830158
 			var result = common.waitFor(function (){
 				try{
 					ResourceManager.uninventoryResources([_id]);
@@ -4187,14 +3932,10 @@ var delay = 5;
 var timeout = 120;
 
 /**
- * initializes verbosity and timeouts
- * 
- * @param verb -
- *            verbosity
- * @param dlay -
- *            delay
- * @param tout -
- *            total timeout
+ *  initializes verbosity and timeouts
+ *  @param verb - verbosity
+ *  @param dlay - delay
+ *  @param tout - total timeout
  */
 initialize = function(verb,dlay,tout) {
 		verbose = verb;
