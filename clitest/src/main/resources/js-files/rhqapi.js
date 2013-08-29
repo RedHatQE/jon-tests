@@ -1990,7 +1990,7 @@ var StorageNode = function(param) {
 
 	
 	/**
-	 *@lends StorageNode
+	 *@lends StorageNode.prototype
 	 */
 	return {
 		/**
@@ -2216,7 +2216,7 @@ var AlertDefinition = function(param) {
 
 	};
 	/**
-	 *@lends AlertDefinition
+	 *@lends AlertDefinition.prototype
 	 */
 	return {
 		/**
