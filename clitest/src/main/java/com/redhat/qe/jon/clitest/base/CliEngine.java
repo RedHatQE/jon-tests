@@ -13,7 +13,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,7 +27,7 @@ import com.redhat.qe.jon.clitest.tasks.CliTasks;
 import com.redhat.qe.jon.clitest.tasks.CliTasksException;
 import com.redhat.qe.jon.common.util.WebUtils;
 
-public class CliEngine extends CliTestScript{
+public class CliEngine extends CliTestScript {
 	private static Logger _logger = Logger.getLogger(CliEngine.class.getName());
 	public static String cliShLocation;
 	public static String rhqCliJavaHome;
@@ -41,9 +43,10 @@ public class CliEngine extends CliTestScript{
 	 * this handles console output of latest test run
 	 */
 	protected String consoleOutput;
-	
-	private String jsFileName;
-	private static String remoteFileLocation = "/tmp/";
+	/**
+	 * a list of filenames created during test execution that will be deleted AfterTest
+	 */
+	private List<String> tempFiles = new Vector<String>();
 	
 	public static boolean isVersionSet = false;
 		
@@ -74,7 +77,7 @@ public class CliEngine extends CliTestScript{
 		}
 		while (resources.hasMoreElements()) {
 		    URL el = resources.nextElement();
-		    _logger.fine("Found "+el.getFile());
+		    _logger.finer("Found "+el.getFile());
 		    if (new File(el.getFile()).exists()) {
 			candidate = el;
 		    }
@@ -82,7 +85,7 @@ public class CliEngine extends CliTestScript{
 		if (candidate==null) {
 		    candidate = getClass().getClassLoader().getResources(path).nextElement();
 		}
-		_logger.fine("Returning "+candidate.getFile()); 
+		_logger.finer("Returning "+candidate.getFile()); 
 		return candidate; 
 		
 	    } catch (IOException e) {
@@ -94,7 +97,7 @@ public class CliEngine extends CliTestScript{
 		if (path.startsWith("http://") || path.startsWith("https://")) {
 			try {
 				File file = File.createTempFile("temp", ".js");
-				file.deleteOnExit();
+				tempFiles.add(file.getAbsolutePath());
 				cliTasks.runCommand("wget -nv --no-check-certificate '"+path+"' -O "+file.getAbsolutePath()+" 2>&1");
 				return file.getAbsolutePath();
 			} catch (IOException e) {
@@ -125,7 +128,7 @@ public class CliEngine extends CliTestScript{
 		try {
 		    _logger.fine("Copying resource "+resource.getFile()+" from JAR");
 		    File file = File.createTempFile("temp", ".tmp");
-		    file.deleteOnExit();
+		    tempFiles.add(file.getAbsolutePath());
 		    InputStream is = resource.openStream();
 		    OutputStream os = new FileOutputStream(file);
 		    final byte[] buf = new byte[1024];
@@ -168,12 +171,12 @@ public class CliEngine extends CliTestScript{
 			prepareResources(resSrc, resDst);
 		}
 		String jsFilePath = getResourceFileName(jsFile);
-		jsFileName = new File(jsFilePath).getName();
-		
+		String targetFile = cliTasks.runCommand("mktemp").trim();
+		tempFiles.add(targetFile);
 		// upload JS file to remote host first
-		cliTasks.copyFile(jsFilePath, remoteFileLocation);
+		cliTasks.copyFile(jsFilePath, new File(targetFile).getParent(), new File(targetFile).getName());
 		if (jsDepends!=null) {
-			prepareDependencies(jsFile, jsDepends,jsFilePath);
+			prepareDependencies(jsFile, jsDepends,jsFilePath, targetFile);
 		}
 		
 		String command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
@@ -188,7 +191,7 @@ public class CliEngine extends CliTestScript{
 				command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
 			}
 		}
-		command += CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+remoteFileLocation+jsFileName;
+		command += CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+targetFile;
 		if(cliArgs != null){
 			command +=" "+cliArgs;
 		}
@@ -239,6 +242,7 @@ public class CliEngine extends CliTestScript{
 	    String expectedResult, String makeFilure, String jsDepends,
 	    String resSrc, String resDst) throws IOException, CliTasksException {
 	File tempFile = File.createTempFile("snippet", "js");
+	tempFiles.add(tempFile.getAbsolutePath());
 	PrintWriter pw = new PrintWriter(tempFile);
 	pw.println(snippet);
 	pw.close();
@@ -311,34 +315,38 @@ public class CliEngine extends CliTestScript{
 	}
     }
 
-	protected void prepareDependencies(String jsFile, String jsDepends, String mainJsFilePath)
+	protected void prepareDependencies(String jsFile, String jsDepends, String mainJsFilePath, String targetFile)
 			throws IOException, CliTasksException {
 		int longestDepNameLength=0;
 		Map<String,Integer> lines = new LinkedHashMap<String, Integer>(); 
 		_logger.info("Preparing JS file depenencies ... "+jsDepends);
+		String tmpDeps = cliTasks.runCommand("mktemp").trim();
 		for (String dependency : jsDepends.split(",")) {
 			if (dependency.length()>longestDepNameLength) {
 				longestDepNameLength = dependency.length();
 			}
 			String jsFilePath = getResourceFileName(dependency);
 			lines.put(dependency, getFileLineCount(jsFilePath));
-			cliTasks.copyFile(jsFilePath, remoteFileLocation, "_tmp.js");
+			String tempFile = cliTasks.runCommand("mktemp").trim();
+			cliTasks.copyFile(jsFilePath, new File(tempFile).getParent(), new File(tempFile).getName());
 			// as CLI does not support including, we must merge the files manually
-			cliTasks.runCommand("cat "+remoteFileLocation+"_tmp.js >> "+remoteFileLocation+"_deps.js");
+			cliTasks.runCommand("cat "+tempFile+" >> "+tmpDeps);
+			cliTasks.runCommand("rm -f "+tempFile);
 		}
-		cliTasks.runCommand("rm "+remoteFileLocation+"_tmp.js");
 		// finally merge main jsFile		
-		cliTasks.runCommand("cat "+remoteFileLocation+jsFileName+" >> "+remoteFileLocation+"_deps.js && mv "+remoteFileLocation+"_deps.js "+remoteFileLocation+jsFileName);			
+		cliTasks.runCommand("cat "+targetFile+" >> "+tmpDeps+" && mv "+tmpDeps+" "+targetFile);
 		_logger.info("JS file depenencies ready");
-		_logger.info("Output file has been merged from JS files as follows:");
-		int current = 0;
+
 		lines.put(jsFile, getFileLineCount(mainJsFilePath));
 		if (jsFile.length()>longestDepNameLength) {
 			longestDepNameLength = jsFile.length();
 		}
+		_logger.info("Output file has been merged from JS files as follows:");
 		_logger.info("===========================");
+		int current = 0;
 		for (String dep : lines.keySet()) {
-			_logger.info("JS File: "+dep+createSpaces(longestDepNameLength-dep.length())+" lines: "+current+" - "+(current+lines.get(dep)));
+		    	String message = "JS File: "+dep+createSpaces(longestDepNameLength-dep.length())+" lines: "+current+" - "+(current+lines.get(dep));
+			_logger.info(message);
 			current+=lines.get(dep)+1;
 		}
 		_logger.info("===========================");
@@ -361,12 +369,15 @@ public class CliEngine extends CliTestScript{
 	}
 	
 	@AfterTest
-	public void deleteJSFile(){
+	public void deleteJSFiles(){
+	    for (String tmpFile : tempFiles) {
 		try {
-			CliTasks.getCliTasks().runCommand("rm -rf '"+remoteFileLocation+jsFileName+"'", 1000*60*3);
+			CliTasks.getCliTasks().runCommand("rm -f "+tmpFile);
 		} catch (CliTasksException ex) {
 			_logger.log(Level.WARNING, "Exception on remote File deletion!, ", ex);
 		}
+	    }
+	    tempFiles.clear();
 	}
 	private String createSpaces(int length) {
 		StringBuilder sb = new StringBuilder();
