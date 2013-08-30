@@ -877,8 +877,10 @@ var roles = (function() {
  */
 var Role = function(nativeRole){
 	var common = new _common();
-	nativeRole = nativeRole || {};
 	common.debug("Creating an abstract role: " + nativeRole);
+	if (!nativeRole) {
+		throw "org.rhq.core.domain.authz.Role parameter is required";
+	}
 	
 	var _nativeRole = nativeRole;
 	var _name = _nativeRole.getName();
@@ -1090,8 +1092,10 @@ var users = (function() {
  */
 var User = function(nativeSubject){
 	var common = new _common();
-	nativeSubject = nativeSubject || {};
 	common.debug("Creating following abstract user: " + nativeSubject );
+	if (!nativeSubject) {
+		throw "org.rhq.core.domain.authz.Subject parameter is required";
+	}
 	
 	var _id = nativeSubject.getId();
 	var _name = nativeSubject.getName();
@@ -1591,6 +1595,9 @@ var ResGroup = function(param) {
  * @param {org.rhq.core.domain.resource.ResourceType} rhqType
  */
 var ResourceType = function(rhqType) {	
+	if (!rhqType) {
+		throw "org.rhq.core.domain.resource.ResourceType parameter is required";
+	}
 	var _obj = rhqType;
     /**
 	 * @lends ResourceType.prototype
@@ -1618,24 +1625,17 @@ var ResourceType = function(rhqType) {
 		plugin: _obj.plugin,
 		/**
 		 * @function
-		 * Returns default configuration for this resource type.
+		 * Returns default configuration for this resource type as hash.
 		 * 
 		 * @type hash
 		 * @return default configuration for this resource type as hash
 		 */
 		getDefaultConfiguration : function(){
 			common.trace("resourceType.getDefaultConfiguration()");
-			var configuration = new Configuration();
-	    	var template = _obj.resourceConfigurationDefinition.defaultTemplate;
-			if (template) {
-				configuration = template.createConfiguration();
-			}
 			var configDef = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(_obj.id);
-			// TODO compare results with this approach:
-			// var conf = org.rhq.core.domain.configuration.ConfigurationUtility.createDefaultConfiguration(configDef);
-	
+			var conf = org.rhq.core.domain.configuration.ConfigurationUtility.createDefaultConfiguration(configDef);
 			
-			return common.configurationAsHash(configuration,configDef);
+			return common.configurationAsHash(conf,configDef);
 		}
 	};
 };
@@ -1822,21 +1822,107 @@ var metricsTemplates = (function() {
 
 
 /**
- * @namespace provides access to dynamic group definitions
+ * @namespace Provides access to dynamic group definitions
  */
-var dynaGroupDefs = (function(){
+var dynaGroupDefinitions = (function(){
 	var common = new _common();
 	
-	return{
-		findDynaGroupDefinitions : function(params){
-			params = params || {};
-			common.trace("dynaGroupDefs.findDynaGroupDefinitions("+common.objToString(params)+")");
-			var cri = common.createCriteria(new ResourceGroupDefinitionCriteria(),params);
-			cri.fetchManagedResourceGroups(true);
-			cri.setStrict(true);
-			var result = GroupDefinitionManager.findGroupDefinitionsByCriteria(cri);
+	/** 
+	 * Sets up given native GroupDefinition according to given parameters 
+	 * @private
+	 * @param {org.rhq.core.domain.resource.group.GroupDefinition} groupDefinition native groupDefinition to set up
+	 * @param {Object} params
+	 * @returns {org.rhq.core.domain.resource.group.GroupDefinition} prepared native groupDefinition
+	 * @throws some of given parameters are not valid
+	 */
+	var _setUpGroupDefinition = function(groupDefinition,params){
+		for (var k in params) {
+		    // use hasOwnProperty to filter out keys from the
+			// Object.prototype
+		    if (params.hasOwnProperty(k)) {
+		        var key = k[0].toUpperCase()+k.substring(1);
+		        var func = eval("groupDefinition.set"+key);
+		        if(typeof func == "undefined"){
+		        	throw "Given parameter '"+key+"' is not defined on org.rhq.core.domain.resource.group.GroupDefinition object";
+		        }
+		        func.call(groupDefinition,params[k]);
+		    }
+		}
 		
-			return common.pageListToArray(result).map(function(x){return new DynaGroupDef(x);});
+		return groupDefinition;
+	};
+	var _find = function(params){
+		params = params || {};
+		common.debug("Searching for dynagroup definition with params: "+common.objToString(params));
+		var cri = common.createCriteria(new ResourceGroupDefinitionCriteria(),params);
+		cri.fetchManagedResourceGroups(true);
+		cri.setStrict(true);
+		var result = GroupDefinitionManager.findGroupDefinitionsByCriteria(cri);
+	
+		return common.pageListToArray(result).map(function(x){return new DynaGroupDefinition(x);});
+	};
+	
+	return{
+		/**
+		 * Finds dynagroup definitions according to given parameters.
+		 * @function
+		 * @param {Object} params - see ResourceGroupDefinitionCriteria.addFilter[param] methods for available params.
+		 * @example dynaGroupDefinitions.find({name:"All agents",description:"All agents in inventory"});
+		 * @returns array of dynagroup definitions
+		 * @type DynaGroupDefinition[]
+		 */
+		find : _find,
+		/**
+		 * Creates a new dynagroup definition with given parameters.
+		 * @param {Object} params - see org.rhq.core.domain.resource.group.GroupDefinition.set[param] methods for available params.
+		 * @example dynaGroupDefinitions.create({name:"All agents",description:"All agents in inventory",expression:"resource.type.name=RHQ Agent"});
+		 * @type DynaGroupDefinition
+		 * @return created dynagroup definition
+		 */
+		create : function(params){
+			params = params || {};
+			common.info("Creating dynagroup definition with params: "+common.objToString(params));
+			var nativeGroupDef = _setUpGroupDefinition(new GroupDefinition(),params);
+			nativeGroupDef = GroupDefinitionManager.createGroupDefinition(nativeGroupDef);
+			
+			return new DynaGroupDefinition(nativeGroupDef);
+		},
+		/**
+		 * Edits existing dynagroup definition with given name using given parameters.
+		 * @param {String} dynagroupDefName - name of dynagroup definition to be edited
+		 * @param {Object} params - see org.rhq.core.domain.resource.group.GroupDefinition.set[param] methods for available params.
+		 * @example dynaGroupDefinitions.edit("All agents",{name:"All agents - edited",recursive:true});
+		 * @type DynaGroupDefinition
+		 * @return updated dynagroup definition or null when dynagroup definition with given name was not found 
+		 */
+		edit : function(dynagroupDefName,params){
+			params = params || {};
+			common.info("Editing dynagroup definition with name: "+dynagroupDefName+", using params: "+common.objToString(params));
+			var foundDynagroupDefs = _find({name:dynagroupDefName});
+			if(foundDynagroupDefs.length >0){
+				var nativeDynagroupDefOrig = foundDynagroupDefs[0].obj;
+				var nativeDynagroupDefEdited = _setUpGroupDefinition(nativeDynagroupDefOrig,params);
+				nativeDynagroupDefEdited = GroupDefinitionManager.updateGroupDefinition(nativeDynagroupDefEdited);
+				
+				return new DynaGroupDefinition(nativeDynagroupDefEdited);
+			}else{
+				common.warn("Dynagroup definition with name: "+dynagroupDefName+" was not found. Nothing to edit.");
+				
+				return null;
+			}
+		},
+		/**
+		 * Removes dynagroup definition with given name.
+		 * @param {String} dynagroupDefName - name of dynagroup definition to be deleted
+		 */
+		remove : function(dynagroupDefName){
+			common.info("Removing dynagroup definition with name: "+dynagroupDefName);
+			var foundDynagroupDefs = _find({name:dynagroupDefName});
+			if(foundDynagroupDefs.length >0){
+				GroupDefinitionManager.removeGroupDefinition(foundDynagroupDefs[0].id);
+			}else{
+				common.warn("Dynagroup definition with name: "+dynagroupDefName+" was not found. Nothing to delete.");
+			}
 		}
 	};
 })();
@@ -1844,7 +1930,7 @@ var dynaGroupDefs = (function(){
  * @class
  * @constructor
  */
-var DynaGroupDef = function(param) {
+var DynaGroupDefinition = function(param) {
 	var common = new _common();
 	common.trace("new DynaGroupDef("+param+")");
 	if (!param) {
@@ -1853,26 +1939,48 @@ var DynaGroupDef = function(param) {
 	var _id = param.id;
 	var _obj = param;
 	
+	/**
+	 * @lends DynaGroupDefinition.prototype
+	 */
 	return {
 		/**
-		 * GroupDefinition id
+		 * id of this dynagroup definition
+		 * @field
+		 * @type Number
 		 */
 		id : _id,
 		/**
-		 * org.rhq.core.domain.resource.group.GroupDefinition instance
+		 * native object
+		 * @type org.rhq.core.domain.resource.group.GroupDefinition 
+		 * @field
 		 */
 		obj : _obj,
 		/**
-		 * GroupDefinition name
+		 * name of this dynagroup definition
 		 */
 		name : _obj.getName(),
 		/**
-		 * Returns groups managed by this group definition.
+		 * Returns groups managed by this dynagroup definition.
 		 * @type ResGroup[]
+		 * @return groups managed by this dynagroup definition
 		 */
 		getManagedGroups : function() {
 			var groups =  _obj.getManagedResourceGroups();
 			return groups.toArray().map(function(x){return new ResGroup(x);});
+		},
+		/**
+		 * Removes this dynagroup definition.
+		 */
+		remove : function(){
+			common.info("Removing dynaGroup definition with name: '" + _obj.getName() +"' and id: "+_id);
+			GroupDefinitionManager.removeGroupDefinition(_id);
+		},
+		/**
+		 * Explicitly recalculates groups managed by this dynagroup definition.
+		 */
+		recalculate : function(){
+			common.info("Recalculating dynagroup definition with name: '"+_obj.getName()+"'");
+			GroupDefinitionManager.calculateGroupMembership(_id);
 		}
 	}
 }
@@ -3966,6 +4074,7 @@ if (typeof exports !== "undefined") {
 	exports.users = users;
 	exports.permissions = permissions;
 	exports.alertDefinitions = alertDefinitions;
+	exports.dynaGroupDefinitions = dynaGroupDefinitions;
   exports.initialize = initialize;
 }
 

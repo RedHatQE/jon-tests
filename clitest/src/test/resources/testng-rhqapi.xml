@@ -53,4 +53,10 @@
 			</class>
 		</classes>
 	</test>
+	<test name="dynagroup definitions">
+	  	<classes>
+			<class name="com.redhat.qe.jon.clitest.tests.rhqapi.DynagroupDefinitionsCliTest">
+			</class>
+		</classes>
+	</test>
 </suite>
