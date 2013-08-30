@@ -21,8 +21,8 @@ entityContext.type = EntityContext.Type.Resource;
 
 // prepare a new drift definition  
 var driftDefTempls = drifts.findDriftDefinitionTemplates({resourceTypeId:platform.getResourceTypeId()});
-var driftDef = driftDefTempls.get(0).createDefinition();
-driftDef.setBasedir(DriftDefinition.BaseDirectory(
+var driftDef = driftDefTempls[0].obj.createDefinition();
+driftDef.setBasedir(org.rhq.core.domain.drift.DriftDefinition.BaseDirectory(
 		DriftConfigurationDefinition.BaseDirValueContext.fileSystem ,
 		"/tmp/driftFiles"));
 driftDef.addInclude(new Filter("bin",null));
@@ -31,7 +31,7 @@ driftDef.setInterval(30);
 
 // remove a drift definition with the same name if there is any
 var retreivedDriftDefs = drifts.findDriftDefinition({name:driftDefName});
-if(retreivedDriftDefs.size()>0){
+if(retreivedDriftDefs.length>0){
 	common.info("Removing a drift definition with name:  "+driftDef.getName());
 	DriftManager.deleteDriftDefinition(entityContext,driftDef.getName());
 }
@@ -41,7 +41,7 @@ DriftManager.updateDriftDefinition(entityContext,driftDef);
 
 // check that the new definition was created
 var retreivedDriftDefs = drifts.findDriftDefinition({name:driftDef.getName()});
-assertTrue(retreivedDriftDefs.size() > 0, "Drift definition with name "+driftDef.getName()+" was not retreived!!");
+assertTrue(retreivedDriftDefs.length > 0, "Drift definition with name "+driftDef.getName()+" was not retreived!!");
 
 
 // wait until initial snapshot is created

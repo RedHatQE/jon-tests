@@ -25,13 +25,6 @@ function getPlatform(){
 	return platform;
 }
 
-function getDriftDefinitions(driftDefName){
-	var retreivedDriftDefs = drifts.findDriftDefinition({name:driftDefName});
-	assertTrue(retreivedDriftDefs.size() > 0, "Drift definition with name "+driftDefName+" was not retreived!!");
-	
-	return retreivedDriftDefs;
-}
-
 
 /**
  * Waits until the snapshot with given version is retrieved or timeouts 
