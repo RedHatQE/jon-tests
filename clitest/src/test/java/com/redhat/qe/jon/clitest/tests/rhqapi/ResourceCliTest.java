@@ -29,6 +29,10 @@ public class ResourceCliTest extends RhqapiCliTest {
     public void scheduleOperation() {
 	createJSRunner("rhqapi/resource_scheduleOperation.js").run();
     }
+    @Test
+    public void pluginConfiguration() {
+	createJSRunner("rhqapi/resource_pluginConfiguration.js").run();
+    }
     
     @Test 
     public void snippetTest() {

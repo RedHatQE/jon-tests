@@ -3705,6 +3705,56 @@ var Resource = function (param) {
 			return common.configurationAsHash(ConfigurationManager.getLiveResourceConfiguration(_id,false),configDef);
 		},
 		/**
+		 * updates plugin configuration (Connection settings) of this resource.  You can either pass whole
+		 * configuration (retrieved by {@link Resource.getPluginConfiguration()}) or only params that
+		 * needs to be changed
+		 * @example // set new start script arguments for as7
+		 * as7.updatePluginConfiguration({'startScriptArgs':'-Djboss.server.base.dir=foo'});
+		 * @param {Object} params - new configuration parameters, partial configuration is supported
+		 * @returns True if configuration was updated
+		 * @type Boolean
+		 */
+		updatePluginConfiguration : function(params) {
+			common.info("Updating plugin configuration of resource with id: " + _id);
+			common.trace("Resource("+_id+").updatePluginConfiguration("+common.objToString(params)+")");
+			params = params || {};
+			common.debug("Retrieving plugin configuration and configuration definition");
+			var self = ProxyFactory.getResource(_id);
+			var config = ConfigurationManager.getPluginConfiguration(_id);
+			common.debug("Got configuration : "+config +", "+ common.objToString(common.configurationAsHash(config)));
+			var configDef = ConfigurationManager.getPluginConfigurationDefinitionForResourceType(self.resourceType.id);
+			var applied = common.applyConfiguration(config,configDef,params);
+			common.debug("Will apply this configuration: "+applied +", " + common.objToString(common.configurationAsHash(applied)));
+
+			var update = ConfigurationManager.updatePluginConfiguration(_id,applied);
+			if (!update) {
+				common.debug("Configuration has not been changed");
+				return;
+			}
+			if (update.status == ConfigurationUpdateStatus.INPROGRESS) {
+				var pred = function() {
+					var up = ConfigurationManager.getLatestPluginConfigurationUpdate(_id);
+					if (up) {
+						return up.status != ConfigurationUpdateStatus.INPROGRESS;
+					}
+				};
+				common.debug("Waiting for configuration to be updated...");
+				var result = common.waitFor(pred);
+				if (!result) {
+					throw "Resource configuration update timed out!";
+				}
+				update = ConfigurationManager.getLatestPluginConfigurationUpdate(_id);
+			}
+			common.debug("Configuration update finished with status : "+update.status);
+			if (update.status == ConfigurationUpdateStatus.FAILURE) {
+				common.info("Resource configuration update failed : "+update.errorMessage);
+			}
+			else if (update.status == ConfigurationUpdateStatus.SUCCESS) {
+				common.info("Resource configuration was updated");
+			}
+			return update.status == ConfigurationUpdateStatus.SUCCESS;
+		},
+		/**
 		 * retrieves plugin configuration for this resource
 		 *
 		 * @returns
