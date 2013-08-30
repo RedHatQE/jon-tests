@@ -11,9 +11,8 @@ public class ResourceCliTest extends RhqapiCliTest {
     @Test
     public void createChild() {
 	createJSRunner("rhqapi/resource_createChild.js")
-		.resourceSrcs("/deployments/hello1.war")
-		.resourceDests("/tmp/hello.war")
-		.withArg("deployment", "/tmp/hello.war").run();
+		.withResource("/deployments/hello1.war", "hello.war", "deployment")
+		.run();
     }
     
     @Test 
