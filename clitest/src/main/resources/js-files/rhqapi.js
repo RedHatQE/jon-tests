@@ -1932,7 +1932,7 @@ var dynaGroupDefinitions = (function(){
  */
 var DynaGroupDefinition = function(param) {
 	var common = new _common();
-	common.trace("new DynaGroupDef("+param+")");
+	common.trace("new DynaGroupDefinition("+param+")");
 	if (!param) {
 		throw "org.rhq.core.domain.resource.group.GroupDefinition parameter is required";
 	}
@@ -1986,12 +1986,20 @@ var DynaGroupDefinition = function(param) {
 }
 
 /**
- * @namespace provides access to drift subsystem
+ * @namespace Provides access to drift subsystem
  */
 var drifts = (function(){
 	var common = new _common();
 	
 	return{
+		/**
+		 * Finds drift definition templates according to given parameters.
+		 * @function
+		 * @param {Object} params - see DriftDefinitionTemplateCriteria.addFilter[param] methods for available params.
+		 * @example drifts.findDriftDefinitionTemplates({resourceTypeId:1});
+		 * @returns array of drift definition templates
+		 * @type DriftDefinitionTemplate[]
+		 */
 		findDriftDefinitionTemplates : function(params){
 			params = params || {};
 			common.trace("drifts.findDriftDefinitionTemplates("+common.objToString(params)+")");
@@ -2000,22 +2008,96 @@ var drifts = (function(){
 			cri.fetchResourceType(true);
 			var result = DriftTemplateManager.findTemplatesByCriteria(cri);
 		
-			// TODO: create and return javascript-only driftDefinitionTemplates type
-			return result;
+			return common.pageListToArray(result).map(function(x){return new DriftDefinitionTemplate(x);});
 		},
+		/**
+		 * Finds drift definitions according to given parameters.
+		 * @function
+		 * @param {Object} params - see DriftDefinitionCriteria.addFilter[param] methods for available params.
+		 * @example drifts.findDriftDefinition({name:"testDriftDefinition"});
+		 * @returns array of drift definitions
+		 * @type DriftDefinition[]
+		 */
 		findDriftDefinition : function(params){
 			params = params || {};
 			common.trace("drifts.findDriftDefinition("+common.objToString(params)+")");
 			var cri = common.createCriteria(new DriftDefinitionCriteria(),params);
 			var result = DriftManager.findDriftDefinitionsByCriteria(cri);
 		
-			// TODO: create and return javascript-only driftDefinition type
-			return result;
+			return common.pageListToArray(result).map(function(x){return new DriftDefinition(x);});
 		}
 	};
 })();
-
-
+/**
+ * @class
+ * @constructor
+ */
+var DriftDefinitionTemplate = function(param) {
+	var common = new _common();
+	common.trace("new DriftDefinitionTemplate("+param+")");
+	if (!param) {
+		throw "org.rhq.core.domain.drift.DriftDefinitionTemplate parameter is required";
+	}
+	var _id = param.id;
+	var _obj = param;
+	
+	/**
+	 * @lends DriftDefinitionTemplate.prototype
+	 */
+	return {
+		/**
+		 * id of this drift definition template
+		 * @field
+		 * @type Number
+		 */
+		id : _id,
+		/**
+		 * native object
+		 * @type org.rhq.core.domain.drift.DriftDefinitionTemplate
+		 * @field
+		 */
+		obj : _obj,
+		/**
+		 * name of this drift definition template
+		 */
+		name : _obj.getName(),
+	}
+}
+/**
+ * @class
+ * @constructor
+ */
+var DriftDefinition = function(param) {
+	var common = new _common();
+	common.trace("new DriftDefinition("+param+")");
+	if (!param) {
+		throw "org.rhq.core.domain.drift.DriftDefinition parameter is required";
+	}
+	var _id = param.id;
+	var _obj = param;
+	
+	/**
+	 * @lends DriftDefinition.prototype
+	 */
+	return {
+		/**
+		 * id of this drift definition
+		 * @field
+		 * @type Number
+		 */
+		id : _id,
+		/**
+		 * native object
+		 * @type org.rhq.core.domain.drift.DriftDefinition
+		 * @field
+		 */
+		obj : _obj,
+		/**
+		 * name of this drift definition
+		 */
+		name : _obj.getName(),
+	}
+}
 
 /**
  * @namespace provides access to StorageNodes subsystem
