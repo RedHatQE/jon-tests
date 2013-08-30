@@ -3438,6 +3438,18 @@ var Resource = function (param) {
 			}
 		},
 		/**
+		 * gets alert definitions for this resource
+		 * @param {Object} params - you can filter alert definitions same as in {@link alertDefinitions.find()} function
+		 * @returns array of alert definitions
+		 * @type AlertDefinition[]
+		 */
+		alertDefinitons : function(params) {
+			common.trace("Resource("+_id+").alertDefinitions("+common.objToString(params)+")");
+			params = params || {};
+			params["resourceIds"] = _id;
+			return alertDefinitions.find(params);
+		},
+		/**
 		 * updates configuration of this resource. You can either pass whole
 		 * configuration (retrieved by {@link Resource.getConfiguration()}) or only params that
 		 * needs to be changed
@@ -3953,6 +3965,7 @@ if (typeof exports !== "undefined") {
 	exports.roles = roles;
 	exports.users = users;
 	exports.permissions = permissions;
+	exports.alertDefinitions = alertDefinitions;
   exports.initialize = initialize;
 }
 
