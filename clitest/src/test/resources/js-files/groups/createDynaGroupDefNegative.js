@@ -13,12 +13,12 @@ var common = new _common();
 
 
 var defName = "incorrect";
-var dynaGroupDefsArr = dynaGroupDefs.findDynaGroupDefinitions();
+var dynaGroupDefsArr = dynaGroupDefinitions.find();
 assertTrue(dynaGroupDefsArr.length > 0, "More than 1 group defintion is expected!!");
 var incorrectDefNames = ["<html>hahaha</html>"];
 var incorrectDefDescr = [];
 
-removeDynaGroupDef(defName);
+dynaGroupDefinitions.remove(defName);
 
 var expressionsDuringCreation = [null,"","<html>hahaha</html>","bla",
 									  "resource.name=","resource.type.na=Linux",
@@ -43,19 +43,19 @@ var recalIntervals = ["haha",null,-5,5];
  * Incorrect names
  */
 // pass null for definition name
-expectException(createDynagroupDef,[null,"resource.type.name=Linux"],"Name is a required property");
+expectException(dynaGroupDefinitions.create,[{name:null,expression:"resource.type.name=Linux"}],"Name is a required property");
 
 //pass empty string for definition name
-expectException(createDynagroupDef,["","resource.type.name=Linux"],"Name is a required property");
+expectException(dynaGroupDefinitions.create,[{name:"",expression:"resource.type.name=Linux"}],"Name is a required property");
 
 // pass already existing name
 var existingName = dynaGroupDefsArr[0].name;
-expectException(createDynagroupDef,[existingName,"resource.type.name=Linux"]);
+expectException(dynaGroupDefinitions.create,[{name:existingName,expression:"resource.type.name=Linux"}]);
 
 
 //pass incorrect definition names and check that exception was thrown
 for(var i in incorrectDefNames){
-	expectException(createDynagroupDef,[incorrectDefNames[i],"resource.type.name=Linux"]);
+	expectException(dynaGroupDefinitions.create,[{name:incorrectDefNames[i],expression:"resource.type.name=Linux"}]);
 	assertDynaGroupDefIsNotFound(incorrectDefNames[i]);
 }
 
@@ -65,7 +65,7 @@ for(var i in incorrectDefNames){
  */
 //pass incorrect definition description and check that exception was thrown
 for(var i in incorrectDefDescr){
-	expectException(createDynagroupDef,[defName,"resource.type.name=Linux",incorrectDefDescr[i]]);
+	expectException(dynaGroupDefinitions.create,[{name:defName,expression:"resource.type.name=Linux",description:incorrectDefDescr[i]}]);
 	assertDynaGroupDefIsNotFound(defName);
 }
 
@@ -74,7 +74,9 @@ for(var i in incorrectDefDescr){
  */
 // pass incorrect recalculation intervals and check that exception was thrown
 for(var i in recalIntervals){
-	expectException(createDynagroupDef,[defName,"resource.type.name=Linux","desc",true,recalIntervals[i]]);
+	expectException(dynaGroupDefinitions.create,[{name:defName,expression:"resource.type.name=Linux",
+		description:"desc",recursive:true,recalculationInterval:recalIntervals[i]}]);
+	
 	assertDynaGroupDefIsNotFound(defName);
 }
 
@@ -84,13 +86,13 @@ for(var i in recalIntervals){
  */
 // pass incorrect expressions, exception is expected during creation of definition
 for(var i in expressionsDuringCreation){
-	expectException(createDynagroupDef,[defName,expressionsDuringCreation[i]]);
+	expectException(dynaGroupDefinitions.create,[{name:defName,expression:expressionsDuringCreation[i]}]);
 	assertDynaGroupDefIsNotFound(defName);
 }
 
 
 function assertDynaGroupDefIsNotFound(dynaGroupDefName){
-	var defs = dynaGroupDefs.findDynaGroupDefinitions({name:dynaGroupDefName});
+	var defs = dynaGroupDefinitions.find({name:dynaGroupDefName});
 	assertTrue(defs.length == 0,"DynaGroup definition with name " +dynaGroupDefName +
 			", was found!!This is not expected!!");
 }

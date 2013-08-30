@@ -23,9 +23,9 @@ var allAgentsG = groups.create(groupName,allAgents);
 
 // create a dynagroup definition and calculate managed groups
 var defName = "Narrowing on All agents group";
-removeDynaGroupDef(defName);
-var def = createDynagroupDef(defName,"memberof="+groupName);
-GroupDefinitionManager.calculateGroupMembership(def.getId());
+dynaGroupDefinitions.remove(defName);
+var def = dynaGroupDefinitions.create({name:defName,expression:"memberof="+groupName});
+GroupDefinitionManager.calculateGroupMembership(def.id);
 
 // check that dynagroup was created
 assertDynaGroupDefParams(defName);
@@ -43,7 +43,7 @@ checkNumberOfResourcesInGroup(getManagedGroup(defName), allAgents.length,1);
 
 // recalculate managed groups
 common.info("Calculating group membership for " + defName);
-GroupDefinitionManager.calculateGroupMembership(def.getId());
+GroupDefinitionManager.calculateGroupMembership(def.id);
 
 // check that managed group doesn't contain removed agent 
 checkNumberOfResourcesInGroup(getManagedGroup(defName), allAgents.length -1,0);
@@ -63,9 +63,11 @@ if(uninventoriedAgents.length == 0){
 allAgents = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 
 defName = "All agents";
-removeDynaGroupDef(defName);
-var allAgentsDef = createDynagroupDef(defName,"resource.type.name = RHQ Agent","all agents",true);
-GroupDefinitionManager.calculateGroupMembership(allAgentsDef.getId());
+dynaGroupDefinitions.remove(defName);
+var allAgentsDef = dynaGroupDefinitions.create({name:defName,expression:"resource.type.name = RHQ Agent",
+	description:"all agents",recursive:true});
+
+GroupDefinitionManager.calculateGroupMembership(allAgentsDef.id);
 
 //check that dynagroup was created
 assertDynaGroupDefParams(defName);
@@ -73,10 +75,10 @@ checkNumberOfResourcesInGroup(getManagedGroup(defName), allAgents.length,0);
 
 
 defName2 = "All mem pools from All agents dynagroup";
-removeDynaGroupDef(defName2);
-var allMemPoolsDef = createDynagroupDef(defName2,"resource.type.name = Memory Pool\n" +
-		"memberOf = DynaGroup - "+defName);
-GroupDefinitionManager.calculateGroupMembership(allMemPoolsDef.getId());
+dynaGroupDefinitions.remove(defName2);
+var allMemPoolsDef = dynaGroupDefinitions.create({name:defName2,expression:"resource.type.name = Memory Pool\n" +
+		"memberOf = DynaGroup - "+defName});
+GroupDefinitionManager.calculateGroupMembership(allMemPoolsDef.id);
 
 
 //check that dynagroup was created
@@ -102,9 +104,9 @@ allAgentsNow = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 assertTrue(allAgents < allAgentsNow,"No new agent was imported!!");
 
 // recalculate managed groups for 'All agents' definition
-GroupDefinitionManager.calculateGroupMembership(allAgentsDef.getId());
+GroupDefinitionManager.calculateGroupMembership(allAgentsDef.id);
 checkNumberOfResourcesInGroup(getManagedGroup(defName), allAgentsNow.length,1);
 
 // recalculate managed groups for 'All mem pools from All agents dynagroup' definition
-GroupDefinitionManager.calculateGroupMembership(allMemPoolsDef.getId());
+GroupDefinitionManager.calculateGroupMembership(allMemPoolsDef.id);
 checkNumberOfResourcesInGroup(getManagedGroup(defName2), allAgentsNow.length * 5,1);

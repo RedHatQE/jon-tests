@@ -11,7 +11,7 @@
 verbose = 2;
 var common = new _common();
 
-var allDynaGroupDefs = dynaGroupDefs.findDynaGroupDefinitions();
+var allDynaGroupDefs = dynaGroupDefinitions.find();
 assertTrue(allDynaGroupDefs.length > 1, "More than 1 group defintion is expected!!");
 
 var existingDef1 = allDynaGroupDefs[0].obj;

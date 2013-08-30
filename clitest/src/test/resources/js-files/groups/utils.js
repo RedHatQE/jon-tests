@@ -12,35 +12,6 @@
 verbose = 2;
 var common = new _common();
 
-
-/**
- * Creates dynaGroup definition with given parameters.
- * @param name (required)
- * @param expression (required)
- * @param description (optional)
- * @param isRecursive (optional)
- * @param recalcInterval in milliseconds (optional)
- * @returns created dynaGroup definition
- */
-function createDynagroupDef(name, expression, description, isRecursive,recalcInterval){
-	common.info("Creating a new dynagroup definition with name: '" + name+"'");
-	var dynaGroupDef = new GroupDefinition(name);
-	dynaGroupDef.setExpression(expression);
-	if(!(description === undefined)){
-		dynaGroupDef.setDescription(description);
-	}
-	if(!(isRecursive === undefined)){
-		if(isRecursive){
-			dynaGroupDef.setRecursive(true);
-		}
-	}
-	if(!(recalcInterval === undefined)){
-		dynaGroupDef.setRecalculationInterval(recalcInterval);
-	}
-	
-	return GroupDefinitionManager.createGroupDefinition(dynaGroupDef);
-}
-
 function removeAllGroups(){
 	groups.find().forEach(function(b){
 		common.info("Removing group with name: " + b.name);
@@ -49,23 +20,9 @@ function removeAllGroups(){
 }
 
 function removeAllDynaGroupDefs(){
-	var defs = dynaGroupDefs.findDynaGroupDefinitions();
-	for(var i in defs){
-		common.info("Removing dynaGroup definition with name: '" + defs[i].name +"' and id: "+defs[i].id);
-		GroupDefinitionManager.removeGroupDefinition(defs[i].id);
-	}
-}
-
-/**
- * Removes dynaGroup definition with given name.
- * @param dynaGroupDefName
- */
-function removeDynaGroupDef(dynaGroupDefName){
-	var defs = dynaGroupDefs.findDynaGroupDefinitions({name:dynaGroupDefName});
-	for(var i in defs){
-		common.info("Removing dynaGroup definition with name: '" + dynaGroupDefName +"' and id: "+defs[i].id);
-		GroupDefinitionManager.removeGroupDefinition(defs[i].id);
-	}
+	dynaGroupDefinitions.find().forEach(function(b){
+		b.remove();
+	});
 }
 
 
@@ -80,7 +37,7 @@ function removeDynaGroupDef(dynaGroupDefName){
  */
 function assertDynaGroupDefParams(name, description, expression,expectedNumberOfManagedGroups, isRecursive,recalcInterval){
 	common.info("Checking correct parameters of dynaGroup definition with name " + name);
-	var defs = dynaGroupDefs.findDynaGroupDefinitions({name:name});
+	var defs = dynaGroupDefinitions.find({name:name});
 	assertTrue(defs.length == 1,"Expected number of dynagroup definitions with name '"+name+
 			"' is 1, but actual is: " +defs.length);
 	var def = defs[0].obj;
@@ -166,19 +123,19 @@ function checkNumberOfResourcesInGroup(groups, expectedNumberOfExplRes,expectedM
  * @returns found managed groups
  */
 function getManagedGroup(groupDefName){
-	var defs = dynaGroupDefs.findDynaGroupDefinitions({name:groupDefName});
+	var defs = dynaGroupDefinitions.find({name:groupDefName});
 	var def = defs[0];
 	return def.getManagedGroups();
 }
-
-
 function updateDynaGroupDefinition(dynaGroupDefinition){
-	common.info("Editing dynaGroup definition with name: '" +dynaGroupDefinition.name +
-			"' and expression: '" + dynaGroupDefinition.getExpression() +
-			"' and recalculation interval: '" + dynaGroupDefinition.getRecalculationInterval()+"'");
-	
-	return GroupDefinitionManager.updateGroupDefinition(dynaGroupDefinition);
+   common.info("Editing dynaGroup definition with name: '" +dynaGroupDefinition.name +
+	   "' and expression: '" + dynaGroupDefinition.getExpression() +
+	   "' and recalculation interval: '" + dynaGroupDefinition.getRecalculationInterval()+"'");
+   
+   return GroupDefinitionManager.updateGroupDefinition(dynaGroupDefinition);
 }
+
+
 
 /**
  * Waits until given resource appears in discovery queue with status NEW.

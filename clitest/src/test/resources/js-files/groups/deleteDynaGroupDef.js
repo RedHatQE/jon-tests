@@ -17,7 +17,7 @@ common = new _common();
 // remove all dynaGroup definitions
 removeAllDynaGroupDefs();
 // assert all definitions are gone
-var defs = dynaGroupDefs.findDynaGroupDefinitions();
+var defs = dynaGroupDefinitions.find();
 assertTrue(defs.length == 0,"Expected number of all dynaGroup definitions is: 0, but actual is: "+defs.length);
 // assert all groups are gone
 var allGroups = groups.find({name:"DynaGroup"});

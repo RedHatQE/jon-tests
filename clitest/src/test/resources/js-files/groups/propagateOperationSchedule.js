@@ -35,9 +35,9 @@ allAgents = resources.find({resourceTypeName:"RHQ Agent"});
 
 // create a new dynagroup definition for all agents
 var agentsDynaGroupDefName = "Agents";
-var defAgents = createDynagroupDef(agentsDynaGroupDefName,
-		"resource.type.name=RHQ Agent","All agents",true);
-GroupDefinitionManager.calculateGroupMembership(defAgents.getId());
+var defAgents = dynaGroupDefinitions.create({name:agentsDynaGroupDefName,
+		expression:"resource.type.name=RHQ Agent",description:"All agents",recursive:true});
+GroupDefinitionManager.calculateGroupMembership(defAgents.id);
 
 //check that dynagroup was created
 assertDynaGroupDefParams(agentsDynaGroupDefName);
@@ -46,9 +46,9 @@ checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allAgents
 
 // create new dynagroup definition for RHQ Agent Launcher Scripts
 var launcherScriptsDynaGroupDefName = "Narrowing on Agents group";
-var defLauncherScripts = createDynagroupDef(launcherScriptsDynaGroupDefName,
-		"resource.name = RHQ Agent Launcher Script \n memberof = DynaGroup - "+agentsDynaGroupDefName);
-GroupDefinitionManager.calculateGroupMembership(defLauncherScripts.getId());
+var defLauncherScripts = dynaGroupDefinitions.create({name:launcherScriptsDynaGroupDefName,
+		expression:"resource.name = RHQ Agent Launcher Script \n memberof = DynaGroup - "+agentsDynaGroupDefName});
+GroupDefinitionManager.calculateGroupMembership(defLauncherScripts.id);
 
 //check that dynagroup was created
 assertDynaGroupDefParams(launcherScriptsDynaGroupDefName);
@@ -76,9 +76,9 @@ importedArr[0].waitForAvailable();
 
 
 // recalculate managed groups and check that new resources are added
-GroupDefinitionManager.calculateGroupMembership(defAgents.getId());
+GroupDefinitionManager.calculateGroupMembership(defAgents.id);
 checkNumberOfResourcesInGroup(getManagedGroup(agentsDynaGroupDefName), allAgents.length +importedArr.length);
-GroupDefinitionManager.calculateGroupMembership(defLauncherScripts.getId());
+GroupDefinitionManager.calculateGroupMembership(defLauncherScripts.id);
 checkNumberOfResourcesInGroup(getManagedGroup(launcherScriptsDynaGroupDefName), allAgents.length +importedArr.length);
 
 
@@ -103,7 +103,7 @@ function clearOpHistory(resourceId){
 	var opHist = OperationManager.findResourceOperationHistoriesByCriteria(resOpHistCri);
 	
 	for(var i = 0; i<opHist.size();i++){
-		common.debug("Deleting operation history with id: " +opHist.get(i).getId()+", on resource: " + resourceId);
+		common.debug("Deleting operation history with id: " +opHist.get(i).id()+", on resource: " + resourceId);
 		OperationManager.deleteOperationHistory(opHist.get(i).getId(),false);
 	}
 }

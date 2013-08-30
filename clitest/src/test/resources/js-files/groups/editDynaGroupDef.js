@@ -16,13 +16,13 @@ var common = new _common();
 var allAgents = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 var allLinuxPlat = resources.find({resourceTypeName:"Linux"});
 var allGroupsBefore = groups.find();
-var allDynaGroupDefsBefore = dynaGroupDefs.findDynaGroupDefinitions();
+var allDynaGroupDefsBefore = dynaGroupDefinitions.find();
 
 
 // dynaGroup definition which will be edited
 var defName = "All agents - recursive";
 
-var defs = dynaGroupDefs.findDynaGroupDefinitions({name:defName});
+var defs = dynaGroupDefinitions.find({name:defName});
 assertTrue(defs.length == 1,"Expected number of dynagroup definitions with name '"+defName+
 		"' is 1, but actual is: " +defs.length);
 
@@ -47,7 +47,7 @@ GroupDefinitionManager.calculateGroupMembership(def.getId());
 
 // find all groups and definitions
 var allGroupsAfter = groups.find();
-var allDynaGroupDefsAfter = dynaGroupDefs.findDynaGroupDefinitions();
+var allDynaGroupDefsAfter = dynaGroupDefinitions.find();
 
 // check edited definition
 assertDynaGroupDefParams(defNameNew,defDescription,expression,1,true,1000 * 60 * 20);

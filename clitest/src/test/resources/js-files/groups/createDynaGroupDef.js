@@ -93,9 +93,10 @@ var expectedNumberOfGroups = 12 + 2*allAgents.length;
 
 // create new dynaGroup definitions according to input parameters and check results
 for(i in defNames){
-	var def = createDynagroupDef(defNames[i],expressions[i],defDescriptions[i],isRecursive[i],recalInterval[i]);
-	common.info("Calculating group membership");
-	GroupDefinitionManager.calculateGroupMembership(def.getId());
+	var def = dynaGroupDefinitions.create({name:defNames[i],expression:expressions[i],
+		description:defDescriptions[i],recursive:isRecursive[i],recalculationInterval:recalInterval[i]});
+	
+	def.recalculate();
 	
 	assertDynaGroupDefParams(defNames[i],defDescriptions[i],expressions[i],expectedNumberOfManagedGroups[i],
 			isRecursive[i],recalInterval[i]);
