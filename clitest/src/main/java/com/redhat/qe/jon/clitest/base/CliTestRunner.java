@@ -1,9 +1,13 @@
 package com.redhat.qe.jon.clitest.base;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.testng.Assert;
+
+import com.redhat.qe.jon.clitest.base.CliEngine.AdditionalResource;
 
 public class CliTestRunner {
 
@@ -19,6 +23,7 @@ public class CliTestRunner {
     private String[] jsDepends;
     private String[] resSrc;
     private String[] resDst;
+    private List<AdditionalResource> resources;
     private CliTestRunListener runListener;
     
     public CliTestRunner(CliEngine engine) {
@@ -31,6 +36,7 @@ public class CliTestRunner {
     private void setDefaults() {
 	this.username="rhqadmin";
 	this.password="rhqadmin";
+	this.resources = new Vector<CliEngine.AdditionalResource>();
 	this.expectedResult="Login successful";
 	this.makeFailure="Login failed:,No such file or directory";	
     }
@@ -56,6 +62,14 @@ public class CliTestRunner {
 	    }
 	    if (resSrc.length!=resDst.length) {
 		throw new RuntimeException("Resource destinations and sources must be same size");
+	    }
+	}
+	for (AdditionalResource r : this.resources) {
+	    if (r.asArgument == null) {
+		throw new RuntimeException("Additional resource must not have null 'asArgument'");
+	    }
+	    if (r.src == null) {
+		throw new RuntimeException("Additional resource must not have null 'src'");
 	    }
 	}
     }
@@ -95,6 +109,7 @@ public class CliTestRunner {
     /**
      * set additional resource source paths (looked up as java resource)
      * @param resSrc
+     * @deprecated use {@link CliTestRunner#withResource(String, String, String)}
      */
     public CliTestRunner resourceSrcs(String... resSrc) {
 	this.resSrc = resSrc;
@@ -103,6 +118,7 @@ public class CliTestRunner {
     /**
      * set destinations for additional {@link #resourceSrcs(String...)}
      * @param resDst
+     * @deprecated use {@link CliTestRunner#withResource(String, String, String)}
      */
     public CliTestRunner resourceDests(String... resDst) {
 	this.resDst = resDst;
@@ -139,6 +155,35 @@ public class CliTestRunner {
 	if (expect!=null) {
 	    this.expectedResult+=","+expect;
 	}
+	return this;
+    }
+    /**
+     * add a resource file to CLI test. Given resource will become ready for CLI test under named argument 'asArgument'
+     * 
+     * For example ("deployments/hello1.war","hello.war","deployment") will find hello1.war within project resources, copy it to 
+     * some /some/path/hello.war and append named argument to CLI deployment=/some/path/hello.war
+     *  
+     * @param src of resource (you can use http:// for URLs file:// for absolute path on disk or path for java resource lookup)
+     * @param destName name of destination file
+     * @param asArgument name of argument for resource file to be ready for test
+     * @return this
+     */
+    public CliTestRunner withResource(String src, String destName, String asArgument) {
+	this.resources.add(new AdditionalResource(src,destName,asArgument));
+	return this;
+    }
+    /**
+     * add a resource file to CLI test. Given resource will become ready for CLI test under named argument 'asArgument'
+     * 
+     * For example ("deployments/hello1.war","deployment") will find hello1.war within project resources, copy it to 
+     * some /some/path/hello1.war and append named argument to CLI deployment=/some/path/hello1.war
+     *  
+     * @param src of resource (you can use http:// for URLs file:// for absolute path on disk or path for java resource lookup)
+     * @param asArgument name of argument for resource file to be ready for test
+     * @return this
+     */
+    public CliTestRunner withResource(String src, String asArgument) {
+	this.resources.add(new AdditionalResource(src,null,asArgument));
 	return this;
     }
     /**
@@ -190,7 +235,7 @@ public class CliTestRunner {
 	String result = null;
 	if (jsSnippet==null) {
 	    try {
-		engine.runJSfile(null, this.username, this.password, this.jsFile, this.cliArgs, this.expectedResult, this.makeFailure, jsDepends, resSrc, resDst);
+		engine.runJSfile(null, this.username, this.password, this.jsFile, this.cliArgs, this.expectedResult, this.makeFailure, jsDepends, resSrc, resDst, this.resources);
 		result = engine.consoleOutput;
 	    } catch (Exception e) {
 		Assert.fail("Test failed : "+e.getMessage(), e);
@@ -198,7 +243,7 @@ public class CliTestRunner {
 	}
 	else {
 	    try {
-		engine.runJSSnippet(this.jsSnippet, null, this.username, this.password, cliArgs, expectedResult, this.makeFailure, jsDepends, resSrc, resDst);
+		engine.runJSSnippet(this.jsSnippet, null, this.username, this.password, cliArgs, expectedResult, this.makeFailure, jsDepends, resSrc, resDst, this.resources);
 		result = engine.consoleOutput;
 	    } catch (Exception e) {
 		Assert.fail("Test failed : "+e.getMessage(), e);

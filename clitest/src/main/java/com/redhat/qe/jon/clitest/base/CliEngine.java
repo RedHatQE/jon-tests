@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -162,7 +163,7 @@ public class CliEngine extends CliTestScript {
 	 * @throws IOException
 	 * @throws CliTasksException
 	 */
-	public void runJSfile(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure,@Optional String jsDepends,@Optional String resSrc, @Optional String resDst) throws IOException, CliTasksException{
+	public void runJSfile(@Optional String rhqTarget, @Optional String cliUsername, @Optional String cliPassword, String jsFile, @Optional String cliArgs, @Optional String expectedResult, @Optional String makeFilure,@Optional String jsDepends,@Optional String resSrc, @Optional String resDst, List<AdditionalResource> resources) throws IOException, CliTasksException{
 		loadSetup(rhqTarget, cliUsername, cliPassword, makeFilure);
 		cliTasks = CliTasks.getCliTasks();
 
@@ -170,6 +171,10 @@ public class CliEngine extends CliTestScript {
 		if (resSrc!=null && resDst!=null) {
 			prepareResources(resSrc, resDst);
 		}
+		if (cliArgs==null) {
+		    cliArgs="";
+		}
+		cliArgs += prepareResources(resources);
 		String jsFilePath = getResourceFileName(jsFile);
 		String targetFile = cliTasks.runCommand("mktemp").trim();
 		tempFiles.add(targetFile);
@@ -192,9 +197,8 @@ public class CliEngine extends CliTestScript {
 			}
 		}
 		command += CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+targetFile;
-		if(cliArgs != null){
-			command +=" "+cliArgs;
-		}
+		command +=" "+cliArgs;
+
 		// get live output in log file on server
 		command +=" | tee -a /tmp/cli-automation.log";
 		consoleOutput = cliTasks.runCommand(command);
@@ -240,7 +244,7 @@ public class CliEngine extends CliTestScript {
     public String runJSSnippet(String snippet, String rhqTarget,
 	    String cliUsername, String cliPassword, String cliArgs,
 	    String expectedResult, String makeFilure, String jsDepends,
-	    String resSrc, String resDst) throws IOException, CliTasksException {
+	    String resSrc, String resDst, List<AdditionalResource> resources) throws IOException, CliTasksException {
 	File tempFile = File.createTempFile("snippet", "js");
 	tempFiles.add(tempFile.getAbsolutePath());
 	PrintWriter pw = new PrintWriter(tempFile);
@@ -248,8 +252,70 @@ public class CliEngine extends CliTestScript {
 	pw.close();
 	runJSfile(rhqTarget, cliUsername, cliPassword, tempFile.toURI()
 		.toString(), cliArgs, expectedResult, makeFilure, jsDepends,
-		resSrc, resDst);
+		resSrc, resDst, resources);
 	return consoleOutput;
+    }
+    
+    private String prepareResources(List<AdditionalResource> resources) throws CliTasksException, IOException {
+	_logger.info("Processing additional resources...");
+	StringBuilder sb = new StringBuilder(" ");
+	for (AdditionalResource e : resources) {
+	    _logger.fine("Processing resource " + e);
+	    String src = e.src;
+	    File dst = new File("/tmp/"+new Date().getTime());
+	    String destDir = dst.getAbsolutePath();
+
+	    cliTasks.runCommand("mkdir -p " + destDir);
+	    String resource = null;
+	    // try listener to provide resource file
+	    if (runListener != null) {
+		File resFile = runListener.prepareResource(src);
+		if (resFile != null) {
+		    resource = resFile.getAbsolutePath();
+		    _logger.fine("Resource [" + src + "] has been handled by listener and outputed to [" + resource + "]");
+		}
+	    }
+	    // try http location
+	    if (resource == null && src.startsWith("http")) {
+		File output = new File(destDir, dst.getName() + ".tmp");
+		WebUtils.downloadFile(src, output);
+		resource = output.getAbsolutePath();
+		tempFiles.add(resource);
+	    }
+	    // try project resources
+	    else if (resource == null) {
+		resource = getResourceFileName(src);
+		if (resource == null) {
+		    throw new CliTasksException("Resource file " + src + " does not exist!");
+		}
+	    }
+	    if (runListener != null) {
+		try {
+		    File oldResource = new File(resource);
+		    File newResource = runListener.onResourceProcessed(src, oldResource);
+		    if (newResource != null && newResource.exists() && newResource.isFile()) {
+			if (!oldResource.equals(newResource)) {
+			    // do not output when listener didn't touch resource
+			    _logger.fine("Resource [" + resource + "] has been processed by listener, new result [" + newResource.getAbsolutePath() + "]");
+			}
+			resource = newResource.getAbsolutePath();
+		    } else {
+			throw new Exception("Resource file processed by listener is invalid (either null, non-existing or non-file)");
+		    }
+		} catch (Exception ex) {
+		    _logger.log(Level.WARNING, "CliTestRunListener failed, using original resource. Error : " + ex.getMessage(), ex);
+		}
+	    }
+	    // finally copy resource to destination place
+	    String targetFile = new File(resource).getName();
+	    if (e.targetName!=null) {
+		targetFile = e.targetName;
+	    }
+	    cliTasks.copyFile(resource, destDir, targetFile);
+	    tempFiles.add(targetFile);
+	    sb.append(e.asArgument+"="+new File(destDir,targetFile).getAbsolutePath()+" ");
+	}
+	return sb.toString();
     }
 
     protected void prepareResources(String resSrc, String resDst) throws CliTasksException, IOException {
@@ -363,7 +429,6 @@ public class CliEngine extends CliTestScript {
 		try {
 			Thread.currentThread().join(ms);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -394,16 +459,33 @@ public class CliEngine extends CliTestScript {
 			reader = new BufferedReader(new FileReader(path));
 			while (reader.readLine() != null) lines++;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			reader.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return lines;
+	}
+	/**
+	 * helper class to handle additional resource that is processed by engine and prepared for CLI test process
+	 * @author lzoubek
+	 *
+	 */
+	public static class AdditionalResource {
+	    public AdditionalResource(String src, String destName, String asArgument) {
+		this.src = src;
+		this.targetName = destName;
+		this.asArgument = asArgument;
+	    }
+	    
+	    @Override
+	    public String toString() {
+	        // TODO Auto-generated method stub
+	        return "[src="+src+",targetName="+targetName+",asArgument="+asArgument+"]";
+	    }
+	    public final String src, targetName, asArgument;
 	}
 	
 }

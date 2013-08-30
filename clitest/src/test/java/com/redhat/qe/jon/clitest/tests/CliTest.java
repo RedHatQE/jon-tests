@@ -1,6 +1,7 @@
 package com.redhat.qe.jon.clitest.tests;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
@@ -29,8 +30,7 @@ public class CliTest extends CliEngine {
 	 * to run CLI tests 
 	 */
 	@Parameters({"rhq.target","cli.username","cli.password","js.file","cli.args","expected.result","make.failure","js.depends","res.src","res.dst"})
-	@Test	
-	@Override
+	@Test
 	public void runJSfile(@Optional String rhqTarget,
 	    @Optional String cliUsername, @Optional String cliPassword,
 	    String jsFile, @Optional String cliArgs,
@@ -38,7 +38,7 @@ public class CliTest extends CliEngine {
 	    @Optional String jsDepends, @Optional String resSrc,
 	    @Optional String resDst) throws IOException, CliTasksException {
 	super.runJSfile(rhqTarget, cliUsername, cliPassword, jsFile, cliArgs,
-		expectedResult, makeFilure, jsDepends, resSrc, resDst);
+		expectedResult, makeFilure, jsDepends, resSrc, resDst, new Vector<CliEngine.AdditionalResource>());
 	}
 	
 
