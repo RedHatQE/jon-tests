@@ -257,14 +257,16 @@ public class CliEngine extends CliTestScript {
     }
     
     private String prepareResources(List<AdditionalResource> resources) throws CliTasksException, IOException {
-	_logger.info("Processing additional resources...");
+	if (!resources.isEmpty()) {
+	    _logger.info("Processing additional resources...");
+	}
 	StringBuilder sb = new StringBuilder(" ");
 	for (AdditionalResource e : resources) {
 	    _logger.fine("Processing resource " + e);
 	    String src = e.src;
 	    File dst = new File("/tmp/"+new Date().getTime());
 	    String destDir = dst.getAbsolutePath();
-
+	    tempFiles.add(destDir);
 	    cliTasks.runCommand("mkdir -p " + destDir);
 	    String resource = null;
 	    // try listener to provide resource file
@@ -312,7 +314,6 @@ public class CliEngine extends CliTestScript {
 		targetFile = e.targetName;
 	    }
 	    cliTasks.copyFile(resource, destDir, targetFile);
-	    tempFiles.add(targetFile);
 	    sb.append(e.asArgument+"="+new File(destDir,targetFile).getAbsolutePath()+" ");
 	}
 	return sb.toString();
@@ -435,9 +436,13 @@ public class CliEngine extends CliTestScript {
 	
 	@AfterTest
 	public void deleteJSFiles(){
+	    if (System.getProperty("jon.clitest.keep-files") != null) {
+		_logger.info("Keeping all files produced by clitest");
+		return;
+	    }
 	    for (String tmpFile : tempFiles) {
 		try {
-			CliTasks.getCliTasks().runCommand("rm -f "+tmpFile);
+			CliTasks.getCliTasks().runCommand("rm -rf "+tmpFile);
 		} catch (CliTasksException ex) {
 			_logger.log(Level.WARNING, "Exception on remote File deletion!, ", ex);
 		}
