@@ -1,3 +1,10 @@
+
+
+// bind inputs
+
+var bIncomplete = bundleIncomplete;
+var bCorrect = bundle;
+
 var bs = bundles.find();
 if (bs.length>0) {
 	bs[0].versions();
@@ -21,13 +28,13 @@ bundles.find().forEach(function(b){
 
 
 println("Creating bundle from dist-file with incomplete content files");
-bundles.createFromDistFile("/tmp/bundle-incomplete.zip");
+bundles.createFromDistFile(bIncomplete);
 
 
 
 
 println("Creating bundle from dist-file with complete content files");
-var bundle = bundles.createFromDistFile("/tmp/bundle.zip");
+var bundle = bundles.createFromDistFile(bCorrect);
 
 println("Removing all existing resource groups");
 groups.find().forEach(function(x){
@@ -65,10 +72,13 @@ assertTrue(destination !=null,"bundle destination was created");
 assertTrue(bundle.destinations().length==2,"destinations() for current bundle returns correct count if items");
 
 // deploy latest version
-bundle.deploy(destination,{});
+var result = bundle.deploy(destination,{});
+assertTrue(result.obj.status == "Failure","Deployment of incpomlete bundle should fail");
 
 // deploy using version object
-bundle.deploy(destination,{},bundle.versions()[0]);
+var result = bundle.deploy(destination,{},bundle.versions({version:"1.1"})[0]);
+assertTrue(result.obj.status == "Failure","Deployment of incpomlete bundle should fail");
 
 // deploy using version string
-bundle.deploy(destination,{},"1.0");
+var result = bundle.deploy(destination,{},"1.0");
+assertTrue(result.obj.status == "Success","Deployment of correct bundle should succeed");

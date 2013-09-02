@@ -6,8 +6,8 @@ public class BundlesCliTest extends RhqapiCliTest {
     @Test
     public void bundles() {
 	createJSRunner("rhqapi/bundles.js")
-		.resourceSrcs("/bundles/bundle.zip","/bundles/bundle-incomplete.zip")
-		.resourceDests("/tmp/bundle.zip","/tmp/bundle-incomplete.zip")
+		.withResource("/bundles/bundle-incomplete.zip", "bundleIncomplete")
+		.withResource("/bundles/bundle.zip","bundle")
 		.run();
     }
 }
