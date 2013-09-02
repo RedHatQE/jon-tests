@@ -2779,7 +2779,14 @@ var Bundle = function(param) {
 	 */
 		deploy : function(destination,params,version) {
 			params = params || {};
-			common.trace("Bundle("+_id+").deploy(destination="+common.objToString(destination)+",params="+common.objToString(params)+",version="+version+")");
+			var versionStr; // detect version argument and properly print it
+			if (typeof(version) == "string") {
+				versionStr = version;
+			}
+			else if (typeof(version) == "object") {
+				versionStr = version.obj;
+			}
+			common.trace("Bundle("+_id+").deploy(destination="+common.objToString(destination)+",params="+common.objToString(params)+",version="+versionStr+")");
 			if (version==null) {
 				common.info("Param version is null, will use latest version of bundle");
 				var criteria = common.createCriteria(new BundleCriteria(),{id:_id});
