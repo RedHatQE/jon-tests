@@ -7,7 +7,6 @@ public class RhqapiCliTest extends OnAgentCliEngine {
 
     @Override
     public CliTestRunner createJSRunner(String jsFile) {
-        // TODO Auto-generated method stub
         return super.createJSRunner(jsFile).dependsOn("/rhqapi.js","/rhqapi/config.js");
     }
 }
