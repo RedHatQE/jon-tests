@@ -2248,9 +2248,14 @@ var StorageNode = function(param) {
 
 	};
 };
-
+/**
+ * @class
+ * @constructor
+ */
 var Alert = function(param){
-	
+	/**
+	 *@lends Alert.prototype
+	 */
 	return {
 		/**
 		 * id of Alert
