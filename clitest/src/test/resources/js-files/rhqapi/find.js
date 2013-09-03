@@ -2,6 +2,7 @@ findInvalidParamValue();
 findInvalidParam();
 findInvalidParamAmongValidParams();
 //findWitoutParams();
+findInvalidParamValue();
 findSamples();
 
 function findInvalidParamValue() {
@@ -43,6 +44,20 @@ function findInvalidParamAmongValidParams() {
 		
 	}
 	assertTrue(exception,"Exception was thrown when passing invalid filter parameter");
+}
+
+function findInvalidParamValue() {
+	var exception;
+	try {
+		resources.find({"parentResourceId":"bar","id":12345});
+	}
+	catch (exc) {
+		println(exc);
+		assertTrue(exc.indexOf("you have passed wrong")> 0,"correct exception was thrown");
+		exception = true;
+		
+	}
+	assertTrue(exception,"Exception was thrown when passing invalid filter value");
 }
 
 function findWitoutParams() {

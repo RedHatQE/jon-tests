@@ -649,7 +649,12 @@ var _common = function() {
 			        var key = k[0].toUpperCase()+k.substring(1);
 			        var func = eval("criteria.addFilter"+key);
 			        if (typeof func !== "undefined") {
-			        	func.call(criteria,params[k]);
+			        	try {
+			        		func.call(criteria,params[k]);
+			        	}
+			        	catch (e) {
+			        		throw "You have passed wrong argument (type="+typeof(params[k])+") to filter "+k + " "+ e;
+			        	}
 			        }
 			        else {
 			        	var names = "";
