@@ -152,7 +152,11 @@
 		</class>
 	</classes>
 </test>
-
+<test name="Metrics">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.metrics.ResponseTimeFilterTest" />
+	</classes>
+</test>
 <!-- RHQ Resource  Configuration Update -->
 <!-- test name="Test_Update_Agent_Configuration">
   	<classes>
