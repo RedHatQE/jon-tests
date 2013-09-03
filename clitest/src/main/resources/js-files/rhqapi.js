@@ -3181,8 +3181,10 @@ var Resource = function (param) {
 	var _name = param.name;
 	var _res = param;
 	
+	
+	
 	// we define a metric as an internal type
-	//TODO implement reading last metric value properly
+	
 	/**
 	 * creates a new instance of Metric
 	 * @class
@@ -3211,7 +3213,7 @@ var Resource = function (param) {
 		};
 		var _getSchedule = function(){
 			var mDefId = _getMDef().id;
-			common.trace("Retreaving schedules for resource with id: " +_res.id + 
+			common.trace("Retrieving schedules for resource with id: " +_res.id + 
 					" and measurement definition id: " +mDefId);
 			var criteria = common.createCriteria(new MeasurementScheduleCriteria(),
 					{resourceId:_res.id,definitionIds:[mDefId]});				
@@ -3222,8 +3224,7 @@ var Resource = function (param) {
 			}
 			if(schedules.size()>1){
 				throw "Retrived multiple schedules for this Metric!!";
-			}
-			
+			}			
 			return schedules.get(0);
 		};
 		
@@ -3282,6 +3283,9 @@ var Resource = function (param) {
 				}
 				
 			},
+			getScheduleId : function(){
+				return new _getSchedule().getId();
+			},
 			/**
 			 * gets actual metric collection interval
 			 * @type Number
@@ -3306,12 +3310,38 @@ var Resource = function (param) {
   var _shortenMetricName = function(name) {
 	  return (String(name)[0].toLowerCase()+name.substring(1)).replace(/ /g,"");
   }
-  common.debug("Enumerating metrics")
+  
+  /**
+   * gets calltimes for given resource (Note that this method gets injected to resource object only when a resource has CALLTIME metric)
+   * @function
+   * @lends Resource.prototype
+   * @returns array of simple data objects having fields same as org.rhq.core.domain.measurement.calltime.CallTimeDataComposite
+   */
+  var _getCallTimes = function(beginTime,endTime) {
+	  common.trace("Resource("+_id+").getCallTimes(beginTime="+beginTime+",endTime="+endTime+")");
+	  beginTime = beginTime || new Date().getTime() - (8 * 3600 * 1000);
+	  endTime = endTime || new Date().getTime(); // 8 hours by default
+	  for (key in _metrics) {
+		var metric = _metrics[key]
+		if (metric.dataType == "CALLTIME") {
+			var callTimes = CallTimeDataManager.findCallTimeDataForResource(metric.getScheduleId(),beginTime,endTime,PageControl.getUnlimitedInstance());
+			return common.pageListToArray(callTimes).map(function(x) {
+				return {callDestination:x.callDestination, average:x.average, total:x.total, minimum:x.minimum, maximum:x.maximum, count: x.count};
+			});
+		}
+	  }
+	  throw "No CALLTIME Schedule found for this resource"
+  }
+  
+  common.trace("Enumerating metrics")
   var _metrics = {};
   for (index in param.measurements) {
 	  var metric = new Metric(param.measurements[index],param);
 	  var _metricName = _shortenMetricName(metric.name);
 	  _metrics[_metricName] = metric;
+	  if (metric.dataType == "CALLTIME") {
+		  _dynamic.getCallTimes = _getCallTimes; // inject _getCallTimes function
+	  }
   }
   var _retrieveContent = function(destination) {
 		var self = ProxyFactory.getResource(_id);
