@@ -625,10 +625,18 @@ var _common = function() {
 				throw "Criteria object must be defined!";
 			}
 			_trace("Creating criteria with following params: " + _objToString(params));
+			criteria.setStrict(true);
 			for (var k in params) {
 			    // use hasOwnProperty to filter out keys from the
 				// Object.prototype
 			    if (params.hasOwnProperty(k)) {
+			    	if (k=="_opts") {
+			    		var _opts = params[k]
+			    		if (_opts.hasOwnProperty("strict") && typeof(_opts["strict"]) == "boolean") {
+			    			criteria.setStrict(_opts["strict"]);
+			    		}
+			    		continue;
+			    	}
 			    	if (shortcutFunc) {
 				    	var shortcutExpr = shortcutFunc(k,params[k]);
 				    	if (shortcutExpr) {
@@ -655,7 +663,7 @@ var _common = function() {
 			        }
 			    }
 			}
-			criteria.setStrict(true);
+			
 			return criteria;
 		}
 	};
