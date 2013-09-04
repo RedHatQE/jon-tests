@@ -16,11 +16,13 @@ var num = hits; // minimal value of response hits
 var found = false;
 var res = findRHQDeployment(war).child({name:"web"});
 
-res.getCallTimes().forEach(function(x) {
+// list callTimes from past 5 minutes
+var now = new Date().getTime()
+res.getCallTimes(now - (5 * 60 * 1000),now).forEach(function(x) {
 	//println(x.callDestination+":"+x.count);
 	if (x.callDestination == endp) {
 		found = true
-		assertTrue(x.count > num, "Hit count for ["+endp+"] is greater than "+num);
+		assertTrue(x.count >= num, "Current hit count ["+x.count+"] for ["+endp+"] is greater than "+num);
 	}
 });
-assertTrue(found,"Endpoint ["+endp+"] was not found within calltimes for resource "+res);
+assertTrue(found,"Endpoint ["+endp+"] was not even found within calltimes for resource "+res);

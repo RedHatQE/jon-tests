@@ -6,6 +6,7 @@ import com.redhat.qe.jon.clitest.base.CliEngine;
 import com.redhat.qe.jon.clitest.base.CliTestRunner;
 import com.redhat.qe.jon.common.util.HTTPClient;
 
+@Test(groups="responseTime")
 public class ResponseTimeFilterTest extends CliEngine {
     
     private HTTPClient client = new HTTPClient("http://"+System.getProperty("jon.server.host", "localhost")+":7080");
@@ -30,8 +31,12 @@ public class ResponseTimeFilterTest extends CliEngine {
 	createJSRunner("metrics/enableRTFilter.js")
 		.withArg("deployment", deployment)
 		.run();	
-	for (int i = 0; i<= hits;i++) {
-	    client.isDeploymentAvailable(endPoint);
+	for (int i = 0; i < hits;i++) {
+	    client.doGet(endPoint, "rhqadmin", "rhqadmin");
+	}
+	log.info("Doing 11 other hits, so we make sure rtFilter flushes hits we're checking");
+	for (int i = 0; i < 11;i++) {
+	    client.doGet("rest/status.xml", "rhqadmin", "rhqadmin");
 	}
 	waitFor(1000 * 2 * 60,"Waiting for metric collection");
 	createJSRunner("metrics/validateCallTime.js")
@@ -40,5 +45,4 @@ public class ResponseTimeFilterTest extends CliEngine {
 	.withArg("hits", String.valueOf(hits))
 	.run();
     }
-   
 }

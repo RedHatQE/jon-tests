@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.redhat.qe.Assert;
 
 public class HTTPClient {
@@ -57,6 +59,45 @@ public class HTTPClient {
      */
     public String getServerAddress() {
         return serverAddress;
+    }
+
+    /**
+     * does GET on given resource, optionally with basic auth credentials
+     * @param resource to be visited
+     * @param username if using basic auth (can be null)
+     * @param password if using basic auth (can be null)
+     * @return content returned from server
+     */
+    public String doGet(String resource, String username, String password) {
+	String url = getServerAddress() + "/" + resource;
+	log.fine("doing GET on  /" + resource + "");
+	HttpURLConnection connection = null;
+	try {
+	    URL u = new URL(url);
+	    connection = (HttpURLConnection) u.openConnection();
+	    if (username != null && password != null) {
+		String userpass = username + ":" + password;
+		String basicAuth = "Basic " + new String(Base64.encodeBase64(userpass.getBytes()));
+		connection.setRequestProperty("Authorization", basicAuth);
+	    }
+	    StringBuilder sb = new StringBuilder();
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	    for (String line; (line = reader.readLine()) != null;) {
+		sb.append(line);
+	    }
+	    return sb.toString();
+
+	} catch (MalformedURLException e1) {
+	    throw new RuntimeException(e1);
+	} catch (ConnectException e) {
+	    return null;
+	} catch (IOException e) {
+	    throw new RuntimeException(e);
+	} finally {
+	    if (connection != null) {
+		connection.disconnect();
+	    }
+	}
     }
 
     /**
