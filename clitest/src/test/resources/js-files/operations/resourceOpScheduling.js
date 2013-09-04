@@ -78,9 +78,9 @@ platform.scheduleOperationUsingCron(viewProcListOpName,cronExpr2);
 scheduledOp = OperationManager.findScheduledResourceOperations(platform.id);
 assertTrue(scheduledOp.size() == 2,"Incorrect number of scheduled operations, expected: 2, actual: " + scheduledOp.size());
 
-
+// check count of operation in operation history, 2 are expected immediately because those are displayed there as 'not yet started'
 opHistory = getResOpHistory(platform.id);
-assertTrue(opHistory.size() == 0,"Incorrect number of operations in history, expected: "+0+", actual: "+opHistory.size());
+assertTrue(opHistory.size() == 2,"Incorrect number of operations in history, expected: 2, actual: "+opHistory.size());
 
 var expectedLaunch1 = new Date(year, month - 1, day, hour, min, 0, 0);
 var expectedLaunch2 = new Date(year, month - 1, day, hour, min, 10, 0);
