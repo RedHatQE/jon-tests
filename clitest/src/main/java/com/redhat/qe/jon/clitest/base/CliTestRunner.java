@@ -199,6 +199,9 @@ public class CliTestRunner {
 	    if (this.cliArgs == null) {
 		this.cliArgs = "";
 	    }
+	    if (value.contains(" ")) { // quote value when it contains space
+		value = "\""+value+"\"";
+	    }
 	    this.cliArgs += " " + name + "=" + value;
 	}
 	return this;
