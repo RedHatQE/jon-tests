@@ -13,6 +13,7 @@ public class CliTestRunner {
 
     private static Logger log = Logger.getLogger(CliTestRunner.class.getName());
     private final CliEngine engine;
+    private String rhqTarget;
     private String username;
     private String password;
     private String jsFile;
@@ -194,6 +195,16 @@ public class CliTestRunner {
 	this.username = user;
 	return this;
     }
+    
+    /**
+     * specify rhq target server
+     * @param rhqTarget
+     * @return this
+     */
+    public CliTestRunner onRhqTarget(String rhqTarget){
+    	this.rhqTarget = rhqTarget;
+    	return this;
+    }
     public CliTestRunner withArg(String name, String value) {
 	if (name != null && value != null) {
 	    if (this.cliArgs == null) {
@@ -238,7 +249,7 @@ public class CliTestRunner {
 	String result = null;
 	if (jsSnippet==null) {
 	    try {
-		engine.runJSfile(null, this.username, this.password, this.jsFile, this.cliArgs, this.expectedResult, this.makeFailure, jsDepends, resSrc, resDst, this.resources);
+		engine.runJSfile(this.rhqTarget, this.username, this.password, this.jsFile, this.cliArgs, this.expectedResult, this.makeFailure, jsDepends, resSrc, resDst, this.resources);
 		result = engine.consoleOutput;
 	    } catch (Exception e) {
 		Assert.fail("Test failed : "+e.getMessage(), e);
@@ -246,7 +257,7 @@ public class CliTestRunner {
 	}
 	else {
 	    try {
-		engine.runJSSnippet(this.jsSnippet, null, this.username, this.password, cliArgs, expectedResult, this.makeFailure, jsDepends, resSrc, resDst, this.resources);
+		engine.runJSSnippet(this.jsSnippet, this.rhqTarget, this.username, this.password, cliArgs, expectedResult, this.makeFailure, jsDepends, resSrc, resDst, this.resources);
 		result = engine.consoleOutput;
 	    } catch (Exception e) {
 		Assert.fail("Test failed : "+e.getMessage(), e);
