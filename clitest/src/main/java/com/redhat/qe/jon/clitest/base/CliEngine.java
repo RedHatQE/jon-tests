@@ -173,6 +173,9 @@ public class CliEngine extends CliTestScript {
 		}
 		if (cliArgs==null) {
 		    cliArgs="";
+		    if(resources.size() > 0){
+		    	cliArgs = "--args-style=named ";
+		    }
 		}
 		cliArgs += prepareResources(resources);
 		String jsFilePath = getResourceFileName(jsFile);
