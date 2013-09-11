@@ -53,7 +53,7 @@ function findInvalidParamValue() {
 	}
 	catch (exc) {
 		println(exc);
-		assertTrue(exc.indexOf("you have passed wrong")> 0,"correct exception was thrown");
+		assertTrue(exc.indexOf("have passed wrong argument")>=0,"correct exception was thrown");
 		exception = true;
 		
 	}
