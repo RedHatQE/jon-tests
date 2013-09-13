@@ -305,6 +305,7 @@ public class SahiTasks extends ExtendedSahi {
         this.textbox("url").setValue(bundleURL);
         this.cell("Next").click();
         this.cell("Next").click();
+        this.cell("Next").click();
         this.waitFor(1000*3);
         this.cell("Finish").click();
         this.waitFor(1000*3);
