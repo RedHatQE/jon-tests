@@ -24,7 +24,7 @@ public class ResourceConfiguration extends ConfigurationCliTest {
 	}
 
 	private static String[] readDataFromFile() {
-
+	    	
 		String strLine = null;
 		String[] strList = new String[0];
 		try {
@@ -65,16 +65,8 @@ public class ResourceConfiguration extends ConfigurationCliTest {
 	}
 
 	@Test(dataProvider = "createStartupConfigurations", description = "This test puts configuration prperty names and values into admin configuration")
-	public void updateResourceConfigurationTest(String config)
+	public void updateResourceConfigurationTest(ConfigValue config)
 			throws IOException, CliTasksException {
 		updateResourceConfiguration(config);
 	}
-
-	@AfterClass
-	public void teardown() {
-		// we start AS with all defaults (as it was before)
-		log.info("Starting server with default (none) parameters");
-		// sshClient.restart("domain.sh");
-	}
-	
 }
