@@ -32,11 +32,9 @@ public class BundleWorkflowTest extends CliEngine {
     @BeforeClass
     public void initBundles() {
 	createJSRunner("bundles/init.js")
-	.addDepends("/js-files/rhqapi.js")
-	.resourceSrcs("/bundles/bundle.zip","/bundles/bundle-v2.zip")
-	.resourceDests("/tmp/bundle.zip","/tmp/bundle-v2.zip")
-	.withArg("bundle1", "/tmp/bundle.zip")
-	.withArg("bundle2", "/tmp/bundle-v2.zip").run();	
+	.withResource("/bundles/bundle.zip", "bundle1")
+	.withResource("/bundles/bundle-v2.zip", "bundle2")
+	.run();	
     }
 
     @Test()

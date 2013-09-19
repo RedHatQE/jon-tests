@@ -20,14 +20,14 @@ groups.find().forEach(function(b){
 });
 
 common.info("Creating a group of platforms");
-var platformsGroup = groups.create("All platforms",Inventory.platforms());
+var platformsGroup = groups.create("Linux platforms",resources.platforms(type:"Linux"));
 
 
 /**
  * Test 1 - Getting bundle version
  */
 common.info("Getting bundle version");
-var bVersion = createBundleVersion("/tmp/bundle.zip");
+var bVersion = createBundleVersion(bundle);
 assertTrue(bVersion.version == "1.0");
 
 

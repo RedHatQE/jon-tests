@@ -18,9 +18,7 @@ public class Eap5JonDocExampleCliTest extends CliEngine {
 	public void creatingContentBackedResTest(){
 		createJSRunner("docExample/jon/short/creatingContentBackedRes.js").
 			dependsOn("rhqapi.js").
-			withArg("deployment", "/tmp/MiscBeans-3.2.2.ear").
-			resourceSrcs("/deployments/MiscBeans-3.2.2.ear").
-			resourceDests("/tmp/MiscBeans-3.2.2.ear").
+			withResource("/deployments/MiscBeans-3.2.2.ear","deployment").
 			run();
 	}
 	
@@ -30,9 +28,7 @@ public class Eap5JonDocExampleCliTest extends CliEngine {
 	public void updatingContentBackedResTest(){
 		createJSRunner("docExample/jon/short/updatingContentBackedRes.js").
 			dependsOn("rhqapi.js").
-			withArg("deployment", "/tmp/MiscBeans-3.2.5.ear").
-			resourceSrcs("/deployments/MiscBeans-3.2.5.ear").
-			resourceDests("/tmp/MiscBeans-3.2.5.ear").
+			withResource("/deployments/MiscBeans-3.2.2.ear","deployment").
 			run();
 	}
 	

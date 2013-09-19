@@ -49,8 +49,7 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 		addDepends("rhqapi.js," +
 				"file://"+getCliSampleFileLocation("util.js")+
 				",file://"+getCliSampleFileLocation("bundles.js")).
-				resourceSrcs("/bundles/bundle.zip").
-				resourceDests("/tmp/bundle.zip").
+				withResource("/bundles/bundle.zip","bundle").
 				run();
 	}
 	
