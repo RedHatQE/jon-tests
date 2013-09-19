@@ -42,7 +42,7 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 		run();
 	}
 	
-	@Test
+	@Test(groups={"blockedByBug-1003679"})
 	public void bundlesTest() throws IOException{
 		// run the test
 		createJSRunner("samplesFromCliClient/bundlesTest.js").
