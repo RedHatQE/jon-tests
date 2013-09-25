@@ -138,8 +138,8 @@ public class DynamicAntBundle {
 	VelocityContext context = new VelocityContext();
 	context.put("name", this.name);
 	context.put("version", this.version);
-	context.put("compatibility", this.compatibility);
-	Template t = ve.getTemplate("/bundles/antBundle.vm");
+	context.put("compatibility", this.compatibility.name());
+	Template t = ve.getTemplate("bundles/antBundle.vm");
 	File tmpDeployXml = File.createTempFile("dynamic", "bundle");
 	FileWriter fw = new FileWriter(tmpDeployXml);
 	t.merge(context, fw);
