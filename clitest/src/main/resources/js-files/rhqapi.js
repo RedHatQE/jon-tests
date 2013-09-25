@@ -2518,10 +2518,12 @@ var bundles = (function() {
 		 * @type Bundle
 		 */
     createFromDistFile : function(dist,username,password) {
+    	common.trace("bundles.createFromDistFile('"+dist+"','"+username+"','"+password+"')");
     	if (dist==null) {
     		throw "parameter dist must not be null"
     	}
     	if (dist.indexOf("http")==0) {
+    		common.debug("Getting bundle file from URL: "+dist);
     		password =  password || null;
     		if (username!=null && password!=null) {
     			var version = BundleManager.createBundleVersionViaURL(dist,username,password);
@@ -2531,6 +2533,7 @@ var bundles = (function() {
 		    return new Bundle(version.bundle);
     	}
     	else {
+    		common.debug("Getting bundle file from disk: '"+dist+"'");
 			var file = new java.io.File(dist);
 			if (!file.exists()) {
 				throw "file parameter ["+file+"] does not exist!";
@@ -2541,6 +2544,7 @@ var bundles = (function() {
 		    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
 			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
 		    }
+		    
 		    var version = BundleManager.createBundleVersionViaByteArray(fileBytes);
 		    return new Bundle(version.bundle);
     	}
@@ -2796,7 +2800,7 @@ var Bundle = function(param) {
 			if (typeof(version) == "string") {
 				versionStr = version;
 			}
-			else if (typeof(version) == "object") {
+			else if (version != null && typeof(version) == "object") {
 				versionStr = version.obj;
 			}
 			common.trace("Bundle("+_id+").deploy(destination="+common.objToString(destination)+",params="+common.objToString(params)+",version="+versionStr+")");
