@@ -302,6 +302,7 @@ public class CliEngine extends CliTestScript {
 			if (!oldResource.equals(newResource)) {
 			    // do not output when listener didn't touch resource
 			    _logger.fine("Resource [" + resource + "] has been processed by listener, new result [" + newResource.getAbsolutePath() + "]");
+			    tempFiles.add(newResource.getAbsolutePath());
 			}
 			resource = newResource.getAbsolutePath();
 		    } else {
