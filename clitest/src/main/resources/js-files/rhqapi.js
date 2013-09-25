@@ -4243,7 +4243,7 @@ var delay = 5;
 /**
  * total timeout of any waiting in seconds
  */
-var timeout = 120;
+var timeout = 360;
 
 /**
  *  initializes verbosity and timeouts
