@@ -38,6 +38,8 @@ enableMetrics();
 
 clearAllGroups();
 createGroups();
+
+//deployment doesn't work on 3.1.0, null pointer is thrown
 setUpEap6Standalone();
 
 prepareUsers();
@@ -47,6 +49,7 @@ prepareBundles();
 
 shutDownAgent();
 
+setBaselineFreqInterval();
 /******************************************************************************
  * Functions
  */
@@ -104,6 +107,7 @@ function setUpEap6Standalone(){
 		common.info("Scheduling restart operation each one hour for next 24 hours");
 		eap6StandaloneArray[x].scheduleOperation("restart",3600,3600,24);
 		
+		// deployment doesn't work on 3.1.0, null pointer is thrown
 		var depName = "hello1.war";
 		common.info("Deploying WAR file" + depName);
 		var deployed = eap6StandaloneArray[x].child({type:"Deployment",name:depName});
@@ -199,6 +203,10 @@ function prepareBundles(){
 	common.info("Creating destination");
 	var destination = bundle.createDestination(groups.find({name: "All platforms"})[0],"test","/tmp/bundle");
 	assertTrue(destination !=null,"Bundle destination was not created");
+	
+	var conf = {};
+	conf['listener.port'] = 8080;
+	bundle.deploy(destination,conf,null);
 }
 
 function addRepositories(){
@@ -269,4 +277,14 @@ function shutDownAgent(){
 	var platform = eap6StandaloneArray[0].parent();
 	var agent = platform.child({type:"RHQ Agent"});
 	agent.invokeOperation("shutdown");
+}
+
+function setBaselineFreqInterval(){
+	common.info("Setting baseline frequency and dataset");
+	var sysSet = SystemManager.getSystemSettings();
+	var config = sysSet.toConfiguration();
+	config.setSimpleValue('CAM_BASELINE_FREQUENCY','86400000');
+	config.setSimpleValue('CAM_BASELINE_DATASET','86400000');
+	sysSet.applyConfiguration(config);
+	SystemManager.setSystemSettings(sysSet);
 }
