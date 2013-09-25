@@ -25,7 +25,7 @@ public class CliTestRunner {
     private String[] resSrc;
     private String[] resDst;
     private List<AdditionalResource> resources;
-    private CliTestRunListener runListener;
+    private CliTestRunListener runListener = new CliTestRunListenerImpl();
     
     public CliTestRunner(CliEngine engine) {
 	this.engine = engine;
