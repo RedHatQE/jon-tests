@@ -32,8 +32,8 @@ public class BundleWorkflowTest extends CliEngine {
     @BeforeClass
     public void initBundles() {
 	createJSRunner("bundles/init.js")
-	.withResource("/bundles/bundle.zip", "bundle1")
-	.withResource("/bundles/bundle-v2.zip", "bundle2")
+	.withResource("antbundle:bundle:1.0", "bundle1") // we use bundles generated at runtime
+	.withResource("antbundle:bundle:2.0", "bundle2")
 	.run();	
     }
 

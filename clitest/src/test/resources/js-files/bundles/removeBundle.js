@@ -16,7 +16,7 @@ assertTrue(bundle.versions().length == 2, "2 Bundle versions were uploaded");
 assertTrue(bundle.destinations().length == 1, "1 Bundle versions were created");
 
 bundle.versions().forEach(function(b) {
-	assertTrue(b.files().length == 2,"There are 2 files within bundle version");
+	assertTrue(b.files().length == 1,"There is 1 file within bundle version");
 	b.remove();
 });
 assertTrue(bundle.versions().length == 0, "All versions were removed");

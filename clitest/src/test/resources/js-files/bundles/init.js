@@ -23,7 +23,7 @@ groups.find({name:group}).forEach(function(x) {
 
 
 
-var platforms = groups.create(group,resources.platforms(type:"Linux"));
+var platforms = groups.create(group,resources.platforms({type:"Linux"}));
 
 println("Creating bundle from dist-files");
 bundles.createFromDistFile(bundleFile1);
