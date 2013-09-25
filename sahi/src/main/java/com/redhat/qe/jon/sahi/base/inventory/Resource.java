@@ -473,34 +473,34 @@ public class Resource {
 		newPath.remove(newPath.size()-1);
 		return new Resource(null,tasks,newPath);
 	}
-	/**
-	 * checks whether this resource is available (ONLINE) by navigating to it's summary 
-	 * and searching for UP/DOWN image.
-	 * @return true if this resource is online, false if it is offline
-	 */
-	public boolean isAvailable() {
-		// we need to retry detection when resource is in unknown state
-		int count = 0;
-		while (count < Timing.REPEAT) {
-			count++;
-			// because UI caches availability things and we keep refreshing same page
-			// we need to force it to reload .. so we navigate somewhere else
-			tasks.link("Dashboard").click();
-			this.summary();
-	        if (tasks.image("Server_down_24.png").exists()) {
-	            log.fine("Resource [" + getName() + "] is offline!");
-	            return false;
-	        }
-	        if (tasks.image("Server_up_24.png").exists() || tasks.image("availability_green_24.png").exists()) {
-	            log.fine("Resource [" + getName() + "] is online!");
-	            return true;
-	        }
-	        log.info("Waiting "+Timing.toString(Timing.TIME_30S)+" for resource to be in known state ..");
-	        tasks.waitFor(Timing.TIME_30S);
-        }
-        log.info("Could not verify whether a resource ["+getName()+"] is online or offline -- neither Server_down_16.png nor Server_up_16.png was found and resource remained in unknown state for too long");
-        return false;
+
+    /**
+     * checks whether this resource is available (ONLINE) by navigating to it's
+     * summary and searching for UP/DOWN image.
+     * 
+     * @return true if this resource is online, false if it is offline
+     */
+    public boolean isAvailable() {
+	// we need to retry detection when resource is in unknown state
+	int count = 0;
+	while (count < Timing.REPEAT) {
+	    count++;
+	    this.summary();
+	    if (tasks.image("availability_red_24.png").exists()) {
+		log.fine("Resource [" + getName() + "] is offline!");
+		return false;
+	    }
+	    if (tasks.image("Server_up_24.png").exists() || tasks.image("availability_green_24.png").exists()) {
+		log.fine("Resource [" + getName() + "] is online!");
+		return true;
+	    }
+	    log.info("Waiting " + Timing.toString(Timing.TIME_30S) + " for resource to be in known state ..");
+	    tasks.waitFor(Timing.TIME_30S);
 	}
+	log.info("Could not verify whether a resource [" + getName()
+		+ "] is online or offline -- neither Server_down_16.png nor Server_up_16.png was found and resource remained in unknown state for too long");
+	return false;
+    }
 
 
 	
