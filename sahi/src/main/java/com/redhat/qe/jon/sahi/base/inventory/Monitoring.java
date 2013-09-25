@@ -22,7 +22,9 @@ public class Monitoring extends ResourceTab {
      * selects <b>Tables</b> subtab and returns helper object
      * 
      * @return tables subtab
+     * @deprecated tables are no longer present in JON 3.2
      */
+    @Deprecated
     public Tables tables() {
 	navigateUnderResource("Monitoring/Tables");
 	return new Tables(tasks);
@@ -46,7 +48,15 @@ public class Monitoring extends ResourceTab {
 	navigateUnderResource("Monitoring/Schedules");
 	return new Schedules(tasks);
     }
-
+    /**
+     * selects <b>Metrics</b> subtab and returns helper object
+     * 
+     * @return metrics subtab
+     */
+    public Tables metrics() {
+	navigateUnderResource("Monitoring/Metrics");
+	return new Tables(tasks);
+    }
     public static class Schedules {
 	private final SahiTasks tasks;
 	private final Logger log = Logger.getLogger(this.getClass().getName());
@@ -85,6 +95,14 @@ public class Monitoring extends ResourceTab {
 	    for (ElementStub e : tasks.cell("Set").collectSimilar()) {
 		tasks.xy(e, 3, 3).click();
 	    }
+	}
+	/**
+	 * gets interval for metric 
+	 * @param metric name
+	 * @return collection interval
+	 */
+	public String getInterval(String metric) {
+	    return tasks.cell(4).in(getMetricCell(metric).parentNode("tr")).getText();
 	}
 
 	/**
@@ -135,6 +153,25 @@ public class Monitoring extends ResourceTab {
 	    throw new RuntimeException("Unable to find metric cell called ["
 		    + metricName + "]");
 	}
+	/**
+	 * 
+	 * @param metricName
+	 * @return true if metric with given name is present
+	 */
+	public boolean containsMetric(String metricName) {
+	    List<ElementStub> tables = tasks.table("listTable")
+		    .collectSimilar();
+	    log.fine("listTable count = " + tables.size());
+	    for (ElementStub table : tables) {
+		if (table.isVisible()) {
+		    ElementStub metricCell = tasks.cell(metricName).in(table);
+		    if (metricCell.isVisible()) {
+			return true;
+		    }
+		}
+	    }
+	    return false;
+	}
 
 	/**
 	 * checks whether given metric row contains given value
@@ -168,4 +205,5 @@ public class Monitoring extends ResourceTab {
 	}
     }
 
+ 
 }
