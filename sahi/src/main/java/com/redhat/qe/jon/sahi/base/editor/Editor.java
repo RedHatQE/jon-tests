@@ -257,19 +257,23 @@ public class Editor {
         int pickers = tasks.image("comboBoxPicker.png").countSimilar();
         log.fine("Found " + pickers + " comboboxes, required index=" + index);
         ElementStub picker = tasks.image("comboBoxPicker.png[" + index + "]");
-        tasks.xy(picker.parentNode(), 3, 3).click();
-        int rows = tasks.row(selection).countSimilar();
-        if (rows == 0 && tasks.image("comboBoxPicker_Over.png").exists()) {
-            log.fine("Combo did not pop up? Trying one more click...");
+        tasks.xy(picker, 3, 3).mouseOver();
+        tasks.xy(tasks.image("comboBoxPicker_Over.png"),3,3).click();
+        log.fine("clicked on combo");
+        List<ElementStub> rows = tasks.row(selection).collectSimilar();
+        if (rows.size() == 0 && tasks.image("comboBoxPicker_Over.png").exists()) {
+            log.fine("Combo did not pop up? Trying ONE more click...");
             // when combo is focused single click does NOT work - wtf!
-            tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).click();
-            rows = tasks.row(selection).countSimilar();
+            tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseDown();
+            tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseUp();
+            rows = tasks.row(selection).collectSimilar();
         }
-        if (rows == 1) {
-            index = 0;
+        // we always want to click on last row/cell because it has been added as the last one
+        else {
+            index = rows.size() - 1;
         }
-        log.fine("Found rows matching [" + selection + "] : " + rows + " clicking on index=" + index);
-        ElementStub es = tasks.cell(selection + "[" + index + "]");
+        log.fine("Found rows matching [" + selection + "] : " + rows.size() + " clicking on index=" + index);
+        ElementStub es = tasks.cell(selection).in(rows.get(index));
         if (es.isVisible()) {
             tasks.xy(es, 3, 3).click();
             log.fine("Selected  [" + selection + "].");
