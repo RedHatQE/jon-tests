@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import net.sf.sahi.client.ElementStub;
 
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tasks.Timing;
 
 public class Monitoring extends ResourceTab {
 
@@ -102,6 +103,7 @@ public class Monitoring extends ResourceTab {
 	 * @return collection interval
 	 */
 	public String getInterval(String metric) {
+	    tasks.waitFor(Timing.TIME_1S);
 	    return tasks.cell(4).in(getMetricCell(metric).parentNode("tr")).getText();
 	}
 
@@ -156,7 +158,7 @@ public class Monitoring extends ResourceTab {
 	/**
 	 * 
 	 * @param metricName
-	 * @return true if metric with given name is present
+	 * @return true if metric with given name is present in metrics table
 	 */
 	public boolean containsMetric(String metricName) {
 	    List<ElementStub> tables = tasks.table("listTable")
@@ -171,6 +173,9 @@ public class Monitoring extends ResourceTab {
 		}
 	    }
 	    return false;
+	}
+	public void refresh() {
+	    tasks.cell("Refresh").click();
 	}
 
 	/**
