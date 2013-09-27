@@ -252,7 +252,20 @@ public class Editor {
     public void scrollDown() {
         scrollDown(1);
     }
+    /**
+     * selects given value in combobox - this will literally try to expand all comboboxes on page until
+     * given selection is found
+     * @param selection text to be selected
+     */
+    public void selectCombo(String selection) {
+	selectCombo(0,selection);
+    }
 
+    /**
+     * selects given value in combobox.
+     * @param index of combobox on page
+     * @param selection text to be selected
+     */
     public void selectCombo(int index, String selection) {
         int pickers = tasks.image("comboBoxPicker.png").countSimilar();
         log.fine("Found " + pickers + " comboboxes, required index=" + index);
@@ -261,17 +274,35 @@ public class Editor {
         tasks.xy(tasks.image("comboBoxPicker_Over.png"),3,3).click();
         log.fine("clicked on combo");
         List<ElementStub> rows = tasks.row(selection).collectSimilar();
-        if (rows.size() == 0 && tasks.image("comboBoxPicker_Over.png").exists()) {
+        if (rows.isEmpty() && tasks.image("comboBoxPicker_Over.png").exists()) {
             log.fine("Combo did not pop up? Trying ONE more click...");
             // when combo is focused single click does NOT work - wtf!
             tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseDown();
             tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseUp();
             rows = tasks.row(selection).collectSimilar();
         }
+	if (rows.isEmpty()) {
+	    if (pickers - 1 > index) {
+		// combo was probably clicked, but selection did not appear
+		// I know this may sound crazy, but 'index' might be wrong, so
+		// let's
+		// try out all pickers
+		log.warning("Selection not found, maybe because of wrong index=" + index + ". Let's be smarter then QE and try out other (higher index) combo pickers");
+
+		try {
+		    log.info("Trying out selectCombo(" + (index + 1) + "," + selection + ")");
+		    // but first close the original combo
+		    tasks.xy(picker,3,3).click();
+		    this.selectCombo(index + 1, selection);
+		    return;
+		} catch (RuntimeException e) {
+
+		}
+	    }
+	    throw new RuntimeException("Unable to select [" + selection + "] comboBox did NOT pop up");
+	}
         // we always want to click on last row/cell because it has been added as the last one
-        else {
-            index = rows.size() - 1;
-        }
+        index = rows.size() - 1;
         log.fine("Found rows matching [" + selection + "] : " + rows.size() + " clicking on index=" + index);
         ElementStub es = tasks.cell(selection).in(rows.get(index));
         if (es.isVisible()) {
