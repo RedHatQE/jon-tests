@@ -1,32 +1,22 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.logging.Logger;
+import com.redhat.qe.*;
+import com.redhat.qe.jon.common.util.*;
+import com.redhat.qe.jon.common.util.RestClient.*;
+import com.redhat.qe.jon.sahi.base.inventory.Inventory.*;
+import com.redhat.qe.jon.sahi.base.inventory.Operations.*;
+import com.redhat.qe.jon.sahi.base.inventory.alerts.*;
+import com.redhat.qe.jon.sahi.tasks.*;
+import net.sf.sahi.client.*;
+import org.json.simple.*;
+import org.json.simple.parser.*;
+
 import java.awt.*;
 import java.awt.event.*;
-
-import net.sf.sahi.client.ElementStub;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-
-import com.redhat.qe.Assert;
-import com.redhat.qe.jon.common.util.HTTPClient;
-import com.redhat.qe.jon.common.util.RestClient;
-import com.redhat.qe.jon.common.util.RestClient.URIs;
-import com.redhat.qe.jon.sahi.base.inventory.Inventory.ChildResources;
-import com.redhat.qe.jon.sahi.base.inventory.Operations.Operation;
-import com.redhat.qe.jon.sahi.base.inventory.alerts.Alerts;
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.jon.sahi.tasks.Timing;
+import java.util.*;
+import java.util.List;
+import java.util.Map.*;
+import java.util.logging.*;
 /**
  * this represents RHQ Resource. Each resource is defined by its path within inventory. 
  * Path starts with {@link Resource#getPlatform()} and ends with {@link Resource#getName()}
@@ -485,6 +475,9 @@ public class Resource {
 	int count = 0;
 	while (count < Timing.REPEAT) {
 	    count++;
+        // because UI caches availability things and we keep refreshing same page
+        // we need to force it to reload .. so we navigate somewhere else
+        tasks.link("Dashboard").click();
 	    this.summary();
 	    if (tasks.image("availability_red_24.png").exists()) {
 		log.fine("Resource [" + getName() + "] is offline!");
