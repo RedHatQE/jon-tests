@@ -19,7 +19,7 @@
 				<parameter name="js.depends" value="rhqapi.js" />
 				<parameter name="res.src" value="/deployments/hello1.war,/bundles/bundle.zip" />
 				<parameter name="res.dst" value="/tmp/hello1.war,/tmp/bundle.zip" />
-				<parameter name="cli.args" value="--args-style=named deploymentWar=/tmp/hello1.war" />
+				<parameter name="cli.args" value="--args-style=named deploymentWar=/tmp/hello1.war bundleDistFile=/tmp/bundle.zip" />
 				<methods>
 					<include name="runJSfile"></include>		
 				</methods>

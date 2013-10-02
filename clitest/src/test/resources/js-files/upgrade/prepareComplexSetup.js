@@ -247,7 +247,7 @@ function addDriftDefinitions(){
 		driftDef.setName(driftDefName +i);
 	
 		// remove a drift definition with the same name if there is any
-		var retreivedDriftDefs = drifts.findDriftDefinition({name:driftDefName+i});
+		var retreivedDriftDefs = drifts.findDriftDefinition({name:driftDefName+i,resourceIds:[platforms[i].id]});
 		if(retreivedDriftDefs.length>0){
 			common.info("Removing a drift definition with name:  "+driftDef.getName());
 			DriftManager.deleteDriftDefinition(entityContext,driftDef.getName());
@@ -275,8 +275,10 @@ function scheduleOperations(){
 
 function shutDownAgent(){
 	var platform = eap6StandaloneArray[0].parent();
-	var agent = platform.child({type:"RHQ Agent"});
-	agent.invokeOperation("shutdown");
+	if(eap6StandaloneArray.length >1){
+		var agent = platform.child({type:"RHQ Agent"});
+		agent.invokeOperation("shutdown");
+	}
 }
 
 function setBaselineFreqInterval(){
