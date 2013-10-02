@@ -2947,6 +2947,9 @@ var resources = (function () {
 		    	if (key=="type") {
 		    		return "addFilterResourceTypeName(\""+value+"\")";
 		    	}
+		    	if (key=="key") {
+		    		return "addFilterResourceKey(\""+value+"\")";
+		    	}
 			});
 			// by default only 200 items are returned, this line discards it ..
 			// so we get unlimited list
