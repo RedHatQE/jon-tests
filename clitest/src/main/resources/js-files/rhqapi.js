@@ -462,8 +462,8 @@ var _common = function() {
 			return String(hash);
 		}
 		output = "";
-		for (key in hash) {
-			if (!hash.hasOwnProperty(key)) {
+		for (k in hash) {
+			if (!hash.hasOwnProperty(k)) {
 				continue;
 			}
 			var valueStr = (function(key, value) {
@@ -526,7 +526,7 @@ var _common = function() {
 					return;
 				}
 				return prop;
-			})(key, hash[key])
+			})(k, hash[k])
 
 			if (valueStr) {
 				output += valueStr + ",";
