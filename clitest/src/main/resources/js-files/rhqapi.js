@@ -174,11 +174,11 @@ var _common = function() {
 		if (!hash) {
 			return config;
 		}
-		for(key in hash) {
-			if (!hash.hasOwnProperty(key)) {
+		for(_k in hash) {
+			if (!hash.hasOwnProperty(_k)) {
 				continue;
 			}
-			value = hash[key];
+			value = hash[_k];
 
 			(function(parent, key, value) {
 				function isArray(obj) {
@@ -243,7 +243,7 @@ var _common = function() {
 				} else {
 					parent.put(prop);
 				}
-			})(config, key, value);
+			})(config, _k, value);
 		}
 
 		return config;
@@ -363,9 +363,9 @@ var _common = function() {
 	 */
 	var _applyConfiguration = function(original,definition,values) {
 		values = values || {};
-		for (var k in values) {
+		for (var _k in values) {
 			// we only iterrate over values
-			if (values.hasOwnProperty(k)) {
+			if (values.hasOwnProperty(_k)) {
 				// parent - parent configuration
 				// definition - parent configuration definition
 				// key - config key to be applied
@@ -433,7 +433,7 @@ var _common = function() {
 					} else {
 						parent.put(prop);
 					}
-				}) (original,definition,k,values[k]);
+				}) (original,definition,_k,values[_k]);
 			}
 		}
 
@@ -462,8 +462,8 @@ var _common = function() {
 			return String(hash);
 		}
 		output = "";
-		for (k in hash) {
-			if (!hash.hasOwnProperty(k)) {
+		for (_k in hash) {
+			if (!hash.hasOwnProperty(_k)) {
 				continue;
 			}
 			var valueStr = (function(key, value) {
@@ -526,7 +526,7 @@ var _common = function() {
 					return;
 				}
 				return prop;
-			})(k, hash[k])
+			})(_k, hash[_k])
 
 			if (valueStr) {
 				output += valueStr + ",";
@@ -626,19 +626,19 @@ var _common = function() {
 			}
 			_trace("Creating criteria with following params: " + _objToString(params));
 			criteria.setStrict(true);
-			for (var k in params) {
+			for (var _k in params) {
 			    // use hasOwnProperty to filter out keys from the
 				// Object.prototype
-			    if (params.hasOwnProperty(k)) {
-			    	if (k=="_opts") {
-			    		var _opts = params[k]
+			    if (params.hasOwnProperty(_k)) {
+			    	if (_k=="_opts") {
+			    		var _opts = params[_k]
 			    		if (_opts.hasOwnProperty("strict") && typeof(_opts["strict"]) == "boolean") {
 			    			criteria.setStrict(_opts["strict"]);
 			    		}
 			    		continue;
 			    	}
 			    	if (shortcutFunc) {
-				    	var shortcutExpr = shortcutFunc(k,params[k]);
+				    	var shortcutExpr = shortcutFunc(_k,params[_k]);
 				    	if (shortcutExpr) {
 				    		// shortcut func returned something so we can eval
 							// it and skip normal processing for this property
@@ -646,14 +646,14 @@ var _common = function() {
 				    		continue;
 				    	}
 			    	}
-			        var key = k[0].toUpperCase()+k.substring(1);
-			        var func = eval("criteria.addFilter"+key);
+			        var __k = _k[0].toUpperCase()+_k.substring(1);
+			        var func = eval("criteria.addFilter"+__k);
 			        if (typeof func !== "undefined") {
 			        	try {
-			        		func.call(criteria,params[k]);
+			        		func.call(criteria,params[_k]);
 			        	}
 			        	catch (e) {
-			        		throw "You have passed wrong argument (type="+typeof(params[k])+") to filter "+k + " "+ e;
+			        		throw "You have passed wrong argument (type="+typeof(params[_k])+") to filter "+_k + " "+ e;
 			        	}
 			        }
 			        else {
@@ -664,7 +664,7 @@ var _common = function() {
 			        		 names+=name.substring(0,1).toLowerCase()+name.substring(1)+", ";
 			        		}
 			        	});
-			        	throw "Parameter ["+k+"] is not valid filter parameter, valid filter parameters are : "+names;
+			        	throw "Parameter ["+_k+"] is not valid filter parameter, valid filter parameters are : "+names;
 			        }
 			    }
 			}
@@ -768,10 +768,10 @@ var roles = (function() {
 			// Object.prototype
 		    if (params.hasOwnProperty(k)) {
 		    	_checkParam(k);
-		        var key = k[0].toUpperCase()+k.substring(1);
-	        	var func = eval("natRole.set"+key);
+		        var _k = k[0].toUpperCase()+k.substring(1);
+	        	var func = eval("natRole.set"+_k);
 	        	if(typeof func == "undefined"){
-		        	throw "Given parameter '"+key+"' is not defined on org.rhq.core.domain.authz.Role object";
+		        	throw "Given parameter '"+_k+"' is not defined on org.rhq.core.domain.authz.Role object";
 		        }
 	        	func.call(natRole,params[k]);
 		    }
@@ -970,10 +970,10 @@ var users = (function() {
 			// Object.prototype
 		    if (params.hasOwnProperty(k)) {
 		    	_checkParam(k);
-		        var key = k[0].toUpperCase()+k.substring(1);
-		        var func = eval("subject.set"+key);
+		        var _k = k[0].toUpperCase()+k.substring(1);
+		        var func = eval("subject.set"+_k);
 		        if(typeof func == "undefined"){
-		        	throw "Given parameter '"+key+"' is not defined on Subject object";
+		        	throw "Given parameter '"+_k+"' is not defined on Subject object";
 		        }
 		        func.call(subject,params[k]);
 		    }
@@ -1853,10 +1853,10 @@ var dynaGroupDefinitions = (function(){
 		    // use hasOwnProperty to filter out keys from the
 			// Object.prototype
 		    if (params.hasOwnProperty(k)) {
-		        var key = k[0].toUpperCase()+k.substring(1);
-		        var func = eval("groupDefinition.set"+key);
+		        var _k = k[0].toUpperCase()+k.substring(1);
+		        var func = eval("groupDefinition.set"+_k);
 		        if(typeof func == "undefined"){
-		        	throw "Given parameter '"+key+"' is not defined on org.rhq.core.domain.resource.group.GroupDefinition object";
+		        	throw "Given parameter '"+_k+"' is not defined on org.rhq.core.domain.resource.group.GroupDefinition object";
 		        }
 		        func.call(groupDefinition,params[k]);
 		    }
@@ -3341,8 +3341,8 @@ var Resource = function (param) {
 	  common.trace("Resource("+_id+").getCallTimes(beginTime="+beginTime+",endTime="+endTime+")");
 	  beginTime = beginTime || new Date().getTime() - (8 * 3600 * 1000);
 	  endTime = endTime || new Date().getTime(); // 8 hours by default
-	  for (key in _metrics) {
-		var metric = _metrics[key]
+	  for (_k in _metrics) {
+		var metric = _metrics[_k]
 		if (metric.dataType == "CALLTIME") {
 			var callTimes = CallTimeDataManager.findCallTimeDataForResource(metric.getScheduleId(),beginTime,endTime,PageControl.getUnlimitedInstance());
 			return common.pageListToArray(callTimes).map(function(x) {
@@ -3558,9 +3558,9 @@ var Resource = function (param) {
      */
     getMetric : function(name) {
     	common.trace("Resource("+_id+").getMetric("+name+")");
-    	var key = _shortenMetricName(name);
-    	if (key in _metrics) {
-    		return _metrics[key];
+    	var _k = _shortenMetricName(name);
+    	if (_k in _metrics) {
+    		return _metrics[_k];
     	}
     	else {
     		throw "Cannot find metric called ["+name+"]"
@@ -4218,8 +4218,8 @@ var Resource = function (param) {
 	};
 
 	// merge dynamic methods into static ones
-	for (key in _dynamic) {
-		_static[key] = _dynamic[key];
+	for (_k in _dynamic) {
+		_static[_k] = _dynamic[_k];
 	}
 	return _static;
 };
