@@ -1,19 +1,14 @@
 package com.redhat.qe.jon.clitest.base;
 
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.redhat.qe.jon.clitest.base.Configuration.*;
+import com.redhat.qe.jon.clitest.tasks.*;
+import com.redhat.qe.jon.common.*;
+import com.redhat.qe.jon.common.util.*;
+import org.apache.commons.lang3.*;
+import org.testng.annotations.*;
 
-import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
-
-import com.redhat.qe.jon.clitest.base.Configuration.PARAM;
-import com.redhat.qe.jon.clitest.tasks.CliTasks;
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.common.TestScript;
-import com.redhat.qe.jon.common.util.LocalCommandRunner;
-import com.redhat.qe.jon.common.util.SSHClient;
+import java.io.*;
+import java.util.logging.*;
 
 
 /**
@@ -90,9 +85,11 @@ public abstract class CliTestScript extends TestScript{
 	
 	private void CLIClientAutoInstall() throws CliTasksException{
 		_logger.info("Auto-installing CLI and auto-detecting");
+
+        String cliClientDownloadUrl = System.getProperty("cli.client.download.url", "http://"+CliEngine.rhqTarget+ ":7080/client/download");
 		// auto-install and setup cli executable
 		// download from target server
-		CliTasks.getCliTasks().runCommand("wget -nv http://"+CliEngine.rhqTarget+":7080/client/download -O rhq-cli.zip  2>&1");
+		CliTasks.getCliTasks().runCommand("wget -nv "+cliClientDownloadUrl+" -O rhq-cli.zip  2>&1");
 		// detect CLI_HOME from zip content
 		String cliHomeRel = CliTasks.getCliTasks().runCommand("unzip -l rhq-cli.zip | head -n4 | tail -1 | grep cli | awk '{print $4}'").trim();
 		String workingDir = CliTasks.getCliTasks().runCommand("pwd").trim();
