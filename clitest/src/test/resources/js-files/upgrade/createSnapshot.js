@@ -28,8 +28,7 @@ exportSystemSettings(outputDir+'/systemSettings.csv');
 exportScheduledOperations(outputDir+'/allScheduledOperations.txt');
 exportOperationHistory(outputDir+'/completeOperationHistory.txt');
 exportDrifdefinitions(outputDir+'/allDriftDefs.csv');
-// todo, check error
-//exportDrifs(outputDir+'/allDrifts.csv');
+exportDrifs(outputDir+'/allDrifts.csv');
 exportRepositories(outputDir+'/allRepositories.csv');
 exportUsers(outputDir+'/allUsers.csv');
 exportRoles(outputDir+'/allRoles.csv');
@@ -229,7 +228,9 @@ function exportDrifdefinitions(targetFile){
 
 function exportDrifs(targetFile){
 	common.info("Exporting drifts to "+targetFile);
-	var cri = new JPADriftCriteria();
+	var cri = new GenericDriftCriteria();
+	cri.addSortCtime(PageOrdering.ASC);
+	cri.setPageControl(PageControl.getUnlimitedInstance());
 	var drifts = DriftManager.findDriftsByCriteria(cri);
 	exportToFile(drifts,targetFile);
 }
