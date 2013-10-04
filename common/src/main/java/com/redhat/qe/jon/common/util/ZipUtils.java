@@ -1,6 +1,6 @@
 package com.redhat.qe.jon.common.util;
 
-import org.apache.commons.io.*;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.util.zip.ZipEntry;

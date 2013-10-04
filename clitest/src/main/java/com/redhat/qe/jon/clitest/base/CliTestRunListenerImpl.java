@@ -23,7 +23,7 @@ public class CliTestRunListenerImpl implements CliTestRunListener {
 	if (name.startsWith("antbundle:")) {
 	    String[] params = name.split(":");
 	    if (params.length!=3) {
-		throw new RuntimeException("antbundle resource must be in fromat antbundle:<bundle name>:<bundle version>");
+		throw new RuntimeException("antbundle resource must be in format antbundle:<bundle name>:<bundle version>");
 	    }
 	    try {
 		return new DynamicAntBundle().withName(params[1]).withVersion(params[2]).build();
