@@ -86,6 +86,7 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 				}
 			}
 		}
+		sahiTasks.execute("_sahi._call(window.location.reload());");
 		_logger.log(Level.INFO, "[Clear pop-up] Exiting...");
 	}
 	
