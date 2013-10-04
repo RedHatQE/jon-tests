@@ -4,7 +4,7 @@ import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.clitest.base.CliEngine;
 
-public class StressCliTest extends CliEngine {
+public class LargeFilesTest extends CliEngine {
 
 	@Test(groups={"blockedByBug-887861"})
 	public void deployLargeWarTest() {
