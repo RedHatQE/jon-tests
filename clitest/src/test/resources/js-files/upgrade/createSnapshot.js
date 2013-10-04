@@ -8,22 +8,24 @@
 verbose = 2;
 var common = new _common();
 
+// todo add plugin configurations
+var outputDir = "/home/fbrychta/Work/repo/jon-core/clitest/testik";
+var agentId = 10348;
 
-var outputDir = "/tmp";
-
-exportAgentPlugins(10016,outputDir+'/agentPlugins.txt');
-exportResourcesInInvenotry(outputDir+'/allImportedResources.csv');
+exportAgentPlugins(agentId,outputDir+'/agentPlugins.txt');
 exportResourceTypes(outputDir+'/allResTypes.csv');
+exportResourcesInInvenotry(outputDir+'/allImportedResources.csv');
 exportResourceGroups(outputDir+'/allResGroups.csv');
 exportAlertDefinitions(outputDir+'/allAlertDefinitions.csv');
 exportAlerts(outputDir+'/allAlerts.csv');
 exportAllBundles(outputDir+'/allBundles.csv');
 exportAllBundleDestinations(outputDir+'/allBundleDestinations.csv');
 exportAllBundleDeployments(outputDir+'/allBundleDeployments.csv');
-// not working on jon3.1.2
+// not working on jon3.1.2 and older
 //exportAllTraits(outputDir+'/allTraits.csv');
-exportBaselinesForResource(10002,outputDir+'/baselinesForRHQAgent.csv');
-exportDataForAgent(10002,outputDir+'/dataForRHQAgent.csv');
+
+exportBaselinesForResource(agentId,outputDir+'/baselinesForRHQAgent.csv');
+exportDataForAgent(agentId,outputDir+'/dataForRHQAgent.csv');
 exportSystemSettings(outputDir+'/systemSettings.csv');
 exportScheduledOperations(outputDir+'/allScheduledOperations.txt');
 exportOperationHistory(outputDir+'/completeOperationHistory.txt');
@@ -34,7 +36,6 @@ exportUsers(outputDir+'/allUsers.csv');
 exportRoles(outputDir+'/allRoles.csv');
 exportPackages(outputDir+'/allPackages.csv');
 exportInstalledPackages(outputDir+'/allInstalledPackages.csv');
-
 
 
 /**
@@ -50,6 +51,7 @@ function exportAgentPlugins(agentId,targetFile){
 	
 	for(var key in plugins) {
 	    var plugin = plugins[key];
+	    delete plugin['timestamp'];
 	    writer.println(JSON.stringify(plugins[key]));
 	}
 	writer.close();
@@ -224,7 +226,7 @@ function exportAllBundleDeployments(targetFile){
 /**
  * Traits, baselines, data 
  */
-// not working on 3.1.2.GA
+// not working on 3.1.2.GA and older
 function exportAllTraits(targetFile){
 	common.info("Exporting all traits to "+targetFile);
 	var cri = new MeasurementDataTraitCriteria();
@@ -246,7 +248,7 @@ function exportDataForAgent(agentId,targetFile){
 	common.info("Exporting data for resource with id '"+agentId+"' and measurement definition name '"+measDefs.get(0).getName()+"' to "+targetFile);
 	var date = new Date();
 	var dateMinus1Day = date.getTime() - 1000 * 60 * 60 * 24;
-	var data = MeasurementDataManager.findDataForResource(agentId,[measDefs.get(0).getId()],dateMinus1Day,date.getTime(),100);
+	var data = MeasurementDataManager.findDataForResource(agentId,[measDefs.get(0).getId()],dateMinus1Day,date.getTime(),60);
 	exportToFile(data.get(0),targetFile);
 }
 
@@ -383,11 +385,11 @@ function printToFile(string,targetFile){
 function setGenaralOptions(criteria){
 	criteria.clearPaging();
 	criteria.addSortName(PageOrdering.ASC);
-	
 	return criteria;
 }
 
 function exportToFile(source, fullFilePath){
+	common.info("Number of enteries: " + source.size());
 	exporter.setTarget('csv', fullFilePath);
 	exporter.write(source);
 }
@@ -395,5 +397,7 @@ function exportToFile(source, fullFilePath){
 function getAllResources(){
 	var resCri = new ResourceCriteria();
 	resCri.clearPaging();
-	return ResourceManager.findResourcesByCriteria(resCri);
+	var allRes = ResourceManager.findResourcesByCriteria(resCri);
+	common.debug("Number of all found resources: " + allRes.size());
+	return allRes;
 }
