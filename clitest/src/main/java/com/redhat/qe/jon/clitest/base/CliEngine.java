@@ -271,6 +271,7 @@ public class CliEngine extends CliTestScript {
 	    String destDir = dst.getAbsolutePath();
 	    tempFiles.add(destDir);
 	    cliTasks.runCommand("mkdir -p " + destDir);
+	    boolean generatedResource = false;
 	    String resource = null;
 	    // try listener to provide resource file
 	    if (runListener != null) {
@@ -278,6 +279,7 @@ public class CliEngine extends CliTestScript {
 		if (resFile != null) {
 		    resource = resFile.getAbsolutePath();
 		    _logger.fine("Resource [" + src + "] has been handled by listener and outputed to [" + resource + "]");
+		    generatedResource = true;
 		}
 	    }
 	    // try http location
@@ -318,6 +320,9 @@ public class CliEngine extends CliTestScript {
 		targetFile = e.targetName;
 	    }
 	    cliTasks.copyFile(resource, destDir, targetFile);
+	    if (generatedResource) {
+	        new File(resource).delete();
+	    }
 	    sb.append(e.asArgument+"="+new File(destDir,targetFile).getAbsolutePath()+" ");
 	}
 	return sb.toString();
