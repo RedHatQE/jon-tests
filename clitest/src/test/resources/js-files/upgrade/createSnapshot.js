@@ -70,7 +70,60 @@ function exportResourcesInInvenotry(targetFile){
 	resCri.fetchOperationHistories(true);
 	resCri.fetchParentResource(true);
 	var res = ResourceManager.findResourcesByCriteria(resCri);
-	exportToFile(res, targetFile);
+	
+	var writer = new java.io.PrintWriter(targetFile);
+	var resHash = {};
+	// construct a hash from page list of resources and print it using JSON.stringify
+	for(var i =0;i<res.size();i++) {
+		var resObj = res.get(i);
+		var explGroups = resObj.getExplicitGroups().toArray();
+		var implGroups = resObj.getImplicitGroups().toArray();
+		
+		// sort explicit group ids
+		var explGroupIdsArr = new Array();
+		for(var j in explGroups){
+			explGroupIdsArr.push(new String(explGroups[j].getId()));
+		}
+		explGroupIdsArr.sort(function(a,b){return a-b});
+		
+		// sort implicit group ids
+		var implGroupIdsArr = new Array();
+		for(var j in implGroups){
+			implGroupIdsArr.push(new String(implGroups[j].getId()));
+		}
+		implGroupIdsArr.sort(function(a,b){return a-b});
+		
+		// sort configuration
+		var configHash = common.configurationAsHash(resObj.getResourceConfiguration());
+		var configArray = new Array();
+		for(var key in configHash){
+			configArray.push([key,configHash[key]]);
+		}
+		configArray.sort(function(a,b){
+			if ( a[0] < b[0] )
+			  return -1;
+			if ( a[0] > b[0] )
+				return 1;
+			return 0;
+			});
+		
+		resHash['id'] = resObj.getId();
+		resHash['name'] = new String(resObj.getName());
+		resHash['agentId'] = resObj.getAgent().getId();
+		resHash['ancestry'] = new String(resObj.getAncestry());
+		resHash['description'] = new String(resObj.getDescription());
+		resHash['status'] = new String(resObj.getInventoryStatus().toString());
+		if(resObj.getParentResource() != null){
+			resHash['parent'] = new String(resObj.getParentResource().getName());
+		}
+		resHash['resourceType'] = resObj.getResourceType().getId();
+		resHash['implGroupIds'] = implGroupIdsArr.toString();
+		resHash['explGroupIds'] = explGroupIdsArr.toString();
+		resHash['configuration'] = configArray;
+		
+		writer.println(JSON.stringify(resHash));
+	}
+	writer.close();
 }
 function exportResourceTypes(targetFile){
 	common.info("Exporting all resources types to "+targetFile);
@@ -89,7 +142,38 @@ function exportResourceGroups(targetFile){
 	resGroupCri.fetchExplicitResources(true);
 	resGroupCri.fetchImplicitResources(true);
 	var resGroups = ResourceGroupManager.findResourceGroupsByCriteria(resGroupCri);
-	exportToFile(resGroups,targetFile );
+	
+	var writer = new java.io.PrintWriter(targetFile);
+	var resGroupHash = {};
+	// construct a hash from page list of groups and print it using JSON.stringify
+	for(var i =0;i<resGroups.size();i++) {
+		var resGObj = resGroups.get(i);
+		var explRes = resGObj.getExplicitResources().toArray();
+		var implRes = resGObj.getImplicitResources().toArray();
+		var explResIdsArr = new Array();
+		for(var j in explRes){
+			explResIdsArr.push(new String(explRes[j].getId()));
+		}
+		explResIdsArr.sort(function(a,b){return a-b});
+		var implResIdsArr = new Array();
+		for(var j in implRes){
+			implResIdsArr.push(new String(implRes[j].getId()));
+		}
+		implResIdsArr.sort(function(a,b){return a-b});
+		resGroupHash['id'] = resGObj.getId();
+		resGroupHash['name'] = new String(resGObj.getName());
+		resGroupHash['category'] = new String(resGObj.getGroupCategory().toString());
+		if(resGObj.getGroupDefinition()!= null){
+			resGroupHash['groupDefId'] = resGObj.getGroupDefinition().getId();
+		}
+		resGroupHash['description'] = new String(resGObj.getDescription());
+		resGroupHash['isRecursive'] = new String(resGObj.isRecursive());
+		resGroupHash['explResIds'] = explResIdsArr.toString();
+		resGroupHash['implResIds'] = implResIdsArr.toString();
+		
+		writer.println(JSON.stringify(resGroupHash));
+	}
+	writer.close();
 }
 
 
@@ -184,33 +268,35 @@ function exportScheduledOperations(targetFile){
 	var writer = new java.io.PrintWriter(targetFile);
 	
 	for(var i = 0;i<res.size();i++){
-		var scheduledOps = OperationManager.findScheduledResourceOperations(res.get(i).getId());
+		var resource = res.get(i);
+		var scheduledOps = OperationManager.findScheduledResourceOperations(resource.getId());
 		if(scheduledOps.size() > 0){
-			common.info("Exporting scheduled operations for "+res.get(i).getName()+" to "+targetFile);
-			writer.println("Scheduled operations for resource with name " + res.get(i).getName());
+			common.info("Exporting scheduled operations for "+resource.getName()+" to "+targetFile);
+			common.debug("Number of scheduled operations for "+resource.getName()+" is "+scheduledOps.size());
 			for(var j = 0;j<scheduledOps.size();j++){
-				writer.println("name: " + scheduledOps.get(j).getOperationName()
-						+ ", description: " +scheduledOps.get(j).getDescription()
-						+ ", id: " + scheduledOps.get(j).getId()
-						+ ", jobGroup: " +scheduledOps.get(j).getJobGroup() 
-						+ ", jobName: "+scheduledOps.get(j).getJobName() 
-						+ ", jobTrigger: "+scheduledOps.get(j).getJobTrigger().toString() );
+				var schedOp = scheduledOps.get(j);
+				writer.println("id: " + schedOp.getId()
+						+ ", name: " + schedOp.getOperationName()
+						+ ", resId: " + resource.getId()
+						+ ", description: " +schedOp.getDescription()
+						+ ", jobGroup: " +schedOp.getJobGroup() 
+						+ ", jobName: "+schedOp.getJobName() 
+						+ ", jobTrigger: "+schedOp.getJobTrigger().toString() );
 			}
 		}
 	}
 	writer.close();
 }
 function exportOperationHistory(targetFile){
-	var res = getAllResources();
 	var writer = new java.io.PrintWriter(targetFile);
 	var cri = new ResourceOperationHistoryCriteria();
 	cri.addSortStartTime(PageOrdering.ASC);
 	cri.fetchResults(true);
+	cri.clearPaging();
 	var hist = OperationManager.findResourceOperationHistoriesByCriteria(cri);
 	common.info("Exporting operation history for to "+targetFile);
 	for(var i = 0;i<hist.size();i++){
-		writer.println("operationDefinition: " + hist.get(i).getOperationDefinition().toString()
-				+ ", operationHistory: " +hist.get(i).toString());
+		writer.println(hist.get(i).toString() + hist.get(i).getOperationDefinition().toString());
 	}
 	writer.close();
 }
