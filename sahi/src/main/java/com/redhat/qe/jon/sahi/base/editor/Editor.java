@@ -1,14 +1,11 @@
 package com.redhat.qe.jon.sahi.base.editor;
 
-import java.util.List;
-import java.util.logging.Logger;
+import com.redhat.qe.jon.sahi.tasks.*;
+import net.sf.sahi.client.*;
+import org.testng.*;
 
-import net.sf.sahi.client.ElementStub;
-
-import org.testng.Assert;
-
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.jon.sahi.tasks.Timing;
+import java.util.*;
+import java.util.logging.*;
 
 public class Editor {
 
@@ -330,6 +327,26 @@ public class Editor {
         tasks.image(checkBox).parentNode().focus();
         log.fine("Sending keypress to " + checkBox);
         tasks.execute("_sahi._keyPress(_sahi._image('" + checkBox + "'), 32);");
+    }
+
+    /**
+     * check checkbox near a cell
+     *
+     * @param index of checkbox
+     * @param cellSelection cell name for tightening which checkbox to use
+     * @param check true to check, false to uncheck
+     */
+    public void checkBoxNearCell(int index, String cellSelection, boolean check) {
+        tasks.waitFor(Timing.TIME_1S);
+        String checkBox = null;
+        if (check) {
+            checkBox = "unchecked.png[" + index + "]";
+        } else {
+            checkBox = "checked.png[" + index + "]";
+        }
+        tasks.image(checkBox).near(tasks.cell(cellSelection)).parentNode().focus();
+        log.fine("Sending keypress to " + checkBox);
+        tasks.execute("_sahi._keyPress(_sahi._image('" + checkBox + "')._near(_sahi._image('"+cellSelection+"'), 32);");
     }
     
     
