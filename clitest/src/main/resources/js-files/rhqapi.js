@@ -3689,6 +3689,29 @@ var Resource = function (param) {
 				return children[0];
 			}
 		},
+        	      /**
+                     * wait's until given child resource exists (useful when you
+                     * need to wait for discovery)
+                     * 
+                     * @param {Object} -
+                     *            you can filter child resources same way as in
+                     *            {@link resources.find()} function
+                     * @returns first matchin child resource found
+                     * @type Resource
+                     */
+        waitForChild : function(params) {
+            common.trace("Resource(" + _id + ").waitForChild(" + common.objToString(params) + ")");
+            return common.waitFor(function() {
+                params = params || {};
+                params.parentResourceId = _id;
+                var children = resources.find(params);
+                if (children.length == 0) {
+                    common.info("Waiting for resource " + common.objToString(params));
+                } else {
+                    return children[0];
+                }
+            });
+        },
 		/**
 		 * gets alert definitions for this resource
 		 * @param {Object} params - you can filter alert definitions same as in {@link alertDefinitions.find()} function
