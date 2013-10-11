@@ -332,17 +332,16 @@ public class Editor {
     /**
      * check checkbox near a cell
      *
-     * @param index of checkbox
      * @param cellSelection cell name for tightening which checkbox to use
      * @param check true to check, false to uncheck
      */
-    public void checkBoxNearCell(int index, String cellSelection, boolean check) {
+    public void checkBoxNearCell(String cellSelection, boolean check) {
         tasks.waitFor(Timing.TIME_1S);
         String checkBox = null;
         if (check) {
-            checkBox = "unchecked.png[" + index + "]";
+            checkBox = "unchecked.png";
         } else {
-            checkBox = "checked.png[" + index + "]";
+            checkBox = "checked.png";
         }
         tasks.image(checkBox).near(tasks.cell(cellSelection)).parentNode().focus();
         log.fine("Sending keypress to " + checkBox);
