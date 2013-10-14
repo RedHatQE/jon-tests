@@ -20,7 +20,7 @@ groups.find().forEach(function(b){
 });
 
 common.info("Creating a group of platforms");
-var platformsGroup = groups.create("Linux platforms",resources.platforms(type:"Linux"));
+var platformsGroup = groups.create("Linux platforms",resources.platforms({type:"Linux"}));
 
 
 /**
