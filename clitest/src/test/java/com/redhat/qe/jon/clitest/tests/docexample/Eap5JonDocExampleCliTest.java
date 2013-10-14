@@ -28,7 +28,7 @@ public class Eap5JonDocExampleCliTest extends CliEngine {
 	public void updatingContentBackedResTest(){
 		createJSRunner("docExample/jon/short/updatingContentBackedRes.js").
 			dependsOn("rhqapi.js").
-			withResource("/deployments/MiscBeans-3.2.2.ear","deployment").
+			withResource("/deployments/MiscBeans-3.2.5.ear","deployment").
 			run();
 	}
 	
