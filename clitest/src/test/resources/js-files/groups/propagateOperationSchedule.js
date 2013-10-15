@@ -58,10 +58,10 @@ checkNumberOfResourcesInGroup(getManagedGroup(launcherScriptsDynaGroupDefName), 
 var opName = "Status";
 var launchersDynaGroups = groups.find({name:"DynaGroup - "+launcherScriptsDynaGroupDefName});
 assertTrue(launchersDynaGroups.length > 0,"Group with name 'DynaGroup - "+launcherScriptsDynaGroupDefName+"' not found!!");
-var lanchers = launchersDynaGroups[0].resources();
-for(var i in lanchers){
-	deleteAllScheduledOp(lanchers[i].id);
-	clearOpHistory(lanchers[i].id);
+var launchers = launchersDynaGroups[0].resources();
+for(var i in launchers){
+	deleteAllScheduledOp(launchers[i].id);
+	clearOpHistory(launchers[i].id);
 }
 launchersDynaGroups[0].scheduleOperationUsingCron(opName,"0 * * * * ?");
 
@@ -71,8 +71,12 @@ assertTrue(waitForResourceToAppearInDiscQueue({name:"RHQ Agent",resourceTypeName
 "No agent was found in discovery queue!!");
 var importedArr = discoveryQueue.importResources({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 assertTrue(importedArr[0].exists(),"Previously imported agent doesn't exists in inventory!!");
-// let's wait until our agent becomes available
+// let's wait until our agent and all his children becomes available
 importedArr[0].waitForAvailable();
+var agentChildren = importedArr[0].children();
+for(var i in agentChildren){
+    agentChildren[i].waitForAvailable();
+}
 
 
 // recalculate managed groups and check that new resources are added
@@ -87,10 +91,10 @@ sleep(65 * 1000);
 
 // check that original scheduled operation is invoked on newly added resource as well
 // check operation history on all resources in the group
-for(var i in lanchers){
-	common.info("Checking operation history of resource with id: " + lanchers[i].id);
-	var hist = getOpHistory(lanchers[i].id);
-	assertTrue((hist.size() == 1 || hist.size() == 2),"Only one or two operations in history of resource with id: " +lanchers[i].id+" are expected!!");
+for(var i in launchers){
+	common.info("Checking operation history of resource with id: " + launchers[i].id);
+	var hist = getOpHistory(launchers[i].id);
+	assertTrue((hist.size() == 1 || hist.size() == 2),"Only one or two operations in history of resource with id: " +launchers[i].id+" are expected!!");
 	var actualName = hist.get(0).getOperationDefinition().getName();
 	assertTrue(actualName == opName,"Expected operation name is: " +opName+", but actual is: "+actualName);
 }
