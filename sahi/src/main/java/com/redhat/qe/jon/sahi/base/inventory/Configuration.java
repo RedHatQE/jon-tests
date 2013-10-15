@@ -1,15 +1,11 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
-import java.util.logging.Logger;
+import com.redhat.qe.jon.sahi.base.editor.*;
+import com.redhat.qe.jon.sahi.tasks.*;
+import net.sf.sahi.client.*;
+import org.testng.*;
 
-import net.sf.sahi.client.ElementStub;
-
-import org.testng.Assert;
-
-import com.redhat.qe.jon.sahi.base.editor.ConfigEditor;
-import com.redhat.qe.jon.sahi.base.editor.Editor;
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.jon.sahi.tasks.Timing;
+import java.util.logging.*;
 
 public class Configuration extends ResourceTab {
 
@@ -145,6 +141,7 @@ public class Configuration extends ResourceTab {
 		 * @param value to be set
 		 */
 		public void setField(String name, String value) {
+            tasks.waitFor(Timing.WAIT_TIME);
 			tasks.textbox(name).setValue(value);
 		}
 
