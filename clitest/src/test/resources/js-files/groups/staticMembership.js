@@ -86,7 +86,7 @@ assertDynaGroupDefParams(defName2);
 checkNumberOfResourcesInGroup(getManagedGroup(defName2), allAgents.length *5,0);
 
 
-assertTrue(waitForResourceToAppearInDiscQueue({name:"RHQ Agent",resourceTypeName:"RHQ Agent"}), 
+assertTrue(waitForResourceToAppearInDiscQueue({name:"RHQ Agent",resourceTypeName:"RHQ Agent"},1000*60*5), 
 		"No agent was found in discovery queue!!");
 
 // import found agent

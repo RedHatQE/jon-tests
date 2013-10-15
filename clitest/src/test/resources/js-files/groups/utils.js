@@ -140,20 +140,23 @@ function updateDynaGroupDefinition(dynaGroupDefinition){
 /**
  * Waits until given resource appears in discovery queue with status NEW.
  * @param params
+ * @param timeout in milis
  * @returns {Boolean} true when found, false otherwise
  */
-function waitForResourceToAppearInDiscQueue(params){
+function waitForResourceToAppearInDiscQueue(params,timeout){
 	common.debug("Searching for resource with following params: "+common.objToString(params)+
 			" in discovery queue.");
 	var foundResources = null;
-	for(var i = 0;i<10;i++){
+	var left = timeout || 1000 * 60 * 3;
+	while(left > 0){
 		foundResources = discoveryQueue.find(params);
 		if(foundResources.length >0){
 			common.debug("Resource was found in discovery queue");
 			break;
 		}
 		common.debug("Waiting for resource to became NEW");
-		sleep(5000);
+		sleep(10000);
+		left = left - 10000;
 	}
 
 	if(foundResources.length == 0){
