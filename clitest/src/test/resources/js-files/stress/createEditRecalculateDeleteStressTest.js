@@ -25,13 +25,14 @@ for(var i=0;i<5;i++){
 	common.info("Cycle number "+i);
 	common.info("Creating dynaGroup definition with name: "+name);
 	def = dynaGroupDefinitions.create({name:name,expression:expressions[0],description:"desc"});
+	nativeDef = def.obj;
 	common.info("Calculating group membership");
-	GroupDefinitionManager.calculateGroupMembership(def.id);
-	def.setExpression(expressions[1]);
-	common.info("Updating dynaGroup definition with name: " + def.name +" and id: "+def.id);
-	GroupDefinitionManager.updateGroupDefinition(def);
+	GroupDefinitionManager.calculateGroupMembership(nativeDef.id);
+	nativeDef.setExpression(expressions[1]);
+	common.info("Updating dynaGroup definition with name: " + nativeDef.name +" and id: "+nativeDef.id);
+	GroupDefinitionManager.updateGroupDefinition(nativeDef);
 	common.info("Calculating group membership");
-	GroupDefinitionManager.calculateGroupMembership(def.id);
-	common.info("Removing dynaGroup definition with name: " + def.name +" and id: "+def.id);
-	GroupDefinitionManager.removeGroupDefinition(def.id);
+	GroupDefinitionManager.calculateGroupMembership(nativeDef.id);
+	common.info("Removing dynaGroup definition with name: " + nativeDef.name +" and id: "+nativeDef.id);
+	GroupDefinitionManager.removeGroupDefinition(nativeDef.id);
 }
