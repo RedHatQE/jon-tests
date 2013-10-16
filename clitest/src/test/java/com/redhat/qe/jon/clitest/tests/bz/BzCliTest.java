@@ -10,7 +10,7 @@ public class BzCliTest extends CliEngine {
 	@Test(groups={"blockedByBug-814579"})
 	public void bz814579Test(){
 		createJSRunner("bugs/bug814579.js").
-			addExpect("ResourceManagerBean").
+			addExpect("Launcher").
 			run();
 	}
 	
