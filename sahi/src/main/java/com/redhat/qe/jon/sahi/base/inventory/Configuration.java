@@ -141,7 +141,6 @@ public class Configuration extends ResourceTab {
 		 * @param value to be set
 		 */
 		public void setField(String name, String value) {
-            tasks.waitFor(Timing.WAIT_TIME);
 			tasks.textbox(name).setValue(value);
 		}
 

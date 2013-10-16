@@ -343,7 +343,9 @@ public class Editor {
         } else {
             checkBox = "checked.png";
         }
-        tasks.image(checkBox).near(tasks.cell(cellSelection)).parentNode().focus();
+        ElementStub elem = tasks.image(checkBox).near(tasks.cell(cellSelection));
+        tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME);
+        elem.parentNode().focus();
         log.fine("Sending keypress to " + checkBox);
         tasks.execute("_sahi._keyPress(_sahi._image('" + checkBox + "', _near(_sahi._cell('"+cellSelection+"')), 32));");
     }
