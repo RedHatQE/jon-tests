@@ -345,7 +345,7 @@ public class Editor {
         }
         tasks.image(checkBox).near(tasks.cell(cellSelection)).parentNode().focus();
         log.fine("Sending keypress to " + checkBox);
-        tasks.execute("_sahi._keyPress(_sahi._image('" + checkBox + "', _near(_sahi._image('"+cellSelection+"')), 32));");
+        tasks.execute("_sahi._keyPress(_sahi._image('" + checkBox + "', _near(_sahi._cell('"+cellSelection+"')), 32));");
     }
     
     
