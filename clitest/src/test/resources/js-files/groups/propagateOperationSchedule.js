@@ -78,6 +78,8 @@ for(var i in agentChildren){
     agentChildren[i].waitForAvailable();
 }
 
+// wait to be sure that all newly imported resources are discovered
+sleep(1000 * 70);
 
 // recalculate managed groups and check that new resources are added
 GroupDefinitionManager.calculateGroupMembership(defAgents.id);
