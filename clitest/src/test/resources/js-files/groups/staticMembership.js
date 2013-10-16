@@ -89,15 +89,15 @@ checkNumberOfResourcesInGroup(getManagedGroup(defName2), allAgents.length *5,0);
 assertTrue(waitForResourceToAppearInDiscQueue({name:"RHQ Agent",resourceTypeName:"RHQ Agent"},1000*60*5), 
 		"No agent was found in discovery queue!!");
 
-// import found agent
+// import found agent and wait for all his children to become available
 var importedArr = discoveryQueue.importResources({name:"RHQ Agent",resourceTypeName:"RHQ Agent"},false);
 for(var i in importedArr){
 	importedArr[i].waitForAvailable();
-	importedArr[i].invokeOperation("executeAvailabilityScan");
+	agentChildren = importedArr[i].children();
+	for(var j in agentChildren){
+	    agentChildren[j].waitForAvailable();
+	}
 }
-
-common.debug("Waiting 30 sec for avail report");
-sleep(30 * 1000);
 
 // check that agent was imported
 allAgentsNow = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
