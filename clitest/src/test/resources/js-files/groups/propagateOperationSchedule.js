@@ -54,18 +54,6 @@ GroupDefinitionManager.calculateGroupMembership(defLauncherScripts.id);
 assertDynaGroupDefParams(launcherScriptsDynaGroupDefName);
 checkNumberOfResourcesInGroup(getManagedGroup(launcherScriptsDynaGroupDefName), allAgents.length);
 
-// schedule operation on dynagroup
-var opName = "Status";
-var launchersDynaGroups = groups.find({name:"DynaGroup - "+launcherScriptsDynaGroupDefName});
-assertTrue(launchersDynaGroups.length > 0,"Group with name 'DynaGroup - "+launcherScriptsDynaGroupDefName+"' not found!!");
-var launchers = launchersDynaGroups[0].resources();
-for(var i in launchers){
-	deleteAllScheduledOp(launchers[i].id);
-	clearOpHistory(launchers[i].id);
-}
-launchersDynaGroups[0].scheduleOperationUsingCron(opName,"0 * * * * ?");
-
-
 // import another agent
 assertTrue(waitForResourceToAppearInDiscQueue({name:"RHQ Agent",resourceTypeName:"RHQ Agent"}), 
 "No agent was found in discovery queue!!");
@@ -79,7 +67,20 @@ for(var i in agentChildren){
 }
 
 // wait to be sure that all newly imported resources are discovered
+common.debug("Going sleep for 70s");
 sleep(1000 * 70);
+
+//schedule operation on dynagroup
+var opName = "Status";
+var launchersDynaGroups = groups.find({name:"DynaGroup - "+launcherScriptsDynaGroupDefName});
+assertTrue(launchersDynaGroups.length > 0,"Group with name 'DynaGroup - "+launcherScriptsDynaGroupDefName+"' not found!!");
+var launchers = launchersDynaGroups[0].resources();
+for(var i in launchers){
+    deleteAllScheduledOp(launchers[i].id);
+    clearOpHistory(launchers[i].id);
+}
+launchersDynaGroups[0].scheduleOperationUsingCron(opName,"0 * * * * ?");
+
 
 // recalculate managed groups and check that new resources are added
 GroupDefinitionManager.calculateGroupMembership(defAgents.id);
@@ -93,10 +94,13 @@ sleep(65 * 1000);
 
 // check that original scheduled operation is invoked on newly added resource as well
 // check operation history on all resources in the group
+var launchersDynaGroups = groups.find({name:"DynaGroup - "+launcherScriptsDynaGroupDefName});
+launchers = launchersDynaGroups[0].resources();
 for(var i in launchers){
 	common.info("Checking operation history of resource with id: " + launchers[i].id);
 	var hist = getOpHistory(launchers[i].id);
-	assertTrue((hist.size() == 1 || hist.size() == 2),"Only one or two operations in history of resource with id: " +launchers[i].id+" are expected!!");
+	assertTrue((hist.size() == 1 || hist.size() == 2),"Only one or two operations in history of resource with id: " +launchers[i].id
+	        +" are expected!! Actual number of operations is: "+hist.size());
 	var actualName = hist.get(0).getOperationDefinition().getName();
 	assertTrue(actualName == opName,"Expected operation name is: " +opName+", but actual is: "+actualName);
 }
@@ -122,4 +126,5 @@ function getOpHistory(resourceId){
 	
 	return OperationManager.findResourceOperationHistoriesByCriteria(resOpHistCri);
 }
+
 
