@@ -1041,14 +1041,25 @@ public class SahiTasks extends ExtendedSahi {
     //* About and build versions
     //*********************************************************************************
     public HashMap<String, String> getBuildVersion(){
-    	selectPage("Help-->About", this.span("DisplayLabel[0]"), 1000*5, 3);
-    	HashMap<String, String> version = new HashMap<String, String>();
-    	version.put("version", this.span("DisplayLabel[0]").getText());
-    	version.put("build.number", this.span("DisplayLabel[1]").getText());
-    	version.put("gwt.version", this.span("DisplayLabel[2]").getText());
-    	version.put("smartgwt.version", this.span("DisplayLabel[3]").getText());
+		HashMap<String, String> version = new HashMap<String, String>();
+    	//Old - About dialog(if loop): Should be removed after sometime. Modified on: 18-Oct-2013
+    	//RHQ Build: 4.10.0-SNAPSHOT
+    	if(selectPage("Help-->About", this.span("DisplayLabel[0]"), 1000*5, 3)){
+        	version.put("version", this.span("DisplayLabel[0]").getText());
+        	version.put("build.number", this.span("DisplayLabel[1]").getText());
+        	version.put("gwt.version", this.span("DisplayLabel[2]").getText());
+        	version.put("smartgwt.version", this.span("DisplayLabel[3]").getText());
+        	this.row("Close").click();
+    	}else if(selectPage("Help-->About", this.image("close.png").near(this.image("maximize.png")), 1000*5, 3)){ // New dialog approach: Date: 18-Oct-2013
+    		version.put("application.name", this.cell("formTitle[0]").getText()+this.div("staticTextItem[1]").getText());
+    		version.put("version", this.cell("formTitle[1]").getText()+this.div("staticTextItem[2]").getText());
+        	version.put("build.number", this.cell("formTitle[2]").getText()+this.div("staticTextItem[3]").getText());
+        	version.put("gwt.version", this.cell("formTitle[3]").getText()+this.div("staticTextItem[4]").getText());
+        	version.put("smart.gwt.version", this.cell("formTitle[4]").getText()+this.div("staticTextItem[5]").getText());
+        	this.image("close.png").near(this.image("maximize.png")).click();
+    	}    	
     	_logger.log(Level.INFO, "Version Information: "+version);
-    	this.row("Close").click();
+    	
     	return version;
     }
     //*********************************************************************************
