@@ -156,7 +156,7 @@ public class Editor {
      * @param cellSelection
      * @return true if given radio button is checked. False otherwise.
      */
-    public boolean isRadionNearCellChecked(String radioSelection,String cellSelection){
+    public boolean isRadioNearCellChecked(String radioSelection, String cellSelection){
     	ElementStub elem = tasks.radio(radioSelection).near(tasks.cell(cellSelection));
     	tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME);
     	return elem.checked();

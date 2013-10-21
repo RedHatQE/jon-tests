@@ -104,7 +104,7 @@ public class AlertDefinitionEditor {
 	 * @return true if this alert definition is enabled. False otherwise.
 	 */
 	public boolean isEnabled(){
-		return editor.isRadionNearCellChecked("enabled", "Yes");
+		return editor.isRadioNearCellChecked("enabled", "Yes");
 	}
 	
 	/**
@@ -432,7 +432,7 @@ public class AlertDefinitionEditor {
 	 */
 	public boolean isDisableWhenFired(){
 		tasks.cell("Recovery").click();
-		return editor.isRadionNearCellChecked("disableWhenFired", "Yes");
+		return editor.isRadioNearCellChecked("disableWhenFired", "Yes");
 	}
 	
 	/**
