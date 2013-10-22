@@ -19,7 +19,7 @@ var res = findRHQDeployment(war).child({name:"web"});
 // list callTimes from past 5 minutes
 var now = new Date().getTime()
 res.getCallTimes(now - (5 * 60 * 1000),now).forEach(function(x) {
-	//println(x.callDestination+":"+x.count);
+	println("Found endpoint ["+x.callDestination+"] count="+x.count);
 	if (x.callDestination == endp) {
 		found = true
 		assertTrue(x.count >= num, "Current hit count ["+x.count+"] for ["+endp+"] is greater than "+num);
