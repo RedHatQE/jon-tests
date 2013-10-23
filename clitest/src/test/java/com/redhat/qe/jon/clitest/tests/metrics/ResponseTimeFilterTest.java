@@ -20,25 +20,26 @@ public class ResponseTimeFilterTest extends CliEngine {
 
     @Test
     public void responseTimeRestWar() {
-	responseTime("rhq-rest.war", "rest/reports.html","rest/status.xml");
+	responseTime("rhq-rest.war", "rest/reports.html","rest/status.xml","rhqadmin","rhqadmin");
     }
     @Test
     public void responseTimeCoregui() {
-	responseTime("coregui.war","coregui/","coregui/");
+	responseTime("coregui.war","coregui/","coregui/", null, null);
     }
-    private void responseTime(String deployment, String endPoint,String flushEndpoint) {
+
+    private void responseTime(String deployment, String endPoint,String flushEndpoint, String user, String pass) {
 	int hits = 10;
 	createJSRunner("metrics/enableRTFilter.js")
 		.withArg("deployment", deployment)
 		.run();	
 	for (int i = 0; i < hits;i++) {
-	    client.doGet(endPoint, "rhqadmin", "rhqadmin");
+	    client.doGet(endPoint, user, pass);
 	}
 	log.info("Doing 11 other hits, so we make sure rtFilter flushes hits we're checking");
 	for (int i = 0; i < 11;i++) {
-	    client.doGet(flushEndpoint, "rhqadmin", "rhqadmin");
+	    client.doGet(flushEndpoint, user, pass);
 	}
-	waitFor(1000 * 2 * 60,"Waiting for metric collection");
+	waitFor(1000 * 3 * 60,"Waiting for metric collection");
 	createJSRunner("metrics/validateCallTime.js")
 	.withArg("deployment", deployment)
 	.withArg("endpoint", "/"+endPoint)
