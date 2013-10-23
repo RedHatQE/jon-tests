@@ -13,7 +13,8 @@ public class LargeFilesTest extends CliEngine {
         // register listener to handle "bundle:<size>" and "war:<size>" resource names
         return super.createJSRunner(jsFile)
                 .withRunListener(new LargeDeploymentGenerator())
-                .addDepends("rhqapi.js");
+                .addDepends("rhqapi.js")
+                .addDepends("jon-common.js");
     }
     
 	@Test(groups={"blockedByBug-1015560"})

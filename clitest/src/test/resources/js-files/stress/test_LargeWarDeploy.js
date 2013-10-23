@@ -1,12 +1,8 @@
-
 // bind input parameters
 var warPath = war;
 
 
-var eaps = resources.find({type:"JBossAS7 Standalone Server"});
-assertTrue(eaps.length>0,"At least 1 EAP6 server must be imported");
-var eap = eaps[0];
-
+var eap = findStandaloneEAP6();
 // check whether deployment already exists
 name = warPath.replace(/.*\//, '');
 

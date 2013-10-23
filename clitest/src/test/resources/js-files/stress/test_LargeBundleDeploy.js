@@ -3,11 +3,9 @@
 //cli param bundle
 var filePath = bundle;
 
-var eaps = resources.find({type:"JBossAS7 Standalone Server"});
-assertTrue(eaps.length>0,"At least 1 EAP6 server must be imported");
-var eap = eaps[0];
+var eap = findStandaloneEAP6();
 
-var group="linuxes";
+var group="standalone-eap";
 
 println("Removing all existing bundles");
 bundles.find().forEach(function(b) {

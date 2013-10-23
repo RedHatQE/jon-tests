@@ -11,15 +11,14 @@
  * 2. deploy small warfile
  * 3. update it's content with large one 
  */
-// verbose=10;
+verbose=10;
+
 // bind INPUT parameters
 
 var smallContent = starter;
 var largeContent = war;
 
-var eaps = resources.find({type:"JBossAS7 Standalone Server"});
-assertTrue(eaps.length>0,"At least 1 EAP6 server must be imported");
-var eap = eaps[0];
+var eap = findStandaloneEAP6();
 
 // check whether deployment already exists
 name = smallContent.replace(/.*\//, '');
