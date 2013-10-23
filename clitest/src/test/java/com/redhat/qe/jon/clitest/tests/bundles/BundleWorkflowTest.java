@@ -44,7 +44,7 @@ public class BundleWorkflowTest extends CliEngine {
 	.withArg("version", "1.0").run();
     }
     
-    @Test(dependsOnMethods="deploy")
+    @Test(dependsOnMethods="deploy",groups={"blockedByBug-1003679"})
     public void upgrade() {
 	createJSRunner("bundles/deployBundle.js")
 	.addExpect("status : Success")
