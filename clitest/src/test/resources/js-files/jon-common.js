@@ -14,7 +14,7 @@ var findStandaloneEAP6 = function() {
     resources.find({
         type : "JBossAS7 Standalone Server"
     }).forEach(function(r) {
-        if (r.name.find("RHQ Server") < 0) {
+        if (r.name.indexOf("RHQ Server") < 0) {
             eap = r;
         }
     });
