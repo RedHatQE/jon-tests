@@ -3183,7 +3183,7 @@ var Resource = function (param) {
 	}
 
 	var _id = param.id;
-	var _name = param.name;
+	var _name = String(param.name);
 	var _res = param;
 	
 	
@@ -3401,7 +3401,7 @@ var Resource = function (param) {
 
 
 	var _getName = function(){
-		return _res.getName();
+		return String(_res.getName());
 	}
 
 	var _find = function() {
