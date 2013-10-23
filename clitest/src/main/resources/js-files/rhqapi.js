@@ -2524,6 +2524,7 @@ var bundles = (function() {
     	}
     	if (dist.indexOf("http")==0) {
     		common.debug("Getting bundle file from URL: "+dist);
+    		username = username || null;
     		password =  password || null;
     		if (username!=null && password!=null) {
     			var version = BundleManager.createBundleVersionViaURL(dist,username,password);
@@ -2533,47 +2534,31 @@ var bundles = (function() {
 		    return new Bundle(version.bundle);
     	}
     	else {
-    		common.debug("Getting bundle file from disk: '"+dist+"'");
 			var file = new java.io.File(dist);
 			if (!file.exists()) {
 				throw "file parameter ["+file+"] does not exist!";
 			}
-		    var inputStream = new java.io.FileInputStream(file);
-		    var fileLength = file.length();
-		    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
-		    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
-			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
-		    }
-		    
-		    var version = BundleManager.createBundleVersionViaByteArray(fileBytes);
-		    return new Bundle(version.bundle);
+			if (typeof scriptUtil.uploadContent !== "undefined") {
+			    // since JON 3.2 we can stream our content to server
+			    var handle = scriptUtil.uploadContent(file);
+			    var version = BundleManager.createBundleVersionViaContentHandle(handle);
+			    return new Bundle(version.bundle);
+			}
+			else {
+			    // keep this to stay compatible with < JON 3.2
+			    common.debug("Getting bundle file from disk: '"+dist+"'");
+    		    var inputStream = new java.io.FileInputStream(file);
+    		    var fileLength = file.length();
+    		    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
+    		    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+    			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
+    		    }
+
+    		    var version = BundleManager.createBundleVersionViaByteArray(fileBytes);
+    		    return new Bundle(version.bundle);
+			}
     	}
 	},
-
-		// createFromRecipe : function(recipe,files) {
-			// we're creating a resource with backing content
-			// common.debug("Reading recipe file " + recipe + " ...");
-			// var file = new java.io.File(recipe);
-			// if (!file.exists()) {
-			// throw "recipe parameter file does not exist!";
-			// }
-		  // var inputStream = new java.io.FileInputStream(file);
-		  // var fileLength = file.length();
-		    // TODO read recipe to String properly!
-		  // var fileBytes =
-			// java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE,
-			// fileLength);
-		  // for (numRead=0, offset=0; ((numRead >= 0) && (offset <
-			// fileBytes.length)); offset += numRead ) {
-			// numRead = inputStream.read(fileBytes, offset, fileBytes.length -
-			// offset);
-		  // }
-		  // println(fileBytes);
-		  // var recipeStr = new String(fileBytes,0,fileLength);
-		  // println(recipeStr);
-		  // var bundleVersion =
-			// BundleManager.createBundleVersionViaRecipe(recipeStr);
-		// }
 	};
 })();
 
@@ -3931,30 +3916,48 @@ var Resource = function (param) {
 					+ common.objToString(common.configurationAsHash(configuration)) + "]");
 			if (content) {
 				// we're creating a resource with backing content
-				common.debug("Reading file " + content + " ...");
 				var file = new java.io.File(content);
 				if (!file.exists()) {
 					throw "content parameter file '" +content+ "' does not exist!";
 				}
-			    var inputStream = new java.io.FileInputStream(file);
-			    var fileLength = file.length();
-			    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
-			    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
-				    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
-			    }
-
-				history = ResourceFactoryManager.createPackageBackedResource(
-					_id,
-					resType.id,
-					name, // new resource name
-					null, // pluginConfiguration
-					name,
-					version, // packageVersion
-					null, // architectureId
-					configuration, // resourceConfiguration
-					fileBytes, // content
-					null // timeout
-				);
+				if (typeof scriptUtil.uploadContent !== "undefined") {
+				    var handle = scriptUtil.uploadContent(content);
+				    var history = ResourceFactoryManager.createPackageBackedResourceViaContentHandle(
+	                        _id,
+	                        resType.id,
+	                        name, // new resource name
+	                        null, // pluginConfiguration
+	                        name,
+	                        version, // packageVersion
+	                        null, // architectureId
+	                        configuration, // resourceConfiguration
+	                        handle, // content
+	                        null // timeout
+	                    );
+				}
+				else {
+				    // keep for compatibility with < JON 3.2
+    				common.debug("Reading file " + content + " ...");
+    			    var inputStream = new java.io.FileInputStream(file);
+    			    var fileLength = file.length();
+    			    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
+    			    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+    				    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
+    			    }
+    
+    				var history = ResourceFactoryManager.createPackageBackedResource(
+    					_id,
+    					resType.id,
+    					name, // new resource name
+    					null, // pluginConfiguration
+    					name,
+    					version, // packageVersion
+    					null, // architectureId
+    					configuration, // resourceConfiguration
+    					fileBytes, // content
+    					null // timeout
+    				);
+				}
 			}
 			else {
 				var plugConfiguration = new Configuration();
