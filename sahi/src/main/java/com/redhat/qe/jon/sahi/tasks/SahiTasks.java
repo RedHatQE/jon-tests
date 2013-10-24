@@ -1048,7 +1048,7 @@ public class SahiTasks extends ExtendedSahi {
         	version.put("version", this.span("DisplayLabel[0]").getText());
         	version.put("build.number", this.span("DisplayLabel[1]").getText());
         	version.put("gwt.version", this.span("DisplayLabel[2]").getText());
-        	version.put("smartgwt.version", this.span("DisplayLabel[3]").getText());
+        	version.put("smart.gwt.version", this.span("DisplayLabel[3]").getText());
         	this.row("Close").click();
     	}else if(selectPage("Help-->About", this.image("close.png").near(this.image("maximize.png")), 1000*5, 3)){ // New dialog approach: Date: 18-Oct-2013
     		version.put("application.name", this.cell("formTitle[0]").getText()+this.div("staticTextItem[1]").getText());
