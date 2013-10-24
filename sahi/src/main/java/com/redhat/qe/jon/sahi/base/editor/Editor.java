@@ -331,10 +331,12 @@ public class Editor {
 
     /**
      * check checkbox near a cell
+     * Not ready yet, doesn't work as expected
      *
      * @param cellSelection cell name for tightening which checkbox to use
      * @param check true to check, false to uncheck
      */
+    @Deprecated
     public void checkBoxNearCell(String cellSelection, boolean check) {
         tasks.waitFor(Timing.TIME_1S);
         String checkBox = null;
@@ -347,7 +349,7 @@ public class Editor {
         if (tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME)) {
             elem.parentNode().focus();
             log.fine("Sending keypress to " + checkBox);
-            tasks.execute("_sahi._keyPress(_sahi._image('" + checkBox + "', _in(_sahi._row('" + cellSelection + "')), 32));");
+            tasks.execute("_sahi._keyPress("+elem.toString()+", 32);");
         }
     }
     
