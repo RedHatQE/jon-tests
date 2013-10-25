@@ -1,18 +1,13 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
+import com.redhat.qe.jon.sahi.base.editor.*;
+import com.redhat.qe.jon.sahi.tasks.*;
+import net.sf.sahi.client.*;
+import org.testng.*;
 
-import net.sf.sahi.client.ElementStub;
-
-import org.testng.Assert;
-
-import com.redhat.qe.jon.sahi.base.editor.Editor;
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.jon.sahi.tasks.Timing;
+import java.util.*;
+import java.util.logging.*;
 
 /**
  * represents <b>Operations</b> Tab of given resource.
@@ -158,6 +153,7 @@ public class Operations extends ResourceTab {
                 if (picker.isVisible()) {
                     log.fine("Clicking on " + picker.parentNode().fetch("innerHTML"));
                     tasks.xy(picker.parentNode(), 3, 3).click();
+                    tasks.waitFor(Timing.TIME_1S);
                     ElementStub operation = tasks.row(op);
                     if (operation.exists()) {
                         tasks.xy(operation, 3, 3).click();
