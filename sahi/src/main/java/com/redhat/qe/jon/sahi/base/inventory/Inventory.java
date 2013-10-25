@@ -145,22 +145,29 @@ public class Inventory extends ResourceTab{
 			this.tasks = tasks;
 		}
 		private ElementStub getFirstRow() {
-			List<ElementStub> tables = tasks.table("listTable").collectSimilar();
-			log.fine("Tables :"+tables.size());
-			for (int i=tables.size()-1;i>=0;i--) {
-				if (tables.get(i).isVisible()) {
-					return tasks.row(0).in(tables.get(i));
-				}
-			}
-			return tasks.row(0).in(tasks.table("listTable["+(tables.size()-1)+"]"));
+		    ElementStub es = tasks.image("CreateChild_16.png");
+		    ElementStub table = null;
+		    if (es.exists() && es.isVisible()) {
+		        table = es.parentNode("table");
+		    }
+		    else {
+		        es = tasks.image("DeleteChild_16.png");
+		        if (es.exists() && es.isVisible()) {
+		            table = es.parentNode("table");
+		        }
+		    }
+		    if (table == null) {
+		        throw new RuntimeException("There is no record in resource child history table, is it?");
+		    }
+			return tasks.row(0).in(table);
 		}
 		/**
 		 * gets status of last item in child history (first row in table)
 		 * @return status string
 		 */
 		public String getLastResourceChangeStatus() {
-			ElementStub row = getFirstRow();
 			try {
+			    ElementStub row = getFirstRow();
 				return tasks.cell(4).in(row).getText();
 			} catch (Exception ex) {
 				log.fine("Unable to get last change status, returning [In Progress], exception : "+ex.getMessage());
