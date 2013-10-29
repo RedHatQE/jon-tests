@@ -148,35 +148,7 @@ public class Operations extends ResourceTab {
         }
 
         public void selectOperation(String op) {
-            List<ElementStub> pickers = tasks.image("comboBoxPicker.png").collectSimilar();
-            log.fine("Found " + pickers.size() + " comboboxes");
-            for (ElementStub picker : pickers) {
-                if (picker.isVisible()) {
-                    log.fine("Clicking on " + picker.parentNode().fetch("innerHTML"));
-                    tasks.xy(picker.parentNode(), 3, 3).click();
-                    tasks.waitFor(Timing.TIME_1S);
-                    ElementStub operation = tasks.row(op);
-                    if (operation.exists()) {
-                        tasks.xy(operation, 3, 3).click();
-                        log.fine("Selected operation [" + op + "].");
-                        return;
-                    } else {
-                        log.fine("Trying workaround with focused picker");
-                        ElementStub focused = tasks.image("comboBoxPicker_Over.png");
-                        if (focused.isVisible()) {
-                            log.fine("Focused picker was visible, clicking...");
-                            tasks.xy(focused, 3, 3).click();
-                            operation = tasks.row(op);
-                            if (operation.exists()) {
-                                tasks.xy(operation, 3, 3).click();
-                                log.fine("Selected operation [" + op + "].");
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-            throw new RuntimeException("Unable to select operation [" + op + "] clicked on each visible combo, but operation did NOT pop up");
+            getEditor().selectCombo(op);
         }
 
         /**

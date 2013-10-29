@@ -298,16 +298,23 @@ public class Editor {
 	    }
 	    throw new RuntimeException("Unable to select [" + selection + "] comboBox did NOT pop up");
 	}
-        // we always want to click on last row/cell because it has been added as the last one
-        index = rows.size() - 1;
-        log.fine("Found rows matching [" + selection + "] : " + rows.size() + " clicking on index=" + index);
-        ElementStub es = tasks.cell(selection).in(rows.get(index));
-        if (es.isVisible()) {
-            tasks.xy(es, 3, 3).click();
-            log.fine("Selected  [" + selection + "].");
-            return;
-        }
-        throw new RuntimeException("Unable to select [" + selection + "] comboBox did NOT pop up");
+	else {
+        // lets click to all selections found starting with the last one
+        log.fine("Found rows matching [" + selection + "] : " + rows.size());
+        for (int i = rows.size()-1;i >= 0; i--) {
+            log.fine("Selecting index="+i);
+            ElementStub es = tasks.cell(selection).in(rows.get(i));
+            if (es.isVisible() && es.parentNode("div",3).isVisible()) {
+                tasks.xy(es, 3, 3).click();
+                log.fine("Selected [" + selection + "].");
+                return;
+            }
+            else {
+                log.fine("Selection [" + selection + "] was not visible");
+            }
+        }   
+        return;
+	}
     }
 
     /**
