@@ -163,6 +163,7 @@ class MetricsTest(RHQRestTest):
             self._check_metric_data_fields(metric)
 
     @test(groups=['putmetric'])
+    @blockedBy('1024348')
     def put_data_raw(self):
         t = int(time.time() * 1000) # python represents timestamp with float and different precision
         r = self.put('metric/data/%d/raw/%d' % (self.sid,t),{'value':0.5})
