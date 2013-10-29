@@ -10,8 +10,8 @@
 
 //find with filtering
 
-var resName = 'service-alpha'; 
-var resPluginName = 'PerfTest';
+var resName = 'RHQ Agent'; 
+var resPluginName = 'RHQAgent';
 
 var criteria = ResourceTypeCriteria();
 criteria.addFilterName(resName);
@@ -22,29 +22,29 @@ assertTrue(resourceTypes.size() > 0, "Resource type with name '" +resName + "' a
 
 var resourceType = resourceTypes.get(0);
 var criteria = MeasurementDefinitionCriteria();
-criteria.addFilterName('alpha-metric0');
-criteria.addFilterDisplayName('Alpha Metric 0');
-criteria.addFilterDescription('Alpha Metric 0');
+criteria.addFilterName('time');
+criteria.addFilterDisplayName('Avg Execution Time');
+criteria.addFilterDescription('Average time');
 criteria.addFilterResourceTypeName(resourceType.name);
 criteria.addFilterResourceTypeId(resourceType.id);
 criteria.addFilterCategory(MeasurementCategory.PERFORMANCE);
 criteria.addFilterNumericType(NumericType.DYNAMIC);
 criteria.addFilterDataType(DataType.MEASUREMENT);
-criteria.addFilterDisplayType(DisplayType.DETAIL);
-criteria.addFilterDefaultOn(false);
-criteria.addFilterDefaultInterval(2400000);
+criteria.addFilterDisplayType(DisplayType.SUMMARY);
+criteria.addFilterDefaultOn(true);
+criteria.addFilterDefaultInterval(600000);
     
 
 var measurementDefs = MeasurementDefinitionManager.findMeasurementDefinitionsByCriteria(criteria);
 
-Assert.assertNumberEqualsJS(measurementDefs.size(), 1, 'Failed to find measurement definition when filtering');
+Assert.assertNumberEqualsJS(measurementDefs.size(), 2, 'Failed to find measurement definition when filtering');
 
 
 // find with sorting
 
 
 var criteria = MeasurementDefinitionCriteria();
-criteria.addFilterResourceTypeName('service-alpha');
+criteria.addFilterResourceTypeName(resName);
 criteria.addSortName(PageOrdering.ASC);
 criteria.addSortDisplayName(PageOrdering.DESC);
 criteria.addSortResourceTypeName(PageOrdering.ASC);

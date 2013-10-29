@@ -11,8 +11,8 @@
 
 //test find with filtering
 
-var resName = 'service-alpha'; 
-var resPluginName = 'PerfTest';
+var resName = 'RHQ Agent'; 
+var resPluginName = 'RHQAgent';
  
 var resourceType = ResourceTypeManager.getResourceTypeByNameAndPlugin(resName, resPluginName);
 assertTrue(resourceType != null, "Resource type with name '" +resName + "' and plugin name '"+ resPluginName +"' not found!");
@@ -20,7 +20,7 @@ assertTrue(resourceType != null, "Resource type with name '" +resName + "' and p
 var criteria = ResourceTypeCriteria();
 criteria.addFilterName(resName);
 criteria.addFilterDescription(resourceType.description);
-criteria.addFilterCategory(ResourceCategory.SERVICE);
+criteria.addFilterCategory(ResourceCategory.SERVER);
 criteria.addFilterPluginName(resPluginName);
 criteria.addFilterCreationDataType(ResourceCreationDataType.CONFIGURATION);
 criteria.addFilterCreateDeletePolicy(CreateDeletePolicy.NEITHER);
