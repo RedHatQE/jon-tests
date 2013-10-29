@@ -3,6 +3,7 @@ package com.redhat.qe.jon.sahi.base.inventory;
 
 import com.redhat.qe.jon.sahi.base.editor.*;
 import com.redhat.qe.jon.sahi.tasks.*;
+
 import net.sf.sahi.client.*;
 import org.testng.*;
 
@@ -194,7 +195,8 @@ public class Operations extends ResourceTab {
          */
         public void schedule() {
             tasks.cell("Schedule").click();
-            tasks.waitFor(Timing.WAIT_TIME);
+            Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("/Operation Schedule created.*/"), "Successful message",Timing.WAIT_TIME)
+                    ,"Operation was scheduled");
         }
     }
 
