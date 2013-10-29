@@ -20,5 +20,5 @@ var group = groups.create(group,[eap]);
 
 println("Creating bundle from dist-file");
 var b = bundles.createFromDistFile(filePath);
-var d = b.createDestination(group);
+var d = b.createDestination(group,null,null,"Deploy Directory");
 b.deploy(d);
