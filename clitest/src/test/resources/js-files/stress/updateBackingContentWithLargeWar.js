@@ -31,6 +31,7 @@ assertTrue(deployed != null, "Deployment resource was returned by createChild me
 assertTrue(deployed.exists(), "Deployment resource exists in inventory");
 assertTrue(deployed.waitForAvailable(), "Deployment resource is available!");
 
+deployed.retrieveContent("/dev/null"); // first retrieve content to make sure we don't hit https://bugzilla.redhat.com/show_bug.cgi?id=851145
 
 println("Updating backing content of [" + name + "] with " + largeContent);
 deployed.updateContent(largeContent, "2.0");
