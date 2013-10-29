@@ -257,6 +257,16 @@ public class Editor {
     public void selectCombo(String selection) {
 	selectCombo(0,selection);
     }
+    private List<ElementStub> getSelectionRows(String selection) {
+        List<ElementStub> visible = new ArrayList<ElementStub>();
+        List<ElementStub> rows = tasks.row(selection).collectSimilar();
+        for (ElementStub es : rows) {
+            if (es.isVisible() && es.parentNode("div",3).isVisible()) {
+                visible.add(es);
+            }
+        }
+        return visible;
+    }
 
     /**
      * selects given value in combobox.
@@ -270,13 +280,13 @@ public class Editor {
         tasks.xy(picker, 3, 3).mouseOver();
         tasks.xy(tasks.image("comboBoxPicker_Over.png"),3,3).click();
         log.fine("clicked on combo");
-        List<ElementStub> rows = tasks.row(selection).collectSimilar();
+        List<ElementStub> rows = getSelectionRows(selection);
         if (rows.isEmpty() && tasks.image("comboBoxPicker_Over.png").exists()) {
             log.fine("Combo did not pop up? Trying ONE more click...");
             // when combo is focused single click does NOT work - wtf!
             tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseDown();
             tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseUp();
-            rows = tasks.row(selection).collectSimilar();
+            rows = getSelectionRows(selection);
         }
 	if (rows.isEmpty()) {
 	    if (pickers - 1 > index) {
