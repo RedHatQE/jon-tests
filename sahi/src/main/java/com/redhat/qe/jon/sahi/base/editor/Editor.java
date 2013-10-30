@@ -262,7 +262,7 @@ public class Editor {
         List<ElementStub> visible = new ArrayList<ElementStub>();
         List<ElementStub> rows = tasks.row(selection).collectSimilar();
         for (ElementStub es : rows) {
-            if (es.isVisible() && es.parentNode("div",3).isVisible()) {
+            if (es.isVisible()) {
                 visible.add(es);
             }
         }
@@ -305,7 +305,7 @@ public class Editor {
     		// let's
     		// try out all pickers
     		log.warning("Selection not found, maybe because of wrong index=" + index + ". Let's be smarter then QE and try out other (higher index) combo pickers");
-    		while (index < pickers) {
+    		while (index < pickers -1) {
     		    try {
     		        index+=1;
     	            log.info("Trying out selectCombo(" + index + "," + selection + ")");
