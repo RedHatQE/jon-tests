@@ -258,15 +258,25 @@ public class Editor {
 	selectCombo(0,selection);
     }
     
-    private List<ElementStub> getSelectionRows(String selection) {
+    
+    private boolean getSelectionCellVisibility(ElementStub cell) {
+        ElementStub parentDiv = cell.parentNode("div",3);
+        boolean visible = cell.isVisible();
+        if (parentDiv.exists()) {
+            visible &= parentDiv.isVisible();
+        }
+        return visible;
+    }
+    
+    private List<ElementStub> getSelectionCells(String selection) {
         List<ElementStub> visible = new ArrayList<ElementStub>();
-        List<ElementStub> rows = tasks.row(selection).collectSimilar();
-        for (ElementStub es : rows) {
-            if (es.isVisible()) {
+        List<ElementStub> cells = tasks.cell(selection).collectSimilar();
+        for (ElementStub es : cells) {
+            if (getSelectionCellVisibility(es)) {
                 visible.add(es);
             }
         }
-        log.fine("Returning selection rows, found "+rows.size()+", but returning "+visible.size()+" visible ones");
+        log.fine("Returning selection cells, found "+cells.size()+", but returning "+visible.size()+" visible ones");
         return visible;
     }
 
@@ -290,15 +300,15 @@ public class Editor {
             tasks.xy(picker, 3, 3).click();
         }
         log.fine("It looks like I clicked on combo");
-        List<ElementStub> rows = getSelectionRows(selection);
-        if (rows.isEmpty() && tasks.image("comboBoxPicker_Over.png").exists()) {
+        List<ElementStub> cells = getSelectionCells(selection);
+        if (cells.isEmpty() && tasks.image("comboBoxPicker_Over.png").exists()) {
             log.fine("Combo did not pop up? Trying ONE more click...");
             // when combo is focused single click does NOT work - wtf!
             tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseDown();
             tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseUp();
-            rows = getSelectionRows(selection);
+            cells = getSelectionCells(selection);
         }
-	if (rows.isEmpty()) {
+	if (cells.isEmpty()) {
 	    if (pickers - 1 > index) {
     		// combo was probably clicked, but selection did not appear
     		// I know this may sound crazy, but 'index' might be wrong, so
@@ -322,16 +332,11 @@ public class Editor {
 	}
 	else {
         // lets click to all selections found starting with the last one
-        log.fine("Found rows matching [" + selection + "] : " + rows.size());
-        for (int i = rows.size()-1;i >= 0; i--) {
+        log.fine("Found rows matching [" + selection + "] : " + cells.size());
+        for (int i = cells.size()-1;i >= 0; i--) {
             log.fine("Selecting index="+i);
-            ElementStub es = tasks.cell(selection).in(rows.get(i));
-            ElementStub parentDiv = es.parentNode("div",3);
-            if (es.isVisible()) {
-                if (!parentDiv.isVisible()) {
-                    log.warning("Parent DIV of this cell is not visible, but this cell is!");
-                    log.warning(parentDiv.fetch("innerHTML"));
-                }
+            ElementStub es = cells.get(i);
+            if (getSelectionCellVisibility(es)) {
                 tasks.xy(es, 3, 3).click();
                 log.fine("Selected [" + selection + "].");
                 return;
