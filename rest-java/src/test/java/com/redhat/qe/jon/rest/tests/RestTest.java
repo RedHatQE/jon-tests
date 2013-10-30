@@ -23,6 +23,7 @@ import org.testng.annotations.Test;
 
 
 import com.redhat.qe.Assert;
+import com.redhat.qe.auto.testng.SkipIf;
 import com.redhat.qe.jon.rest.tasks.RestClient;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
@@ -588,6 +589,7 @@ public class RestTest extends RestClient{
 	}
 
 	@Test(groups = "restClientJava")
+	@SkipIf(property="rhq.build.version",contains="JON")
 	public void getAlertSender_Mobicents() throws ParseException {
 		HashMap<String, Object> result = this.getReponse(webResource, URIs.ALERT_SENDER_NAME.getUri().replace("@@senderName@@", "Mobicents") + ".json", null);
 		Assert.assertEquals(result.get(RESPONSE_STATUS_CODE), 200);
