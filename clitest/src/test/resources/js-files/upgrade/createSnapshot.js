@@ -27,6 +27,7 @@ exportAllBundleDeployments(outputDir+'/allBundleDeployments.csv');
 exportBaselinesForResource(agentId,outputDir+'/baselinesForRHQAgent.csv');
 exportDataForAgent(agentId,outputDir+'/dataForRHQAgent.csv');
 exportSystemSettings(outputDir+'/systemSettings.csv');
+exportProductInfo(outputDir+'/productInfo.csv');
 exportScheduledOperations(outputDir+'/allScheduledOperations.txt');
 exportOperationHistory(outputDir+'/completeOperationHistory.txt');
 exportDrifdefinitions(outputDir+'/allDriftDefs.csv');
@@ -258,9 +259,17 @@ function exportDataForAgent(agentId,targetFile){
  */
 function exportSystemSettings(targetFile){
 	common.info("Exporting system settings to "+targetFile);
+	// note: SystemSetting.SERVER_VERSION is deprecated  - see bz1011971
 	var sysSet = SystemManager.getSystemSettings();
 	exportToFile(sysSet,targetFile);
 }
+function exportProductInfo(targetFile){
+    common.info("Exporting product info to "+targetFile);
+    var info = SystemManager.getProductInfo();
+    exporter.setTarget('csv', targetFile);
+    exporter.write(info);
+}
+
 
 /**
  * Operations 
