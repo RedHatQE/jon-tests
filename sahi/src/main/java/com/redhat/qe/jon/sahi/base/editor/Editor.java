@@ -326,7 +326,12 @@ public class Editor {
         for (int i = rows.size()-1;i >= 0; i--) {
             log.fine("Selecting index="+i);
             ElementStub es = tasks.cell(selection).in(rows.get(i));
-            if (es.isVisible() && es.parentNode("div",3).isVisible()) {
+            ElementStub parentDiv = es.parentNode("div",3);
+            if (es.isVisible()) {
+                if (!parentDiv.isVisible()) {
+                    log.warning("Parent DIV of this cell is not visible, but this cell is!");
+                    log.warning(parentDiv.fetch("innerHTML"));
+                }
                 tasks.xy(es, 3, 3).click();
                 log.fine("Selected [" + selection + "].");
                 return;
