@@ -72,6 +72,7 @@ function exportResourcesInInvenotry(targetFile){
 	resCri.fetchExplicitGroups(true);
 	resCri.fetchOperationHistories(true);
 	resCri.fetchParentResource(true);
+	resCri.fetchCurrentAvailability(true);
 	var res = ResourceManager.findResourcesByCriteria(resCri);
 	
 	var writer = new java.io.PrintWriter(targetFile);
@@ -112,6 +113,7 @@ function exportResourcesInInvenotry(targetFile){
 		
 		resHash['id'] = resObj.getId();
 		resHash['name'] = new String(resObj.getName());
+		resHash['availability'] = new String(resObj.getCurrentAvailability().getAvailabilityType());
 		resHash['agentId'] = resObj.getAgent().getId();
 		resHash['ancestry'] = new String(resObj.getAncestry());
 		resHash['description'] = new String(resObj.getDescription());
