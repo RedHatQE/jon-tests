@@ -1380,6 +1380,7 @@ public class SahiTasks extends ExtendedSahi {
     			for(int c=0; c<columns.length; c++){
                     _logger.finest("Processing [row,column] = ["+i+","+c+"]");
     				ElementStub categoryElement = cell(table(tableName+"["+(noListTables-1)+"]"),i, c);
+                    _logger.finest("Processing categoryElement " + categoryElement);
     				innerHTMLstring = categoryElement.fetch("innerHTML");
                     _logger.finest("CategoryElement " + categoryElement + " innerHTML: " + innerHTMLstring);
     				textString = categoryElement.getText();
@@ -1395,7 +1396,7 @@ public class SahiTasks extends ExtendedSahi {
     				}
     			}    			
     		}catch (Exception ex){
-    			_logger.log(Level.FINER, "Known Exception: "+ex.toString());
+    			_logger.log(Level.FINER, "Known Exception: ", ex);
     			break;
     		}
     		rows.addLast((HashMap<String, String>) row.clone());
