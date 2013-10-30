@@ -1,21 +1,14 @@
 package com.redhat.qe.jon.sahi.tasks;
 
-import com.redhat.qe.jon.sahi.base.ExtendedSahi;
-import com.redhat.qe.Assert;
+import com.redhat.qe.*;
+import com.redhat.qe.jon.sahi.base.*;
+import net.sf.sahi.client.*;
+import org.testng.annotations.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import net.sf.sahi.client.ElementStub;
-
-import org.testng.annotations.Optional;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.logging.*;
 
 public class SahiTasks extends ExtendedSahi {
 
@@ -1365,6 +1358,7 @@ public class SahiTasks extends ExtendedSahi {
     @SuppressWarnings("unchecked")
 	public LinkedList<HashMap<String, String>> getRHQgwtTableDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue, boolean singleRow, int rowNo, boolean conditional, String condition) {
     	int noListTables = this.table(tableName).countSimilar()-tableCountOffset;
+        _logger.finer("Number of list tables - offset ("+tableCountOffset+") = " + noListTables);
     	LinkedList<HashMap<String, String>> rows = new LinkedList<HashMap<String,String>>();
     	HashMap<String, String> row = new HashMap<String, String>();
     	String[] columns = getCommaToArray(columnsCSV);
@@ -1386,7 +1380,9 @@ public class SahiTasks extends ExtendedSahi {
     			for(int c=0; c<columns.length; c++){
     				ElementStub categoryElement = cell(table(tableName+"["+(noListTables-1)+"]"),i, c);
     				innerHTMLstring = categoryElement.fetch("innerHTML");
+                    _logger.finest("CategoryElement " + categoryElement + " innerHTML: " + innerHTMLstring);
     				textString = categoryElement.getText();
+                    _logger.finest("CategoryElement " + categoryElement + " text: " + textString);
     				if(innerHTMLstring.contains("src=") && (textString.length() == 0)){
     					innerHTMLstring = innerHTMLstring.substring(innerHTMLstring.indexOf("src=\"")+5, innerHTMLstring.indexOf('"', innerHTMLstring.indexOf("src=\"")+5));
     					row.put(columns[c], innerHTMLstring.substring(innerHTMLstring.lastIndexOf('/')+1));
