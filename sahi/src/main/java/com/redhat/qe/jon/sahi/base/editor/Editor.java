@@ -257,6 +257,7 @@ public class Editor {
     public void selectCombo(String selection) {
 	selectCombo(0,selection);
     }
+    
     private List<ElementStub> getSelectionRows(String selection) {
         List<ElementStub> visible = new ArrayList<ElementStub>();
         List<ElementStub> rows = tasks.row(selection).collectSimilar();
@@ -265,6 +266,7 @@ public class Editor {
                 visible.add(es);
             }
         }
+        log.fine("Returning selection rows, found "+rows.size()+", but returning "+visible.size()+" visible ones");
         return visible;
     }
 
@@ -277,9 +279,17 @@ public class Editor {
         int pickers = tasks.image("comboBoxPicker.png").countSimilar();
         log.fine("Found " + pickers + " comboboxes, required index=" + index);
         ElementStub picker = tasks.image("comboBoxPicker.png[" + index + "]");
+        log.fine("Performing click on combo via mouseOver + click on hovered picker");
         tasks.xy(picker, 3, 3).mouseOver();
-        tasks.xy(tasks.image("comboBoxPicker_Over.png"),3,3).click();
-        log.fine("clicked on combo");
+        ElementStub pickerOver = tasks.image("comboBoxPicker_Over.png");
+        if (pickerOver.exists()) {
+            tasks.xy(pickerOver,3,3).click();
+        }
+        else {
+            log.fine("Method via mouseOver failed, fallback to click()");
+            tasks.xy(picker, 3, 3).click();
+        }
+        log.fine("It looks like I clicked on combo");
         List<ElementStub> rows = getSelectionRows(selection);
         if (rows.isEmpty() && tasks.image("comboBoxPicker_Over.png").exists()) {
             log.fine("Combo did not pop up? Trying ONE more click...");
@@ -290,21 +300,23 @@ public class Editor {
         }
 	if (rows.isEmpty()) {
 	    if (pickers - 1 > index) {
-		// combo was probably clicked, but selection did not appear
-		// I know this may sound crazy, but 'index' might be wrong, so
-		// let's
-		// try out all pickers
-		log.warning("Selection not found, maybe because of wrong index=" + index + ". Let's be smarter then QE and try out other (higher index) combo pickers");
-
-		try {
-		    log.info("Trying out selectCombo(" + (index + 1) + "," + selection + ")");
-		    // but first close the original combo
-		    tasks.xy(picker,3,3).click();
-		    this.selectCombo(index + 1, selection);
-		    return;
-		} catch (RuntimeException e) {
-
-		}
+    		// combo was probably clicked, but selection did not appear
+    		// I know this may sound crazy, but 'index' might be wrong, so
+    		// let's
+    		// try out all pickers
+    		log.warning("Selection not found, maybe because of wrong index=" + index + ". Let's be smarter then QE and try out other (higher index) combo pickers");
+    		while (index < pickers) {
+    		    try {
+    		        index+=1;
+    	            log.info("Trying out selectCombo(" + index + "," + selection + ")");
+    	            // but first close the original combo
+    	            tasks.xy(picker,3,3).click();
+    	            this.selectCombo(index, selection);
+    	            return;
+    	        } catch (RuntimeException e) {
+    	            log.log(Level.WARNING, "At attempt to select ["+selection+"] in combo index="+index+" failed with exception", e);
+    	        }
+    		}
 	    }
 	    throw new RuntimeException("Unable to select [" + selection + "] comboBox did NOT pop up");
 	}
