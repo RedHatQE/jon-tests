@@ -260,17 +260,17 @@ public class Editor {
     
     
     private boolean getSelectionCellVisibility(ElementStub cell) {
-        ElementStub parentDiv = cell.parentNode("div",3);
-        boolean visible = cell.isVisible();
-        if (parentDiv.exists()) {
-            visible &= parentDiv.isVisible();
-        }
-        return visible;
+        return cell.isVisible();
     }
     
     private List<ElementStub> getSelectionCells(String selection) {
         List<ElementStub> visible = new ArrayList<ElementStub>();
-        List<ElementStub> cells = tasks.cell(selection).collectSimilar();
+        ElementStub parent = tasks.div("pickListMenuBody");
+        if (!parent.exists()) {
+            log.warning("Not returning any visible cells because parent div does not exist");
+            return visible;
+        }
+        List<ElementStub> cells = tasks.cell(selection).in(parent).collectSimilar();
         for (ElementStub es : cells) {
             if (getSelectionCellVisibility(es)) {
                 visible.add(es);
@@ -319,8 +319,7 @@ public class Editor {
     		    try {
     		        index+=1;
     	            log.info("Trying out selectCombo(" + index + "," + selection + ")");
-    	            // but first close the original combo
-    	            tasks.xy(picker,3,3).click();
+    	            //tasks.xy(picker,3,3).click();
     	            this.selectCombo(index, selection);
     	            return;
     	        } catch (RuntimeException e) {
