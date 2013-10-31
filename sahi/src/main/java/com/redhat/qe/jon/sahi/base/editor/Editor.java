@@ -259,10 +259,6 @@ public class Editor {
     }
     
     
-    private boolean getSelectionCellVisibility(ElementStub cell) {
-        return cell.isVisible();
-    }
-    
     private List<ElementStub> getSelectionCells(String selection) {
         List<ElementStub> visible = new ArrayList<ElementStub>();
         ElementStub parent = tasks.div("pickListMenuBody");
@@ -272,7 +268,7 @@ public class Editor {
         }
         List<ElementStub> cells = tasks.cell(selection).in(parent).collectSimilar();
         for (ElementStub es : cells) {
-            if (getSelectionCellVisibility(es)) {
+            if (es.isVisible()) {
                 visible.add(es);
             }
         }
@@ -286,14 +282,17 @@ public class Editor {
      * @param selection text to be selected
      */
     public void selectCombo(int index, String selection) {
-        int pickers = tasks.image("comboBoxPicker.png").countSimilar();
-        log.fine("Found " + pickers + " comboboxes, required index=" + index);
-        ElementStub picker = tasks.image("comboBoxPicker.png[" + index + "]");
+        // if you decide to fix this method you are a brave man
+        // I've spent hours of tuning this **cking code to work
+        // 
+        List<ElementStub> pickers = tasks.image("comboBoxPicker.png").in(tasks.table("selectItemControl")).collectSimilar();
+        log.fine("Found " + pickers.size() + " comboboxes, required index=" + index);
+        ElementStub picker = pickers.get(index);
         log.fine("Performing click on combo via mouseOver + click on hovered picker");
         tasks.xy(picker, 3, 3).mouseOver();
-        ElementStub pickerOver = tasks.image("comboBoxPicker_Over.png");
+        ElementStub pickerOver = tasks.image("comboBoxPicker_Over.png").in(tasks.table("selectItemControl"));
         if (pickerOver.exists()) {
-            tasks.xy(pickerOver,3,3).click();
+            pickerOver.click();
         }
         else {
             log.fine("Method via mouseOver failed, fallback to click()");
@@ -301,21 +300,21 @@ public class Editor {
         }
         log.fine("It looks like I clicked on combo");
         List<ElementStub> cells = getSelectionCells(selection);
-        if (cells.isEmpty() && tasks.image("comboBoxPicker_Over.png").exists()) {
+        if (cells.isEmpty() && pickerOver.exists()) {
             log.fine("Combo did not pop up? Trying ONE more click...");
             // when combo is focused single click does NOT work - wtf!
-            tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseDown();
-            tasks.xy(tasks.image("comboBoxPicker_Over.png"), 3, 3).mouseUp();
+            tasks.xy(pickerOver, 3, 3).mouseDown();
+            tasks.xy(pickerOver, 3, 3).mouseUp();
             cells = getSelectionCells(selection);
         }
 	if (cells.isEmpty()) {
-	    if (pickers - 1 > index) {
+	    if (pickers.size() - 1 > index) {
     		// combo was probably clicked, but selection did not appear
     		// I know this may sound crazy, but 'index' might be wrong, so
     		// let's
     		// try out all pickers
     		log.warning("Selection not found, maybe because of wrong index=" + index + ". Let's be smarter then QE and try out other (higher index) combo pickers");
-    		while (index < pickers -1) {
+    		while (index < pickers.size() -1) {
     		    try {
     		        index+=1;
     	            log.info("Trying out selectCombo(" + index + "," + selection + ")");
@@ -335,7 +334,7 @@ public class Editor {
         for (int i = cells.size()-1;i >= 0; i--) {
             log.fine("Selecting index="+i);
             ElementStub es = cells.get(i);
-            if (getSelectionCellVisibility(es)) {
+            if (es.isVisible()) {
                 tasks.xy(es, 3, 3).click();
                 log.fine("Selected [" + selection + "].");
                 return;
