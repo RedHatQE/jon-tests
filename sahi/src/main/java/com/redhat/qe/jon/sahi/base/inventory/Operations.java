@@ -42,6 +42,7 @@ public class Operations extends ResourceTab {
      */
     public Operation newOperation(String name) {
         tasks.cell("New").click();
+        tasks.execute("_sahi._call(window.location.reload());");
         return new Operation(tasks, name);
     }
 
