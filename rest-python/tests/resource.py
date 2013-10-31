@@ -17,12 +17,18 @@ class CreateResourceTest(RHQRestTest):
     @before_class
     def setUp(self):
         self.res_id = int(self.find_resource_eap6standalone()['resourceId'])
-        self.net_iface_body = {'resourceName':'testnetifaceX',
+        self.net_iface_body = {'resourceName':'testnetiface-rest',
                 'typeName':'Network Interface',
                 'pluginName':'JBossAS7',
                 'parentId':self.res_id}
+        self.content_body = {'resourceName':'hello.war',
+                'typeName':'Deployment',
+                'resourceConfig':{'runtimeName':'hello.war'},
+                'pluginName':'JBossAS7',
+                'parentId':self.res_id}
+        self.deployment = '../sahi/src/test/resources/deploy/original/hello.war'
 
-    @test
+    @test(groups=['resource'])
     @blockedBy('958922')
     def create_child(self):
         r = self.post('resource',self.net_iface_body)
@@ -31,7 +37,7 @@ class CreateResourceTest(RHQRestTest):
         assert_is_not_none(data['resourceId'])
         self.iface_id = data['resourceId']
 
-    @test(depends_on=[create_child])
+    @test(depends_on=[create_child],groups=['resource'])
     @blockedBy('958922')
     def create_child_when_exists(self):
         r = self.post('resource',self.net_iface_body)
@@ -40,15 +46,58 @@ class CreateResourceTest(RHQRestTest):
         assert_equal(self.iface_id,data['resourceId'],'Returned unexpected resource %s' % data['resourceId'])
         assert_equal(r.status_code,201,'Returned unexpected status %d' % r.status_code)
 
-    @test(depends_on=[create_child])
+    @test(depends_on=[create_child],groups=['resource'])
+    @blockedBy('958922')
     def delete_child(self):
-        r = self.delete('resource/%s?delete=true' % self.iface_id)
+        r = self.delete('resource/%s?physical=true' % self.iface_id)
         assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
-        r = self.get('resource/%s' % self.iface_id)            
-        assert_equal(r.status_code,404,'Returned unexpected status %d for deleted resource' % r.status_code)
+        r = self.get('resource/%s' % self.iface_id)
+        data = r.json()
+        assert_equal(data['status'],'DELETED','Returned unexpected status %s for deleted resource' % data['status'])
 
+    @test(groups=['resource'])
     def create_child_content(self):
-        body = {'resourceName':'deploy.war'}
+        self.log.info('Uploading content')
+        req = requests.post(
+                self.url('content/fresh'),
+                data=open(self.deployment,'rb').read(),
+                auth = self.auth,
+                headers={'Content-Type':'application/octet-stream','accept':self.headers['accept']}
+        )
+        # get a handle of uploaded file
+        handle = req.json()['value']
+        self.log.info('Creating resource')
+        r = self.post('resource?handle=%s' % handle, self.content_body)
+        assert_equal(r.status_code,200)
+        data = r.json()
+        assert_is_not_none(data['resourceId'])
+        self.content_id = data['resourceId']
+
+    @test(depends_on=[create_child_content],groups='resource')
+    @blockedBy('1025388')
+    def create_child_content_when_exists(self):
+        self.log.info('Uploading content')
+        req = requests.post(
+                self.url('content/fresh'),
+                data=open(self.deployment,'rb').read(),
+                auth = self.auth,
+                headers={'Content-Type':'application/octet-stream','accept':self.headers['accept']}
+        )
+        # get a handle of uploaded file
+        handle = req.json()['value']
+        self.log.info('Creating resource')
+        r = self.post('resource?handle=%s' % handle, self.content_body)
+        assert_equal(r.status_code,500)
+        data = r.json()
+        assert_true(False,'Fix me, this test was unblocked and needs to be fixed')
+
+    @test(depends_on=[create_child_content],groups='resource')
+    def delete_child_content(self):
+        r = self.delete('resource/%s?physical=true' % self.content_id)
+        assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
+        r = self.get('resource/%s' % self.content_id)
+        data = r.json()
+        assert_equal(data['status'],'DELETED','Returned unexpected status %s for deleted resource' % data['status'])
 
 @test(groups=['getresource'])
 class GetResourceTest(RHQRestTest):

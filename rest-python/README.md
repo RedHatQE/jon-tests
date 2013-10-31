@@ -35,7 +35,7 @@ You can enable Bugzilla checker. This checker goes to [Redhat Bugzilla](https://
 given bug is still
  *under development* test method gets skipped. Without this check such test would most likely fail.
 
-```export BZCHECKER=true```
+```export BZCHECK=true```
 
 ### Test results
 
