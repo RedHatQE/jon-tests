@@ -285,12 +285,16 @@ public class Editor {
         // if you decide to fix this method you are a brave man
         // I've spent hours of tuning this **cking code to work
         // 
-        List<ElementStub> pickers = tasks.image("comboBoxPicker.png").in(tasks.table("selectItemControl")).collectSimilar();
+        List<ElementStub> pickers = tasks.image("comboBoxPicker.png").collectSimilar();
         log.fine("Found " + pickers.size() + " comboboxes, required index=" + index);
+        if (index > pickers.size()-1) {
+            index = pickers.size() -1;
+            log.warning("Requested index does not fit into found combos, setting to "+ index);
+        }
         ElementStub picker = pickers.get(index);
         log.fine("Performing click on combo via mouseOver + click on hovered picker");
         tasks.xy(picker, 3, 3).mouseOver();
-        ElementStub pickerOver = tasks.image("comboBoxPicker_Over.png").in(tasks.table("selectItemControl"));
+        ElementStub pickerOver = tasks.image("comboBoxPicker_Over.png");
         if (pickerOver.exists()) {
             pickerOver.click();
         }
