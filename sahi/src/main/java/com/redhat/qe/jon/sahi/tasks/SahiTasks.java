@@ -144,8 +144,14 @@ public class SahiTasks extends ExtendedSahi {
     	}else{
     		return false;
     	}
-    		
-    	
+    }
+
+    /**
+     * Reloads whole browser window
+     */
+    public void reloadPage() {
+        _logger.fine("Reloading whole page");
+        this.execute("_sahi._call(window.location.reload());");
     }
 
     /**
