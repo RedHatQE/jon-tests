@@ -44,6 +44,25 @@ public class SSHClient implements ICommandRunner {
 	    this.keyFile = keyFile;
 	    this.pass = pass;
 	}
+	/**
+	 * creates new instance of SSH client, but treats all parameters as System properties
+	 * @param user system property
+	 * @param host system property
+	 * @param keyFile system property
+	 * @param pass system property
+	 * @return SSH Client
+	 */
+	public static SSHClient fromProperties(String user, String host, String keyFile, String pass) {
+	    user = System.getProperty(user, "hudson");
+	    host = System.getProperty(host, System.getProperty("jon.agent.name", "localhost"));
+	    keyFile = System.getProperty(keyFile);
+	    File kFile = null;
+	    if (keyFile!=null) {
+	        kFile = new File(keyFile);
+	    }
+	    pass = System.getProperty(pass, "hudson");
+	    return new SSHClient(user,host,kFile,pass);
+	}
 	public String getHost() {
 		return host;
 	}
