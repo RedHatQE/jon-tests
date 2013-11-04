@@ -115,6 +115,7 @@
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.bundles.CreateBundleTest" />
 		<class name="com.redhat.qe.jon.clitest.tests.bundles.BundleWorkflowTest" />
+		<class name="com.redhat.qe.jon.clitest.tests.bundles.BundleComplianceTest" />
 	</classes>
 </test>
 <test name="RHQ Storage Alert Definition">
