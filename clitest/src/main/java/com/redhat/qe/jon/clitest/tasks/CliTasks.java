@@ -76,7 +76,6 @@ public class CliTasks {
 		return runCommand(command, COMMAND_TIMEOUT);
 	}
 	public String runCommand(String command, long commandTimeout) throws CliTasksException{
-		_logger.log(Level.INFO, "Command --> "+command);
 		SSHCommandResult result = commandRunner.runAndWait(command, commandTimeout);
 		String output = result.getStdout();
 		String error = result.getStderr();
