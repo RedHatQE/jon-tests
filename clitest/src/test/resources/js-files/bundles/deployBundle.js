@@ -17,6 +17,6 @@ var bundle = b[0];
 assertTrue(bundle.versions().length == 2, "2 Bundle versions were uploaded");
 assertTrue(bundle.destinations().length == 1, "1 Bundle versions were created");
 
-bundle.deploy(bundle.destinations()[0],{},bundleVersion);
+bundle.deploy(bundle.destinations()[0],{},bundleVersion,false);
 
 
