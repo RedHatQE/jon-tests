@@ -152,6 +152,7 @@ public class SahiTasks extends ExtendedSahi {
     public void reloadPage() {
         _logger.fine("Reloading whole page");
         this.execute("_sahi._call(window.location.reload());");
+        this.waitFor(Timing.WAIT_TIME);
     }
 
     /**
