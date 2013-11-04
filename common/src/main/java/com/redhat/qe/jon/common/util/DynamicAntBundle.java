@@ -23,6 +23,7 @@ public class DynamicAntBundle {
     private String version;
     private Compatibility compatibility;
     private int size;
+    private String template;
 
     /**
      * creates default dynamic ant bundle representation. Such bundle has random
@@ -34,6 +35,17 @@ public class DynamicAntBundle {
         version = String.valueOf(new Date().getTime());
         compatibility = Compatibility.JON32;
         size = 0;
+        template = "bundles/antBundle.vm";
+    }
+    /**
+     * Set's path to template resource file to be used. 
+     * If using your own template, make sure it respects inputs passed. (name,size,version..etc) 
+     * @param path to resource template file
+     * @return this
+     */
+    public DynamicAntBundle usingTemplate(String path) {
+       this.template = path;
+       return this;
     }
 
     /**
@@ -100,7 +112,7 @@ public class DynamicAntBundle {
         context.put("name", this.name);
         context.put("version", this.version);
         context.put("compatibility", this.compatibility.name());
-        Template t = ve.getTemplate("bundles/antBundle.vm");
+        Template t = ve.getTemplate(this.template);
         File tmpDeployXml = File.createTempFile("dynamic", "bundle");
         FileWriter fw = new FileWriter(tmpDeployXml);
         t.merge(context, fw);
