@@ -1,5 +1,5 @@
 /**
- * @overview this library tries to be synchronous and high-level API built on top of standard RHQ remote API
+ * @overview this library tries to be synchronous and high-level API built on top of regular RHQ remote API
  * @name RHQ API
  * @version 0.2
  * @author Libor Zoubek (lzoubek@redhat.com), Filip Brychta (fbrychta@redhat.com), John Sanda (jsanda@redhat.com)
@@ -2777,10 +2777,14 @@ var Bundle = function(param) {
 	 * @param {Bundle-Destination} destination - destination to be deployed to
 	 * @param {Object} params - map of input parameters required by bundle
 	 * @param {Bundle-Version|String} version - bundle version to be deployed, if null, latest version is used
+	 * @param {Boolean} isClean - whether to perform clean deployment or not, default is true
 	 * @type Bundle-Deployment
 	 */
-		deploy : function(destination,params,version) {
+		deploy : function(destination,params,version,isClean) {
 			params = params || {};
+			if (typeof(isClean) == "undefined") {
+			    isClean = true;
+			}
 			var versionStr; // detect version argument and properly print it
 			if (typeof(version) == "string") {
 				versionStr = version;
@@ -2814,7 +2818,7 @@ var Bundle = function(param) {
 				configuration = common.applyConfiguration(defaultConfig,version.obj.configurationDefinition,params);
 			}
 			var deployment = BundleManager.createBundleDeployment(version.obj.id, destination.id, "", configuration);
-			deployment = BundleManager.scheduleBundleDeployment(deployment.id, true);
+			deployment = BundleManager.scheduleBundleDeployment(deployment.id, isClean);
 			var func = function() {
 				var crit = common.createCriteria(new BundleDeploymentCriteria(),{id:deployment.id});
 		        var result = BundleManager.findBundleDeploymentsByCriteria(crit);
