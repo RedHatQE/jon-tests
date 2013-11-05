@@ -109,7 +109,7 @@ public class Operations extends ResourceTab {
         for (ElementStub el : headerCells) {
             log.finest("Header cell: " + el.fetch());
         }
-        if (headerCells.size() > 1) {
+        if (headerCells.size() > 0) {
             Map<String, String> result = new HashMap<String, String>();
             ElementStub table = headerCells.get(headerCells.size() - 1).parentNode("table");
             log.finer("Table element is " + table.toString());
