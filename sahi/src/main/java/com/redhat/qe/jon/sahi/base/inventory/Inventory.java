@@ -1,18 +1,16 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
+import com.redhat.qe.*;
+import com.redhat.qe.jon.sahi.base.editor.*;
+import com.redhat.qe.jon.sahi.tasks.*;
+import net.sf.sahi.client.*;
+
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.logging.Logger;
-
-import net.sf.sahi.client.ElementStub;
-
-import com.redhat.qe.Assert;
-import com.redhat.qe.jon.sahi.base.editor.ConfigEditor;
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.jon.sahi.tasks.Timing;
+import java.util.logging.*;
 
 public class Inventory extends ResourceTab{
 
@@ -387,22 +385,39 @@ public class Inventory extends ResourceTab{
 		 * @return list of children
 		 */
 		public String[] listChildren() {
-			List<String> children = new ArrayList<String>();
-			if (tasks.cell("No items to show.").exists()) {
-				return new String[]{};
-			}
-			int count = tasks.table("listTable").countSimilar();
-			if (count>1) {
-				for (ElementStub row : tasks.row("").in(tasks.table("listTable["+(count-1)+"]")).collectSimilar()) {
-					String child = tasks.cell(1).in(row).getText();
-					if (child.trim().length()> 0) {
-						children.add(child);
-						log.fine("Found child ["+child+"]");
-					}
-				}
-			}
-			return children.toArray(new String[]{});
+            List<String> children = new ArrayList<String>();
+            try {
+                children = listChildren(1);
+            } catch (Exception ex) {
+                log.fine("Known issue caused probably by accessing wrong table: " + ex.toString());
+            }
+            if (children.isEmpty()) {
+                children = listChildren(2);
+            }
+            return children.toArray(new String[]{});
 		}
+
+        /**
+         * lists children resrource names
+         * @return list of children
+         */
+        public List<String> listChildren(int tableOffsetFromTheEnd) {
+            List<String> children = new ArrayList<String>();
+            if (tasks.cell("No items to show.").exists()) {
+                return children;
+            }
+            int count = tasks.table("listTable").countSimilar();
+            if (count>tableOffsetFromTheEnd) {
+                for (ElementStub row : tasks.row("").in(tasks.table("listTable["+(count-tableOffsetFromTheEnd)+"]")).collectSimilar()) {
+                    String child = tasks.cell(1).in(row).getText();
+                    if (child.trim().length()> 0) {
+                        children.add(child);
+                        log.fine("Found child ["+child+"]");
+                    }
+                }
+            }
+            return children;
+        }
 	}
 
 
