@@ -385,6 +385,7 @@ public class Inventory extends ResourceTab{
 		 * @return list of children
 		 */
 		public String[] listChildren() {
+            tasks.reloadPage();
             List<String> children = new ArrayList<String>();
             try {
                 children = listChildren(1);
