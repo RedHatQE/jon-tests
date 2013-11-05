@@ -104,10 +104,10 @@ public class Operations extends ResourceTab {
             tasks.xy(tasks.image(resultImage).in(tasks.div(opName + "[0]").parentNode("tr")), 3, 3).doubleClick();
         }
         tasks.reloadPage();
-        log.finer("The property element: " + tasks.cell("Property").fetch());
+        log.finest("The property element: " + tasks.cell("Property").fetch());
         List<ElementStub> headerCells = tasks.cell("Property").collectSimilar();
         for (ElementStub el : headerCells) {
-            log.finest(el.fetch());
+            log.finest("Header cell: " + el.fetch());
         }
         if (headerCells.size() > 1) {
             Map<String, String> result = new HashMap<String, String>();
