@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<project xmlns:rhq="antlib:org.rhq.bundle" name="$name application" default="main">
+
+  <rhq:bundle name="$name" version="$version" description="dynamic ant bundle">
+    <rhq:deployment-unit name="bundle.war" preinstallTarget="preinstall" postinstallTarget="postinstall" compliance="filesAndDirectories">
+      <rhq:file name="bundle.war" destinationFile="subdir1/bundle.war"/>  
+    </rhq:deployment-unit>
+  </rhq:bundle>
+
+  <target name="main"/>
+  <target name="preinstall">
+    <echo>Deploying $name to ${rhq.deploy.dir}...</echo>
+    <property name="preinstallTargetExecuted" value="true"/>
+  </target>
+  <target name="postinstall">
+    <echo>Done deploying $name to ${rhq.deploy.dir}.</echo>
+    <property name="postinstallTargetExecuted" value="true"/>
+  </target>
+</project>

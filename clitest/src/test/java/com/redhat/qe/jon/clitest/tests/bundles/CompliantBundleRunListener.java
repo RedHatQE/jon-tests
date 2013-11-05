@@ -27,6 +27,23 @@ public class CompliantBundleRunListener extends CliTestRunListenerImpl {
                 return null;
             }
         }
+        if (name.startsWith("antbundle-FAD:")) {
+            String[] params = name.split(":");
+            if (params.length != 3) {
+                throw new RuntimeException("antbundle resource must be in format antbundle-FAD:<bundle name>:<bundle version>");
+            }
+            try {
+                return new DynamicAntBundle()
+                    .withName(params[1])
+                    .withVersion(params[2])
+                    .usingTemplate("bundles/antBundle-compliance_filesAndDirectories.vm")
+                    .withSize(1)
+                    .build();
+            } catch (Exception e) {
+                log.log(Level.SEVERE, "Failed to create dynamic bundle", e);
+                return null;
+            }
+        }
         return super.prepareResource(name);
     }
 }
