@@ -116,8 +116,9 @@ public class Operations extends ResourceTab {
             List<ElementStub> rows = tasks.row("").in(table).collectSimilar();
             // starting with 3rd row, because 1st some shit and 2nd is table header
             // we also ignore last because sahi was failing
-            log.fine("Have " + (rows.size() - 3) + " result rows");
+            log.fine("Have " + (rows.size() - 2) + " result rows");
             log.finest("The rows are: " + rows.toString());
+            log.finest("The last row first column: " + tasks.cell(0).in(rows.get(rows.size()-1)).getText());
             for (int i = 2; i < rows.size(); i++) {
                 ElementStub row = rows.get(i);
                 ElementStub key = tasks.cell(0).in(row);
