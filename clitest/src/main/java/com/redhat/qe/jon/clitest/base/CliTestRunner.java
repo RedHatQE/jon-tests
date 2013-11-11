@@ -190,9 +190,12 @@ public class CliTestRunner {
     /**
      * specify username (subject)
      * @param user
+     * @param password
+     * @return this
      */
-    public CliTestRunner asUser(String user) {
+    public CliTestRunner asUser(String user, String password) {
 	this.username = user;
+	this.password = password;
 	return this;
     }
     
