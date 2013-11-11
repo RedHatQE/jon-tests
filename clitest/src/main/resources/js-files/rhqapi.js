@@ -931,6 +931,38 @@ var Role = function(nativeRole){
 			var permissSet = _nativeRole.getPermissions();
 			
 			return permissSet.toArray();
+		},
+	      /**
+         * assigns given resource groups to this role. Note that this cleans up all previously assigned groups
+         * @param {BundleGroup[]} groupArray - resource groups to be assigned with this role
+         */
+        assignBundleGroups : function(groupArray) {
+            groupArray = groupArray || [];
+            RoleManager.setAssignedBundleGroups(_id,groupArray.map(function(g){return g.id;}))
+        },
+		/**
+		 * Returns array of BundleGroups assigned to this role
+		 * @return {BundleGroup[]}
+		 */
+		bundleGroups : function() {
+		    // TODO implement
+		   return [];
+		},
+		/**
+		 * assigns given resource groups to this role. Note that this cleans up all previously assigned groups
+		 * @param{ResGroup[]} groupArray - resource groups to be assigned with this role
+		 */
+		assignResourceGroups : function(groupArray) {
+		    groupArray = groupArray || [];
+		    RoleManager.setAssignedResourceGroups(_id,groupArray.map(function(g){return g.id;}))
+		},
+		/**
+		 * Returns array of ResourceGroups assigned to this role
+		 * @return {ResGroup[]}
+		 */
+		resourceGroups : function() {
+		    // TODO implement
+		    return [];
 		}
 	}
 };
@@ -2468,6 +2500,136 @@ var AlertDefinition = function(param) {
 		}
 
 	};
+};
+
+
+/**
+ * @namespace provides access to Bundle groups
+ */
+var bundleGroups = (function() {
+    var common = new _common();
+
+    return {
+        /**
+         * creates a org.rhq.domain.criteria.BundleGroupCriteria object based on
+         * given params
+         * 
+         * @param {Obejct}
+         *            params - criteria params
+         * @returns BundleGroupCriteria
+         * @ignore
+         */
+        createCriteria : function(params) {
+            params = params || {};
+            common.debug("bundleGroups.createCriteria(" + common.objToString(params) + ")");
+            var criteria = common.createCriteria(new BundleGroupCriteria(), params);
+            return criteria;
+        },
+        /**
+         * finds bundle groups by given params
+         * 
+         * @param {Object}
+         *            params see BundleGroupCriteria for available params
+         * @type BundleGroup[]
+         */
+        find : function(params) {
+            params = params || {};
+            common.debug("bundleGroups.find(" + common.objToString(params) + ")");
+            var criteria = bundleGroups.createCriteria(params);
+            var result = BundleManager.findBundleGroupsByCriteria(criteria);
+            common.debug("Found " + result.size() + " groups ");
+            return common.pageListToArray(result).map(function(x) {
+                return new BundleGroup(x);
+            });
+        },
+        /**
+         * creates a new bundle group. You can pass array of Bundles to become
+         * members of new group
+         * 
+         * @param {String}
+         *            name for a new group
+         * @param {Bundle[]}
+         *            children - array of resources that represents content of
+         *            this group
+         * @type BundleGroup
+         * @return {BundleGroup}
+         */
+        create : function(name, children) {
+            children = children || [];
+            common.info("Creating a group '" + name + "', with following children: '" + common.objToString(children) + "'");
+            var group = BundleManager.createBundleGroup(new org.rhq.core.domain.bundle.BundleGroup(name));
+            BundleManager.assignBundlesToBundleGroups([ group.id ], children.map(function(x) {
+                return x.getId();
+            }));
+            return new BundleGroup(group);
+        }
+    };
+})();
+
+
+/**
+ * @class
+ * @constructor
+ */
+var BundleGroup = function(param) {
+    var common = new _common();
+    common.debug("new BundleGroup(" + param + ")");
+    if (!param) {
+        throw "either number or org.rhq.core.domain.bundle.BundleGroup parameter is required";
+    }
+    var _id = param.id;
+    var _obj = param;
+    var _name = param.name;
+
+    /**
+     * @lends BundleGroup.prototype
+     */
+    return {
+        /**
+         * gets ID of this group
+         * 
+         * @field
+         */
+        id : _id,
+        /**
+         * gets name of this group
+         * 
+         * @field
+         */
+        name : _name,
+        /**
+         * gets underlying ResourceGroup instance
+         * 
+         * @field
+         * 
+         */
+        obj : _obj,
+        /**
+         * returns ID of this group
+         * 
+         * @function
+         * @type Number
+         */
+        getId : function() {
+            return _id;
+        },
+        /**
+         * removes this bundle group
+         */
+        remove : function() {
+            common.info("Removing a group with name '" + _name + "'");
+            BundleManager.deleteBundleGroups([ _id ]);
+        },
+        /**
+         * returns bundles assigned to this group
+         * 
+         * @type Bundle[]
+         * 
+         */
+        bundles : function() {
+            return [];
+        }
+    }
 };
 
 /**
