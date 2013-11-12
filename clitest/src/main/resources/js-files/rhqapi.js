@@ -2670,29 +2670,62 @@ var bundles = (function() {
 		 * @function
 	*/
     find : _find,
+    /**
+     * creates a bundle (a wrapper method above createFromDistFile)
+     * @see bundles#createFromDistFile 
+     * @param {Object} params 
+     * If URL it must be reachable by RHQ server
+     * @type Bundle
+     */
+    create : function(params) {
+        params = params || {}
+        params.username = params.username || null;
+        params.password = params.password || null;
+        params.groups = params.groups || null;
+        return bundles.createFromDistFile(params.dist,params.username,params.password,params.groups);
+    },
 		/**
-		 * creates a bundle
+		 * creates a bundle (deprecated)
 		 *
 		 * @param {String} dist - path to bundle distribution ZIP file or URL.
 		 * @param {String} username - basic HTTP auth username (use when 'dist' is URL) 
 		 * @param {String} password - basic HTTP auth password (use when 'dist' is URL)
+		 * @param {BundleGroup[]} groups - array of bundle groups to assign into
 		 * If URL it must be reachable by RHQ server
 		 * @type Bundle
 		 */
-    createFromDistFile : function(dist,username,password) {
-    	common.trace("bundles.createFromDistFile('"+dist+"','"+username+"','"+password+"')");
+    createFromDistFile : function(dist,username,password,groups) {
+    	common.trace("bundles.createFromDistFile('"+dist+"','"+username+"','"+password+"','"+groups+"')");
     	if (dist==null) {
     		throw "parameter dist must not be null"
+    	}
+    	groups = groups || null;
+    	if (groups!=null) {
+    	    groups = groups.map(function(g){return g.id;})
+    	}
+    	var groupsSupported = typeof BundleManager.createInitialBundleVersionViaURL !== "undefined";
+    	if (groups!=null && groups.length>0 && !groupsSupported) {
+    	    common.error('Bundle groups are not supported on this version of RHQ, groups parameter is ignored');
     	}
     	if (dist.indexOf("http")==0) {
     		common.debug("Getting bundle file from URL: "+dist);
     		username = username || null;
     		password =  password || null;
     		if (username!=null && password!=null) {
-    			var version = BundleManager.createBundleVersionViaURL(dist,username,password);
+    		    if (groupsSupported) {
+    		        var version = BundleManager.createInitialBundleVersionViaURL(groups,dist,username,password);
+    		    }
+    		    else {
+    		        var version = BundleManager.createBundleVersionViaURL(dist,username,password);
+    		    }
     		    return new Bundle(version.bundle);	
     		}
-    		var version = BundleManager.createBundleVersionViaURL(dist);
+    		if (groupsSupported) {
+    		    var version = BundleManager.createBundleVersionViaURL(groups,dist);
+    		}
+    		else {
+    		    var version = BundleManager.createBundleVersionViaURL(dist);
+    		}
 		    return new Bundle(version.bundle);
     	}
     	else {
@@ -2703,7 +2736,21 @@ var bundles = (function() {
 			if (typeof scriptUtil.uploadContent !== "undefined") {
 			    // since JON 3.2 we can stream our content to server
 			    var handle = scriptUtil.uploadContent(file);
-			    var version = BundleManager.createBundleVersionViaContentHandle(handle);
+			    if (groupsSupported) {
+			        // TODO use corrrect method when it is available 
+			        // for now let's workaround it 
+			        common.debug("Getting bundle file from disk: '"+dist+"'");
+	                var inputStream = new java.io.FileInputStream(file);
+	                var fileLength = file.length();
+	                var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
+	                for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+	                    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
+	                }
+	                var version = BundleManager.createInitialBundleVersionViaByteArray(groups,fileBytes);
+			    }
+			    else {
+			        var version = BundleManager.createBundleVersionViaContentHandle(handle);
+			    }
 			    return new Bundle(version.bundle);
 			}
 			else {
@@ -2715,8 +2762,12 @@ var bundles = (function() {
     		    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
     			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
     		    }
-
-    		    var version = BundleManager.createBundleVersionViaByteArray(fileBytes);
+    		    if (groupsSupported) {
+    		        var version = BundleManager.createInitialBundleVersionViaByteArray(groups,fileBytes);
+    		    }
+    		    else {
+    		        var version = BundleManager.createBundleVersionViaByteArray(fileBytes);
+    		    }
     		    return new Bundle(version.bundle);
 			}
     	}
