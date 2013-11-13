@@ -241,3 +241,17 @@ class GetResourceTest(RHQRestTest):
             self.log.info('Request %s returned %s' % (request,str(id_list)))
         assert_equal(len(ids),len(set(ids)),'Server listed same resoruces on different pages')
 
+    @test(groups=['paging'])
+    @blockedBy('1029996')
+    def paging_defaults(self):
+        r = self.get('resource')
+        data = r.json()
+        assert_equal(len(data),20,'Server should return 20 items but returned %d' % len(data))
+    
+    @test(groups=['paging'])
+    @blockedBy('1029996')
+    def paging_default_pagesize(self):
+        r = self.get('resource?ps=3')
+        data = r.json()
+        assert_equal(len(data),3,'Server should return 3 items but returned %d' % len(data))
+
