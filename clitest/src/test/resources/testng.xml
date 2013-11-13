@@ -118,6 +118,12 @@
 		<class name="com.redhat.qe.jon.clitest.tests.bundles.BundleComplianceTest" />
 	</classes>
 </test>
+<test name="Bundle permissons">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.bundles.permissions.TestCase1" />
+		<class name="com.redhat.qe.jon.clitest.tests.bundles.permissions.TestCase4" />
+	</classes>
+</test>
 <test name="RHQ Storage Alert Definition">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.alerts.StorageNodeAlertDefinitionCliTest">	
