@@ -2614,6 +2614,24 @@ var BundleGroup = function(param) {
             return _id;
         },
         /**
+         * assigns bundles to this group, does nothing if bundles are already in this group
+         * @param {Bundle[]} bundles to assign
+         */
+        assignBundles : function(bundleArray) {
+            common.trace("BundleGroup("+_id+").assignBundles("+common.objToString(bundleArray)+")");
+            bundleArray = bundleArray || [];
+            BundleManager.assignBundlesToBundleGroups([_id],bundleArray.map(function(b){return b.id;}));
+        },
+        /**
+         * unassigns bundles to this group, does nothing if bundles are not assigned with this group
+         * @param {Bundle[]} bundles to assign
+         */
+        unassignBundles : function(bundleArray) {
+            common.trace("BundleGroup("+_id+").unassignBundles("+common.objToString(bundleArray)+")");
+            bundleArray = bundleArray || [];
+            BundleManager.unassignBundlesToBundleGroups([_id],bundleArray.map(function(b){return b.id;}));
+        },
+        /**
          * removes this bundle group
          */
         remove : function() {
@@ -2627,7 +2645,8 @@ var BundleGroup = function(param) {
          * 
          */
         bundles : function() {
-            return [];
+            common.trace("BundleGroup("+_id+").bundles()");
+            return bundles.find({bundleGroupIds:[_id]});
         }
     }
 };
@@ -2961,6 +2980,16 @@ var Bundle = function(param) {
  * @lends Bundle.prototype
  */
 	return {
+	    /**
+	     * @return id of this bundle
+	     * @type Number
+	     */
+	    id : _id,
+	    /**
+         * @return id of this bundle
+         * @type Number
+         */
+	    getId : function() {return _id; },
 		toString : function() {return _bundle.toString();},
 		/**
 		 * returns Bundle destinations based on query params
