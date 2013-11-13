@@ -23,5 +23,5 @@ public class BundlePermissionsTest extends CliEngine {
     public void setupPermissions() {
         createJSRunner("bundles/permissions/initCases.js").addDepends("permissions/common.js").run();
     }
-    
+
 }

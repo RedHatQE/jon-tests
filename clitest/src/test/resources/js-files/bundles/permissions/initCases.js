@@ -199,7 +199,37 @@ var case4 = {
         ],
     }
 
-var testCases = [ case1, case1a, case2, case3, case4 ];
+var oldCase = {
+        name : "Case for MANAGE_BUNDLE permission only",
+        key : "oldCase_",
+        res_groups : [ {
+            name : "X",
+            children : resources.platforms({
+                type : "Linux"
+            })
+        }],
+        bundle_groups : [ {
+            name : "A",
+            children : []
+        },
+        {
+            name : "B",
+            children : []
+        }],
+        roles : [ {
+            name : "R",
+            perms : [ "MANAGE_BUNDLE" ],
+            res_groups : [ "X" ],
+            bundle_groups : [ "A" ]
+        } ],
+        users : [ {
+            name : "U",
+            roles : [ "R" ]
+        } ],
+    }
+
+
+var testCases = [ case1, case1a, case2, case3, case4, oldCase ];
 
 println("Removing all existing bundles");
 bundles.find().forEach(function(b){

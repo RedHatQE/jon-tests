@@ -122,6 +122,7 @@
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.bundles.permissions.TestCase1" />
 		<class name="com.redhat.qe.jon.clitest.tests.bundles.permissions.TestCase4" />
+		<class name="com.redhat.qe.jon.clitest.tests.bundles.permissions.OldCase" />
 	</classes>
 </test>
 <test name="RHQ Storage Alert Definition">
