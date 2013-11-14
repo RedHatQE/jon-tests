@@ -946,11 +946,11 @@ var Role = function(nativeRole){
 		 */
 		bundleGroups : function() {
 		    // TODO implement
-		   return [];
+		   return bundleGroups.find({roleIds:[_id]});
 		},
 		/**
 		 * assigns given resource groups to this role. Note that this cleans up all previously assigned groups
-		 * @param{ResGroup[]} groupArray - resource groups to be assigned with this role
+		 * @param {ResGroup[]} groupArray - resource groups to be assigned with this role
 		 */
 		assignResourceGroups : function(groupArray) {
 		    groupArray = groupArray || [];
@@ -961,8 +961,8 @@ var Role = function(nativeRole){
 		 * @return {ResGroup[]}
 		 */
 		resourceGroups : function() {
-		    // TODO implement
-		    return [];
+		    var _groups = ResourceGroupManager.findResourceGroupsForRole(_id,PageControl.getUnlimitedInstance());
+		    return common.pageListToArray(_groups).map(function(g) {return new ResGroup(g)});
 		}
 	}
 };
@@ -1785,6 +1785,13 @@ var metricsTemplates = (function() {
        */
       isNumeric: function(metricDef) {
         return metricDef.dataType == DataType.MEASUREMENT;
+      },
+      /**
+       * predicate that accepts metric definitions of TRAIT DataType
+       * @field
+       */
+      isTrait: function(metricDef) {
+          return metricDef.dataType == DataType.TRAIT;
       }
     },
 
