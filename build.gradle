@@ -1,6 +1,7 @@
 // all our subrojects share same settings here
 subprojects {
 	apply plugin: "java"
+	apply plugin: "idea"
 	apply plugin: "eclipse"
 	apply plugin: "maven"
 	sourceCompatibility = 1.6
