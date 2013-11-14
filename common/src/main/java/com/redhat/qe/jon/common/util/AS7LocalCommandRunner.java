@@ -1,13 +1,11 @@
 package com.redhat.qe.jon.common.util;
 
-import com.redhat.qe.jon.common.Constants;
-import com.redhat.qe.jon.common.Platform;
-import com.redhat.qe.tools.SSHCommandResult;
+import com.redhat.qe.jon.common.*;
+import com.redhat.qe.tools.*;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.*;
+import java.text.*;
+import java.util.*;
 
 /**
  * AS7LocalCommandRunner provides platform independent implementation of IAS7CommandRunner
@@ -191,7 +189,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
      * @return jps command which takes into account JAVA_HOME env variable
      */
     public String getJpsCommand() {
-        return  "{ " +getJavaHome()+sep+"bin"+sep+"jps -mlvV || $JAVA_HOME/bin/jps -mlvV jps -mlvV; }";
+        return  "{ " +getJavaHome()+sep+"bin"+sep+"jps -mlvV || $JAVA_HOME/bin/jps -mlvV || jps -mlvV; }";
     }
 
     /**
