@@ -119,7 +119,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
      */
     public boolean isJpsSupported() {
 
-        SSHCommandResult res = runAndWait("jps &>/dev/null || $JAVA_HOME/bin/jps &>/dev/null || "+getJavaHome()+"/bin/jps -mlvV &>/dev/null");
+        SSHCommandResult res = runAndWait("jps -mlvV &>/dev/null || $JAVA_HOME/bin/jps -mlvV &>/dev/null || "+getJavaHome()+"/bin/jps -mlvV &>/dev/null");
 
         return res.getExitCode().intValue() == 0;
     }
@@ -191,7 +191,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
      * @return jps command which takes into account JAVA_HOME env variable
      */
     public String getJpsCommand() {
-        return  "{ " +getJavaHome()+ sep+"bin"+sep+"jps -mlvV || jps -mlvV; }";
+        return  "{ " +getJavaHome()+sep+"bin"+sep+"jps -mlvV || $JAVA_HOME/bin/jps -mlvV jps -mlvV; }";
     }
 
     /**
