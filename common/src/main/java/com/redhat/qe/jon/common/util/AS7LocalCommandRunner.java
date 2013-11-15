@@ -141,7 +141,12 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
 
             boolean jpsSupported = isJpsSupported();
             if (jpsSupported) {
-                running = runAndWait(getJpsCommand() + " | " + grepFiltering).getStdout().contains(asIdentifier);
+                SSHCommandResult jpsResult = runAndWait(getJpsCommand() + " | " + grepFiltering);
+                running = jpsResult.getStdout().contains(asIdentifier) || jpsResult.getStderr().contains(asIdentifier);
+                // helps in case of Solaris and 32bit vs 64bit java
+                if (!running && runAndWait("jps -mlvV &>/dev/null").getExitCode().intValue()==0) {
+                    running = runAndWait("jps -mlvV | " + grepFiltering).getStdout().contains(asIdentifier);
+                }
             }
             if (!jpsSupported || !running) {
                 running = runAndWait("ps -ef | " + grepFiltering).getStdout().contains(asIdentifier);
