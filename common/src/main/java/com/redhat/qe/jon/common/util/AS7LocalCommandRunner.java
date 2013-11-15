@@ -92,13 +92,13 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
             }
             pids = runAndWait("wmic process where (" + winFilter + " AND name!='WMIC.exe') get Processid").getStdout();
         } else {
-            String grepFiltering = getGrepFiltering();
+            String grepFiltering = getGrepFiltering(false);
             boolean jpsSupported = isJpsSupported();
             if (jpsSupported) {
                 pids = runAndWait(getJpsCommand() + " | " + grepFiltering + " | awk '{print $1}'").getStdout();
             }
             if (!jpsSupported || pids.trim().isEmpty()) {
-                pids = runAndWait("ps -ef | " + grepFiltering + " | awk '{print $2}'").getStdout();
+                pids = runAndWait("ps -ef | " + getGrepFiltering(true) + " | awk '{print $2}'").getStdout();
             }
         }
         if (pids!=null && pids.length()>0) {
@@ -137,7 +137,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
             running = !(pids.trim().isEmpty());
         } else {
 
-            String grepFiltering = getGrepFiltering();
+            String grepFiltering = getGrepFiltering(false);
 
             boolean jpsSupported = isJpsSupported();
             if (jpsSupported) {
@@ -149,6 +149,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
                 }
             }
             if (!jpsSupported || !running) {
+                grepFiltering = getGrepFiltering(true);
                 running = runAndWait("ps -ef | " + grepFiltering).getStdout().contains(asIdentifier);
             }
         }
@@ -180,12 +181,21 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
         runAndWait(killCommand);
     }
 
-    private String getGrepFiltering() {
+    /**
+     *
+     * @param filterByJava if the output is from jps it doesn't need to contain java
+     * @return string usable for filtering using grep commands
+     */
+    private String getGrepFiltering(boolean filterByJava) {
         String grepFiltering = "";
+        String grepToRemoveNonJava = "grep -v bash | grep -v -w grep";
+        if (filterByJava) {
+            grepToRemoveNonJava = "grep java | " + grepToRemoveNonJava;
+        }
         if (serverConfig != null) {
-            grepFiltering = "grep "+asIdentifier+" | grep "+serverConfig+" | grep java | grep -v bash | grep -v -w grep";
+            grepFiltering = "grep "+asIdentifier+" | grep " +serverConfig+ " | " + grepToRemoveNonJava;
         } else {
-            grepFiltering = "grep "+asIdentifier+" | grep java | grep -v bash | grep -v -w grep";
+            grepFiltering = "grep "+asIdentifier+" | " + grepToRemoveNonJava;
         }
         return grepFiltering;
     }

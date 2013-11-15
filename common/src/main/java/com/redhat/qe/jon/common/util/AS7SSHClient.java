@@ -1,12 +1,11 @@
 package com.redhat.qe.jon.common.util;
 
-import com.redhat.qe.jon.common.Platform;
-import com.redhat.qe.tools.SSHCommandResult;
+import com.redhat.qe.jon.common.*;
+import com.redhat.qe.tools.*;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.*;
+import java.text.*;
+import java.util.*;
 
 
 
@@ -90,13 +89,13 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
 	 */
 	public void stop() {
 		String pids = null;
-        String grepFiltering = getGrepFiltering();
+        String grepFiltering = getGrepFiltering(false);
         boolean jpsSupported = isJpsSupported();
         if (jpsSupported) {
             pids = runAndWait(getJpsCommand() + " | " + grepFiltering + " | awk '{print $1}'").getStdout();
         }
         if (!jpsSupported || pids.trim().isEmpty()) {
-            pids = runAndWait("ps -ef | " +  grepFiltering + " | awk '{print $2}'").getStdout();
+            pids = runAndWait("ps -ef | " +  getGrepFiltering(true) + " | awk '{print $2}'").getStdout();
         }
 
 		if (pids!=null && pids.length()>0) {
@@ -106,12 +105,21 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
 		}
 	}
 
-    private String getGrepFiltering() {
+    /**
+     *
+     * @param filterByJava if the output is from jps it doesn't need to contain java
+     * @return string usable for filtering using grep commands
+     */
+    private String getGrepFiltering(boolean filterByJava) {
         String grepFiltering = "";
+        String grepToRemoveNonJava = "grep -v bash | grep -v -w grep";
+        if (filterByJava) {
+            grepToRemoveNonJava = "grep java | " + grepToRemoveNonJava;
+        }
         if (serverConfig != null) {
-            grepFiltering = "grep "+asIdentifier+" | grep "+serverConfig+" | grep java | grep -v bash | grep -v -w grep";
+            grepFiltering = "grep "+asIdentifier+" | grep " +serverConfig+ " | " + grepToRemoveNonJava;
         } else {
-            grepFiltering = "grep "+asIdentifier+" | grep java | grep -v bash | grep -v -w grep";
+            grepFiltering = "grep "+asIdentifier+" | " + grepToRemoveNonJava;
         }
         return grepFiltering;
     }
@@ -122,7 +130,7 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
      */
     public boolean isJpsSupported() {
 
-        SSHCommandResult res = runAndWait("jps &>/dev/null || $JAVA_HOME/bin/jps &>/dev/null || "+getJavaHome()+"/bin/jps -mlvV &>/dev/null");
+        SSHCommandResult res = runAndWait("jps &>/dev/null || $JAVA_HOME/bin/jps &>/dev/null || "+getJavaHome()+"/bin/jps &>/dev/null");
 
         return res.getExitCode().intValue() == 0;
     }
@@ -157,14 +165,18 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
 	 * @return true if server process is running
 	 */
 	public boolean isRunning() {
-        String grepFiltering = getGrepFiltering();
+        String grepFiltering = getGrepFiltering(false);
         boolean running = false;
         boolean jpsSupported = isJpsSupported();
         if (jpsSupported) {
             running = runAndWait(getJpsCommand() + " | " + grepFiltering).getStdout().contains(asIdentifier);
+            // helps in case of Solaris and 32bit vs 64bit java
+            if (!running && runAndWait("jps -mlvV &>/dev/null").getExitCode().intValue()==0) {
+                running = runAndWait("jps -mlvV | " + grepFiltering).getStdout().contains(asIdentifier);
+            }
         }
         if (!jpsSupported || !running) {
-            running = runAndWait("ps -ef | " +  grepFiltering).getStdout().contains(asIdentifier);
+            running = runAndWait("ps -ef | " +  getGrepFiltering(true)).getStdout().contains(asIdentifier);
         }
         return running;
 	}
