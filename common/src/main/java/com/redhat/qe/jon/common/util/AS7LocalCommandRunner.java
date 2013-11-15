@@ -78,6 +78,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
      */
     public void start(String script) {
         runCommand(script, new File(asHome,"bin"));
+        Library.sleepFor(3*1000);
     }
     /**
      * stops server by killing it

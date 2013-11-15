@@ -170,7 +170,7 @@ public class LocalCommandRunner implements ICommandRunner {
             } else {
                 cmd = new String[] {"/bin/sh", "-c", command};
             }
-            log.fine("Running command: " + cmd +  " in workDir " + workDir);
+            log.fine("Running command: " + Arrays.toString(cmd) +  " in workDir " + workDir);
             final Process p = Runtime.getRuntime().exec(cmd, null, workDir);
         } catch (IOException ioEx) {
           throw new RuntimeException("IOException encountered while executing command: " + command, ioEx);
