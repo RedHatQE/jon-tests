@@ -821,6 +821,7 @@ public class Resource {
         for (int i = 0; i < Timing.REPEAT; i++) {
             log.finer("Waiting another " + Timing.toString(sleepTime) + " for " + this.getName() + " to import");
             tasks.waitFor(sleepTime);
+            tasks.reloadPage();
             boolean imported = false;
             if (HAVE_REST_API) {
                 imported = tryFetchId();
@@ -841,12 +842,19 @@ public class Resource {
      * <ol>it is performed a check - if this resource is already in inventory nothing else happens</ol>
      * <ol>Manual Auto-discovery operation is performed on parent platform</ol>
      * <ol>Resource is imported</ol>
-     * <ol>Wait 15 minutes for child subsystems to be imported</ol>
+     * <ol>Wait more or less 15 minutes for child subsystems to be imported</ol>
      * </ul>
      * @return true if resource was imported, false if it was not due to error or already existed in inventory
      */
 	public boolean importFromDiscoQueue() {
-		return importFromDiscoQueue(15 * Timing.TIME_1M);
+		boolean result = importFromDiscoQueue(3 * Timing.TIME_1M); // actual import of the server
+        // additional wait time for import of resources, with reload preventing automatic log out
+        final int INCREMENT_IN_MINUTES = 3;
+        for (int i = 0; i < 12; i+=INCREMENT_IN_MINUTES) {
+            tasks.reloadPage();
+            tasks.waitFor(INCREMENT_IN_MINUTES*Timing.TIME_1M);
+        }
+        return result;
 	}
     
 	
