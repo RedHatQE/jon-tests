@@ -850,6 +850,7 @@ public class Resource {
 		boolean result = importFromDiscoQueue(3 * Timing.TIME_1M); // actual import of the server
         // additional wait time for import of resources, with reload preventing automatic log out
         final int INCREMENT_IN_MINUTES = 3;
+        log.fine("Waiting for more or less 12 minutes and performing page reload every " + INCREMENT_IN_MINUTES + " minutes");
         for (int i = 0; i < 12; i+=INCREMENT_IN_MINUTES) {
             tasks.reloadPage();
             tasks.waitFor(INCREMENT_IN_MINUTES*Timing.TIME_1M);
