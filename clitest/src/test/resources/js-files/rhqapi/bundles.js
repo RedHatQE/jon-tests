@@ -16,25 +16,16 @@ bundles.find().forEach(function(b){
 });
 assertTrue(bundles.find().length==0,"All bundles have been removed");
 
-// commented out until we have some bundle available on any http location
-//println("Creating bundle from dist-file URL");
-//bundles.createFromDistFile("http://git.engineering.redhat.com/?p=users/jweiss/automatjon.git;a=blob_plain;f=jon/clitest/resources/bundles/bundle.zip;hb=master");
-
-
 println("Removing all existing bundles");
 bundles.find().forEach(function(b){
 	b.remove();
 });
 
-
 println("Creating bundle from dist-file with incomplete content files");
-bundles.createFromDistFile(bIncomplete);
-
-
-
+bundles.create({dist:bIncomplete});
 
 println("Creating bundle from dist-file with complete content files");
-var bundle = bundles.createFromDistFile(bCorrect);
+var bundle = bundles.create({dist:bCorrect});
 
 println("Removing all existing resource groups");
 groups.find().forEach(function(x){
