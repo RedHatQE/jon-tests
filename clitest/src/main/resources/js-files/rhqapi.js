@@ -2636,7 +2636,7 @@ var BundleGroup = function(param) {
         unassignBundles : function(bundleArray) {
             common.trace("BundleGroup("+_id+").unassignBundles("+common.objToString(bundleArray)+")");
             bundleArray = bundleArray || [];
-            BundleManager.unassignBundlesToBundleGroups([_id],bundleArray.map(function(b){return b.id;}));
+            BundleManager.unassignBundlesFromBundleGroups([_id],bundleArray.map(function(b){return b.id;}));
         },
         /**
          * removes this bundle group
@@ -2729,7 +2729,7 @@ var bundles = (function() {
     	if (groups!=null) {
     	    groups = groups.map(function(g){return g.id;})
     	}
-    	var groupsSupported = typeof BundleManager.createInitialBundleVersionViaURL !== "undefined";
+    	var groupsSupported = typeof BundleManager.createInitialBundleVersionViaURL !== "undefined" && groups != null;
     	if (groups!=null && groups.length>0 && !groupsSupported) {
     	    common.error('Bundle groups are not supported on this version of RHQ, groups parameter is ignored');
     	}
@@ -2769,7 +2769,7 @@ var bundles = (function() {
 	                var inputStream = new java.io.FileInputStream(file);
 	                var fileLength = file.length();
 	                var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
-	                for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+	                for (var numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
 	                    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
 	                }
 	                var version = BundleManager.createInitialBundleVersionViaByteArray(groups,fileBytes);
@@ -2785,7 +2785,7 @@ var bundles = (function() {
     		    var inputStream = new java.io.FileInputStream(file);
     		    var fileLength = file.length();
     		    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
-    		    for (numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+    		    for (var numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
     			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
     		    }
     		    if (groupsSupported) {
