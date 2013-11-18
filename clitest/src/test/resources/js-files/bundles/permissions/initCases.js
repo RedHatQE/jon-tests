@@ -35,7 +35,7 @@ var case1 = {
     users : [ {
         name : "U",
         roles : [ "R" ]
-    } ],
+    } ]
 }
 
 var case1a = {
@@ -65,7 +65,7 @@ var case1a = {
     users : [ {
         name : "U",
         roles : [ "R1", "R2" ]
-    } ],
+    } ]
 }
 
 var case1b = {
@@ -92,7 +92,7 @@ var case1b = {
         users : [ {
             name : "U",
             roles : [ "R2", "R3" ]
-        } ],
+        } ]
     }
 
 
@@ -118,7 +118,7 @@ var case2 = {
     users : [ {
         name : "U",
         roles : [ "R" ]
-    } ],
+    } ]
 }
 
 var case3 = {
@@ -151,7 +151,7 @@ var case3 = {
     }, {
         name : "Member1",
         roles : [ "R2" ]
-    } ],
+    } ]
 }
 
 var case4 = {
@@ -196,7 +196,7 @@ var case4 = {
             name : "TeamMember1",
             roles : [ "R3" ]
         }
-        ],
+        ]
     }
 
 var oldCase = {
@@ -225,7 +225,7 @@ var oldCase = {
         users : [ {
             name : "U",
             roles : [ "R" ]
-        } ],
+        } ]
     }
 
 

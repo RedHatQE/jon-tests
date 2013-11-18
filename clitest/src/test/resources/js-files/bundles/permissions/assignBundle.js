@@ -1,5 +1,6 @@
 /**
- * assigns given bundle to given bundle group
+ * assigns given bundle to given bundle group. This test also accepts parameter 'hasPerm' true/false
+ * which denotes whether user running this test has permission do deploy to given group.
  * @author lzoubek@redhat.com (Libor Zoubek)
  * Nov 12, 2013
  */
