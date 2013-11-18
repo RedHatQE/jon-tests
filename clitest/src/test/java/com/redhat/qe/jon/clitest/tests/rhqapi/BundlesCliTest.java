@@ -10,4 +10,10 @@ public class BundlesCliTest extends RhqapiCliTest {
 		.withResource("/bundles/bundle.zip","bundle")
 		.run();
     }
+
+    @Test(dependsOnMethods = {"bundles"})
+    public void bundleGroups() {
+        createJSRunner("rhqapi/bundleGroups.js")
+                .run();
+    }
 }
