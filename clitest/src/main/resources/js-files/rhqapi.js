@@ -2112,7 +2112,7 @@ var DriftDefinitionTemplate = function(param) {
 		/**
 		 * name of this drift definition template
 		 */
-		name : _obj.getName(),
+		name : _obj.getName()
 	}
 }
 /**
@@ -2147,7 +2147,7 @@ var DriftDefinition = function(param) {
 		/**
 		 * name of this drift definition
 		 */
-		name : _obj.getName(),
+		name : _obj.getName()
 	}
 }
 
@@ -2380,7 +2380,7 @@ var alertDefinitions = (function() {
 		 * @type AlertDefinition[]
 		 * @function
 		 */
-		find : _find,
+		find : _find
 
 	};
 })();
@@ -2797,7 +2797,7 @@ var bundles = (function() {
     		    return new Bundle(version.bundle);
 			}
     	}
-	},
+	}
 	};
 })();
 
@@ -2949,7 +2949,7 @@ var Bundle = function(param) {
 			 */
 			files : function() {
 				return BundleManager.getBundleVersionFilenames(_id,false).toArray().map(function (x) {return String(x);});
-			},
+			}
 		};
 	};
 
@@ -3411,7 +3411,7 @@ discoveryQueue = (function () {
 	 * @function
 	 * 	 * @example discovery.importResources() // import all resources in discovery queue
 	 */
-		importResources : _importResources,
+		importResources : _importResources
 	};
 }) ();
 
@@ -4080,7 +4080,7 @@ var Resource = function (param) {
 		/**
 		 * retrieves plugin configuration for this resource
 		 *
-		 * @returns
+		 * @returns plugin configuration object (Connection settings)
 		 * @type Object
 		 */
 		getPluginConfiguration : function() {
