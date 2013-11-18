@@ -1,12 +1,9 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
+import com.redhat.qe.jon.sahi.tasks.*;
 
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.jon.sahi.tasks.Timing;
+import java.util.*;
+import java.util.logging.*;
 /**
  * this abstract class is extended by each Resource Tab (Inventory, Configuration, Operations etc)
  * it has always reference to {@link Resource} object
@@ -31,6 +28,7 @@ public abstract class ResourceTab {
 		uriToTabmapping.put("Monitoring", new String[] {"Monitoring"});
 		uriToTabmapping.put("Monitoring/Schedules", new String[] {"Monitoring","Schedules"});
 		uriToTabmapping.put("Monitoring/Tables", new String[] {"Monitoring","Tables"});
+        uriToTabmapping.put("Monitoring/Metrics", new String[] {"Monitoring","Metrics"});
         uriToTabmapping.put("Monitoring/Traits", new String[] {"Monitoring","Traits"});
 		uriToTabmapping.put("Operations", new String[] {"Operations"});
 		uriToTabmapping.put("Operations/Schedules", new String[] {"Operations","Schedules"});
