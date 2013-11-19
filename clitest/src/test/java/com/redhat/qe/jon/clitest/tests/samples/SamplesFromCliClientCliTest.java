@@ -1,16 +1,17 @@
 package com.redhat.qe.jon.clitest.tests.samples;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.redhat.qe.Assert;
+import com.redhat.qe.auto.bugzilla.BlockedByBzBug;
+import com.redhat.qe.jon.common.util.CryptoUtils;
 import com.redhat.qe.jon.common.util.HTTPClient;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -113,11 +114,11 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
             modules.add("modules:/"+ FilenameUtils.getBaseName(module.getName()));
         }
         // now get all server modules
-        String content = new HTTPClient(rhqTarget,7080).doGet("/downloads/script-modules/",null,null);
+        String content = new HTTPClient(rhqTarget,7080).doGet("/downloads/script-modules/");
         Pattern regex = Pattern.compile("<a href=\"([^\"]+)");
         Matcher m = regex.matcher(content);
         while (m.find()) {
-            modules.add("rhq://downloads/"+FilenameUtils.getBaseName(m.group(1)));
+            modules.add("rhq://downloads/" + FilenameUtils.getBaseName(m.group(1)));
         }
         return getDataProviderArray(modules);
     }
@@ -125,6 +126,49 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
     @Test(dataProvider = "getModuleNames")
     public void importModules(String module) {
         createJSRunner("samplesFromCliClient/importModules.js").withArg("module",module).run();
+    }
+
+    @Test(description = "This checks whether JS modules available on server have same content as module shipped within CLI",groups={"blockedByBug-1032053"})
+    public void moduleConsistency() throws Exception {
+        // get server modules & their MD5
+        HTTPClient client = new HTTPClient(rhqTarget,7080);
+        String content = client.doGet("/downloads/script-modules/", null, null);
+        Pattern regex = Pattern.compile("<a href=\"([^\"]+)");
+        Matcher m = regex.matcher(content);
+        Map<String,String> serverModules = new HashMap<String, String>();
+        while (m.find()) {
+            String mod = client.doGet(m.group(1));
+            String md5 = CryptoUtils.md5(mod);
+            mod = FilenameUtils.getBaseName(m.group(1));
+            log.info(mod+" : "+ md5);
+            serverModules.put(mod, md5);
+        }
+        // get CLI modules & their MD5
+        Map<String,String> cliModules = new HashMap<String, String>();
+        File modulesDir = new File(getCliSamplesDir(),"modules");
+        for (File module : modulesDir.listFiles()) {
+            String mod =  FilenameUtils.getBaseName(module.getName());
+            InputStream in = new FileInputStream(module);
+            try {
+                String modContent = IOUtils.toString(in);
+                String md5 = CryptoUtils.md5(modContent);
+                log.info(mod+" : "+ md5);
+                cliModules.put(mod, md5);
+            }
+            finally {
+                in.close();
+            }
+        }
+        // compare & assert
+        // we don't assert equal size, because there might be other (user)modules on server
+        Assert.assertTrue(serverModules.size()>=cliModules.size(),"Server module count must be same or higher as CLI module count");
+        for (Map.Entry<String,String> cliE : cliModules.entrySet()) {
+            log.info("Checking "+cliE.getKey());
+            String md5CliMod = cliE.getValue();
+            String md5SMod = serverModules.get(cliE.getKey());
+            Assert.assertNotNull(md5SMod,"Module "+cliE.getKey()+" is available in CLI and server");
+            Assert.assertEquals(md5SMod,md5CliMod,"MD5 hash for module "+cliE.getKey()+" from CLI must match server");
+        }
     }
 	
 	private File getCliSampleFileLocation(String sampleFileName) throws IOException{
