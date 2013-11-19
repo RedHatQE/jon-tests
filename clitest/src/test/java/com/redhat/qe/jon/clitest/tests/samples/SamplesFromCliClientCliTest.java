@@ -2,9 +2,17 @@ package com.redhat.qe.jon.clitest.tests.samples;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.redhat.qe.jon.common.util.HTTPClient;
+import org.apache.commons.io.FilenameUtils;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.clitest.base.OnAgentCliEngine;
@@ -96,6 +104,28 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 				addExpect("+second line,Retrieved content of file: first line,baca3ae8	bin/file1.txt").
 				run();
 	}
+    @DataProvider
+    public Object[][] getModuleNames() {
+        List<String> modules = new ArrayList<String>();
+        // first get all modules from CLI
+        File modulesDir = new File(getCliSamplesDir(),"modules");
+        for (File module : modulesDir.listFiles()) {
+            modules.add("modules:/"+ FilenameUtils.getBaseName(module.getName()));
+        }
+        // now get all server modules
+        String content = new HTTPClient(rhqTarget,7080).doGet("/downloads/script-modules/",null,null);
+        Pattern regex = Pattern.compile("<a href=\"([^\"]+)");
+        Matcher m = regex.matcher(content);
+        while (m.find()) {
+            modules.add("rhq://downloads/"+FilenameUtils.getBaseName(m.group(1)));
+        }
+        return getDataProviderArray(modules);
+    }
+
+    @Test(dataProvider = "getModuleNames")
+    public void importModules(String module) {
+        createJSRunner("samplesFromCliClient/importModules.js").withArg("module",module).run();
+    }
 	
 	private File getCliSampleFileLocation(String sampleFileName) throws IOException{
 		// get cli sample files from remote host if necessary
