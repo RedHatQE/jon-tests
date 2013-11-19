@@ -60,7 +60,14 @@ public class HTTPClient {
     public String getServerAddress() {
         return serverAddress;
     }
-
+    /**
+     * does GET on given resource, optionally with basic auth credentials
+     * @param resource to be visited
+     * @return content returned from server
+     */
+    public String doGet(String resource) {
+        return doGet(resource,null,null);
+    }
     /**
      * does GET on given resource, optionally with basic auth credentials
      * @param resource to be visited
