@@ -115,7 +115,8 @@
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.bundles.CreateBundleTest" />
 		<class name="com.redhat.qe.jon.clitest.tests.bundles.BundleWorkflowTest" />
-		<class name="com.redhat.qe.jon.clitest.tests.bundles.BundleComplianceTest" />
+        <class name="com.redhat.qe.jon.clitest.tests.bundles.BundleComplianceFADTest" />
+        <class name="com.redhat.qe.jon.clitest.tests.bundles.BundleComplianceFullTest" />
 	</classes>
 </test>
 <test name="Bundle permissons">
