@@ -2,11 +2,20 @@
  * @author fbrychta@redhat.com (Filip Brychta)
  * May 6, 2013
  * 
- * This tests methods from sample bundles.js file (samples in CLI client)
+ * This tests methods from sample bundles.js file (samples in CLI client) or 
+ * the same methods from 'bundles' module. 
  **/
 
 var common = new _common();
 verbose = 2;
+
+// decide if bundles module or bundles.js sample file is used 
+var useModule = false;
+if(typeof createBundleVersion != "function"){
+    common.info("Function 'createBundleVersion' is not defined -> 'bundles' module will be used..");
+    useModule = true;
+    var bundlesModule = require("modules:/bundles");
+}
 
 
 common.info("Removing all existing bundles");
@@ -22,12 +31,15 @@ groups.find().forEach(function(b){
 common.info("Creating a group of platforms");
 var platformsGroup = groups.create("Linux platforms",resources.platforms({type:"Linux"}));
 
-
 /**
  * Test 1 - Getting bundle version
  */
 common.info("Getting bundle version");
-var bVersion = createBundleVersion(bundle);
+if(useModule){
+    var bVersion = bundlesModule.createBundleVersion(bundle);
+}else{
+    var bVersion = createBundleVersion(bundle);
+}
 assertTrue(bVersion.version == "1.0");
 
 
@@ -42,7 +54,12 @@ var platformTypes = ResourceTypeManager.findResourceTypesByCriteria(crit);
 var platformType = platformTypes.get(0);
 
 common.info("Getting all base direcotries for resource type with id: " + platformType.id);
-var baseDestinations = getAllBaseDirectories(platformType.id);
+if(useModule){
+    var baseDestinations = bundlesModule.getAllBaseDirectories(platformType.id);
+}
+else{
+    var baseDestinations = getAllBaseDirectories(platformType.id);
+}
 var baseDestinationsArray = baseDestinations.toArray();
 
 //check results
@@ -62,7 +79,11 @@ var groupName = platformsGroup.name;
 var baseDirName = baseDestinationsArray[0].name;
 var deployDir = "tmp/myBundle";
 
-var bDestination = createBundleDestination(destinationName, description, bundleName, groupName, baseDirName, deployDir);
+if(useModule){
+    var bDestination = bundlesModule.createBundleDestination(destinationName, description, bundleName, groupName, baseDirName, deployDir);
+}else{
+    var bDestination = createBundleDestination(destinationName, description, bundleName, groupName, baseDirName, deployDir);
+}
 
 //check results
 assertTrue(bDestination.bundle.name == bundleName, bundleName+" bundle is expected in returned destination object, but "+
@@ -77,7 +98,11 @@ assertTrue(bDestination.name == destinationName, destinationName+" destination n
  * Test 4 - deploying bundle
  */
 common.info("Deploying bundle");
-var deployment = deployBundle(bDestination, bVersion,{"listener.port":"8080"}, description, false);
+if(useModule){
+    var deployment = bundlesModule.deployBundle(bDestination, bVersion,{"listener.port":"8080"}, description, false);
+}else{
+    var deployment = deployBundle(bDestination, bVersion,{"listener.port":"8080"}, description, false);
+}
 
 // check results
 var bundlesArray = bundles.find({name:bundleName});

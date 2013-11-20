@@ -9,6 +9,14 @@
 var common = new _common();
 verbose = 2;
 
+//decide if drift module or drift.js sample file is used 
+var useModule = false;
+if(typeof createSnapshot != "function"){
+    common.info("Function 'createSnapshot' is not defined -> 'drift' module will be used..");
+    useModule = true;
+    var driftModule = require("modules:/drift");
+}
+
 // constants
 var driftDefName = "Test drift def";
 
@@ -33,12 +41,20 @@ function getPlatform(){
 function waitForNewSnapshotVersion(expectedVersion){
 	common.info("Waiting for a new snapshot to be created (version "+expectedVersion+")");
 	var platform = getPlatform();
-	var snapshot = createSnapshot(platform.id,driftDefName);
+	if(useModule){
+	    var snapshot = driftModule.createSnapshot(platform.id,driftDefName);
+	}else{
+	    var snapshot = createSnapshot(platform.id,driftDefName);
+	}
 	var count = 0;
 	var timoutSec = 60; 
 	while(snapshot.getVersion() != expectedVersion && count < timoutSec){
 		sleep(1000);
-		snapshot = createSnapshot(platform.id,driftDefName);
+		if(useModule){
+		    snapshot = driftModule.createSnapshot(platform.id,driftDefName);
+		}else{
+		    snapshot = createSnapshot(platform.id,driftDefName);
+		}
 		count++;
 	}
 

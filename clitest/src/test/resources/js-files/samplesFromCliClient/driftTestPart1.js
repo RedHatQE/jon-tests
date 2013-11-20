@@ -2,7 +2,8 @@
  * @author fbrychta@redhat.com (Filip Brychta)
  * May 9, 2013
  * 
- * This tests methods from sample drift.js file (samples in CLI client)
+ * This tests methods from sample drift.js file (samples in CLI client) or
+ * the same methods from 'drift' module.
  * Creates a new drift definition.
  * 
  * Requires driftCommon.js

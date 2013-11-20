@@ -41,37 +41,41 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 			new File(SAMPLES_DIR_LOCAL_PATH).mkdir();
 		}
 	}
-	@Test
+	@Test(description = "This tests all methods from measurement_utils.js sample file.")
 	public void measurementUtilsTest() throws IOException{
 		// run the test
 		createJSRunner("samplesFromCliClient/measurementUtilsTest.js").
-		addDepends("rhqapi.js," +
-				"file://"+getCliSampleFileLocation("util.js") +
-				",file://" + getCliSampleFileLocation("measurement_utils.js")).
-		run();
+				addDepends("rhqapi.js," +
+						"file://"+getCliSampleFileLocation("util.js") +
+						",file://" + getCliSampleFileLocation("measurement_utils.js")).
+				run();
 	}
 	
-	@Test(groups={"blockedByBug-1003679"})
+	@Test(description = "This tests all methods from bundles.js sample file.",
+			groups={"blockedByBug-1003679"})
 	public void bundlesTest() throws IOException{
 		// run the test
 		createJSRunner("samplesFromCliClient/bundlesTest.js").
-		addDepends("rhqapi.js," +
-				"file://"+getCliSampleFileLocation("util.js")+
-				",file://"+getCliSampleFileLocation("bundles.js")).
+				addDepends("rhqapi.js," +
+						"file://"+getCliSampleFileLocation("util.js")+
+						",file://"+getCliSampleFileLocation("bundles.js")).
 				withResource("/bundles/bundle.zip","bundle").
 				run();
 	}
 	
-	@Test
+	@Test(description = "This test loads 'bundles' module and tests all methods there.", 
+			groups={"blockedByBug-1003679"})
+	public void bundlesModuleTest(){
+		// run the test
+		createJSRunner("samplesFromCliClient/bundlesTest.js").
+				addDepends("rhqapi.js").
+				withResource("/bundles/bundle.zip","bundle").
+				run();
+	}
+	
+	@Test(description = "This tests all methods from drift.js sample file.")
 	public void driftTest() throws IOException, CliTasksException{
-		checkRequiredProperties("jon.agent.host");
-		
-		CliTasks agentMachine = new CliTasks();
-		agentMachine.initialize(System.getProperty("jon.agent.host"),"hudson","hudson");
-		
-		// clean monitored directory
-		agentMachine.runCommand("rm -rf /tmp/driftFiles");
-		agentMachine.runCommand("mkdir -p /tmp/driftFiles/bin");
+		CliTasks agentMachine = prepareAgentMachine();
 		
 		String file1Path = "/tmp/driftFiles/bin/file1.txt";
 		String file2Path = "/tmp/driftFiles/bin/file2.txt";
@@ -105,6 +109,40 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 				addExpect("+second line,Retrieved content of file: first line,baca3ae8	bin/file1.txt").
 				run();
 	}
+	@Test(description = "This test loads 'drift' module and tests all methods there.")
+	public void driftModuleTest() throws CliTasksException{
+		CliTasks agentMachine = prepareAgentMachine();
+		
+		String file1Path = "/tmp/driftFiles/bin/file1.txt";
+		String file2Path = "/tmp/driftFiles/bin/file2.txt";
+		
+		// run the first part
+		createJSRunner("samplesFromCliClient/driftTestPart1.js").
+				addDepends("rhqapi.js," +
+				"samplesFromCliClient/driftCommon.js").
+				run();
+		
+		// add one new file
+		agentMachine.runCommand("echo \"first line\" > " + file1Path);
+		waitForNewSnapshotVersionUsingModule("1");
+		
+		// add another new file
+		agentMachine.runCommand("echo \"first line\" > " + file2Path);
+		waitForNewSnapshotVersionUsingModule("2");
+		
+		// add one new line
+		agentMachine.runCommand("echo \"second line\" >> " + file1Path);
+		waitForNewSnapshotVersionUsingModule("3");
+		
+		// run second part
+		createJSRunner("samplesFromCliClient/driftTestPart2.js").
+				addDepends("rhqapi.js," +
+				"samplesFromCliClient/driftCommon.js").
+				addExpect("+second line,Retrieved content of file: first line,baca3ae8	bin/file1.txt").
+				run();
+	}
+	
+	
     @DataProvider
     public Object[][] getModuleNames() {
         List<String> modules = new ArrayList<String>();
@@ -197,5 +235,24 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 				",samplesFromCliClient/driftCommon.js").
 				withArg("expectedVersion", version).
 				run();
+	}
+	private void waitForNewSnapshotVersionUsingModule(String version){
+		createJSRunner("samplesFromCliClient/drift-waitForNewSnapshot.js").
+				addDepends("rhqapi.js," +
+				"samplesFromCliClient/driftCommon.js").
+				withArg("expectedVersion", version).
+				run();
+	}
+	
+	private CliTasks prepareAgentMachine() throws CliTasksException{
+		checkRequiredProperties("jon.agent.host");
+		CliTasks agentMachine = new CliTasks();
+		agentMachine.initialize(System.getProperty("jon.agent.host"),"hudson","hudson");
+		
+		// clean monitored directory
+		agentMachine.runCommand("rm -rf /tmp/driftFiles");
+		agentMachine.runCommand("mkdir -p /tmp/driftFiles/bin");
+		
+		return agentMachine;
 	}
 }
