@@ -77,7 +77,7 @@ public abstract class CliTestScript extends TestScript{
 		CliTasks.getCliTasks().initialize(cliHost,cliHostUser,cliHostPasswd);
 		CliEngine.cliShLocation = cliShLocation;
 		if (StringUtils.trimToNull(CliEngine.cliShLocation)==null) {
-			_logger.info("Property "+PARAM.CLI_AGENT_BIN_SH+" was not defined");
+			_logger.info("Property or environment variable "+PARAM.CLI_AGENT_BIN_SH+" was not defined");
 			CLIClientAutoInstall();
 		}
 		CliEngine.rhqCliJavaHome = cliJavaHome;
