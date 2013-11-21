@@ -21,3 +21,16 @@ var findStandaloneEAP6 = function() {
     assertTrue(eap != null, "At least 1 EAP6 server must be imported (not RHQ Server)");
     return eap;
 }
+
+var findRHQServer = function() {
+    var eap = null;
+    resources.find({
+        type : "JBossAS7 Standalone Server"
+    }).forEach(function(r) {
+            if (r.name.indexOf("RHQ Server") >= 0) {
+                eap = r;
+            }
+        });
+    assertTrue(eap != null, "RHQ server found");
+    return eap;
+}
