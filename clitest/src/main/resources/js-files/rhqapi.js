@@ -1088,8 +1088,17 @@ var users = (function() {
 				}
 			}
 		},
-		/** 
-		 * Finds all users according to given parameters.
+        /**
+         * Finds all users according to given parameters.
+         * @public
+         * @function
+         * @param {Object} params -  see SubjectCriteria.addFilter[param] methods for available params
+         * @returns  Array of found users.
+         * @type Users[]
+         */
+        find : _findUsers,
+        /**
+		 * Finds all users according to given parameters. (deprecated)
 		 * @public
 		 * @function
 		 * @param {Object} params -  see SubjectCriteria.addFilter[param] methods for available params
@@ -4476,12 +4485,12 @@ var Resource = function (param) {
 							"Please wait and try again shortly") != -1){
 						return false;
 					}else{
-						return true;
+						return -1;
 					}
 				}
 			},20,480);
 			
-			if(!result){
+			if(!result || result == -1){
 				throw "Failed to uninventory. See previous errors."
 			}
 			
