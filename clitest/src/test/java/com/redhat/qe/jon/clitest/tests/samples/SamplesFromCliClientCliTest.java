@@ -77,9 +77,6 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 	public void driftTest() throws IOException, CliTasksException{
 		CliTasks agentMachine = prepareAgentMachine();
 		
-		String file1Path = "/tmp/driftFiles/bin/file1.txt";
-		String file2Path = "/tmp/driftFiles/bin/file2.txt";
-		
 		// run the first part
 		createJSRunner("samplesFromCliClient/driftTestPart1.js").
 				addDepends("rhqapi.js," +
@@ -88,17 +85,7 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 				",samplesFromCliClient/driftCommon.js").
 				run();
 		
-		// add one new file
-		agentMachine.runCommand("echo \"first line\" > " + file1Path);
-		waitForNewSnapshotVersion("1");
-		
-		// add another new file
-		agentMachine.runCommand("echo \"first line\" > " + file2Path);
-		waitForNewSnapshotVersion("2");
-		
-		// add one new line
-		agentMachine.runCommand("echo \"second line\" >> " + file1Path);
-		waitForNewSnapshotVersion("3");
+		createDrift(agentMachine);
 		
 		// run second part
 		createJSRunner("samplesFromCliClient/driftTestPart2.js").
@@ -113,26 +100,13 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 	public void driftModuleTest() throws CliTasksException{
 		CliTasks agentMachine = prepareAgentMachine();
 		
-		String file1Path = "/tmp/driftFiles/bin/file1.txt";
-		String file2Path = "/tmp/driftFiles/bin/file2.txt";
-		
 		// run the first part
 		createJSRunner("samplesFromCliClient/driftTestPart1.js").
 				addDepends("rhqapi.js," +
 				"samplesFromCliClient/driftCommon.js").
 				run();
 		
-		// add one new file
-		agentMachine.runCommand("echo \"first line\" > " + file1Path);
-		waitForNewSnapshotVersionUsingModule("1");
-		
-		// add another new file
-		agentMachine.runCommand("echo \"first line\" > " + file2Path);
-		waitForNewSnapshotVersionUsingModule("2");
-		
-		// add one new line
-		agentMachine.runCommand("echo \"second line\" >> " + file1Path);
-		waitForNewSnapshotVersionUsingModule("3");
+		createDrift(agentMachine);
 		
 		// run second part
 		createJSRunner("samplesFromCliClient/driftTestPart2.js").
@@ -254,5 +228,20 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 		agentMachine.runCommand("mkdir -p /tmp/driftFiles/bin");
 		
 		return agentMachine;
+	}
+	private void createDrift(CliTasks agentMachine) throws CliTasksException{
+		// add one new file
+		String file1Path = "/tmp/driftFiles/bin/file1.txt";
+		String file2Path = "/tmp/driftFiles/bin/file2.txt";
+		agentMachine.runCommand("echo \"first line\" > " + file1Path);
+		waitForNewSnapshotVersionUsingModule("1");
+		
+		// add another new file
+		agentMachine.runCommand("echo \"first line\" > " + file2Path);
+		waitForNewSnapshotVersionUsingModule("2");
+		
+		// add one new line
+		agentMachine.runCommand("echo \"second line\" >> " + file1Path);
+		waitForNewSnapshotVersionUsingModule("3");
 	}
 }
