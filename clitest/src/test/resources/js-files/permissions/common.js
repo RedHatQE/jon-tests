@@ -37,6 +37,10 @@ function tearDownTestCase(tc) {
     println("Cleaning stuff for all test cases");
     println("Cleaning up stuff for case '" + tc.key + "' : " + tc.name);
     var _prefix = tc.key;
+    tc.res_groups = tc.res_groups || [];
+    tc.bundle_groups = tc.bundle_groups || [];
+    tc.roles = tc.roles || [];
+    tc.users = tc.users || [];
     println("Cleaning up roles");
     roles.deleteRoles(tc.roles.map(function(r) {
         return _prefix + r.name
@@ -70,6 +74,10 @@ function tearDownTestCase(tc) {
 function setupTestCase(tc) {
     println("Creating stuff for case '" + tc.key + "' : " + tc.name);
     var _prefix = tc.key;
+    tc.res_groups = tc.res_groups || [];
+    tc.bundle_groups = tc.bundle_groups || [];
+    tc.roles = tc.roles || [];
+    tc.users = tc.users || [];
     println("Creating resource groups")
     tc.res_groups.forEach(function(g) {
         groups.create(_prefix + g.name, g.children)
