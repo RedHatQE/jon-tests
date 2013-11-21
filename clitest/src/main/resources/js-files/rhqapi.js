@@ -3808,6 +3808,24 @@ var Resource = function (param) {
 	 */
     metrics : _metrics,
     /**
+     *  Update resource's editable properties (name, description, location).
+     *  @example new Resource(12345).update({name:"new name",description:"new description",location:"new location"})
+     *  @type Resource
+     *  @return updated Resource
+     */
+    update : function(params) {
+         var _self = _find().get(0);
+         params.name = params.name || _self.name;
+         params.description = params.description || _self.description;
+         params.location = params.location || _self.location;
+
+        _self.name = params.name;
+        _self.description = params.description;
+        _self.location = params.location;
+        ResourceManager.updateResource(_self);
+        return new Resource(_self);
+    },
+    /**
      * gets a metric by it's name
      * @example resource.getMetric("Total Swap Space")
      * @type Metric
