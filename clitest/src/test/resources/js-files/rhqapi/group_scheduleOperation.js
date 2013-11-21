@@ -39,27 +39,27 @@ println("Schedule operation without required arguments");
 println(expectException(agentsGroup.scheduleOperation));
 
 println("Schedule operation of invalid name");
-println(expectException(agentsGroup.scheduleOperation,["non-existing-operation"]));
+println(expectException(agentsGroup.scheduleOperation,[{name:"non-existing-operation"}]));
 
 println("Schedule operation that has optional parameters, passing incorrect params");
-println(expectException(agentsGroup.scheduleOperation,[opName,null,null,null,null,null,null,null,{nonexistingparam:false}]));
+println(expectException(agentsGroup.scheduleOperation,[{name:opName,config:{nonexistingparam:false}}]));
 
 
 // mixed group
 println("Schedule operation on mixed group");
 println(expectException(mixedGroup.scheduleOperationUsingCron,[opName,cronExp]));
 println("Schedule operation on mixed group");
-println(expectException(mixedGroup.scheduleOperation,[opName]));
+println(expectException(mixedGroup.scheduleOperation,[{name:opName}]));
 
 // empty group
 println("Schedule operation on empty group");
 println(expectException(emptyGroup.scheduleOperationUsingCron,[opName,cronExp]));
 println("Schedule operation on empty group");
-println(expectException(emptyGroup.scheduleOperation,[opName]));
+println(expectException(emptyGroup.scheduleOperation,[{name:opName}]));
 
 // correct
 agentsGroup.scheduleOperationUsingCron(opName,cronExp,{changesOnly:false});
 agentsGroup.scheduleOperationUsingCron(opName,cronExp2);
 
-agentsGroup.scheduleOperation(opName,null,null,null,null,null,null,null,{changesOnly:false});
-agentsGroup.scheduleOperation(opName);
+agentsGroup.scheduleOperation({name:opName,config:{changesOnly:false}});
+agentsGroup.scheduleOperation({name:opName});

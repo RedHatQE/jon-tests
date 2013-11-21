@@ -15,7 +15,7 @@ public class GroupsCliTest extends RhqapiCliTest {
     }
     
     @Test
-    public void invokeOperation() {
-	createJSRunner("rhqapi/group_invokeOperation.js").run();
+    public void runOperation() {
+	createJSRunner("rhqapi/group_runOperation.js").run();
     }
 }

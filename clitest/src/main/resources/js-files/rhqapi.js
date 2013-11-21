@@ -1496,23 +1496,28 @@ var ResGroup = function(param) {
 		},
 		/**
 		 * Invokes operation on this group and returns result of the operation.
-		 * 
-		 * @param {String}
-		 *            name of operation (required)
-		 * @param {boolean}
-		 *            haltOnFailure (optional, default is true)
-		 * @param {Array}
-		 *            executionOrderResourceIds defines execution order (optional)
-		 * @param {String}
-		 *            description (optional)
-		 * @param {Object}
-		 *            opParams - hashmap for operation params (Configuration) (optional)
+		 *
+         * @param {Object} params - inputs for scheduling with fileds as follows:
+		 *  <ul>
+         *      <li>{String} name - name of operation (required)</li>
+         *      <li>{boolean} haltOnFailure (optional, default is true)</li>
+         *      <li>{Array} executionOrderResources defines execution order (optional)</li>
+         *      <li>{String} description (optional)</li>
+         *      <li>{Object} config - hashmap for operation params (Configuration) (optional)</li>
+		 *  </ul>
+         *
 		 * @example allAgents.invokeOperation("executeAvailabilityScan");                       
 		 *
 		 */
-		invokeOperation : function(name,haltOnFailure,executionOrderResourceIds,description,opParams){
-			var groupOpShedule = _scheduleOperation(name,0,0,0,0,haltOnFailure,executionOrderResourceIds,
-					description,opParams);
+		runOperation : function(params){
+            params = params || {};
+            params.haltOnFailure = params.haltOnFailure || true;
+            params.executionOrderResources = params.executionOrderResources || [];
+            params.description = params.description || null;
+            params.config = params.config || null;
+            var name,haltOnFailure,executionOrderResourceIds,description,opParams
+			var groupOpShedule = _scheduleOperation(params.name,0,0,0,0,params.haltOnFailure,params.executionOrderResources.map(function(r){return r.id;}),
+					params.description,params.config);
 			var result = _waitForOperationResult(groupOpShedule);
 			
 			var ret = {}
@@ -1525,32 +1530,36 @@ var ResGroup = function(param) {
 		/**
 		 * Schedules operation on this group. In contrast to invokeOperation this is 
 		 * not blocking operation.
-		 * 
-		 * @param {String}
-		 *            name of operation (required)
-		 * @param {int}
-		 *            delay of operation in seconds (optional, 0 is default)       
-		 * @param {int}
-		 *            repeatInterval of operation in seconds (optional, 0 is default)           
-		 * @param {int}
-		 *            repeatCount of operations (optional, 0 is default)           
-		 * @param {int}
-		 *            timeout of operation in seconds (optional, 0 is default)           
-		 * @param {boolean}
-		 *            haltOnFailure (optional, default is true)
-		 * @param {Array}
-		 *            executionOrderResourceIds defines execution order (optional)
-		 * @param {String}
-		 *            description (optional)
-		 * @param {Object}
-		 *            opParams - hashmap for operation params (Configuration) (optional)
-		 * @example scheduleOperation("executeAvailabilityScan",10,10,10,0,true,null,"My description",{changesOnly:false});                       
+		 *
+         *  @param {Object} params - inputs for scheduling with fileds as follows:
+         *  <ul>
+         *      <li>{String} name of operation (required)</li>
+         *      <li>{Number} delay of operation in seconds (optional, 0 is default)</li>
+         *      <li>{Number} repeatInterval of operation in seconds (optional, 0 is default)</li>
+         *      <li>{Number} repeatCount of operations (optional, 0 is default)</li>
+         *      <li>{Number} timeout of operation in seconds (optional, 0 is default)</li>
+         *      <li>{boolean} haltOnFailure (optional, default is true)</li>
+         *      <li>{Array} executionOrderResources defines execution order (optional)</li>
+         *      <li>{String} description (optional)</li>
+         *      <li>{Object} config - hashmap for operation params (Configuration) (optional)</li>
+         *      <li></li>
+         *      <li></li>
+         *  </ul>
+		 * @example scheduleOperation({name:"executeAvailabilityScan",delay:10,repeatInterval:10,repeatCount:10,config:{changesOnly:false});
 		 *
 		 */
-		scheduleOperation : function(name,delay,repeatInterval,repeatCount,timeout,
-				haltOnFailure,executionOrderResourceIds,description,opParams){
-			_scheduleOperation(name,delay,repeatInterval,repeatCount,timeout,
-					haltOnFailure,executionOrderResourceIds,description,opParams);
+		scheduleOperation : function(params){
+            params = params || {};
+            params.delay = params.delay || 0;
+            params.repeatInerval = params.repeatInterval || 0;
+            params.repeatCount = params.repeatCount || 0;
+            params.timeout = params.timeout || 0;
+            params.executionOrderResources = params.executionOrderResources || [];
+            params.description = params.description || null;
+            params.config = params.config || null;
+
+			_scheduleOperation(params.name,params.delay,params.repeatInterval,params.repeatCount,params.timeout,
+					params.haltOnFailure,params.executionOrderResources.map(function(r){return r.id;}),params.description,params.config);
 		},
 		/**
 		 * Returns Array with metric intervals of given metric for all resources in this group.
@@ -3289,7 +3298,7 @@ discoveryQueue = (function () {
 	    // return only imported resources
 	    return common.pageListToArray(res).map(function(x){return new Resource(x);});
 	};
-  _listPlatforms = function(params) {
+  var _listPlatforms = function(params) {
 			params = params || {};
 			common.trace("discoveryQueue.listPlatforms("+common.objToString(params)+")");
 			params["status"] = "NEW";
@@ -4541,6 +4550,7 @@ if (typeof exports !== "undefined") {
 	exports.resources = resources;
 	exports.discoveryQueue = discoveryQueue;
 	exports.bundles = bundles;
+    exports.bundleGroups = bundleGroups;
 	exports.groups = groups;
 	exports.Resource = Resource;
 	exports.roles = roles;
