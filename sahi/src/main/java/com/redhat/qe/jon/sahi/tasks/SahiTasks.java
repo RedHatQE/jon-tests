@@ -304,19 +304,16 @@ public class SahiTasks extends ExtendedSahi {
         this.radio("URL").click();
         this.textbox("url").setValue(bundleURL);
         this.cell("Next").click();
-        this.cell("Next").click();
-        this.cell("Next").click();
-        this.waitFor(1000*3);
-        this.cell("Finish").click();
-        this.waitFor(1000*3);
+        this.cell("Next").near(this.cell("Prevoius")).click();
+        this.cell("Next").near(this.cell("Prevoius")).click();
+        this.cell("Finish").near(this.cell("Prevoius")).click();
     }
 
     public void deleteBundle(String bundleName) {
         this.link("Bundles").click();
-        this.waitFor(5000);
         this.div(bundleName).click();
-        this.cell("Delete").click();
-        this.cell("Yes").click();
+        this.cell("Delete").near(this.cell("Deploy")).click();
+        this.cell("Yes").near(this.cell("No")).click();
     }
     // ***************************************************************************
     // Menus
@@ -750,9 +747,13 @@ public class SahiTasks extends ExtendedSahi {
     //Help
     //******************************************************************
     public void helpAbout() {
-        this.link("Help").click();
-        this.cell("About").click();
-        this.cell("Close").click();
+        //Old - About dialog(if loop): Should be removed after sometime. Modified on: 18-Oct-2013
+    	//RHQ Build: 4.10.0-SNAPSHOT
+    	if(selectPage("Help-->About", this.span("DisplayLabel[0]"), 1000*5, 3)){
+        	this.row("Close").click();
+    	}else if(selectPage("Help-->About", this.image("close.png").near(this.image("maximize.png")), 1000*5, 3)){ // New dialog approach: Date: 18-Oct-2013
+    		this.image("close.png").near(this.image("maximize.png")).click();
+    	}    
     }
 
     public void helpFAQ() {
