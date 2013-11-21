@@ -198,6 +198,14 @@ public class CliTestRunner {
 	this.password = password;
 	return this;
     }
+    /**
+     * specify username (subject) with default password (rhqadmin)
+     * @param user
+     * @return this
+     */
+    public CliTestRunner asUser(String user) {
+        return asUser(user,"rhqadmin");
+    }
     
     /**
      * specify rhq target server
