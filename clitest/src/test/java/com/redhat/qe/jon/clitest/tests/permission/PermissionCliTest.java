@@ -111,6 +111,26 @@ public class PermissionCliTest extends CliEngine {
         runPermissionTest("viewUsers_U2", action, false);
     }
 
+    @Test
+    public void updateResourceTest() {
+        initCase("resourcePermission_");
+        String action =  " findRHQServer().update({location:'jonlab'})";
+        runPermissionTest("resourcePermission_U1", action, true);
+        runPermissionTest("resourcePermission_U2", action, false);
+    }
+
+    @Test
+    public void noPermissonsAndAdminTest() {
+        initCase("userRoles_");
+
+        createJSRunner("permissions/userRoles.js")
+            .asUser("userRoles_Admin")
+            .run();
+        String action =  " assertTrue(resources.platforms().length > 0)";
+        runPermissionTest("userRoles_Badguy", action, false);
+    }
+
+
     //@Test
     public void manageDriftTest() {
         initCase("manageDrift_");
@@ -120,25 +140,21 @@ public class PermissionCliTest extends CliEngine {
     }
 
 	
-	//@Test(groups={"blockedByBug-841625"})
+	@Test(groups={"blockedByBug-841625"})
 	public void manageContentTest() {
 		createJSRunner("permissions/testPermissions-ManageContent.js").
 		run();
 	}
 
 
-	//@Test(groups={"blockedByBug-841625"})
+	@Test(groups={"blockedByBug-841625"})
 	public void manageRepositoriesTest() {
 		createJSRunner("permissions/testPermissions-ManageRepositories.js").
 		run();
 	}
 
 
-	//@Test(groups={"blockedByBug-841625"})
-	public void resourcePermissionsInventoryTest() {
-		createJSRunner("permissions/testPermissions-ResourcePermissionsInventory.js").
-		run();
-	}
+
 	
 
 }

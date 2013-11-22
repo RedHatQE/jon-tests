@@ -105,7 +105,7 @@ var cases = [
             },
             {
                 name: "NO",
-                perms: [ ],
+                perms: [ "CONFIGURE_READ" ],
                 res_groups: [ "X" ]
             }
         ],
@@ -285,6 +285,59 @@ var cases = [
             {
                 name: "U2",
                 roles: [ "NO" ]
+            }
+        ]
+    },
+    {
+        name: "Tests permission for editing resources",
+        key: "resourcePermission_",
+        res_groups: [
+            {
+                name: "X",
+                children: [findRHQServer()]
+            }
+        ],
+        roles: [
+            {
+                name: "YES",
+                perms: [ "MODIFY_RESOURCE" ],
+                res_groups: [ "X" ]
+            },
+            {
+                name: "NO",
+                perms: [ ],
+                res_groups: [ "X" ]
+            }
+        ],
+        users: [
+            {
+                name: "U1",
+                roles: [ "YES" ]
+            },
+            {
+                name: "U2",
+                roles: [ "NO" ]
+            }
+        ]
+    }
+    ,
+    {
+        name: "Tests admin user and user without permissions",
+        key: "userRoles_",
+        roles: [
+            {
+                name: "YES",
+                perms: permissions.allGlobal
+            }
+        ],
+        users: [
+            {
+                name: "Admin",
+                roles: [ "YES" ]
+            },
+            {
+                name: "Badguy",
+                roles: []
             }
         ]
     }
