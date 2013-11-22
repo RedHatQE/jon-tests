@@ -55,7 +55,7 @@ if(exception == null){
 //invoke operation on group of agents
 var justBeforeScheduleTimeStamp = new Date();
 common.info("Invoking operation on group of agents with undefined order");
-var result = allAgentsG.invokeOperation(opName);
+var result = allAgentsG.runOperation({name:opName});
 var operationFinishedTimeStamp = new Date();
 
 // check result
@@ -94,7 +94,7 @@ deleteOpHistoryOnGroup(allAgentsG.id);
 justBeforeScheduleTimeStamp = new Date();
 common.info("Scheduling operation on group of agents with undefined order");
 var repeatIntervalSec = 20;
-allAgentsG.scheduleOperation(opName,20,repeatIntervalSec,5);
+allAgentsG.scheduleOperation({name:opName,delay:20,repeatInterval:repeatIntervalSec,repeatCount:5});
 var afterScheduleTimeStamp = new Date();
 
 // include delay of scheduling operation
@@ -146,7 +146,9 @@ for(i in agents){
 justBeforeScheduleTimeStamp = new Date();
 var repeatIntervalSec = 20;
 common.info("Scheduling operation on group of agents with defined order");
-allAgentsG.scheduleOperation(opName,20,repeatIntervalSec,5,0,true,executionOrderResourceIds);
+allAgentsG.scheduleOperation({name:opName,delay:20,repeatInterval:repeatIntervalSec,repeatCount:5,
+    executionOrderResources:agents});
+
 afterScheduleTimeStamp = new Date();
 
 //include delay of scheduling operation
