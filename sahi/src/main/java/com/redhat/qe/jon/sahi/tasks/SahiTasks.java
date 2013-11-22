@@ -304,9 +304,9 @@ public class SahiTasks extends ExtendedSahi {
         this.radio("URL").click();
         this.textbox("url").setValue(bundleURL);
         this.cell("Next").click();
-        this.cell("Next").near(this.cell("Prevoius")).click();
-        this.cell("Next").near(this.cell("Prevoius")).click();
-        this.cell("Finish").near(this.cell("Prevoius")).click();
+        this.cell("Next").near(this.cell("Previous")).click();
+        this.cell("Next").near(this.cell("Previous")).click();
+        this.cell("Finish").near(this.cell("Previous")).click();
     }
 
     public void deleteBundle(String bundleName) {
