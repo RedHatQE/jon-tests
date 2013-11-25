@@ -304,8 +304,11 @@ public class SahiTasks extends ExtendedSahi {
         this.radio("URL").click();
         this.textbox("url").setValue(bundleURL);
         this.cell("Next").click();
+        this.waitFor(3000);
         this.cell("Next").near(this.cell("Previous")).click();
+        this.waitFor(3000);
         this.cell("Next").near(this.cell("Previous")).click();
+        this.waitFor(3000);
         this.cell("Finish").near(this.cell("Previous")).click();
     }
 
@@ -1495,14 +1498,19 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("New").click();
         this.waitFor(1000*1);
         //This line added as a work-around for the issue --> Bug 949471
-        byPassConfirmationBox();
+        //Comment this line as confirm box is not found [25-Nov-2013]
+        // byPassConfirmationBox();
         
         //Select Template
         if(templateName != null){
         	selectComboBoxes(templateName);
         }
+        this.waitFor(3*1000);
         
         this.cell("Next").click();
+        if(this.cell("Next").exists()){
+        	this.cell("Next").click();
+        }
         
         //Update Drift Name
         this.textbox("name").setValue(driftName.trim());

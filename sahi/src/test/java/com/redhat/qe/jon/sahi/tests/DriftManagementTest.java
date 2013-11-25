@@ -86,7 +86,7 @@ public class DriftManagementTest extends SahiTestScript {
 		map.put(DRIFT_NAME, "File SystemDrift - monitor changes in file");
 		map.put(DRIFT_BASE_DIR, "/tmp/automationDriftManagementDir/");
 		map.put(DRIFT_TEXT_BOXES, "interval=60,valueName="+map.get(DRIFT_BASE_DIR));
-		map.put(DRIFT_RADIO_BUTTONS, "enabled,normal,fileSystem");
+		map.put(DRIFT_RADIO_BUTTONS, "enabled,normal");
 		//map.put(DRIFT_DIR_INCLUDES, "includeDir");
 		//map.put(DRIFT_DIR_EXCLUDES, "excludeDir");
 		map.put(DRIFT_FILE_INCLUDES, "includeDir");

@@ -48,6 +48,7 @@ public class DriftManagementSSH {
 			connection = new Connection(hostName, port);		
 			connection.connect();
 			connection.authenticateWithPassword(userName, passWord);
+			_logger.log(Level.FINE, "Is Authentication Complete? : "+connection.isAuthenticationComplete());
 			sshCommandRunner = new SSHCommandRunner(connection, null);
 		}
 	}
