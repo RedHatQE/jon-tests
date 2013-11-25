@@ -2781,16 +2781,7 @@ var bundles = (function() {
 			    // since JON 3.2 we can stream our content to server
 			    var handle = scriptUtil.uploadContent(file);
 			    if (groupsSupported) {
-			        // TODO use corrrect method when it is available 
-			        // for now let's workaround it 
-			        common.debug("Getting bundle file from disk: '"+dist+"'");
-	                var inputStream = new java.io.FileInputStream(file);
-	                var fileLength = file.length();
-	                var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
-	                for (var numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
-	                    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
-	                }
-	                var version = BundleManager.createInitialBundleVersionViaByteArray(groups,fileBytes);
+	                var version = BundleManager.createInitialBundleVersionViaContentHandle(groups,handle);
 			    }
 			    else {
 			        var version = BundleManager.createBundleVersionViaContentHandle(handle);
