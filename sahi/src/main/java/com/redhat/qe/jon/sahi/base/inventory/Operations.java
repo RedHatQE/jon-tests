@@ -46,6 +46,8 @@ public class Operations extends ResourceTab {
         return new Operation(tasks, name);
     }
 
+
+
     /**
      * asserts operation result, waits until operation is either success or failure.
      *
@@ -64,13 +66,19 @@ public class Operations extends ResourceTab {
         }
         log.fine("Asserting operation [" + opName + "] result, expecting " + succ);
         getResource().operations().history();
+        // sort by Date Submitted
+        tasks.cell("Date Submitted").doubleClick();
+        tasks.waitFor(Timing.WAIT_TIME);
+        tasks.cell("Date Submitted").doubleClick();
+        tasks.waitFor(Timing.WAIT_TIME);
         int timeout = 20 * Timing.TIME_1M;
         int time = 0;
         while (time < timeout && tasks.image("Operation_inprogress_16.png").in(tasks.div(opName + "[0]").parentNode("tr")).exists()) {
             time += Timing.TIME_10S;
             log.fine("Operation [" + opName + "] in progress, waiting " + Timing.toString(Timing.TIME_10S));
             tasks.waitFor(Timing.TIME_10S);
-            getResource().operations().history();
+            tasks.cell("Refresh").click();
+//            getResource().operations().history();  // it would have to be sorted again
         }
         if (tasks.image("Operation_inprogress_16.png").in(tasks.div(opName + "[0]").parentNode("tr")).exists()) {
             log.info("Operation [" + opName + "] did NOT finish after " + Timing.toString(time) + "!!!");

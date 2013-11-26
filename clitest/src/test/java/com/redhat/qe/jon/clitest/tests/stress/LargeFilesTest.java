@@ -36,6 +36,18 @@ public class LargeFilesTest extends CliEngine {
 	public void deployLargeBundle(){
 		createJSRunner("stress/test_LargeBundleDeploy.js")
 			.withResource("bundle:50","bundle")
+            .withArg("toGroup","false")
+            .addExpect("status : Success")
 			.run();
 	}
+
+    @Test(groups={"blockedByBug-1015560"})
+    public void deployLargeBundleToBundleGroup(){
+        createJSRunner("stress/test_LargeBundleDeploy.js")
+                .withResource("bundle:50","bundle")
+                .withArg("toGroup","true")
+                .addExpect("status : Success")
+                .run();
+    }
+
 }

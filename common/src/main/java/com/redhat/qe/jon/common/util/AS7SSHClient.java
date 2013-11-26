@@ -68,23 +68,44 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
 	 * @param script name of startup script located in {@link AS7SSHClient#getAsHome()} / bin
 	 */
 	public void restart(String script) {
-		stop();
-		try {
-			Thread.currentThread().join(10*1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		start(script);
+		restart(script,null);
 	}
-	/**
+
+    public void restart(String script, String[] envp) {
+        stop();
+        try {
+            Thread.currentThread().join(10*1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        start(script,envp);
+    }
+
+    /**
 	 * starts server
 	 * @param script name of startup script located in {@link AS7SSHClient#getAsHome()} / bin
 	 */
 	public void start(String script) {
-		run("cd "+asHome+"/bin && nohup ./"+script+" &");
+		start(script,null);
 	}
-	/**
+
+    /**
+     * starts server
+     * @param script name of startup script located in {@link AS7SSHClient#getAsHome()} / bin
+     * @param envp array of environment variables (VAR=value) to get exported for startup script
+     */
+    public void start(String script, String[] envp) {
+        StringBuilder sb = new StringBuilder();
+        if (envp!=null && envp.length>0) {
+            for (String e : envp) {
+                sb.append("export ").append(e).append("; ");
+            }
+        }
+        run("cd "+asHome+"/bin && "+sb.toString()+" nohup ./"+script+" &");
+    }
+
+    /**
 	 * stops server by killing it
 	 */
 	public void stop() {
