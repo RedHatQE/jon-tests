@@ -86,6 +86,26 @@ public class TestScript {
 		}
 		return output;
 	}
+    /**
+     * creates 2-dimensional array of object required when being TestNG's dataProvider
+     * assuming your test method requires only 1 parameter
+     * @param list of parameter values
+     * @param blocks array of objects identified by BugzillaTestNGListener that may denote blocked test by particular bug.
+     *               This array must be same size as list parameter, bug BlockedByBzBug instances may lay only in
+     *               several indexes (denoting : test with given inputs is blocked by particular bz)
+     * @return 2-dimensional array of object parameters
+     */
+    public static Object[][] getDataProviderArray(List<?> list, Object[] blocks) {
+        if (list.size() != blocks.length) {
+            throw new IllegalArgumentException("blocks array must be same size as list of parameters");
+        }
+         com.redhat.qe.auto.bugzilla.BzChecker c;
+        Object[][] output = new Object[list.size()][];
+        for (int i=0;i<list.size();i++) {
+            output[i] = new Object[] {list.get(i),blocks[i]};
+        }
+        return output;
+    }
 
 	public static void loadProperties(){
 		String propFile = "";
