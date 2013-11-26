@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 
 import com.redhat.qe.Assert;
+import org.apache.commons.io.IOUtils;
 
 public class HTTPClient {
     private static final Logger log = Logger.getLogger(HTTPClient.class.getName());
@@ -83,17 +84,11 @@ public class HTTPClient {
 	    URL u = new URL(url);
 	    connection = (HttpURLConnection) u.openConnection();
 	    if (username != null && password != null) {
-		String userpass = username + ":" + password;
-		String basicAuth = "Basic " + new String(Base64.encodeBase64(userpass.getBytes()));
-		connection.setRequestProperty("Authorization", basicAuth);
+            String userpass = username + ":" + password;
+            String basicAuth = "Basic " + new String(Base64.encodeBase64(userpass.getBytes()));
+            connection.setRequestProperty("Authorization", basicAuth);
 	    }
-	    StringBuilder sb = new StringBuilder();
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-	    for (String line; (line = reader.readLine()) != null;) {
-		sb.append(line);
-	    }
-	    return sb.toString();
-
+        return IOUtils.toString(connection.getInputStream());
 	} catch (MalformedURLException e1) {
 	    throw new RuntimeException(e1);
 	} catch (ConnectException e) {
