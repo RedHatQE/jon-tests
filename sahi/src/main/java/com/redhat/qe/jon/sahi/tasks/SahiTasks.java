@@ -633,21 +633,22 @@ public class SahiTasks extends ExtendedSahi {
     	this.cell("Platforms").click();
     	Assert.assertTrue(this.div("Linux").exists());
     	this.div("Linux").doubleClick();
-    	Assert.assertTrue(this.image("folder_group_closed.png[0]").exists());
-    	Assert.assertTrue(this.image("folder_group_closed.png[1]").exists());
-    	Assert.assertTrue(this.image("folder_group_closed.png[2]").exists());
-    	scondLevelMandatoryMenuLinksExist();
-    	this.image("folder_group_closed.png[2]").click();
-    	this.image("folder_group_closed.png[1]").click();
-    	this.image("folder_group_closed.png[0]").click();
-    	this.cell("Alerts").click();
-    	this.cell("CPUs").click();
-    	Assert.assertTrue(this.cell("tabTitleSelected").near(this.cell("Alerts")).exists());
-    	this.cell("File Systems").click();
-    	Assert.assertTrue(this.cell("tabTitleSelected").near(this.cell("Alerts")).exists());
-    	this.cell("CPUs").click();
-    	Assert.assertTrue(this.cell("tabTitleSelected").near(this.cell("Alerts")).exists());
     	
+    	checkAutoGroupMenus("RHQ Storage Nodes");
+    	checkAutoGroupMenus("JBossAS7 Standalone Servers");
+    	checkAutoGroupMenus("Network Adapters");
+    	checkAutoGroupMenus("File Systems");
+    	checkAutoGroupMenus("CPUs");  	
+    }
+    
+    public void checkAutoGroupMenus(String resource){
+    	ElementStub resourceEl = this.image("folder_autogroup_closed.png").near(this.cell(resource));
+    	Assert.assertTrue(resourceEl.exists(), "Resource["+resource+"] status..");
+    	resourceEl.click();
+    	Assert.assertTrue(this.row("Summary").near(this.cell("tabTitleSelected")).exists(), "Sub Menu["+resource+"->Summary] Status...");
+    	Assert.assertTrue(this.row("Inventory").near(this.cell("tabTitle")).exists(), "Sub Menu["+resource+"->Inventory] Status...");
+    	Assert.assertTrue(this.row("Alerts").near(this.cell("tabTitle")).exists(), "Sub Menu["+resource+"->Alerts] Status...");
+    	Assert.assertTrue(this.row("Monitoring").near(this.cell("tabTitle")).exists(), "Sub Menu["+resource+"->Monitoring] Status...");
     }
     
     // ***************************************************************************
@@ -873,9 +874,9 @@ public class SahiTasks extends ExtendedSahi {
     public boolean recentOperationsQuickLinks() {
     	this.gotoReportRecentOperationsPage();
         this.link("RHQ Agent").click();
-        ElementStub expandElement = this.image("row_collapsed.png");
-        ElementStub collapsedElement = this.image("row_expanded.png");
-        if(!expandElement.exists()){
+        ElementStub expandElement = this.image("row_collapsed.png").near(this.bold("Tags:"));
+        ElementStub collapsedElement = this.image("row_expanded.png").near(this.bold("Tags:"));
+        if(expandElement.exists()){
         	expandElement.click();
         }
         int formTitleCoint = this.cell("formTitle").countSimilar();
@@ -2495,7 +2496,7 @@ public class SahiTasks extends ExtendedSahi {
 		Assert.assertTrue(this.cell("Cancel").exists());
 		Assert.assertTrue(this.password("password").exists());
 		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
+		relogin(ADMIN_USER, ADMIN_PASSWORD);
 		// remove manage security permission
 		removePermissionsFromRole(roleName, desc, compTestGroup,
 				searchTestuser, permissions);
@@ -2531,7 +2532,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("Enable").click();
 		this.cell("Yes").click();
 //		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
+		relogin(ADMIN_USER, ADMIN_PASSWORD);
 //		// remove manage security permission
 		removePermissionsFromRole(roleName, desc, compTestGroup,
 				searchTestuser, permissions);
@@ -2585,7 +2586,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.waitFor(2000);
 		Assert.assertTrue(this.link(testReponame).exists());
 		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
+		relogin(ADMIN_USER, ADMIN_PASSWORD);
 		// remove manage security permission
 		removePermissionsFromRole(roleName, desc, compTestGroup,
 				searchTestuser, permissions);
@@ -2623,7 +2624,7 @@ public class SahiTasks extends ExtendedSahi {
 		Assert.assertFalse(this.password("password").exists());
 		Assert.assertTrue(this.span("View User [rhqadmin]").exists());
 		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
+		relogin(ADMIN_USER, ADMIN_PASSWORD);
 		// remove manage security permission
 		removePermissionsFromRole(roleName, desc, compTestGroup,
 				searchTestuser, permissions);
@@ -2653,7 +2654,7 @@ public class SahiTasks extends ExtendedSahi {
 		this.cell("System Settings").click();
 		Assert.assertTrue(this.cell("Server Local Time :").exists());
 		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
+		relogin(ADMIN_USER, ADMIN_PASSWORD);
 		// remove manage security permission
 		removePermissionsFromRole(roleName, desc, compTestGroup,
 				searchTestuser, permissions);
@@ -2677,20 +2678,24 @@ public class SahiTasks extends ExtendedSahi {
 		
 		// go to Bundles
 		this.link("Bundles").click();
-		this.cell("New").click();
+		this.cell("New").near(this.cell("Deploy")).click();
+		this.waitFor(3000);
 		Assert.assertTrue(this.cell("Next").exists());
 		this.cell("Cancel").click();
+				
 		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
+		relogin(ADMIN_USER, ADMIN_PASSWORD);
 		// remove manage security permission
-		removePermissionsFromRole(roleName, desc, compTestGroup,
-				searchTestuser, permissions);
+		removePermissionsFromRole(roleName, desc, compTestGroup, searchTestuser, permissions);
 		// login with created user
 		relogin(searchTestuser, password);
+		
 		// go to Bundles
 		this.link("Bundles").click();
-		this.cell("New").click();
-		Assert.assertFalse(this.cell("Next").exists());
+		this.cell("New").near(this.cell("Deploy")).click();
+		this.waitFor(3000);
+		Assert.assertTrue(this.cell("Next").exists());
+		this.cell("Cancel").click();
 		
 		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);
 	}
@@ -2710,7 +2715,7 @@ public class SahiTasks extends ExtendedSahi {
 		Assert.assertTrue(this.div("RHQ Agent").exists());
 				
 		// login with rhqadmin user
-		relogin("rhqadmin", "rhqadmin");
+		relogin(ADMIN_USER, ADMIN_PASSWORD);
 		// remove resources from group
 		removeResourcesFromGroup("All Groups", compTestGroup);
 		// login with created user
