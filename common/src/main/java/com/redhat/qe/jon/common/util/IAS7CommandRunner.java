@@ -11,7 +11,9 @@ public interface IAS7CommandRunner {
 
     public String getAsHome();
     public void restart(String script);
+    public void restart(String script, String[] envp);
     public void start(String script);
+    public void start(String script, String[] envp);
     public void stop();
     public boolean isRunning();
     public Date getStartupTime(String logFile);

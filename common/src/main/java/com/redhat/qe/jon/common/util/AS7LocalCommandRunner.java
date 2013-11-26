@@ -63,23 +63,43 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
      * @param script name of startup script located in {@link AS7SSHClient#getAsHome()} / bin
      */
     public void restart(String script) {
-        stop();
+        restart(script,null);
+    }
+
+    public void restart(String script, String[] envp) {
         try {
             Thread.currentThread().join(10*1000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        start(script);
+        start(script,envp);
     }
+
     /**
      * starts server
      * @param script name of startup script located in {@link AS7SSHClient#getAsHome()} / bin
      */
     public void start(String script) {
-        runCommand(script, new File(asHome,"bin"));
+        start(script,null);
+    }
+
+    /**
+     * starts server
+     * @param script name of startup script located in {@link AS7SSHClient#getAsHome()} / bin
+     * @param envp array of environment variables (VAR=value) to get exported for startup script
+     */
+    public void start(String script, String[] envp) {
+        StringBuilder sb = new StringBuilder();
+        if (envp != null && envp.length > 0) {
+            for (String e : envp) {
+                sb.append(e).append(" ");
+            }
+        }
+        runCommand(sb.toString()+script, new File(asHome,"bin"));
         Library.sleepFor(3*1000);
     }
+
     /**
      * stops server by killing it
      */
