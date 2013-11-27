@@ -66,6 +66,13 @@ public class Operations extends ResourceTab {
         }
         log.fine("Asserting operation [" + opName + "] result, expecting " + succ);
         getResource().operations().history();
+        int allOperationStartedTimeout = Timing.TIME_30S;
+        while (tasks.cell("not yet started").in(tasks.div(opName).parentNode("tr")).isVisible() && allOperationStartedTimeout > 0) {
+            allOperationStartedTimeout -= Timing.WAIT_TIME;
+            tasks.waitFor(Timing.WAIT_TIME);
+            tasks.cell("Reload").click();
+        }
+
         // sort by Date Submitted
         tasks.cell("Date Submitted").doubleClick();
         tasks.waitFor(Timing.WAIT_TIME);
@@ -143,6 +150,8 @@ public class Operations extends ResourceTab {
         log.fine("Result table not found");
         return null;
     }
+
+
 
     public static class Operation {
         private final SahiTasks tasks;
