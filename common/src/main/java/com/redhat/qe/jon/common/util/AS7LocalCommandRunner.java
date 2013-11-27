@@ -67,6 +67,7 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
     }
 
     public void restart(String script, String[] envp) {
+        stop();
         try {
             Thread.currentThread().join(10*1000);
         } catch (InterruptedException e) {
