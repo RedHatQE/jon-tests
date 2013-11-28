@@ -70,7 +70,7 @@ public class Operations extends ResourceTab {
         while (tasks.cell("not yet started").in(tasks.div(opName).parentNode("tr")).isVisible() && allOperationStartedTimeout > 0) {
             allOperationStartedTimeout -= Timing.WAIT_TIME;
             tasks.waitFor(Timing.WAIT_TIME);
-            tasks.cell("Reload").click();
+            tasks.cell("Refresh").click();
         }
 
         // sort by Date Submitted
