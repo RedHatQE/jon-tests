@@ -97,8 +97,9 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
                 sb.append(e).append(" ");
             }
         }
-        runCommand(sb.toString()+script, new File(asHome,"bin"));
-        Library.sleepFor(3*1000);
+
+        runCommand(sb.toString()+"./"+script, new File(asHome, "bin"));
+        Library.sleepFor(3 * 1000);
     }
 
     /**
