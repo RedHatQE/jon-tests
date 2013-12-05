@@ -2,6 +2,18 @@ import sys,os
 import logging
 from rhq.server import RHQServer
 import unittest
+from functools import wraps
+
+def skipUnlessHA(func):
+    """decorator which skips given test unless there is 2 or more RHQ Servers configured (from RHQ_HOSTS environ)"""
+    @wraps(func)
+    def wrapper(*args,**kwargs):
+        self = args[0]
+        if len(self.hosts) < 2:
+            raise unittest.SkipTest('At least 2 RHQ servers are required for this test, set RHQ_HOSTS properly')
+        return func(*args,**kwargs)
+    return wrapper
+
 
 class RHQAlertTest(unittest.TestCase):
     '''This is a base class for all allert tests'''

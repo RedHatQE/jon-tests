@@ -185,6 +185,16 @@ class RHQServer(object):
         return r.json()
 
     def checkAlertDef(self,definition,*args,**kwargs):
+        '''Checks alert definition body
+        You can pass named parameter (for example enabled=True) which will result 
+        to check if a key `enabled` within alert body has `True` value
+
+        Note that this does work only for simple values (not arrays or hashes)
+
+        >>> checkAlertDef(alert,enabled=True,name='abc')
+
+        :param definition: alert definition body
+        '''
         r = self.get('/alert/definition/%d' % definition['id'])
         if r.status_code != 200:
             raise Exception(r.text)
@@ -351,6 +361,7 @@ class RHQServer(object):
 
     def findPlatform(self,name=None):
         '''Finds a Platform in inventory, returns first found instance       
+        
         :param name: name of platform to search for, if None platform name of this server is used
         :returns: platform resource
         '''

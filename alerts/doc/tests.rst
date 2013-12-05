@@ -9,6 +9,15 @@ tests.testsingle module
     :undoc-members:
     :show-inheritance:
 
+tests.testdampenings module
+---------------------------
+
+.. automodule:: tests.testdampening
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 tests.testcase module
 ---------------------
 

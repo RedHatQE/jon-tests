@@ -1,3 +1,5 @@
+'''This module contains tests for firing alert based on single condition while covering all possible contition types'''
+
 from rhq.conditions import *
 from rhq.dampenings import *
 from testcase import RHQAlertTest
@@ -6,10 +8,9 @@ from bzchecker import blockedBy
 
 @attr('single','trait')
 class FireTraitAlert(RHQAlertTest):
-    """
-        this class contains tests for firing alert based on 
-        single condition while covering all possible contition types
-    """
+    '''This class tests alerts fired by TraitValueChange condition type (alert's get rised when given trait value
+    changes and matches given pattern'''
+
     @attr('trait')
     @blockedBy('1035890')
     def test_traitValueChange(self):
@@ -29,6 +30,7 @@ class FireTraitAlert(RHQAlertTest):
 
 @attr('single','control')
 class FireControlAlert(RHQAlertTest):
+    '''This class tests alerts fired by CONTROL condidion type (when an operation finishes with some result)'''
 
     @attr('operationSuccess')
     def test_operationStatusSuccess(self):
@@ -73,7 +75,7 @@ class FireControlAlert(RHQAlertTest):
 
 @attr('single','avail')
 class FireAvailabilityAlert(RHQAlertTest):
-
+    '''This class tests alerts fired upon availability-related conditions'''
     @attr('availGoesDown') 
     def test_availGoesDown(self):
         s = self.rhqServer()
