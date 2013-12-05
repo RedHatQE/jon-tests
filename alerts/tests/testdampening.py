@@ -8,7 +8,7 @@ from bzchecker import blockedBy
 from unittest import skipIf
 
 @attr('dampening')
-class FireTraitAlert(RHQAlertTest):
+class AlertDambening(RHQAlertTest):
     '''This class tests alerts fired by TraitValueChange condition type (alert's get rised when given trait value
     changes and matches given pattern'''
 
