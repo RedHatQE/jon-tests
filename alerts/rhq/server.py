@@ -141,7 +141,8 @@ class RHQServer(object):
 
     @_validRes
     def sendMetricData(self,resource,schedule,value):
-        '''Sends metric data for given `resource` and `schedule`. 
+        '''sendMetricData(self,resouce,schedule,value)
+        Sends metric data for given `resource` and `schedule`. 
 
         :param resource: resource body
         :param schedule: schedule body
@@ -162,10 +163,10 @@ class RHQServer(object):
         Creates new alert definition
 
         :param resource: resource body 
-        :param conditions: one condition or array of conditions (see `conditions` module)
+        :param conditions: one condition or array of conditions (see :mod:`rhq.conditions` module)
         :param name: name of alert definition
         :param recovers: alert definition body in case this alert definition recovers other alert def
-        :param dampening: dampening (see `dampenings` module)
+        :param dampening: dampening (see :mod:`rhq.dampenings` module)
         :param enabled: enable/disable new alert definition
 
         :returns: new alert definition body
@@ -187,13 +188,22 @@ class RHQServer(object):
     def checkAlertDef(self,definition,*args,**kwargs):
         '''Checks alert definition body
         You can pass named parameter (for example enabled=True) which will result 
-        to check if a key `enabled` within alert body has `True` value
-
-        Note that this does work only for simple values (not arrays or hashes)
-
-        >>> checkAlertDef(alert,enabled=True,name='abc')
+        to check if a key `enabled` within alert body has ``True`` value
+        
 
         :param definition: alert definition body
+        :param \*\* kwargs: keyword args for alert definition body assertions
+
+        Note that this does work only for simple values (not arrays or hashes)
+        
+        >>> s = RHQServer()
+        >>> p = s.newPlatform()
+        >>> alert = s.defineAlert(p,name='abc')
+        >>> s.checkAlertDef(alert,enabled=True,name=u'abc')
+        True
+        >>> s.checkAlertDef(alert,enabled=True,name='abcd')
+        AssertionError: Field "name" does not equal abcd
+
         '''
         r = self.get('/alert/definition/%d' % definition['id'])
         if r.status_code != 200:
@@ -202,7 +212,7 @@ class RHQServer(object):
         return assertDict(alert,*args,**kwargs)
 
     def undefineAlert(self,alert):
-        '''Undefines (deletes) alert definition
+        '''Undefines (deletes) alert definition(s)
 
         :param alert: alert definition body or array of alert definitions
         '''
