@@ -193,6 +193,10 @@ public class Inventory extends ResourceTab{
 
 	    	for (int i = 0;i<count;i++) {
 	    		log.fine("Checking resource removal/addition status="+desired_status+": try #" + Integer.toString(i + 1) + " of "+count);
+                if (i == count-1 ) {
+                    log.fine("This is last check, it is possible the refresh button doesn't work properly, lets try full page reload");
+                    tasks.reloadPage();
+                }
 	    		String status = getLastResourceChangeStatus();
 	    		if (success && status_success.equals(status)) {
 	    			Assert.assertTrue(true, message);
@@ -204,8 +208,8 @@ public class Inventory extends ResourceTab{
 	    		}
 	    		if (status_progress.equals(status)) {
 	    			log.fine("Operation in progess, waiting "+Timing.toString(waitTime)+", refreshing ..");
+                    tasks.waitFor(waitTime);
 	    			refresh();
-	    			tasks.waitFor(waitTime);
 		    		continue;
 	    		} else {
 	    			if (success) {
