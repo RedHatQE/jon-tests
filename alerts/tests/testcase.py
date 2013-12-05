@@ -15,6 +15,10 @@ class RHQAlertTest(unittest.TestCase):
         # setup logger
         self.log = logging.getLogger(self.__class__.__name__)
         self.log.setLevel('DEBUG')
+        # detect RHQ server version
+        r = RHQServer(host=self.hosts[0],user=self.user,password=self.passwd).get('status')
+        data = r.json()['values']
+        os.environ['RHQ_BUILD_VERSION'] = '%s (%s)' % (data['SERVER_VERSION'],data['BuildNumber'])
 
     def rhqServer(self,index=0):
         '''gets RHQ/JON server object configured via `RHQ_HOSTS` environ variable
