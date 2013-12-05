@@ -7,12 +7,11 @@ from nose.plugins.attrib import attr
 from bzchecker import blockedBy
 from unittest import skipIf
 
-@attr('dampening')
-class AlertDambening(RHQAlertTest):
-    '''This class tests alerts fired by TraitValueChange condition type (alert's get rised when given trait value
-    changes and matches given pattern'''
+@attr('dampening','once')
+class AlertDampeningOnce(RHQAlertTest):
+    '''This class tests alerts dampening=once. Such alert has to get disabled after it was fired once. There can be
+    recovery alert, which can re-enable such alert once is fired'''
 
-    @attr('once')
     def test_dampeningOnce(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')
@@ -30,7 +29,7 @@ class AlertDambening(RHQAlertTest):
         # if test passed clean up our test resource
         s.deleteResource(p)
 
-    @attr('once','ha')
+    @attr('ha')
     @skipUnlessHA
     def test_dampeningOnceHA(self):
         s1 = self.rhqServer()
