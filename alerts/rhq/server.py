@@ -212,10 +212,10 @@ class RHQServer(object):
         :param resource: resource body
         :returns: number of alerts fired on given `resource`
         '''
-        self.log.info('Retrieving alert count for resource id=%d' % resource['resourceId'])
         r = self.get('/resource/%d/alerts' % resource['resourceId'])
         if r.status_code != 200:
             raise Exception(r.text)
+        self.log.info('Got %d alerts for resource id=%d' % (len(r.json()),resource['resourceId']))
         return len(r.json())
 
     @_validRes
