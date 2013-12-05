@@ -42,7 +42,7 @@ class FireControlAlert(RHQAlertTest):
         fired = s.alertCount(agent)
         s.runOperation(agent,name='executePromptCommand',params={'command':'ping'})
         s.sleep(10)
-        fired = s.alertCount(agent)
+        fired = s.alertCount(agent) - fired
         self.assertEqual(fired, 1,'Alert count incremeted by 1, but was %d' % fired)
         s.undefineAlert([a1,a2,a3])
     
