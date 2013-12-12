@@ -1,7 +1,6 @@
 import sys,os
 import logging
 from rhq.server import RHQServer
-import unittest
 from functools import wraps
 
 def skipUnlessHA(func):
@@ -10,7 +9,11 @@ def skipUnlessHA(func):
     def wrapper(*args,**kwargs):
         self = args[0]
         if len(self.hosts) < 2:
-            raise unittest.SkipTest('At least 2 RHQ servers are required for this test, set RHQ_HOSTS properly')
+            try:
+                from unittest import SkipTest
+            except:
+                raise Exception('SkipTest class could not be imported, consider running on python 2.7')
+            raise SkipTest('At least 2 RHQ servers are required for this test, set RHQ_HOSTS properly')
         return func(*args,**kwargs)
     return wrapper
 

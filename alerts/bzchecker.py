@@ -1,7 +1,6 @@
 import requests
 import json
 import os
-from unittest import SkipTest
 import traceback
 import logging
 from functools import wraps
@@ -27,6 +26,10 @@ class blockedBy(object):
                         if bug['status'] in ['NEW','MODIFIED','ASSIGNED','ON_DEV']:
                             bzLink = '%sshow_bug.cgi?id=%s' % (BUGZILLA,bug['id'])
                             msg = 'BZ [%s] %s (%s)' % (bug['status'],bug['summary'],bzLink)
+                            try:
+                                from unittest import SkipTest
+                            except:
+                                raise Exception('SkipTest class could not be imported, consider running on python 2.7')
                             raise SkipTest(msg)
             return f(*args)
         return wrap
