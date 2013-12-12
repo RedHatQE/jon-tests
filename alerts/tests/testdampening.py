@@ -5,7 +5,6 @@ from rhq.dampenings import *
 from testcase import *
 from nose.plugins.attrib import attr
 from bzchecker import blockedBy
-from unittest import skipIf
 
 @attr('dampening','once')
 class AlertDampeningOnce(RHQAlertTest):
