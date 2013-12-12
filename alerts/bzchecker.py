@@ -20,8 +20,7 @@ class blockedBy(object):
                 except:
                     print 'Could connect to %s not skipping test method' % BUGZILLA
                     traceback.print_exc()
-                    f(*args)
-                    return
+                    return f(*args)
                 result = r.json()['result']
                 if result and result.has_key('bugs'):
                     for bug in result['bugs']:
@@ -29,6 +28,6 @@ class blockedBy(object):
                             bzLink = '%sshow_bug.cgi?id=%s' % (BUGZILLA,bug['id'])
                             msg = 'BZ [%s] %s (%s)' % (bug['status'],bug['summary'],bzLink)
                             raise SkipTest(msg)
-            f(*args)
+            return f(*args)
         return wrap
 
