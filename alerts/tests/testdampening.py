@@ -48,5 +48,5 @@ class AlertDampeningOnce(RHQAlertTest):
         self.assertEqual(fired, 2,'Alert count incremeted by 2, but was %d' % fired)
         s1.checkAlertDef(a1,enabled=True)
         # if test passed clean up our test resource
-        s.deleteResource(p)
+        s1.deleteResource(p)
 

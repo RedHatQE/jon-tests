@@ -6,12 +6,32 @@ from testcase import RHQAlertTest
 from nose.plugins.attrib import attr
 from bzchecker import blockedBy
 
+@attr('single','numeric','range')
+class FireMeasurementValueRangeAlert(RHQAlertTest):
+    '''This class tests alerts fired by measurementValueRange condition type (alert is fired when numeric value of
+    metric is inside/outsite predefined range of absolute values)
+    '''
+    def test_rangeOutsideExclusive(self):
+        s = self.rhqServer()
+        p = s.newPlatform(avail='UP')
+        fired = s.alertCount(p)
+        sch = s.getSchedule(p,name='Native.MemoryInfo.free')
+        a1 = s.defineAlert(p,metricValueRange(sch,comp='>',low=9,high=11))
+        s.waitForAlertDef()
+        s.sendMetricData(p,sch,12)
+        s.waitForAlert()
+        fired = s.alertCount(p) - fired
+        self.assertEqual(fired, 1,'Alert count incremeted by 1, but was %d' % fired)
+        # if test passed clean up our test resource
+        #s.deleteResource(p)
+
+
+
 @attr('single','trait')
 class FireTraitAlert(RHQAlertTest):
     '''This class tests alerts fired by TraitValueChange condition type (alert's get rised when given trait value
     changes and matches given pattern'''
 
-    @attr('trait')
     @blockedBy('1035890')
     def test_traitValueChange(self):
         s = self.rhqServer()
