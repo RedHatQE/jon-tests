@@ -76,7 +76,7 @@ class RHQServer(object):
         """Sleeps 10s to wait for alert to get fired"""
         self.sleep(seconds)
 
-    def newPlatform(self,name=str(_now()),avail='UNKNOWN'):
+    def newPlatform(self,name=str(_now()),avail=None):
         """Creates new syntetic platform resource
             
             :param name: name of platform (default is current timestamp)
@@ -89,7 +89,8 @@ class RHQServer(object):
         if r.status_code > 201:
             print r.status_code
             raise Exception(r.text)
-        self.sendAvail(p,avail)
+        if avail:
+            self.sendAvail(p,avail)
         return p
 
     @_validRes
@@ -153,17 +154,18 @@ class RHQServer(object):
             r = self.put('/metric/data/%d/trait/%d' % (schedule['scheduleId'],_now()),{'value':value})
         elif schedule['type'] == 'MEASUREMENT':
             r = self.put('/metric/data/%d/raw/%d' % (schedule['scheduleId'],_now()),{'value':value})
-        if r.status_code != 200:
-            raise Exception(r.text)
+        if r.status_code > 201:
+            raise Exception('Status: %d error : %s' % (r.status_code, r.text))
 
     @_validRes
     @_validConditions
-    def defineAlert(self,resource,conditions=[],name=str(_now()),recovers={'id':0},dampening=damps.none(),enabled=True):
-        '''defineAlert(self,resource,conditions=[],name=time.now(),recovers={},dampening=dampenings.none(),enabled=True)
+    def defineAlert(self,resource,conditions=[],notifications=[],name=str(_now()),recovers={'id':0},dampening=damps.none(),enabled=True):
+        '''defineAlert(self,resource,conditions=[],notifications=[],name=time.now(),recovers={},dampening=dampenings.none(),enabled=True)
         Creates new alert definition
 
         :param resource: resource body 
         :param conditions: one condition or array of conditions (see :mod:`rhq.conditions` module)
+        :param notifications: one notification or array of notifications (see :mod:`rhq.notifications` module)
         :param name: name of alert definition
         :param recovers: alert definition body in case this alert definition recovers other alert def
         :param dampening: dampening (see :mod:`rhq.dampenings` module)
@@ -173,9 +175,12 @@ class RHQServer(object):
         '''
         if type(conditions) is DictType:
             conditions = [conditions]
+        if type(notifications) is DictType:
+            notifications = [notifications]
         self.log.info('Creating alert difinition name=%s' % name)
         body =  {'name':name,
                 'conditions':conditions,
+                'notifications':notifications,
                 'enabled':enabled,
                 'recoveryId':recovers['id']
         }
@@ -210,7 +215,7 @@ class RHQServer(object):
             raise Exception(r.text)
         alert = r.json()
         return assertDict(alert,*args,**kwargs)
-
+    
     def undefineAlert(self,alert):
         '''Undefines (deletes) alert definition(s)
 
@@ -360,14 +365,14 @@ class RHQServer(object):
 
     def findRHQAgent(self):
         '''Finds RHQ Agent resource within inventory, prefers agent on current server, returns first found instance'''
-        return self.__find_resource({'q':'RHQ Agent','category':'SERVER'})
+        return self._find_resource({'q':'RHQ Agent','category':'SERVER'})
     def findRHQServer(self):
         '''Finds RHQ Server resource'''
-        return self.__find_resource({'q':'RHQ Server','category':'SERVER'})
+        return self._find_resource({'q':'RHQ Server','category':'SERVER'})
 
     def findEAP6Server(self):
         '''Finds EAP6 Standalone Server in inventory, returns first found instance'''
-        return self.__find_resource({'q':'EAP (0.0.0.0:9990)','category':'SERVER'})
+        return self._find_resource({'q':'EAP (0.0.0.0:9990)','category':'SERVER'})
 
     def findPlatform(self,name=None):
         '''Finds a Platform in inventory, returns first found instance       
@@ -377,15 +382,57 @@ class RHQServer(object):
         '''
         if name is None:
             name = self.platform['resourceName']
-        return self.__find_resource({'category':'PLATFORM','q':name})
+        return self._find_resource({'category':'PLATFORM','q':name})
 
-    def __find_resource(self,query):
-        '''Finds a resource by given query in inventory'''
+    def findPlatforms(self):
+        '''Returns all platforms'''
+        return self._find_resources({'category':'PLATFORM'})
+
+    def findResourcesByPath(self,*args):
+        '''Finds resources on given path (starting within root of inventory)
+
+        >>> s = RHQServer()
+        >>> p = s.findResourcesByPath('platformName','RHQ Agent') # returns agent on `platformName` platform
+        >>> s.findResourcesByPath('*','RHQ Agent') # returns all agents on all platforms
+        >>> s.findResourcesByPath('*','RHQ Server','platform-mbean') # returns platform-mbean resrouces on all RHQ Servers
+ 
+        :param \*args: arguments to define a path in inventory, you can use '*' to match all resources on given
+        path level or any String to match resource name
+        :return: array of resource bodies
+        '''
+        def get_children(parents,query):
+            children = []
+            for p in parents:
+                r = self.get('/resource/%d/children' % p['resourceId'])
+                if query == '*':
+                    children += r.json()
+                else:
+                    children += filter(lambda r: r['resourceName'].find(query) >=0, r.json())
+            return children
+        if len(args) == 0:
+            raise Exception('At least 1 arg is expected')
+        args = list(args)
+        if args[0] == '*':
+            children = self.findPlatforms()
+        else:
+            children = self.findPlatform(args[0])
+        del args[0]
+        for arg in args:
+            children = get_children(children,arg)
+        return children
+
+
+    def _find_resources(self,query):
+        '''Finds a resources by given query in inventory'''
         self.log.debug('GET %s' %(self.endpoint+'resource'))
         resp = requests.get(self.endpoint+'resource', params=query, auth=self.auth, headers = self.headers)
         self.log.debug('Response HEADERS:%s' % str(resp.headers))
         self.log.debug('Response BODY: %s' %(resp.text))
-        data = resp.json()
+        return resp.json()
+
+    def _find_resource(self,query):
+        '''Finds a resource by given query in inventory'''
+        data = self._find_resources(query)
         if len(data) == 0:
             return
         if len(data) == 1:
