@@ -38,6 +38,11 @@ def traitValueChange(schedule=None,expr=''):
     assert schedule is not None, 'schedule must not be none'     
     return {'category':'TRAIT','option':expr,'measurementDefinition':schedule['definitionId']}
 
+
+def metricValueRange(schedule=None,comp='>',low=0,high=1):
+    assert schedule is not None, 'schedule must not be none'
+    return {'category':'RANGE','option':str(high),'threshold':str(low),'comparator':comp,'measurementDefinition':schedule['definitionId']}
+
 def operationExecution(op,status='SUCCESS'):
     assert op is not None, 'op (operation name) must not be none'     
     return {'name':op,'option':status,'category':'CONTROL'}
