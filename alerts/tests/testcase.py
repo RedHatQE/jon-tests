@@ -2,6 +2,7 @@ import sys,os
 import logging
 from rhq.server import RHQServer
 from functools import wraps
+import unittest
 
 def skipUnlessHA(func):
     """decorator which skips given test unless there is 2 or more RHQ Servers configured (from RHQ_HOSTS environ)"""
