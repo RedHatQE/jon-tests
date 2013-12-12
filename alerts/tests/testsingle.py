@@ -12,6 +12,7 @@ class FireMeasurementValueRangeAlert(RHQAlertTest):
     metric is inside/outsite predefined range of absolute values)
     '''
     @attr('outside-exclusive')
+    @blockedBy('1041079')
     def test_rangeOutsideExclusive(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')
@@ -26,6 +27,26 @@ class FireMeasurementValueRangeAlert(RHQAlertTest):
         # if test passed clean up our test resource
         s.deleteResource(p)
 
+
+@attr('single','numeric','threshold')
+class FireMeasurementValueThresholdAlert(RHQAlertTest):
+    '''This class tests alerts fired by measurementValueThreshold condition type (alert is fired when numeric value of
+    metric is higher/lower/equal to defined value)
+    '''
+    @blockedBy('1041079')
+    def test_threshold(self):
+        s = self.rhqServer()
+        p = s.newPlatform(avail='UP')
+        fired = s.alertCount(p)
+        sch = s.getSchedule(p,name='Native.MemoryInfo.free')
+        a1 = s.defineAlert(p,metricValueThreshold(sch,comp='>',value=10))
+        s.waitForAlertDef()
+        s.sendMetricData(p,sch,11)
+        s.waitForAlert()
+        fired = s.alertCount(p) - fired
+        self.assertEqual(fired, 1,'Alert count incremeted by 1, but was %d' % fired)
+        # if test passed clean up our test resource
+        s.deleteResource(p)
 
 
 @attr('single','trait')

@@ -159,8 +159,8 @@ class RHQServer(object):
 
     @_validRes
     @_validConditions
-    def defineAlert(self,resource,conditions=[],notifications=[],name=str(_now()),recovers={'id':0},dampening=damps.none(),enabled=True):
-        '''defineAlert(self,resource,conditions=[],notifications=[],name=time.now(),recovers={},dampening=dampenings.none(),enabled=True)
+    def defineAlert(self,resource,conditions=[],notifications=[],name=str(_now()),recovers={'id':0},dampening=damps.none(),enabled=True,mode='ANY',prio='MEDIUM'):
+        '''defineAlert(self,resource,conditions=[],notifications=[],name=time.now(),recovers={},dampening=dampenings.none(),enabled=True,mode='ANY,prio='MEDIUM')
         Creates new alert definition
 
         :param resource: resource body 
@@ -169,7 +169,9 @@ class RHQServer(object):
         :param name: name of alert definition
         :param recovers: alert definition body in case this alert definition recovers other alert def
         :param dampening: dampening (see :mod:`rhq.dampenings` module)
-        :param enabled: enable/disable new alert definition
+        :param enabled: (True|False) enable/disable new alert definition
+        :param mode: conditon mode (ANY|ALL)
+        :param prio: alert priority (LOW|MEDIUM|HIGH)
 
         :returns: new alert definition body
         '''
@@ -177,11 +179,23 @@ class RHQServer(object):
             conditions = [conditions]
         if type(notifications) is DictType:
             notifications = [notifications]
+        for n in notifications:
+            if n['senderName'] == 'System Users':
+                ids = []
+                for u in n['config']['subjectId']:
+                    self.log.info('Lookup system user ID for %s' % u)
+                    r = self.get('/user/%s' % u)
+                    if r.status_code != 200:
+                        raise Exception('Unable to lookup details for user %s, server responded %d' % (u,r.status_code))
+                    ids.append(str(r.json()['id']))
+                n['config']['subjectId'] = '|%s|' % '|'.join(ids)
         self.log.info('Creating alert difinition name=%s' % name)
         body =  {'name':name,
                 'conditions':conditions,
                 'notifications':notifications,
                 'enabled':enabled,
+                'conditionMode':mode,
+                'priority':prio,
                 'recoveryId':recovers['id']
         }
         body = dict(body.items() + dampening.items())
@@ -396,8 +410,7 @@ class RHQServer(object):
         >>> s.findResourcesByPath('*','RHQ Agent') # returns all agents on all platforms
         >>> s.findResourcesByPath('*','RHQ Server','platform-mbean') # returns platform-mbean resrouces on all RHQ Servers
  
-        :param \*args: arguments to define a path in inventory, you can use '*' to match all resources on given
-        path level or any String to match resource name
+        :param \*args: arguments to define a path in inventory, you can use '*' to match all resources on given path level or any String to match resource name
         :return: array of resource bodies
         '''
         def get_children(parents,query):

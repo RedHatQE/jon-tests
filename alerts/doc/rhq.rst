@@ -17,6 +17,14 @@ rhq.dampenings module
     :undoc-members:
     :show-inheritance:
 
+rhq.notifications module
+------------------------
+
+.. automodule:: rhq.notifications
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 rhq.server module
 -----------------
 
