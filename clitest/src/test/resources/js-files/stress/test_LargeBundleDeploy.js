@@ -22,8 +22,9 @@ var group = groups.create(group,[eap]);
 
 println("Creating bundle from dist-file");
 if (bundleGroup) {
-    bundleGroups.find().forEach(function(bg) {bg.remove();});
-    var bg = bundleGroups.create("group for very large bundle");
+    var bgName = "group for very large bundle";
+    bundleGroups.find({name:bgName}).forEach(function(bg) {bg.remove();});
+    var bg = bundleGroups.create(bgName);
     var b = bundles.create({dist:filePath,groups:[bg]});
     var d = b.createDestination(group,null,null,"Deploy Directory");
     b.deploy(d);
