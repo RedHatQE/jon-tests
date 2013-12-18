@@ -1,4 +1,4 @@
-import sys,os
+import sys,os,re
 import requests,json
 import logging
 import time
@@ -189,7 +189,7 @@ class RHQServer(object):
                         raise Exception('Unable to lookup details for user %s, server responded %d' % (u,r.status_code))
                     ids.append(str(r.json()['id']))
                 n['config']['subjectId'] = '|%s|' % '|'.join(ids)
-        self.log.info('Creating alert difinition name=%s' % name)
+        self.log.info('Creating alert definition name=%s' % name)
         body =  {'name':name,
                 'conditions':conditions,
                 'notifications':notifications,
@@ -377,6 +377,32 @@ class RHQServer(object):
         self.log.debug('Response BODY: %s' %(resp.text))
         return resp 
 
+    def importResources(self):
+        '''Imports all resources from discovery queue
+ 
+        :returns: number of resources that were imported
+        '''
+        self.log.info('Importing discovery queue')
+        imported = self._importResources({'category':'platform'})
+        imported += self._importResources({'category':'server'})
+        self.log.info('Import done')
+        return imported
+
+    def _importResources(self,query):
+        '''Imports resources from discovery queue'''
+        query['status'] = 'NEW'
+        r = requests.get(self.endpoint+'resource', params=query, auth=self.auth, headers = self.headers)
+        data = r.json()
+        if len(data) == 0:
+            return 0
+        self.log.info('Found %d new resources, importing...' % len(data))
+        for res in sorted(data,key=lambda r: r['resourceId']):
+            res['status'] = 'committed'
+            r = self.put('/resource/%d' % res['resourceId'],res)
+            if r.status_code != 200:
+                raise Exception(r.text)
+        return len(data)
+
     def findRHQAgent(self):
         '''Finds RHQ Agent resource within inventory, prefers agent on current server, returns first found instance'''
         return self._find_resource({'q':'RHQ Agent','category':'SERVER'})
@@ -406,29 +432,34 @@ class RHQServer(object):
         '''Finds resources on given path (starting within root of inventory)
 
         >>> s = RHQServer()
-        >>> p = s.findResourcesByPath('platformName','RHQ Agent') # returns agent on `platformName` platform
-        >>> s.findResourcesByPath('*','RHQ Agent') # returns all agents on all platforms
-        >>> s.findResourcesByPath('*','RHQ Server','platform-mbean') # returns platform-mbean resrouces on all RHQ Servers
+        >>> s.findResourcesByPath('platformName','RHQ Agent') # returns agent on `platformName` platform
+        >>> s.findResourcesByPath('^foo|bar$','RHQ Agent') # returns agents on platforms starting with `foo` or ending with `bar`
+        >>> s.findResourcesByPath('.*','RHQ Agent') # returns all agents on all platforms
+        >>> s.findResourcesByPath('.*','RHQ Server','platform-mbean') # returns platform-mbean resrouces on all RHQ Servers
  
-        :param \*args: arguments to define a path in inventory, you can use '*' to match all resources on given path level or any String to match resource name
+        :param \*args: arguments to define a path in inventory, you can use '.*' to match all resources on given path level or regular expression to match resource name
         :return: array of resource bodies
         '''
         def get_children(parents,query):
             children = []
+            regex = re.compile('.*')
+            try:
+                regex = re.compile(query)
+            except:
+                self.log.warn('\"%s\" is not valid regex, using .* to match all' % query)
             for p in parents:
                 r = self.get('/resource/%d/children' % p['resourceId'])
-                if query == '*':
-                    children += r.json()
-                else:
-                    children += filter(lambda r: r['resourceName'].find(query) >=0, r.json())
+                children += filter(lambda r: regex.search(r['resourceName']), r.json())
             return children
         if len(args) == 0:
             raise Exception('At least 1 arg is expected')
         args = list(args)
-        if args[0] == '*':
-            children = self.findPlatforms()
-        else:
-            children = self.findPlatform(args[0])
+        try:
+            regex = re.compile(args[0])
+        except:
+            self.log.warn('\"%s\" is not valid regex, using .* to match all' % query)
+            regex = re.compile('.*')
+        children = filter(lambda r: regex.search(r['resourceName']), self.findPlatforms())
         del args[0]
         for arg in args:
             children = get_children(children,arg)
