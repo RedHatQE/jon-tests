@@ -16,16 +16,13 @@ resources based on selection criteria and set's up alert definition for individu
 
 An example:
 
-    ("^server.*","RHQ Agent","JVM") # select all platfoms starting with `server` and find `JVM` child 
-resource for each `RHQ Agent`
+    ("^server.*","RHQ Agent","JVM") # select all platfoms starting with `server` and find `JVM` child resource for each `RHQ Agent`
 
-Each piece of selector is a regular expression and pieces are similar to xpath node selection, but in 
-this case in JBoss ON inventory tree.
+Each piece of selector is a regular expression and pieces are similar to xpath node selection, but in this case in JBoss ON inventory tree.
 
 ### alert_baselines.py
 
-Python script reusing [RHQ Client package](../rhq) to simplify setting up alert definitions on JBoss ON 
-environments
+Python script reusing [RHQ Client package](../rhq) to simplify setting up alert definitions on JBoss ON environments
 
 Usage:
 
@@ -33,6 +30,4 @@ Usage:
 
 Result:
 
-This will setup several alert definitions on `<your RHQ Server>`. For this case, those definitions live 
-in [longrun.py](longrun.py) setting file. Take a look at [sample.py](sample.py) setting file for expected 
-file format
+This will setup several alert definitions on `<your RHQ Server>`. For this case, those definitions live in [longrun.py](longrun.py) setting file. Take a look at [sample.py](sample.py) setting file for expected file format
