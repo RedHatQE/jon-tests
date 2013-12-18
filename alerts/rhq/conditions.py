@@ -39,6 +39,27 @@ def traitValueChange(schedule=None,expr=''):
     assert schedule is not None, 'schedule must not be none'     
     return {'category':'TRAIT','option':expr,'measurementDefinition':schedule['definitionId']}
 
+def metricValueChange(schedule=None):
+    '''Condition of type measurementValueChange
+    This condition is met whenever metric value for given `schedule` changes
+    '''
+    assert schedule is not None, 'schedule must not be none'     
+    return {'category':'CHANGE','measurementDefinition':schedule['definitionId']}
+
+def metricValueBaseline(schedule=None,comp='>',value=1,baseline='mean'):
+    '''Condition of type metricValueBaseline
+    This condition is met whenever metric value for given `schedule` compared by `comp` to percentage threshold
+    `threshold` and `baseline`
+    
+    :param schedule: schedule body
+    :param comp: comparator String ">" "<" "="
+    :param value: threshold (percent)
+    :param baseline: baseline to be compared (mean|min|max)
+    '''
+    assert schedule is not None, 'schedule must not be none'     
+    return {'category':'BASELINE','option':baseline,'threshold':value,'comparator':comp,'measurementDefinition':schedule['definitionId']}
+
+
 def metricValueThreshold(schedule=None,comp='>',value=1):
     '''Condition of type metricValueThreshold
     This conditoin is met whenever metric value for given `schedule` compared by `comp` to `value` evaluates to True
