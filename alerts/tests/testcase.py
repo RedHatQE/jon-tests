@@ -25,7 +25,7 @@ class RHQAlertTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.log = logging.getLogger(self.__class__.__name__)
-        self.hosts = os.getenv('RHQ_HOSTS','localhost').split(',')
+        self.hosts = filter(lambda h: len(h) > 0, os.getenv('RHQ_HOSTS','localhost').split(','))
         self.user = os.getenv('RHQ_USER','rhqadmin')
         self.passwd = os.getenv('RHQ_PASSWORD','rhqadmin')
         # setup logger
