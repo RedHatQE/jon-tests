@@ -125,7 +125,7 @@ function checkNumberOfResourcesInGroup(groups, expectedNumberOfExplRes,expectedM
 function getManagedGroup(groupDefName){
 	var defs = dynaGroupDefinitions.find({name:groupDefName});
 	var def = defs[0];
-	return def.getManagedGroups();
+	return def.managedGroups();
 }
 function updateDynaGroupDefinition(dynaGroupDefinition){
    common.info("Editing dynaGroup definition with name: '" +dynaGroupDefinition.name +

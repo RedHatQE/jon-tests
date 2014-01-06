@@ -2034,7 +2034,7 @@ var DynaGroupDefinition = function(param) {
 		 * @type ResGroup[]
 		 * @return groups managed by this dynagroup definition
 		 */
-		getManagedGroups : function() {
+		managedGroups : function() {
 			var groups =  _obj.getManagedResourceGroups();
 			return groups.toArray().map(function(x){return new ResGroup(x);});
 		},

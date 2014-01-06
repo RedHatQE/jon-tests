@@ -79,7 +79,7 @@ foundDefs[0].recalculate();
 // get managed groups
 println("Checking number of managed groups for dynagroup definition with name: All linux platforms");
 foundDefs = dynaGroupDefinitions.find({name:"All linux platforms"});
-var mangedGroups = foundDefs[0].getManagedGroups();
+var mangedGroups = foundDefs[0].managedGroups();
 assertTrue(mangedGroups.length == 1,"Incorrect number of managed groups. Expected: 1, actual: "+mangedGroups.length);
 
 
