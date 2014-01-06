@@ -1816,7 +1816,7 @@ var metricsTemplates = (function() {
     /**
      * disables metrics 
      * @public
-     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param {ResourceType[]} resTypes - resource types, see {@link resourceTypes.find}
      * @param filter - filter function - see {@link metricsTemplates.predicates}
      * @example metricsTemplates.disable(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), metricTemplates.predicates.isCallTime);
      * @example metricsTemplates.disable(resourceTypes.find());
@@ -1841,7 +1841,7 @@ var metricsTemplates = (function() {
     /**
      * enables metrics 
      * @public
-     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param {ResourceType[]} resTypes - resource types, see {@link resourceTypes.find}
      * @param filter - filter function - see {@link metricsTemplates.predicates}
      * @example metricsTemplates.enable(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), metricTemplates.predicates.isCallTime);
      * @example metricsTemplates.enable(resourceTypes.find());
@@ -1866,7 +1866,7 @@ var metricsTemplates = (function() {
     /**
      * sets collection interval for metrics 
      * @public
-     * @param {Object} params - query parameters for resource type, see {@link resourceTypes.find}
+     * @param {ResourceType[]} resTypes - resource types, see {@link resourceTypes.find}
      * @param interval - collection interval in seconds
      * @param filter - filter function - see {@link metricsTemplates.predicates}
      * @example metricsTemplates.setCollectionInterval(resourceTypes.find({name: "server-b", plugin: "PerfTest"}), 30, metricTemplates.predicates.isCallTime);
