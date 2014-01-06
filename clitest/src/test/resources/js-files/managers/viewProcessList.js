@@ -38,7 +38,17 @@ var histories = OperationManager.findResourceOperationHistoriesByCriteria(histor
 
 Assert.assertTrue(histories.getTotalSize()>0, "Server resource has no histories");
 
-Assert.assertNotNull(histories.get(0).getResults(), "Process list expected");
 
-pretty.print(histories.get(0).getResults());
+if(histories.get(0).getResults() != null){
+    pretty.print(histories.get(0).getResults());
+}else{ // this is to find a possible bz
+    println("Resutls object is null!! Waiting 2 sec to try again.");
+    sleep(2000);
+    var histories = OperationManager.findResourceOperationHistoriesByCriteria(historyCriteria);
 
+    Assert.assertTrue(histories.getTotalSize()>0, "Server resource has no histories");
+    Assert.assertNotNull(histories.get(0).getResults(), "Process list expected");
+    pretty.print(histories.get(0).getResults());
+    
+    throw ("Sync error!! Results were acessible with delay.");
+}
