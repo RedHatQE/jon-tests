@@ -1,9 +1,9 @@
 /**
- * @overview this library tries to be synchronous and high-level API built on top of regular RHQ remote API
+ * @overview this library tries to be synchronous and high-level API built on top of regular RHQ remote API. Compatible with JBoss ON 3.1.2 and 3.2.0
  * @name RHQ API
- * @version 0.2
+ * @version 0.3
  * @author Libor Zoubek (lzoubek@redhat.com), Filip Brychta (fbrychta@redhat.com), John Sanda (jsanda@redhat.com)
- * 
+ *
  * 
  * If you want to contribute this code, please note following things
  * 
