@@ -1,4 +1,5 @@
-
+var common = new _common();
+verbose = 2;
 
 var query = "SELECT r " +
 			"FROM Resource r " +
@@ -20,11 +21,13 @@ var op = OperationManager.scheduleResourceOperation(
 
 
 Assert.assertNotNull(op);
+common.info("Following operation is sheduled: ");
 pretty.print(op);
 
 //check operation status
 var res = new Resource(server.getId());
-var history = res.waitForOperationResult();
+var history = res.waitForOperationResult(op);
+common.info("Operation is finished. Operation history: ");
 pretty.print(history);
 assertTrue(history.status == OperationRequestStatus.SUCCESS, "Operation status is " + 
 		history.status + " but success was expected!! Err message: " + history.getErrorMessage());
@@ -33,17 +36,20 @@ var jobId = op.getJobId();
 
 var historyCriteria = new ResourceOperationHistoryCriteria();
 historyCriteria.fetchResults(true);
-historyCriteria.addFilterJobId(jobId);    
+historyCriteria.addFilterJobId(jobId);
+historyCriteria.addFilterResourceIds(res.getId());
 var histories = OperationManager.findResourceOperationHistoriesByCriteria(historyCriteria);
 
 Assert.assertTrue(histories.getTotalSize()>0, "Server resource has no histories");
 
+common.info("Found following history object: ");
+pretty.print(histories.get(0));
 
 if(histories.get(0).getResults() != null){
     pretty.print(histories.get(0).getResults());
 }else{ // this is to find a possible bz
-    println("Resutls object is null!! Waiting 2 sec to try again.");
-    sleep(2000);
+    println("Resutls object is null!! Waiting 10 sec to try again.");
+    sleep(10000);
     var histories = OperationManager.findResourceOperationHistoriesByCriteria(historyCriteria);
 
     Assert.assertTrue(histories.getTotalSize()>0, "Server resource has no histories");
