@@ -1,4 +1,4 @@
-def jacocoVersion = '0.6.3.201306030806'
+def jacocoVersion = '0.6.4.201312101107'
 
 def repos = [
 "https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads",
