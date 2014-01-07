@@ -1475,7 +1475,7 @@ var ResGroup = function(param) {
 		 */
 		resourcesImpl : _resourcesImpl,
 		/**
-		 * schedules operation on this group using cron expression. In contrast to invokeOperation this is 
+		 * schedules operation on this group using cron expression. In contrast to runOperation this is
 		 * not blocking operation.
 		 *
 		 * @param {String}
@@ -1504,7 +1504,7 @@ var ResGroup = function(param) {
 			common.info("Group operation '"+name+"' scheduled on '"+_name+"'");
 		},
 		/**
-		 * Invokes operation on this group and returns result of the operation.
+		 * Runs operation on this group and returns result of the operation.
 		 *
          * @param {Object} params - inputs for scheduling with fileds as follows:
 		 *  <ul>
@@ -1515,7 +1515,7 @@ var ResGroup = function(param) {
          *      <li>{Object} config - hashmap for operation params (Configuration) (optional)</li>
 		 *  </ul>
          *
-		 * @example allAgents.invokeOperation("executeAvailabilityScan");                       
+		 * @example allAgents.runOperation({name:"executeAvailabilityScan"});
 		 *
 		 */
 		runOperation : function(params){
@@ -1537,7 +1537,7 @@ var ResGroup = function(param) {
 			return ret;
 		},
 		/**
-		 * Schedules operation on this group. In contrast to invokeOperation this is 
+		 * Schedules operation on this group. In contrast to runOperation this is
 		 * not blocking operation.
 		 *
          *  @param {Object} params - inputs for scheduling with fileds as follows:
@@ -2559,7 +2559,7 @@ var bundleGroups = (function() {
          */
         find : function(params) {
             params = params || {};
-            common.debug("bundleGroups.find(" + common.objToString(params) + ")");
+            common.trace("bundleGroups.find(" + common.objToString(params) + ")");
             var criteria = bundleGroups.createCriteria(params);
             var result = BundleManager.findBundleGroupsByCriteria(criteria);
             common.debug("Found " + result.size() + " groups ");
@@ -2598,7 +2598,7 @@ var bundleGroups = (function() {
  */
 var BundleGroup = function(param) {
     var common = new _common();
-    common.debug("new BundleGroup(" + param + ")");
+    common.trace("new BundleGroup(" + param + ")");
     if (!param) {
         throw "either number or org.rhq.core.domain.bundle.BundleGroup parameter is required";
     }
@@ -2692,122 +2692,128 @@ var bundles = (function() {
 	  return common.pageListToArray(result).map(function(x){return new Bundle(x);});
 	};
 
-  return {
-		/**
-		 * creates BundleCriteria object based on given params
-		 *
-		 * @param {Object} params - filter parameters
-		 * @ignore
-		 */
-	  	createCriteria : function(params) {
-			params = params || {};
-			common.trace("bundles.createCriteria("+common.objToString(params) +")");
-			var criteria = common.createCriteria(new BundleCriteria(),params);
-			return criteria;
-		},
-		/**
-		 * finds bundles based on query parameters
-		 *
-		 * @param {Object} params - hash of query params
-		 * See BundleCriteria class for available params
-		 * @type Bundle[]
-		 * @function
-	*/
-    find : _find,
-    /**
-     * creates a bundle (a wrapper method above createFromDistFile)
-     * @see bundles#createFromDistFile 
-     * @param {Object} params 
-     * If URL it must be reachable by RHQ server
-     * @type Bundle
-     */
-    create : function(params) {
-        params = params || {}
-        params.username = params.username || null;
-        params.password = params.password || null;
-        params.groups = params.groups || null;
-        return bundles.createFromDistFile(params.dist,params.username,params.password,params.groups);
-    },
-		/**
-		 * creates a bundle (deprecated)
-		 *
-		 * @param {String} dist - path to bundle distribution ZIP file or URL.
-		 * @param {String} username - basic HTTP auth username (use when 'dist' is URL) 
-		 * @param {String} password - basic HTTP auth password (use when 'dist' is URL)
-		 * @param {BundleGroup[]} groups - array of bundle groups to assign into
-		 * If URL it must be reachable by RHQ server
-		 * @type Bundle
-		 */
-    createFromDistFile : function(dist,username,password,groups) {
-    	common.trace("bundles.createFromDistFile('"+dist+"','"+username+"','"+password+"','"+groups+"')");
-    	if (dist==null) {
-    		throw "parameter dist must not be null"
-    	}
-    	groups = groups || null;
-    	if (groups!=null) {
-    	    groups = groups.map(function(g){return g.id;})
-    	}
-    	var groupsSupported = typeof BundleManager.createInitialBundleVersionViaURL !== "undefined" && groups != null;
-    	if (groups!=null && groups.length>0 && !groupsSupported) {
-    	    common.error('Bundle groups are not supported on this version of RHQ, groups parameter is ignored');
-    	}
-    	if (dist.indexOf("http")==0) {
-    		common.debug("Getting bundle file from URL: "+dist);
-    		username = username || null;
-    		password =  password || null;
-    		if (username!=null && password!=null) {
-    		    if (groupsSupported) {
-    		        var version = BundleManager.createInitialBundleVersionViaURL(groups,dist,username,password);
-    		    }
-    		    else {
-    		        var version = BundleManager.createBundleVersionViaURL(dist,username,password);
-    		    }
-    		    return new Bundle(version.bundle);	
-    		}
-    		if (groupsSupported) {
-    		    var version = BundleManager.createBundleVersionViaURL(groups,dist);
-    		}
-    		else {
-    		    var version = BundleManager.createBundleVersionViaURL(dist);
-    		}
-		    return new Bundle(version.bundle);
-    	}
-    	else {
-			var file = new java.io.File(dist);
-			if (!file.exists()) {
-				throw "file parameter ["+file+"] does not exist!";
-			}
-			if (typeof scriptUtil.uploadContent !== "undefined") {
-			    // since JON 3.2 we can stream our content to server
-			    var handle = scriptUtil.uploadContent(file);
-			    if (groupsSupported) {
-	                var version = BundleManager.createInitialBundleVersionViaContentHandle(groups,handle);
-			    }
-			    else {
-			        var version = BundleManager.createBundleVersionViaContentHandle(handle);
-			    }
-			    return new Bundle(version.bundle);
-			}
-			else {
-			    // keep this to stay compatible with < JON 3.2
-			    common.debug("Getting bundle file from disk: '"+dist+"'");
-    		    var inputStream = new java.io.FileInputStream(file);
-    		    var fileLength = file.length();
-    		    var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
-    		    for (var numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
-    			    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
-    		    }
-    		    if (groupsSupported) {
-    		        var version = BundleManager.createInitialBundleVersionViaByteArray(groups,fileBytes);
-    		    }
-    		    else {
-    		        var version = BundleManager.createBundleVersionViaByteArray(fileBytes);
-    		    }
-    		    return new Bundle(version.bundle);
-			}
-    	}
-	}
-	};
+    _createFromDistFile = function(dist,username,password,groups) {
+        if (dist==null) {
+            throw "parameter dist must not be null"
+        }
+        groups = groups || null;
+        if (groups!=null) {
+            groups = groups.map(function(g){return g.id;})
+        }
+        var groupsSupported = typeof BundleManager.createInitialBundleVersionViaURL !== "undefined" && groups != null;
+        if (groups!=null && groups.length>0 && !groupsSupported) {
+            common.error('Bundle groups are not supported on this version of RHQ, groups parameter is ignored');
+        }
+        if (dist.indexOf("http")==0) {
+            common.debug("Getting bundle file from URL: "+dist);
+            username = username || null;
+            password =  password || null;
+            if (username!=null && password!=null) {
+                if (groupsSupported) {
+                    var version = BundleManager.createInitialBundleVersionViaURL(groups,dist,username,password);
+                }
+                else {
+                    var version = BundleManager.createBundleVersionViaURL(dist,username,password);
+                }
+                return new Bundle(version.bundle);
+            }
+            if (groupsSupported) {
+                var version = BundleManager.createBundleVersionViaURL(groups,dist);
+            }
+            else {
+                var version = BundleManager.createBundleVersionViaURL(dist);
+            }
+            return new Bundle(version.bundle);
+        }
+        else {
+            var file = new java.io.File(dist);
+            if (!file.exists()) {
+                throw "file parameter ["+file+"] does not exist!";
+            }
+            if (typeof scriptUtil.uploadContent !== "undefined") {
+                // since JON 3.2 we can stream our content to server
+                var handle = scriptUtil.uploadContent(file);
+                if (groupsSupported) {
+                    var version = BundleManager.createInitialBundleVersionViaContentHandle(groups,handle);
+                }
+                else {
+                    var version = BundleManager.createBundleVersionViaContentHandle(handle);
+                }
+                return new Bundle(version.bundle);
+            }
+            else {
+                // keep this to stay compatible with < JON 3.2
+                common.debug("Getting bundle file from disk: '"+dist+"'");
+                var inputStream = new java.io.FileInputStream(file);
+                var fileLength = file.length();
+                var fileBytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, fileLength);
+                for (var numRead=0, offset=0; ((numRead >= 0) && (offset < fileBytes.length)); offset += numRead ) {
+                    numRead = inputStream.read(fileBytes, offset, fileBytes.length - offset);
+                }
+                if (groupsSupported) {
+                    var version = BundleManager.createInitialBundleVersionViaByteArray(groups,fileBytes);
+                }
+                else {
+                    var version = BundleManager.createBundleVersionViaByteArray(fileBytes);
+                }
+                return new Bundle(version.bundle);
+            }
+        }
+    };
+
+    return {
+        /**
+         * creates BundleCriteria object based on given params
+         *
+         * @param {Object} params - filter parameters
+         * @ignore
+         */
+        createCriteria: function (params) {
+            params = params || {};
+            common.trace("bundles.createCriteria(" + common.objToString(params) + ")");
+            var criteria = common.createCriteria(new BundleCriteria(), params);
+            return criteria;
+        },
+        /**
+         * finds bundles based on query parameters
+         *
+         * @param {Object} params - hash of query params
+         * See BundleCriteria class for available params
+         * @type Bundle[]
+         * @function
+         */
+        find: _find,
+        /**
+         * creates a bundle (a wrapper method above createFromDistFile)
+         * @see bundles#createFromDistFile
+         * @param {Object} params
+         * If URL it must be reachable by RHQ server
+         * @type Bundle
+         */
+        create: function (params) {
+            params = params || {}
+            params.username = params.username || null;
+            params.password = params.password || null;
+            params.groups = params.groups || null;
+            common.trace("bundles.create('params=" + common.objToString(params) + "')");
+            return bundles.createFromDistFile(params.dist, params.username, params.password, params.groups);
+        },
+        /**
+         * creates a bundle (deprecated)
+         *
+         * @param {String} dist - path to bundle distribution ZIP file or URL.
+         * @param {String} username - basic HTTP auth username (use when 'dist' is URL)
+         * @param {String} password - basic HTTP auth password (use when 'dist' is URL)
+         * @param {BundleGroup[]} groups - array of bundle groups to assign into
+         * If URL it must be reachable by RHQ server
+         * @type Bundle
+         */
+        createFromDistFile: function (dist, username, password, groups) {
+            common.trace("bundles.createFromDistFile('" + dist + "','" + username + "','" + password + "','" + groups + "')");
+            common.warn("You are using deprecated method, please use bundles.create instead");
+            return _createFromDistFile(dist, username, password, groups);
+        }
+    };
 })();
 
 
