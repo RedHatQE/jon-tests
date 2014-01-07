@@ -47,8 +47,6 @@ subprojects {
             port:System.properties["jon.agent.jacoco.port"],
             reset:true,
             destfile:"$buildDir/reports/agent.$agent.exec")
-          }
-          println(agent )
         }
         dumped = true
       }   
