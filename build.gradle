@@ -37,24 +37,33 @@ subprojects {
     if ( System.properties["code.coverage"] && System.properties["code.coverage"] == "true" ) {
       logger.info("Gathering jacoco results")
       ant.taskdef( resource:'org/jacoco/ant/antlib.xml', classpath: project(":common").sourceSets.main.compileClasspath.asPath )
-      def agentDump="$buildDir/reports/jon.agent.exec"
-      def serverDump="$buildDir/reports/jon.server.exec"
       def mergedDump="$buildDir/reports/jacoco.exec"
+      def dumped = false
       if ( System.properties["jon.agent.jacoco.port"] && System.properties["jon.agent.host"] ) {
-        ant.dump(
-          address:System.properties["jon.agent.host"],
-          port:System.properties["jon.agent.jacoco.port"],
-          reset:true,
-          destfile:"$agentDump")
+        def agentHosts = System.properties["jon.agent.host"]
+        for (String agent : agentHosts.split(",")) {
+          ant.dump(
+            address:agent,
+            port:System.properties["jon.agent.jacoco.port"],
+            reset:true,
+            destfile:"$buildDir/reports/agent.$agent.exec")
+          }
+          println(agent )
+        }
+        dumped = true
       }   
       if ( System.properties["jon.server.jacoco.port"] && System.properties["jon.server.host"] ) {
-        ant.dump(
-          address:System.properties["jon.server.host"],
-          port:System.properties["jon.server.jacoco.port"],
-          reset:true,
-          destfile:"$serverDump")
+        def serverHosts = System.properties["jon.server.host"]
+        for (String s : serverHosts.split(",")) {
+          ant.dump(
+            address:s,
+            port:System.properties["jon.server.jacoco.port"],
+            reset:true,
+            destfile:"$buildDir/reports/server.$s.exec")
+        }
+        dumped = true
       }   
-      if ( !new File(agentDump).exists() && !new File(serverDump).exists()) {
+      if (!dumped) {
         logger.info("Code coverage dumps not gathered, you need to specify [jon.agent.host, jon.agent.jacoco.port] and/or [jon.server.host, jon.server.jacoco.port] system properties")
         return
       }
