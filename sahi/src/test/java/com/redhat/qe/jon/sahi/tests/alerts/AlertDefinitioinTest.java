@@ -90,7 +90,7 @@ public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 			setBaseline(MeasBaselineTresholdCondition.Baseline.Maximum);
 		
 		measValChangeCond = new MeasValueChangeCondition(sahiTasks);
-		measValChangeCond.setMetric("Number of Commands Received but Failed  per Minute");
+		measValChangeCond.setMetric("Number of Commands Received but Failed per Minute");
 		
 		measValueRangeCond = new MeasValueRangeCondition(sahiTasks);
 		measValueRangeCond.setMetric("Number of Agent Restarts").
@@ -287,6 +287,8 @@ public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 		Assert.assertTrue(traitValueChangeCondParsed.getRegularExpression().equals(traitValueChangeCond.getRegularExpression()),
 				"Expected regexpr is: "+traitValueChangeCond.getRegularExpression()+
 				", but actual is:"+traitValueChangeCondParsed.getRegularExpression());
+		
+		alertDefEditor.cancel();
 	}
 
 	@Test(dependsOnMethods="createAlarmDefTest",priority=2)
