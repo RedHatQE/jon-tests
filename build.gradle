@@ -46,18 +46,18 @@ subprojects {
             address:agent,
             port:System.properties["jon.agent.jacoco.port"],
             reset:true,
-            destfile:"$buildDir/reports/agent.$agent.exec")
+            destfile:"$buildDir/reports/agent.${agent}.exec")
         }
         dumped = true
       }   
       if ( System.properties["jon.server.jacoco.port"] && System.properties["jon.server.host"] ) {
         def serverHosts = System.properties["jon.server.host"]
-        for (String s : serverHosts.split(",")) {
+        for (String server : serverHosts.split(",")) {
           ant.dump(
-            address:s,
+            address:server,
             port:System.properties["jon.server.jacoco.port"],
             reset:true,
-            destfile:"$buildDir/reports/server.$s.exec")
+            destfile:"$buildDir/reports/server.${server}.exec")
         }
         dumped = true
       }   
