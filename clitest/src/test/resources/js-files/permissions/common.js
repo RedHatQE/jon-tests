@@ -133,3 +133,98 @@ function setupTestCase(tc) {
         }, "rhqadmin");
     });
 };
+
+/**
+ * Creates a new drift definition with given name.
+ * @param resource
+ * @param driftDefName
+ * @returns {org.rhq.core.domain.drift.DriftDefinition}
+ */
+function createDriftDefinition(resource,driftDefName) {
+
+    var conf = new Configuration();
+    var driftDef = new org.rhq.core.domain.drift.DriftDefinition(conf);
+    var resourceType = resource.getResourceType()
+
+    driftDef.setName(driftDefName);
+    driftDef.setDescription("descr");
+    driftDef.setEnabled(true);
+    driftDef.setAttached(true);
+    driftDef.setDriftHandlingMode(DriftConfigurationDefinition.DEFAULT_DRIFT_HANDLING_MODE);
+    driftDef.setPinned(false);
+    driftDef.setInterval(1800.0)
+
+    driftDef.setBasedir(org.rhq.core.domain.drift.DriftDefinition.BaseDirectory(DriftConfigurationDefinition.BaseDirValueContext.fileSystem, "bd"));
+    var driftTemplateCriteria = new DriftDefinitionTemplateCriteria()
+    driftTemplateCriteria.addFilterResourceTypeId(resource.getResourceType().id);
+    var template = DriftTemplateManager.findTemplatesByCriteria(driftTemplateCriteria).get(0);
+    driftDef.setTemplate(template);
+    
+    var entityContext = new EntityContext(resource.id, null, null, null);
+    DriftManager.updateDriftDefinition(entityContext,driftDef)
+    println("it is possible to create/update Drift");
+    return driftDef;
+}
+
+/**
+ * Deletes given drift definition.
+ * @param resource
+ * @param driftDefName
+ */
+function deleteDriftDefinition(resource, driftDefName) {
+
+    var entityContext = new EntityContext(resource.id, null, null, null);
+    DriftManager.deleteDriftDefinition(entityContext, driftDefName); 
+    println("it is possible to delete Drift");
+}
+
+/**
+ * Deletes repo with given name
+ * @param repoName
+ */
+function deleteRepoByName(repoName){
+    var repo = findRepoByName(repoName);
+    if(repo != null){
+        println("Deleting repo named: " + repo.getName())
+        RepoManager.deleteRepo(repo.getId());
+    }
+}
+
+function subscribeResourceToRepoByRepoName(resourceId, repoName){
+    var repo = findRepoByName(repoName);
+    if(repo != null){
+        println("Subscribing to repo named: " + repo.getName())
+        RepoManager.subscribeResourceToRepos(resourceId, [repo.getId()]);
+    }
+}
+
+function unSubscribeResourceToRepoByRepoName(resourceId, repoName){
+    var repo = findRepoByName(repoName);
+    if(repo != null){
+        println("Unsubscribing from repo named: " + repo.getName())
+        RepoManager.unsubscribeResourceFromRepos(resourceId, [repo.getId()]);
+    }
+}
+
+function findRepoByName(repoName){
+    var repCri = new RepoCriteria();
+    repCri.addFilterName(repoName);
+    var reposPgList = RepoManager.findReposByCriteria(repCri);
+    if(reposPgList.size() > 0){
+        return reposPgList.get(0);
+    }else{
+        println("Repository named "+repoName+" was not found!");
+        return null;
+    }
+}
+
+/**
+ * Creates a repo with given name owned by given user.
+ * @param repoName
+ * @param userName
+ */
+function createRepoForUser(repoName,userName){
+    var repo = new Repo(repoName);
+    repo.setOwner(users.getUser(userName).nativeObj);
+    RepoManager.createRepo(repo);
+}

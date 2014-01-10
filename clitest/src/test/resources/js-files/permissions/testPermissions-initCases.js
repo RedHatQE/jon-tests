@@ -3,7 +3,6 @@
  * @optional parameter caseName - key of case to be setup
  */
 
-
 var cases = [
     {
         name: "Tests Create child resource permission",
@@ -338,6 +337,103 @@ var cases = [
             {
                 name: "Badguy",
                 roles: []
+            }
+        ]
+    }
+    ,
+    {
+        name: "Tests permissions for managing drifts",
+        key: "manageDrift_",
+        res_groups: [
+                     {
+                         name: "allPlatforms",
+                         children: resources.platforms()
+                     }
+                 ],
+        roles: [
+            {
+                name: "YES",
+                perms: ["MANAGE_DRIFT"],
+                res_groups: ["allPlatforms"]
+            },
+            {
+                name: "NO",
+                perms: [],
+                res_groups: ["allPlatforms"]
+            }
+        ],
+        users: [
+            {
+                name: "U1",
+                roles: [ "YES" ]
+            },
+            {
+                name: "U2",
+                roles: ["NO"]
+            }
+        ]
+    },
+    {
+        name: "Tests permissions for managing repositories",
+        key: "manageRepositories_",
+        res_groups: [
+                     {
+                         name: "allPlatforms",
+                         children: resources.platforms()
+                     }
+                 ],
+        roles: [
+            {
+                name: "YES",
+                perms: ["MANAGE_REPOSITORIES"],
+                res_groups: ["allPlatforms"]
+            },
+            {
+                name: "NO",
+                perms: [],
+                res_groups: ["allPlatforms"]
+            }
+        ],
+        users: [
+            {
+                name: "U1",
+                roles: [ "YES" ]
+            },
+            {
+                name: "U2",
+                roles: ["NO"]
+            }
+        ]
+    },
+    {
+        name: "Tests permissions for managing content",
+        key: "manageContent_",
+        res_groups: [
+                     {
+                         name: "allPlatforms",
+                         children: resources.platforms()
+                     }
+                 ],
+        roles: [
+            {
+                name: "YES",
+                perms: ["MANAGE_CONTENT"],
+                res_groups: ["allPlatforms"]
+            },
+            {
+                name: "NO",
+                perms: [],
+                res_groups: ["allPlatforms"]
+            }
+        ],
+        users: [
+            {
+                name: "U1",
+                roles: [ "YES" ]
+            },
+            {
+                name: "U2",
+                roles: ["NO"]
             }
         ]
     }

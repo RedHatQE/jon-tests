@@ -23,12 +23,16 @@ public class PermissionCliTest extends CliEngine {
                 .run();
     }
 
-    public void runPermissionTest(String user, String action, boolean hasPerm) {
+    public void runPermissionTest(String user, String action, boolean hasPerm, String expectedExceptionFragment) {
         createJSRunner("permissions/testPermissions.js")
                 .asUser(user)
                 .withArg("hasPerm",hasPerm ? "true" : "false")
                 .withArg("action",action)
+                .withArg("expectedExceptionFragment", expectedExceptionFragment)
                 .run();
+    }
+    public void runPermissionTest(String user, String action, boolean hasPerm) {
+    	runPermissionTest(user, action, hasPerm, null);
     }
 
     @Test()
@@ -131,30 +135,57 @@ public class PermissionCliTest extends CliEngine {
     }
 
 
-    //@Test
+    @Test
     public void manageDriftTest() {
         initCase("manageDrift_");
-        String action =  " assertTrue(users.find().length > 0)";
-        runPermissionTest("manageDrift_U1", action, true);
-        runPermissionTest("manageDrift_U2", action, false);
+        String driftDefName = "manageDriftTest";
+        String createAction = " createDriftDefinition(resources.find({type:'Linux'})[0].getProxy(),'"+driftDefName+"');";
+        String deleteAction = " deleteDriftDefinition(resources.find({type:'Linux'})[0].getProxy(),'"+driftDefName+"');"; 
+        
+        // at least one Linux platform in inventory is expected and no drift definition with used name
+        runPermissionTest("manageDrift_U1", createAction + deleteAction, true);
+        runPermissionTest("manageDrift_U2", createAction, false,"lacks MANAGE_DRIFT");
+        runPermissionTest("manageDrift_U2", deleteAction, false,"lacks MANAGE_DRIFT");
     }
 
+    @Test
+    public void manageRepositoriesTest() {
+    	initCase("manageRepositories_");
+        String repoName = "repo1";
+        String createAction = " RepoManager.createRepo(new Repo('"+repoName+"'));";
+        String deleteAction = " deleteRepoByName('"+repoName+"');";
+        String findAction = " ContentManager.findPackagesByCriteria(new PackageCriteria());";
+        
+        // user with permission
+        runPermissionTest("manageRepositories_U1", deleteAction + createAction +  findAction, true);
+        // user without permission can't delete a repo owned by other user
+        runPermissionTest("manageRepositories_U2", deleteAction, false,"cannot delete repository");
+        // user with permission
+        runPermissionTest("manageRepositories_U1", deleteAction, true);
+        runPermissionTest("manageRepositories_U2", createAction, true);
+        // user without permission can create/delete repos owned by him
+        runPermissionTest("manageRepositories_U2", deleteAction, true);
+        
+        runPermissionTest("manageRepositories_U2", findAction, false,"Only repository managers can search for packages across all repos");
+    }
 	
-	@Test(groups={"blockedByBug-841625"})
+	@Test
 	public void manageContentTest() {
-		createJSRunner("permissions/testPermissions-ManageContent.js").
-		run();
+		initCase("manageContent_");
+		String repoName = "repo1";
+		String createRepoAction = " createRepoForUser('"+repoName+"','manageContent_U1');";
+		String deleteRepoAction = " deleteRepoByName('"+repoName+"');";
+		String subscribeAction = " subscribeResourceToRepoByRepoName(resources.platforms()[0].id, '"+repoName+"');";
+		String unsubscribeAction = " unSubscribeResourceToRepoByRepoName(resources.platforms()[0].id, '"+repoName+"');";
+		
+		// create a repository owned by tested user
+		runPermissionTest("rhqadmin", deleteRepoAction + createRepoAction, true);
+		
+		// subscribe/unsubscribe as user with permission
+		runPermissionTest("manageContent_U1", subscribeAction + unsubscribeAction, true);
+		
+		// subscribe/unsubscribe as user without permission
+		runPermissionTest("manageContent_U2", subscribeAction, false,"permission to subscribe");
+		runPermissionTest("manageContent_U2", unsubscribeAction, false,"permission to unsubscribe");
 	}
-
-
-	@Test(groups={"blockedByBug-841625"})
-	public void manageRepositoriesTest() {
-		createJSRunner("permissions/testPermissions-ManageRepositories.js").
-		run();
-	}
-
-
-
-	
-
 }
