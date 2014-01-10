@@ -88,8 +88,8 @@ class CreateResourceTest(RHQRestTest):
         self.log.info('Creating resource')
         r = self.post('resource?handle=%s' % handle, self.content_body)
         assert_equal(r.status_code,500)
+        # just parse response to make sure JSON was returned
         data = r.json()
-        assert_true(False,'Fix me, this test was unblocked and needs to be fixed')
 
     @test(depends_on=[create_child_content],groups='resource')
     def delete_child_content(self):
