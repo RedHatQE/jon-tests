@@ -1,0 +1,72 @@
+<suite name="RHQ CLI RESOURCE METRICS JS/JAVA Test">
+
+<listeners>
+  	  	<!-- Listener to send report to Report Engine Server -->
+  	  	<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener" />
+  	  	<!-- Listener to ignore tests which reproduce known and still unfixed bugs -->
+  	  	<!-- listener class-name="com.redhat.qe.auto.bugzilla.BugzillaTestNGListener"/ -->
+  	  	<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found 
+  		<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
+  		-->
+  	</listeners>
+
+	<parameter name="cli.username"  value="rhqadmin"/>
+<parameter name="cli.password"  value="rhqadmin"/>
+<!-- <parameter name="rhq.target"  value="mercury.lab.eng.pnq.redhat.com"/> -->
+<parameter name="make.failure"  value="Login failed:,No such file or directory"/>
+
+<test name="Import all Resources">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.inventory.InventoryCliTest">	
+			<methods>
+				<include name="discoveryScanTest"></include>
+				<include name="importAllResourcesTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+<!-- RHQ Resource  Configuration Update -->
+<test name="Test_Update_Agent_Configuration">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
+			<methods>
+				<include name="updateAgentConfigurationTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+<!-- getAllConfigurationproperties should be before updateResourceConfigurationTest-->
+<test name="Test_Get_All_ConfigurationsProperties">
+        <classes>
+                <class name="com.redhat.qe.jon.clitest.tests.CliTest">
+                        <parameter name="js.file"  value="resourceConfiguration/getAllConfigurationproperties.js"/>
+                        <parameter name="js.depends" value="rhqapi.js" />
+                        <parameter name="expected.result"  value="Login successful"/>
+                        <methods>
+                                <include name="runJSfile"></include>
+                        </methods>
+                </class>
+        </classes>
+</test>
+
+<test name="Test_Update_Resource_Configuration">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.configuration.ResourceConfiguration">	
+			<methods>
+				<include name="updateResourceConfigurationTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+<test name="Uninventory-Platforms-End">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.inventory.InventoryCliTest">	
+			<methods>
+				<include name="uninventoryAllResourcesTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+</suite>
