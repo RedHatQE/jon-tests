@@ -308,7 +308,14 @@ var _common = function() {
 									|| propDef.getType() == PropertySimpleType.LONG
 									|| propDef.getType() == PropertySimpleType.FLOAT
 									) {
-								representation = Number(prop.doubleValue);
+                                try {
+                                    representation = Number(prop.doubleValue);
+
+                                } catch (e) {
+                                    _warn("Failed to type value "+prop+" as "+propDef.getType()+", this is a BUG in RHQ");
+                                    representation = String(prop.stringValue);
+                                }
+
 							} else {
 								representation = String(prop.stringValue);
 							}
