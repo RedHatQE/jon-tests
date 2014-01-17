@@ -49,7 +49,7 @@ function PackageParser(pathName) {
     this.version     = version;
     this.realName    = realName;
     this.fileName    = fileName;
-    common.debug("Parsed, packageType: " +this.packageType+ ", package name: " +this.packageName + ", version: " + this.version + ", real name: " + this.realName + ", filename: " + this.filename);
+    common.debug("Parsed, packageType: " +this.packageType+ ", package name: " +this.packageName + ", version: " + this.version + ", real name: " + this.realName + ", filename: " + this.fileName);
 }
 
 criteria = new ResourceCriteria();
@@ -90,7 +90,7 @@ if( myResources != null ) {
         var startTime = new Date().getTime();
         var pageControl = new PageControl(0,1);
 
-        common.info("Creating the new EAR resource...");
+        common.info("Creating the new EAR resource named '"+packageName+"', version: '"+version+"'");
         var history = ResourceFactoryManager.createPackageBackedResource(
            res.id,
            appType.id,
@@ -138,7 +138,14 @@ if( myResources != null ) {
         res = Inventory.find({name:packageName}); 
         assertTrue(res.length > 0, packageName + " resource not found!!");
         assertTrue(res[0].waitForAvailable(), "MiscBeans.ear not available!!");
-        common.waitFor(function () {return findResChild(myResources.get(0).id,packageName);});
+        common.waitFor(function (){return findResChild(myResources.get(0).id,packageName)});
+        
+        // check version
+        common.waitFor(function (){return checkPackageVersionOnResource(res[0].id,version)});
+        var installedPackage = ContentManager.getBackingPackageForResource(res[0].id);
+        assertNotNull(installedPackage, "No package for given resource found!!");
+        var installedVersion = installedPackage.getPackageVersion().getDisplayVersion(); 
+        assertTrue( installedVersion  == version, "Installed package version is " +installedVersion + " but "+version+" was expected!!");
 
     }
 }
@@ -156,3 +163,4 @@ function findResChild(resId, childName){
 
     return found;
 }
+

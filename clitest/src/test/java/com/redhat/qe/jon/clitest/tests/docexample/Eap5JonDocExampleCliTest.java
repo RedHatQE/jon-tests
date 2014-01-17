@@ -9,10 +9,11 @@ public class Eap5JonDocExampleCliTest extends CliEngine {
 
 	
 	
-	@Test
+	@Test(groups={"blockedByBug-1054752"})
 	public void creatingContentBackedResTest(){
 		createJSRunner("docExample/jon/short/creatingContentBackedRes.js").
 			dependsOn("rhqapi.js").
+			addDepends("docExample/jon/short/common.js").
 			withResource("/deployments/MiscBeans-3.2.2.ear","deployment").
 			run();
 	}
@@ -37,6 +38,7 @@ public class Eap5JonDocExampleCliTest extends CliEngine {
 	public void updatingContentBackedResTest(){
 		createJSRunner("docExample/jon/short/updatingContentBackedRes.js").
 			dependsOn("rhqapi.js").
+			addDepends("docExample/jon/short/common.js").
 			withResource("/deployments/MiscBeans-3.2.5.ear","deployment").
 			run();
 	}

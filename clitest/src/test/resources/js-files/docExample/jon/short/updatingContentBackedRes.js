@@ -36,7 +36,8 @@ function PackageParser(pathName) {
     this.version     = version;
     this.realName    = realName;
     this.fileName    = fileName;
-    common.debug("Parsed, packageType: " +this.packageType+ ", package name: " +this.packageName + ", version: " + this.version + ", real name: " + this.realName + ", filename: " + this.filename);
+    common.debug("Parsed, packageType: " +this.packageType+ ", package name: " 
+            +this.packageName + ", version: " + this.version + ", real name: " + this.realName + ", filename: " + this.fileName);
 }
 
 // parse the filename and path info
@@ -64,13 +65,13 @@ for( c in children ) {
         common.debug("Updating to " + fullPathName + ", version: "+version+ " ...");
         common.debug("Resource: " + child);
         child.updateBackingContent(fullPathName,version);
-        sleep(2000); // just to be sure
         found = true;
-        // check version
-        installedPackage = ContentManager.getBackingPackageForResource(child.id);
+        
+        common.waitFor(function() {return checkPackageVersionOnResource(child.id,version)});
+        var installedPackage = ContentManager.getBackingPackageForResource(child.id);
         assertNotNull(installedPackage, "No package for given resource found!!");
-        var version = installedPackage.getPackageVersion().getDisplayVersion(); 
-        assertTrue( version  == '3.2.5', "Installed package version is " +version + " but 3.2.5 was expected!!");
+        var installedVersion = installedPackage.getPackageVersion().getDisplayVersion(); 
+        assertTrue( installedVersion  == version, "Installed package version is " +installedVersion + " but "+version+" was expected!!");
     }
 }
 assertTrue(found, "Content with package name: " + packageName + " not found!!");
