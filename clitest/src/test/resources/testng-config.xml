@@ -25,18 +25,6 @@
 		</class>
 	</classes>
 </test>
-<!-- RHQ Resource  Configuration Update -->
-<test name="Test_Update_Agent_Configuration">
-  	<classes>
-		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
-			<methods>
-				<include name="updateAgentConfigurationTest"></include>		
-			</methods>
-		</class>
-	</classes>
-</test>
-
-
 <!-- getAllConfigurationproperties should be before updateResourceConfigurationTest-->
 <test name="Test_Get_All_ConfigurationsProperties">
         <classes>
@@ -50,6 +38,20 @@
                 </class>
         </classes>
 </test>
+
+<!-- RHQ Resource  Configuration Update -->
+<test name="Test_Update_Agent_Configuration">
+  	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
+			<methods>
+				<include name="updateAgentConfigurationTest"></include>		
+			</methods>
+		</class>
+	</classes>
+</test>
+
+
+
 
 <test name="Test_Update_Resource_Configuration">
   	<classes>
