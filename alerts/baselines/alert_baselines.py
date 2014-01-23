@@ -50,8 +50,17 @@ if __name__ == '__main__':
                 if not sch:
                     print 'Cannot find schedule %s for resource %s' % (base['metric'],res['resourceName'])
                     continue
-                name = '%s > %s' % (base['metric'],str(base['max']))
+                if base.has_key('max'):
+                    value = base['max']
+                    comparatorChar = '>'
+                elif base.has_key('min'):
+                    value = base['min']
+                    comparatorChar = '<'
+                else:
+                    print 'Incorrect key for metric %s was passed. Supported keys: max,min' % base['metric']
+                    continue
+                name = '%s %s %s' % (base['metric'],comparatorChar,str(value))
                 if base.has_key('name'):
                     name = base['name']
-                s.defineAlert(res,name=name,conditions=metricValueThreshold(sch,'>',base['max']),notifications=mailTo)
+                s.defineAlert(res,name=name,conditions=metricValueThreshold(sch,comparatorChar,value),notifications=mailTo)
 

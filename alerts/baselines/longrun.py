@@ -11,13 +11,18 @@ def mb(mb):
     return 1024*1024*mb
 
 # setup comma-separated list of emails that get notified
-mailTo = 'lzoubek@redhat.com'
+mailTo = 'fbrychta@redhat.com'
 
 
 # baselines
 baselines = [
         {'select':('.*','RHQ Agent','JVM','Threading'),'metric':'Thread Count','max':80},
+        {'select':('.*','RHQ Agent','JVM','Memory Subsystem'),'metric':'Heap Usage','max':mb(150)},
         {'select':('.*','RHQ Server','platform-mbean','threading'),'metric':'Thread Count','max':300},
         {'select':('.*','RHQ Server','platform-mbean','memory$'),'metric':'Used heap','max':mb(1000)},
-        {'select':('.*',),'metric':'System Load','max':4}
+        {'select':('.*',),'metric':'System Load','max':4},
+        {'select':('.*','/$'),'metric':'Used Percentage','max':80},
+        {'select':('.*','/$'),'metric':'Free Files','min':100000}
+        {'select':('.*','RHQ Storage Node','Cassandra Server JVM','Threading'),'metric':'Thread Count','max':200},
+        {'select':('.*','RHQ Storage Node','Cassandra Server JVM','Memory Subsystem'),'metric':'Heap Usage','max':mb(400)},
     ]
