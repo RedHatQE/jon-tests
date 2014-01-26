@@ -8,25 +8,31 @@ var platform = platforms[0];
 
 platform.invokeOperation("viewProcessList");
 
-// search for the operation (slightly changed)
-var c = new ResourceOperationHistoryCriteria()
-c.addFilterResourceIds(platform.id);
-c.fetchResults(true);
-c.addSortStartTime(PageOrdering.DESC);
-var r = OperationManager.findResourceOperationHistoriesByCriteria(c)
+//find the resource
+criteria = new ResourceCriteria(); 
+criteria.addFilterResourceTypeName('Linux');
+
+var resource = ResourceManager.findResourcesByCriteria(criteria);
+
+// search for the operation history
+var opcrit = ResourceOperationHistoryCriteria();
+// get the operation for the resource ID
+opcrit.addFilterResourceIds(resource.get(0).id);
+// filter by the operation name
+opcrit.addFilterOperationName("viewProcessList")
+opcrit.fetchResults(true);
+
+// get the data and print the results
+var r = OperationManager.findResourceOperationHistoriesByCriteria(opcrit)
 assertTrue(r.size() >0, "Didn't get any operation histories");
-
-// get the operation data
 var h = r.get(0);
-
-// get the results
 var c = h.getResults();
 
 if(c == null){
-	throw "Didn't get any operation result. Null was returned."
+    throw "Didn't get any operation result. Null was returned."
 }
 
-pretty.print(c);
+pretty.print(c)
 
 var prop = c.get("processList");
 assertTrue(prop.getList().size() > 50,"More then 50 processes is expected. Actuale count of processes: " + prop.getList().size());
