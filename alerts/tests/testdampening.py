@@ -49,3 +49,46 @@ class AlertDampeningOnce(RHQAlertTest):
         # if test passed clean up our test resource
         s1.deleteResource(p)
 
+    @attr('event')
+    def test_dampeningOnceEvent(self):
+        s = self.rhqServer()
+        p = s.findPlatform()
+        a1 = s.defineAlert(p,event(severity='ERROR'),dampening=once())
+        a2 = s.defineAlert(p,event(severity='FATAL'),recovers=a1)
+        s.waitForAlertDef()
+        es = s.createEventSource(p,'Event Log',location='/dev/null')
+        fired = s.alertCount(p)
+        for x in range(5):
+            s.pushEvent(es,severity='ERROR',detail='error message')
+            s.sleep(1)
+            s.checkAlertDef(a1,enabled=False)
+            s.pushEvent(es,severity='FATAL',detail='fatal message')
+            s.sleep(1)
+            s.checkAlertDef(a1,enabled=True)
+        fired = s.alertCount(p) - fired
+        self.assertEqual(fired, 10, '10 alerts should be fired, but was %d' % fired)
+        s.undefineAlert([a1,a2])
+ 
+    @attr('event','syntetic')
+    @blockedBy('1058658')
+    def test_dampeningOnceEventSynteticPlatform(self):
+        s = self.rhqServer()
+        p = s.newPlatform(avail='UP')
+        a1 = s.defineAlert(p,event(severity='ERROR'),dampening=once())
+        a2 = s.defineAlert(p,event(severity='FATAL'),recovers=a1)
+        s.waitForAlertDef()
+        es = s.createEventSource(p,'Event Log',location='/dev/null')
+        fired = s.alertCount(p)
+        for x in range(5):
+            s.pushEvent(es,severity='ERROR',detail='error message')
+            s.sleep(1)
+            s.checkAlertDef(a1,enabled=False)
+            s.pushEvent(es,severity='FATAL',detail='fatal message')
+            s.sleep(1)
+            s.checkAlertDef(a1,enabled=True)
+        fired = s.alertCount(p) - fired
+        self.assertEqual(fired, 10, '10 alerts should be fired, but was %d' % fired)
+        # if test passed clean up our test resource
+        s1.deleteResource(p)
+
+
