@@ -256,6 +256,39 @@ class RHQServer(object):
             raise Exception(r.text)
         self.log.info('Got %d alerts for resource id=%d' % (len(r.json()),resource['resourceId']))
         return len(r.json())
+    
+    @_validRes
+    def createEventSource(self,resource,name,location):
+        '''createEventSource(self,resource)
+        Creates new event source for given `resource`
+
+        :param resource: resource body
+        :param name: event source definition name
+        :param location: location of event source (path to log file)
+        :returns: event source body
+        '''
+        defNames = map(lambda d: d['name'], self.get('/event/%d/definitions' % resource['resourceId']).json())
+        if not name in defNames:
+            raise Exception('Event source\'s name does not match event source definition, allwed values are %s' %
+                    str(defNames))
+        body = {'name':name,'location':location,'resourceId':resource['resourceId']}
+        r = self.post('/event/%d/sources' % resource['resourceId'],body)
+        if r.status_code != 200:
+            raise Exception(str(r.status_code)+' : ' + r.text)
+        return r.json()
+    
+    def pushEvent(self,eventSource,time=_now(),severity='ERROR',detail=''):
+        '''Pushes new event to given `eventSource`
+
+        :param eventSource: eventSource body
+        :param time: timestamp of event
+        :param severity: severity of event (allowed is ERROR|INFO|WARN|DEBUG|FATAL)
+        :param detail: message string
+        '''
+        body = [{'detail':detail,'severity':severity,'timestamp':time}]
+        r = self.post('/event/source/%d/events' % eventSource['id'],body)
+        if r.status_code != 204:
+            raise Exception(str(r.status_code)+' : ' + r.text)
 
     @_validRes
     def getSchedule(self,resource,name=''):

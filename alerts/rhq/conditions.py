@@ -93,3 +93,13 @@ def operationExecution(op,status='SUCCESS'):
     '''
     assert op is not None, 'op (operation name) must not be none' 
     return {'name':op,'option':status,'category':'CONTROL'}
+
+def event(severity='ERROR',regex='.*'):
+    '''Condition of type: EVENT
+    this condition is met when event message on resource matches `severity` and optionally `regex`
+
+    :param severity: event severity (DEBUG|INFO|ERROR|WARN|FATAL)
+    :param regex: optional regular expression string to match event message
+    '''
+    assert severity in ['ERROR','INFO','DEBUG','WARN','FATAL'], 'invalid severity value'
+    return {'category':'EVENT','name':severity,'option':regex}
