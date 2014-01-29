@@ -26,7 +26,7 @@ Generally, you need a properly configured environment (have JDK (1.6+), setup JA
 #### Ready? Go!
   You can execute automation from this folder by running
 
-  `gradle clean test -Djon.sahi.base.dir=/home/user/Work/sahi -Djon.server.url=http://10.34.131.88:7080`
+`gradle clean test -Djon.sahi.base.dir=/home/user/Work/sahi -Djon.server.url=http://10.34.131.88:7080`
 
   or from root of this repository by running
 
@@ -34,9 +34,9 @@ Generally, you need a properly configured environment (have JDK (1.6+), setup JA
 
 
 ##### Execute another suite
-  `gradle clean test -Dtestng.suite=src/test/resources/testng.xml -Djon.sahi.base.dir=/home/user/Work/sahi 
--Djon.server.url=http://10.34.131.88:7080`
+    gradle clean test -Dtestng.suite=src/test/resources/testng.xml -Djon.sahi.base.dir=/home/user/Work/sahi 
+    -Djon.server.url=http://10.34.131.88:7080
 
 ##### Execute with given firefox profile
-`gradle clean test -Djon.sahi.base.dir=/home/user/Work/sahi -Djon.server.url=http://10.34.131.88:7080 
--Djon.browser.opt="-P sahi -no-remote"`
+    gradle clean test -Djon.sahi.base.dir=/home/user/Work/sahi -Djon.server.url=http://10.34.131.88:7080 
+    -Djon.browser.opt="-P sahi -no-remote"
