@@ -22,7 +22,7 @@ baselines = [
         {'select':('.*','RHQ Server','platform-mbean','memory$'),'metric':'Used heap','max':mb(1000)},
         {'select':('.*',),'metric':'System Load','max':4},
         {'select':('.*','/$'),'metric':'Used Percentage','max':80},
-        {'select':('.*','/$'),'metric':'Free Files','min':100000}
+        {'select':('.*','/$'),'metric':'Free Files','min':100000},
         {'select':('.*','RHQ Storage Node','Cassandra Server JVM','Threading'),'metric':'Thread Count','max':200},
-        {'select':('.*','RHQ Storage Node','Cassandra Server JVM','Memory Subsystem'),'metric':'Heap Usage','max':mb(400)},
+        {'select':('.*','RHQ Storage Node','Cassandra Server JVM','Memory Subsystem'),'metric':'Heap Usage','max':mb(400)}
     ]
