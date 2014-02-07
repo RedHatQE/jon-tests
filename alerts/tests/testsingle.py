@@ -115,6 +115,19 @@ class FireControlAlert(RHQAlertTest):
         self.assertEqual(fired, 1,'Alert count incremeted by 1, but was %d' % fired)
         s.undefineAlert(a1)
 
+    @attr('operationInProgress')
+    def test_operationStatusInProgressRealPlatform(self):
+        s = self.rhqServer()
+        p = s.findPlatform()
+        a1 = s.defineAlert(p,operationExecution('viewProcessList',status='INPROGRESS'))
+        fired = s.alertCount(p)
+        s.sleep(30)
+        s.runOperation(p,name='viewProcessList')
+        s.sleep(1)
+        fired = s.alertCount(p) - fired
+        self.assertEqual(fired, 1,'Alert count incremented by 1, but was %d' % fired)
+        s.undefineAlert(a1) 
+
 @attr('single','avail')
 class FireAvailabilityAlert(RHQAlertTest):
     '''This class tests alerts fired upon availability-related conditions'''
