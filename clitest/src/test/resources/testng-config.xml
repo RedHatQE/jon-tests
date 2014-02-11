@@ -50,8 +50,7 @@
 	</classes>
 </test>
 
-
-<!-- 
+ 
 
 <test name="Test_Update_Resource_Configuration">
   	<classes>
@@ -62,6 +61,8 @@
 		</class>
 	</classes>
 </test>
+
+<!--
 <test name="Uninventory-Platforms-End">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.inventory.InventoryCliTest">	
