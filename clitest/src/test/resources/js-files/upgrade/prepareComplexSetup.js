@@ -8,6 +8,15 @@ var common = new _common();
 verbose = 2;
 
 
+// check if following variable was passed as a cli argument, default to false
+if(typeof shutDownAgent == 'undefined'){
+    var shutDownAgent = false;
+}
+//check if following variable was passed as a cli argument, default to false
+if(typeof enableAllMetrics == 'undefined'){
+    var enableAllMetrics = false;
+}
+ 
 var deploymentWarPath = deploymentWar;
 //var deploymentEARPath = deploymentEAR;
 
@@ -46,10 +55,15 @@ prepareUsers();
 
 prepareBundles();
 
-
-shutDownAgent();
-
+if(enableAllMetrics){
+    enableAllMetricsFunc();
+}
 setBaselineFreqInterval();
+
+if(shutDownAgent){
+    shutDownOneAgent();
+}
+
 /******************************************************************************
  * Functions
  */
@@ -104,8 +118,6 @@ function setUpEap6Standalone(){
 		var hist = eap6StandaloneArray[x].invokeOperation("installRhqUser");
 		assertTrue(hist.status == OperationRequestStatus.SUCCESS, "Install RHQ user failed!! with error message: " + hist.error);
 		
-		common.info("Scheduling restart operation each one hour for next 24 hours");
-		eap6StandaloneArray[x].scheduleOperation("restart",3600,3600,24);
 		
 		// deployment doesn't work on 3.1.0, null pointer is thrown
 		var depName = "hello1.war";
@@ -114,10 +126,13 @@ function setUpEap6Standalone(){
 		if (deployed) {
 			common.info(depName + " already created, skipping deploying")
 		}else{
+		    // increase timeout for this operation
+		    timeout = 520;
 			deployed = eap6StandaloneArray[x].createChild({content:deploymentWarPath,type:"Deployment"});
 			assertTrue(deployed!=null,"Deployment resource was not returned by createChild method = > something went wrong, see previous messages");
 			assertTrue(deployed.exists(),"Deployment resource does not exists in inventory");
 			assertTrue(deployed.waitForAvailable(),"Deployment resource is not available!");
+			timeout = 360;
 		}
 		
 		
@@ -131,6 +146,9 @@ function setUpEap6Standalone(){
 			var createdDS = datasources[0].createChild({name:dsName,type:"DataSource (Standalone)",
 			config:{'jndi-name':"java:jboss/datasources/testDatasource",'driver-name':"h2",'connection-url':"jdbc:h2:mem:test2;DB_CLOSE_DELAY=-1"}});
 		}
+		common.info("Scheduling restart operation each one hour for next 24 hours");
+        eap6StandaloneArray[x].scheduleOperation("restart",3600,3600,24);
+        
 	}
 	
 }
@@ -273,7 +291,7 @@ function scheduleOperations(){
 	}
 }
 
-function shutDownAgent(){
+function shutDownOneAgent(){
 	var platform = eap6StandaloneArray[0].parent();
 	if(eap6StandaloneArray.length >1){
 		var agent = platform.child({type:"RHQ Agent"});
@@ -289,4 +307,9 @@ function setBaselineFreqInterval(){
 	config.setSimpleValue('CAM_BASELINE_DATASET','86400000');
 	sysSet.applyConfiguration(config);
 	SystemManager.setSystemSettings(sysSet);
+}
+
+function enableAllMetricsFunc(){
+    var allResTypes = resourceTypes.find();
+    metricsTemplates.enable(allResTypes);
 }
