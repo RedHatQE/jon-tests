@@ -40,7 +40,7 @@ public class AgentConfiguration  extends ConfigurationCliTest {
 //			configs.add(new ConfigValue("rhq.agent.server.bind-address","string","10.10.10.10");
 			configs.add(new ConfigValue("rhq.agent.server.bind-port","string","7080"));
 			configs.add(new ConfigValue("rhq.agent.server.transport-params","string","/jboss-remoting-servlet-invoker/ServerInvokerServlet"));
-			configs.add(new ConfigValue("rhq.agent.server.transport ","string","socket"));
+//			configs.add(new ConfigValue("rhq.agent.server.transport ","string","socket"));
 			configs.add(new ConfigValue("rhq.communications.connector.bind-port","string","1234"));
 			configs.add(new ConfigValue("rhq.communications.connector.transport","string","sslsocket"));
 			configs.add(new ConfigValue("rhq.agent.update-plugins-at-startup","bool","true"));
