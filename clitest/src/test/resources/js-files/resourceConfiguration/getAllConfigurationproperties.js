@@ -1,10 +1,18 @@
+/**
+ * @author ahovsepy@redhat.com (Armine Hovsepyan)
+ * 
+ */
+println("******************* GET ALL CONFIGURATION TEST STARTED ************** ");
 
 //get all configs
 var configs = getConfigurationsArray();
 
+println("*******************  ALL CONFIGURATION GOT ************* ");
+
 //write config data into file
 writeIntoFile(configs);
 
+println("*******************  Wrote  CONFIGURATION INTO FILE ************* ");
 
 /**
  * Function - get Configurations array for all resources
@@ -17,6 +25,8 @@ function getConfigurationsArray() {
 	
 	var myResources = [];
 	
+	println("*******************  RESOURCE TYPES ************* "+ resourceTypes);
+	
 	resourceTypes.find().forEach(function(type) {
 		var r = resources.find({resourceTypeId:type.id});
 		if (r.length > 0) {
@@ -27,9 +37,13 @@ function getConfigurationsArray() {
 	
 	var configs = new Array();
 
+	println("*******************  CONFIGS ************* "+ configs);
+	
 	for ( var i = 0; i < myResources.length; i++) {
 		var resource = myResources[i];
+		println("RESOURCE ################################  " + resource);
 		var oldConfiguration = resource.getConfiguration();
+		println("oldConfiguration ################################  " + oldConfiguration);
 //		var oldConfiguration = ConfigurationManager
 //				.getLiveResourceConfiguration(resource.id, false);
 		if (oldConfiguration != null) {
@@ -55,22 +69,10 @@ function getConfigurationsArray() {
 				}
 			}
 				
-//			var keySet = oldConfiguration.simpleProperties.keySet().toArray();
 
-//			var values = oldConfiguration.simpleProperties.values().toArray();
-
-//			for ( var j = 0; j < values.length; j++) {
-//				if (keySet[j] != null && values[j].getStringValue() != null && values[j].getStringValue().indexOf(",") == -1) {
-//					if(values[j].getStringValue() != "" &&  keySet[j] != ""){
-//					configs.push("--args-style=named  prop=" + keySet[j]
-//							+ "  propType=bool propValue="
-//							+ values[j].getStringValue() + " resourceId="+resource.id);
-//					}
-//				}
-//			}
 		}
 	}
-	println("configs "+configs.length);
+	println("&&&&&&&&&&&&&&&&&&&&&&&&& configs "+configs.length);
 	return configs;
 }
 
@@ -97,32 +99,5 @@ function writeIntoFile(configs) {
 
 }
 
-//var chnageConfiguration = resource.getConfiguration();
-//chnageConfiguration[configProperty]=configPropValue;
-//
-//resource.updateConfiguration(chnageConfiguration);
-////get the changed configuration
-//var newConfiguration = resource.getConfiguration();
-//
-//assertTrue(((newConfiguration[configProperty]).toString()) == ((chnageConfiguration[configProperty]).toString()), "Configuration change didn't work correctly");
-////change the configuration back
-//resource.updateConfiguration(oldConfiguration);
 
-//	}
-//	catch(err){
-//		println("exception ? ???????? ");
-//	}
-//println(conf);
-
-//var oldConfiguration = resource.getConfiguration();
-//
-//var chnageConfiguration = resource.getConfiguration();
-//var conf = ConfigurationManager.getResourceConfigurationDefinitionForResourceType(resources.get(i).getResourceType().id);
-//
-//if conf(has values is not null????);
-//
-//var propertyDefs = conf.getPropertyDefinitions() ;
-//
-//
-//var keySets = propertyDefs.keySet();
 

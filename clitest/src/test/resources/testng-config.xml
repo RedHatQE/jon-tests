@@ -51,7 +51,7 @@
 </test>
 
 
-
+<!-- 
 
 <test name="Test_Update_Resource_Configuration">
   	<classes>
@@ -70,5 +70,5 @@
 			</methods>
 		</class>
 	</classes>
-</test>
+</test>  -->
 </suite>

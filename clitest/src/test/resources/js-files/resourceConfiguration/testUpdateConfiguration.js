@@ -1,3 +1,7 @@
+/**
+ * @author ahovsepy@redhat.com (Armine Hovsepyan)
+ * 
+ */
 var configProperty=prop
 var propType=propType
 var configPropValue = propValue
