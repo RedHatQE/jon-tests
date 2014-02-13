@@ -29,6 +29,11 @@ resource.updateConfiguration(chnageConfiguration);
 //get the changed configuration
 var newConfiguration = resource.getConfiguration();
 
+println("configProperty =  "+configProperty);
+println("configPropValue =  "+configPropValue);
+println("chnageConfiguration =  "+chnageConfiguration);
+
+
 assertTrue(newConfiguration[configProperty] == chnageConfiguration[configProperty], 
 		"Configuration change didn't work correctly. Expected value of '" +configProperty+
 		"' is '"+chnageConfiguration[configProperty]+"', but actual value is '"+

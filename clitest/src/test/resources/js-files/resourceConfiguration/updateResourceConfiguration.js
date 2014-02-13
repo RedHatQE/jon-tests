@@ -4,7 +4,7 @@
  */
 //println(args);
 var configProperty=prop
-var propType=propType
+//var propType=propType
 var configPropValue = propValue
 var resourceId=resourceId
 
@@ -20,8 +20,9 @@ if(configProperty== "rhq.agent.security-token"){
 
 var chnageConfiguration = resource.getConfiguration();
 chnageConfiguration[configProperty]=configPropValue;
-
+println("Before update configuration");
 resource.updateConfiguration(chnageConfiguration);
+println("After update configuration");
 //get the changed configuration
 var newConfiguration = resource.getConfiguration();
 

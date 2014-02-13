@@ -25,7 +25,8 @@
 		</class>
 	</classes>
 </test>
-<!-- getAllConfigurationproperties should be before updateResourceConfigurationTest-->
+
+<!-- getAllConfigurationproperties should be before updateResourceConfigurationTest  -->
 <test name="Test_Get_All_ConfigurationsProperties">
         <classes>
                 <class name="com.redhat.qe.jon.clitest.tests.CliTest">
@@ -39,7 +40,7 @@
         </classes>
 </test>
 
-<!-- RHQ Resource  Configuration Update -->
+<!-- RHQ Resource  Configuration Update   -->
 <test name="Test_Update_Agent_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.AgentConfiguration">	
@@ -50,8 +51,6 @@
 	</classes>
 </test>
 
- 
-
 <test name="Test_Update_Resource_Configuration">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.configuration.ResourceConfiguration">	
@@ -61,8 +60,8 @@
 		</class>
 	</classes>
 </test>
+ 
 
-<!--
 <test name="Uninventory-Platforms-End">
   	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.inventory.InventoryCliTest">	
@@ -71,5 +70,5 @@
 			</methods>
 		</class>
 	</classes>
-</test>  -->
+</test>  
 </suite>
