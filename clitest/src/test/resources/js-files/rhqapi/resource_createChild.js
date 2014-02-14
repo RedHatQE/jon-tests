@@ -10,7 +10,7 @@ var platform = agent;
 var eap = getEAP(platform)
 
 // increase timeout for following operations
-timeout = 360;
+timeout = 660;
 
 println("Create [Network Interface] child - new resource without backed content");
 var netiface = eap.createChild({name:"testinterface",type:"Network Interface"});
