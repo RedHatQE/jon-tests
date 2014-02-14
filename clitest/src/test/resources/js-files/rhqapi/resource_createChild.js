@@ -9,6 +9,8 @@ var platform = agent;
 
 var eap = getEAP(platform)
 
+// increase timeout for following operations
+timeout = 360;
 
 println("Create [Network Interface] child - new resource without backed content");
 var netiface = eap.createChild({name:"testinterface",type:"Network Interface"});
@@ -49,6 +51,9 @@ assertTrue(deployed.isAvailable(),"New deployment is available");
 deployed.remove();
 assertFalse(deployed.exists(),"Deployment exists in inventory");
 delete deployed;
+
+//timeout back to normal
+timeout = 121;
 
 println("Create child resource without passing required parameters");
 println(expectException(eap.createChild));
