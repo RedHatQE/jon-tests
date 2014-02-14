@@ -15,6 +15,9 @@ var num = hits; // minimal value of response hits
 
 var found = false;
 var res = findRHQDeployment(war).child({name:"web"});
+if(!res.isAvailable()){
+    common.warn("RHQ Deployment ["+war+"] is not available, this could cause problems.");
+}
 
 // list callTimes from past 5 minutes
 var now = new Date().getTime()
