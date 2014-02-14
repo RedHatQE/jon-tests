@@ -21,7 +21,8 @@ if(configProperty== "rhq.agent.security-token"){
 var chnageConfiguration = resource.getConfiguration();
 chnageConfiguration[configProperty]=configPropValue;
 var result = resource.updateConfiguration(chnageConfiguration);
-assertTrue( typeof result == "undefined"  ,"Configuration change failed!!!");
+println("***************** result *********************** "+result + "\n\r");
+assertTrue(( typeof result == "undefined" || result )  ,"Configuration change failed!!! " + "config property is "+ configProperty + "rsource id is " +resourceId);
 //get the changed configuration
 var newConfiguration = resource.getConfiguration();
 
