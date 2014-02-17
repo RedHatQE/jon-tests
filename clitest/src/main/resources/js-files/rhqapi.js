@@ -1665,7 +1665,8 @@ var ResGroup = function(param) {
  * @param {org.rhq.core.domain.resource.ResourceType} rhqType
  */
 var ResourceType = function(rhqType) {	
-	if (!rhqType) {
+    var common = new _common();
+    if (!rhqType) {
 		throw "org.rhq.core.domain.resource.ResourceType parameter is required";
 	}
 	var _obj = rhqType;
