@@ -4589,6 +4589,7 @@ if (typeof exports !== "undefined") {
 	exports.permissions = permissions;
 	exports.alertDefinitions = alertDefinitions;
 	exports.dynaGroupDefinitions = dynaGroupDefinitions;
+	exports.resourceTypes = resourceTypes;
   exports.initialize = initialize;
 }
 
