@@ -51,7 +51,7 @@ public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 	ResourceConfigChangeCondition resourceConfigChangeCond;
 	TraitValueChangeCondition traitValueChangeCond;
 
-	@Test
+	@Test(groups={"blockedByBug-1058318"})
 	public void createAlarmDefTest(){
 		// create a new empty repository
 		AdministrationPage.Repositories repos = new AdministrationPage.Repositories(sahiTasks);
