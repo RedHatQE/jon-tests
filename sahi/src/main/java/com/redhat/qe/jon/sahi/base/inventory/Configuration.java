@@ -179,7 +179,7 @@ public class Configuration extends ResourceTab {
 		 * @return true if any of config change requests is pending
 		 */
 		public boolean isPending() {
-		 return tasks.image("Configure_inprogress_16.png").exists();
+		 return tasks.image("Configure_inprogress_16.png").isVisible();
 		}
 		/**
 		 * checks whether there is a pending config change request, tries to wait, until no pending request exists
@@ -204,7 +204,7 @@ public class Configuration extends ResourceTab {
 			boolean failure = hasFailure();
 			if (failure) {
 				tasks.xy(tasks.image("Configure_failed_16.png").in(getFirstRow()),3,3).click();
-				if (tasks.preformatted("").exists()) {
+				if (tasks.preformatted("").isVisible()) {
 	    			message += "\n ERROR message:\n"+tasks.preformatted("").getText();
 	    		}
 	    		tasks.waitFor(Timing.WAIT_TIME);
@@ -223,7 +223,7 @@ public class Configuration extends ResourceTab {
 		 * @return true if any config change failed
 		 */
 		public boolean hasFailure() {
-			return tasks.image("Configure_failed_16.png").in(getFirstRow()).exists();
+			return tasks.image("Configure_failed_16.png").in(getFirstRow()).isVisible();
 		}
 		// public boolean isSuccessLastChange() {
 		// return

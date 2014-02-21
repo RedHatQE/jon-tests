@@ -48,6 +48,27 @@ class FireMeasurementValueThresholdAlert(RHQAlertTest):
         # if test passed clean up our test resource
         s.deleteResource(p)
 
+@attr('single','numeric','change')
+class FireMeasurementValueChange(RHQAlertTest):
+    '''This class tests alerts fired by measurementValueChange condition type (alert is fired on change in numeric value of
+    metric)
+    '''
+    @blockedBy('1041079')
+    def test_MeasurementValueChange(self):
+        s = self.rhqServer()
+        p = s.newPlatform(avail='UP')
+        fired = s.alertCount(p)
+        sch = s.getSchedule(p,name='Native.MemoryInfo.free')
+        s.sendMetricData(p,sch,10)
+        a1 = s.defineAlert(p,metricValueChange(sch))
+        s.waitForAlertDef()
+        s.sendMetricData(p,sch,15)
+        s.waitForAlert()
+        s.sleep(60)
+        fired = s.alertCount(p) - fired
+        self.assertEqual(fired, 1,'Alert count incremented by 1, but was %d' % fired)
+        # if test passed clean up our test resource
+        s.deleteResource(p)
 
 @attr('single','trait')
 class FireTraitAlert(RHQAlertTest):
