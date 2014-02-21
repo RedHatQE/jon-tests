@@ -190,8 +190,8 @@ public class Configuration extends ResourceTab {
 				if (!isPending()) {
 					return true;
 				}
-				tasks.waitFor(Timing.TIME_10S);
 				refresh();
+				tasks.waitFor(Timing.TIME_10S);
 			}
 			return false;
 		}
