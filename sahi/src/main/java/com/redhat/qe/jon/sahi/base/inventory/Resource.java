@@ -607,6 +607,9 @@ public class Resource {
 			tasks.xy(tasks.cell(this.getName()+"["+(children-1)+"]"), 3, 3).click();
 			tasks.cell("Uninventory").click();
 			tasks.cell("Yes").click();
+			if(tasks.cell("OK").exists()){
+				tasks.cell("OK").click();
+			}
 			
 		}else{
 			parent().inventory().childResources().uninventoryChild(getName());
