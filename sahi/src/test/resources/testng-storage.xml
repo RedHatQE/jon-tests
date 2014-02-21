@@ -20,14 +20,19 @@
   	</test>
   	  	
   
-	<test name="StorageNodeTest">
-  	  	<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.StorageNodesTest">
-			<methods>
-				 <include name="checkStoragesInCluster"></include> 
-			</methods>
+	<test name="StorageAutoInventoryTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventoryTest">
 			</class>
 		</classes>
-  	</test>
+	</test>
+
+	<test name="StorageNode">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.StorageNodesTest">
+			</class>
+		</classes>
+	</test>
+
 	
 </suite>
