@@ -187,19 +187,20 @@ public class CliEngine extends CliTestScript {
 			prepareDependencies(jsFile, jsDepends,jsFilePath, targetFile);
 		}
 		
-		String command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
+		String commandPrefix = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
 		// autodetect RHQ_CLI_JAVA_HOME if not defined
 		if (StringUtils.trimToNull(rhqCliJavaHome)==null) {
 			rhqCliJavaHome = cliTasks.runCommand("echo $JAVA_HOME").trim();
 			if ("".equals(rhqCliJavaHome)) {
 				log.info("Neither RHQ_CLI_JAVA_HOME nor JAVA_HOME environment variables were defined, trying to get java exe file location");
-				command = "export RHQ_CLI_JAVA_EXE_FILE_PATH=`which java`; ";
+				commandPrefix = "export RHQ_CLI_JAVA_EXE_FILE_PATH=`which java`; ";
 			}else{
 				_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
-				command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
+				commandPrefix = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
 			}
 		}
-		command += CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+targetFile;
+		
+		String command = commandPrefix + CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+targetFile;
 		command +=" "+cliArgs;
 
 		// get live output in log file on server
@@ -207,7 +208,20 @@ public class CliEngine extends CliTestScript {
 		consoleOutput = cliTasks.runCommand(command);
 		//_logger.log(Level.INFO, consoleOutput);
 		if(!isVersionSet && consoleOutput.length()>25){
-			System.setProperty("rhq.build.version", consoleOutput.substring(consoleOutput.indexOf("Remote server version is:")+25, consoleOutput.indexOf("Login successful")).trim());
+		    String cliClientVersionPrefix = "RHQ Enterprise Remote CLI";
+		    String remoteServerVersionPrefix = "Remote server version is:";
+		    String cliVersionOutput = cliTasks.runCommand(commandPrefix + CliEngine.cliShLocation+" -v");
+		    String version = "CLI version: ";
+		    if(cliVersionOutput.contains(cliClientVersionPrefix)){
+		        version += cliVersionOutput.substring(cliVersionOutput.indexOf(cliClientVersionPrefix) + cliClientVersionPrefix.length(),
+		                cliVersionOutput.indexOf(")")+1).trim();
+		    }
+		    if(consoleOutput.contains(remoteServerVersionPrefix)){
+		        version += ". Remote server version: " + consoleOutput.substring(
+		                consoleOutput.indexOf(remoteServerVersionPrefix)+remoteServerVersionPrefix.length(), 
+		                consoleOutput.indexOf(")")+1).trim();
+		    }
+			System.setProperty("rhq.build.version",version); 
 			isVersionSet = true;
 			_logger.log(Level.INFO, "RHQ/JON Version: "+System.getProperty("rhq.build.version"));
 		}
@@ -501,5 +515,4 @@ public class CliEngine extends CliTestScript {
 	    }
 	    public final String src, targetName, asArgument;
 	}
-	
 }
