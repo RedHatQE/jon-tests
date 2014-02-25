@@ -2,6 +2,7 @@ package com.redhat.qe.jon.sahi.base.inventory;
 
 import com.redhat.qe.jon.sahi.base.editor.*;
 import com.redhat.qe.jon.sahi.tasks.*;
+
 import net.sf.sahi.client.*;
 import org.testng.*;
 
@@ -127,6 +128,8 @@ public class Configuration extends ResourceTab {
 			    throw new RuntimeException("Save button" + saveB.toString() + ", is disabled!");
 			}
 			tasks.xy(saveB, 3, 3).click();
+			tasks.waitForElementVisible(tasks, tasks.cell("/Configuration updated*/"), 
+	                "Successful update message",Timing.WAIT_TIME);
 		}
 	}
 
