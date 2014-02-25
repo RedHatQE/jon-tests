@@ -156,6 +156,7 @@ public class LocalCommandRunner implements ICommandRunner {
     /**
      * Creates directory including ancestors if they don't exist
      * @param dir directory to be created
+     * @return true if and only if the directory was created, along with all necessary parent directories; false otherwise
      */
     public boolean mkdirs(String dir) {
         File dirAsFile = new File(dir);

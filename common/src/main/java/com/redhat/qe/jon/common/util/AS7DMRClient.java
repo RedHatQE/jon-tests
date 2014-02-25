@@ -309,7 +309,7 @@ public class AS7DMRClient {
 	}
     
 	/**
-	 * returns true if resource on given address is present (returns some value when calling `read-resource` operation on it)
+	 * @return true if resource on given address is present (returns some value when calling `read-resource` operation on it)
 	 */
         public boolean isResourcePresent(String address) {
         	return executeOperationVoid(address, "read-resource",  new String[]{});
