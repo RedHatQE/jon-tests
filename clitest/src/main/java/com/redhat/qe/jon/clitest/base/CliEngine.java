@@ -193,17 +193,20 @@ public class CliEngine extends CliTestScript {
 		    String cliClientVersionPrefix = "RHQ Enterprise Remote CLI";
 		    String remoteServerVersionPrefix = "Remote server version is:";
 		    String cliVersionOutput = cliTasks.runCommand(commandPrefix + CliEngine.cliShLocation+" -v");
-		    String version = "CLI version: ";
+		    String cliVersion = "CLI version: ";
 		    if(cliVersionOutput.contains(cliClientVersionPrefix)){
-		        version += cliVersionOutput.substring(cliVersionOutput.indexOf(cliClientVersionPrefix) + cliClientVersionPrefix.length(),
+		        cliVersion += cliVersionOutput.substring(cliVersionOutput.indexOf(cliClientVersionPrefix) + cliClientVersionPrefix.length(),
 		                cliVersionOutput.indexOf(")")+1).trim();
 		    }
+		    String version = "";
 		    if(consoleOutput.contains(remoteServerVersionPrefix)){
-		        version += ". Remote server version: " + consoleOutput.substring(
+		        version += consoleOutput.substring(
 		                consoleOutput.indexOf(remoteServerVersionPrefix)+remoteServerVersionPrefix.length(), 
 		                consoleOutput.indexOf(")")+1).trim();
 		    }
-			System.setProperty("rhq.build.version",version); 
+		    
+		    // "\n" is there just because of nicer (shorter) view of version in reporting engine
+			System.setProperty("rhq.build.version",version + "\n" + cliVersion); 
 			isVersionSet = true;
 			_logger.log(Level.INFO, "RHQ/JON Version: "+System.getProperty("rhq.build.version"));
 		}
