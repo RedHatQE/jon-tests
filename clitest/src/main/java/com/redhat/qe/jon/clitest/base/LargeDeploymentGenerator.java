@@ -1,17 +1,14 @@
 package com.redhat.qe.jon.clitest.base;
 
-import java.io.File;
+import com.redhat.qe.jon.common.util.*;
 
-import com.redhat.qe.jon.common.util.ClassPathUtils;
-import com.redhat.qe.jon.common.util.DynamicAntBundle;
-import com.redhat.qe.jon.common.util.FileUtils;
-import com.redhat.qe.jon.common.util.ZipUtils;
+import java.io.*;
 
 /**
  * this listener generates large deployments (WAR and bundle files)
  * once you attach it by {@link CliTestRunner#withRunListener(CliTestRunListener)}
  * you can use {@link CliTestRunner#withResource(String, String)} with name param
- * as "bundle:<size>" to get bundle of given size in MB or "war:<size>" to get WAR of given size in MB
+ * as "bundle:${size}" to get bundle of given size in MB or "war:${size}" to get WAR of given size in MB
  * @author lzoubek
  *
  */

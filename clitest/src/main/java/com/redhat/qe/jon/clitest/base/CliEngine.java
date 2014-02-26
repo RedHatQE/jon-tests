@@ -1,35 +1,17 @@
 package com.redhat.qe.jon.clitest.base;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.redhat.qe.jon.clitest.tasks.*;
+import com.redhat.qe.jon.common.util.*;
+import org.apache.commons.lang3.*;
+import org.testng.annotations.*;
 
-import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.Optional;
-
-import com.redhat.qe.jon.clitest.tasks.CliTasks;
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.common.util.WebUtils;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.util.logging.*;
 
 public class CliEngine extends CliTestScript {
-	private static Logger _logger = Logger.getLogger(CliEngine.class.getName());
+	private static final Logger _logger = Logger.getLogger(CliEngine.class.getName());
 	public static String cliShLocation;
 	public static String rhqCliJavaHome;
 	public static String rhqTarget;
@@ -490,7 +472,7 @@ public class CliEngine extends CliTestScript {
 			e.printStackTrace();
 		}
 		try {
-			reader.close();
+            if (reader != null) reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
