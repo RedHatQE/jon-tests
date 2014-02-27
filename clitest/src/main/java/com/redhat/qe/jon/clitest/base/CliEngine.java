@@ -1,13 +1,13 @@
 package com.redhat.qe.jon.clitest.base;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import com.redhat.qe.jon.clitest.tasks.CliTasks;
+import com.redhat.qe.jon.clitest.tasks.CliTasksException;
+import com.redhat.qe.jon.common.util.WebUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.Optional;
+
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -20,16 +20,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.StringUtils;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.Optional;
-
-import com.redhat.qe.jon.clitest.tasks.CliTasks;
-import com.redhat.qe.jon.clitest.tasks.CliTasksException;
-import com.redhat.qe.jon.common.util.WebUtils;
-
 public class CliEngine extends CliTestScript {
-	private static Logger _logger = Logger.getLogger(CliEngine.class.getName());
+	private static final Logger _logger = Logger.getLogger(CliEngine.class.getName());
 	public static String cliShLocation;
 	public static String rhqCliJavaHome;
 	public static String rhqTarget;
@@ -71,7 +63,7 @@ public class CliEngine extends CliTestScript {
 		    // we have to strip starting "/" because otherwise getClassLoader().getResources(path) finds nothing
 		    path = path.substring(1);
 		}
-		Enumeration<URL> resources = getClass().getClassLoader().getResources(path);		
+		Enumeration<URL> resources = getClass().getClassLoader().getResources(path);
 		URL candidate = null;
 		if (!resources.hasMoreElements()) {
 		    return null;
@@ -187,19 +179,20 @@ public class CliEngine extends CliTestScript {
 			prepareDependencies(jsFile, jsDepends,jsFilePath, targetFile);
 		}
 		
-		String command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
+		String commandPrefix = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
 		// autodetect RHQ_CLI_JAVA_HOME if not defined
 		if (StringUtils.trimToNull(rhqCliJavaHome)==null) {
 			rhqCliJavaHome = cliTasks.runCommand("echo $JAVA_HOME").trim();
 			if ("".equals(rhqCliJavaHome)) {
 				log.info("Neither RHQ_CLI_JAVA_HOME nor JAVA_HOME environment variables were defined, trying to get java exe file location");
-				command = "export RHQ_CLI_JAVA_EXE_FILE_PATH=`which java`; ";
+				commandPrefix = "export RHQ_CLI_JAVA_EXE_FILE_PATH=`which java`; ";
 			}else{
 				_logger.log(Level.INFO,"Environment variable RHQ_CLI_JAVA_HOME was autodetected using JAVA_HOME variable");
-				command = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
+				commandPrefix = "export RHQ_CLI_JAVA_HOME="+rhqCliJavaHome+"; ";
 			}
 		}
-		command += CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+targetFile;
+		
+		String command = commandPrefix + CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+targetFile;
 		command +=" "+cliArgs;
 
 		// get live output in log file on server
@@ -207,7 +200,23 @@ public class CliEngine extends CliTestScript {
 		consoleOutput = cliTasks.runCommand(command);
 		//_logger.log(Level.INFO, consoleOutput);
 		if(!isVersionSet && consoleOutput.length()>25){
-			System.setProperty("rhq.build.version", consoleOutput.substring(consoleOutput.indexOf("Remote server version is:")+25, consoleOutput.indexOf("Login successful")).trim());
+		    String cliClientVersionPrefix = "RHQ Enterprise Remote CLI";
+		    String remoteServerVersionPrefix = "Remote server version is:";
+		    String cliVersionOutput = cliTasks.runCommand(commandPrefix + CliEngine.cliShLocation+" -v");
+		    String cliVersion = "CLI version: ";
+		    if(cliVersionOutput.contains(cliClientVersionPrefix)){
+		        cliVersion += cliVersionOutput.substring(cliVersionOutput.indexOf(cliClientVersionPrefix) + cliClientVersionPrefix.length(),
+		                cliVersionOutput.indexOf(")")+1).trim();
+		    }
+		    String version = "";
+		    if(consoleOutput.contains(remoteServerVersionPrefix)){
+		        version += consoleOutput.substring(
+		                consoleOutput.indexOf(remoteServerVersionPrefix)+remoteServerVersionPrefix.length(), 
+		                consoleOutput.indexOf(")")+1).trim();
+		    }
+		    
+		    // "\n" is there just because of nicer (shorter) view of version in reporting engine
+			System.setProperty("rhq.build.version",version + "\n" + cliVersion); 
 			isVersionSet = true;
 			_logger.log(Level.INFO, "RHQ/JON Version: "+System.getProperty("rhq.build.version"));
 		}
@@ -394,7 +403,7 @@ public class CliEngine extends CliTestScript {
 	protected void prepareDependencies(String jsFile, String jsDepends, String mainJsFilePath, String targetFile)
 			throws IOException, CliTasksException {
 		int longestDepNameLength=0;
-		Map<String,Integer> lines = new LinkedHashMap<String, Integer>(); 
+		Map<String,Integer> lines = new LinkedHashMap<String, Integer>();
 		_logger.info("Preparing JS file depenencies ... "+jsDepends);
 		String tmpDeps = cliTasks.runCommand("mktemp").trim();
 		for (String dependency : jsDepends.split(",")) {
@@ -476,7 +485,7 @@ public class CliEngine extends CliTestScript {
 			e.printStackTrace();
 		}
 		try {
-			reader.close();
+            if (reader != null) reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -501,5 +510,4 @@ public class CliEngine extends CliTestScript {
 	    }
 	    public final String src, targetName, asArgument;
 	}
-	
 }

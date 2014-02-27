@@ -8,8 +8,8 @@ import java.util.regex.Pattern;
 
 /**
  * @author rhatlapa@redhat.com
- * @author Jiri Sedlacek <jsedlace@redhat.com>
- * @author Jan Stefl     <jstefl@redhat.com>
+ * @author Jiri Sedlacek (jsedlace@redhat.com)
+ * @author Jan Stefl     (jstefl@redhat.com)
  */
 public class Platform {
     private String osName;

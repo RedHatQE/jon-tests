@@ -1,15 +1,14 @@
 package com.redhat.qe.jon.sahi.base.inventory.alerts.definitions;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.logging.Logger;
-
-import net.sf.sahi.client.ElementStub;
-
 import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.conditions.Condition;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+import net.sf.sahi.client.ElementStub;
+
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  * This class represents dialog visible during creation/editing of alert 
@@ -198,7 +197,7 @@ public class AlertDefinitionEditor {
 	 * </code> 
 	 * @param completeVisibleName - complete name as visible in GUI in condition tab table
 	 * @param clazz type of condition which should be found
-	 * @throws <class>RuntimeException</class> when condition with given name was not found 
+	 * @throws RuntimeException when condition with given name was not found
 	 * in the table or when condition type parsed from page doesn't match given condition type
 	 * @return condition of given type
 	 */
@@ -542,7 +541,7 @@ public class AlertDefinitionEditor {
 	}
 	
 	/**
-	 * This is a helper class which represents a field which is part of <class>Condition</class>
+	 * This is a helper class which represents a field which is part of class Condition
 	 */
 	public static class Field{
 		public enum FieldType{COMBO,TEXT,RADIO,PASSWORD,FILE,TEXTAREA,CHECKBOX}

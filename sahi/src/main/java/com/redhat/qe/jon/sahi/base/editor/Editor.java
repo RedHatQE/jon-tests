@@ -441,7 +441,7 @@ public class Editor {
      * @param name cell locator
      * @param index index of a row to be selected when more rows were found
      * @return true when at least one row was found, false otherwise
-     * @throws <class>RuntimeException</class> when a selection of given row failed
+     * @throws RuntimeException when a selection of given row failed
      */
     public boolean selectRow(String name,int index){
     	int rows = tasks.cell(name).countSimilar();

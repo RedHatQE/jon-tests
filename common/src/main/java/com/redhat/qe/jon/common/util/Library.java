@@ -26,6 +26,7 @@ public class Library {
      * * 'my_great_property' in environment variables
      * * 'MY_GREAT_PROPERTY' in environment variables
      * * 'myGreatProperty'   in system properties
+     * @return first not null value from properties checked in order stated above or given {@code defaultValue} if none of these properties is defined
      */
     public static String getUniversalProperty(String propName, String defaultValue) {
         String propName2 = propName.replaceAll("\\.", "_");

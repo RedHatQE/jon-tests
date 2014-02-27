@@ -1,14 +1,19 @@
 package com.redhat.qe.jon.sahi.tasks;
 
-import com.redhat.qe.*;
-import com.redhat.qe.jon.sahi.base.*;
-import net.sf.sahi.client.*;
-import org.testng.annotations.*;
+import com.redhat.qe.Assert;
+import com.redhat.qe.jon.sahi.base.ExtendedSahi;
+import net.sf.sahi.client.ElementStub;
+import org.testng.annotations.Optional;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.logging.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SahiTasks extends ExtendedSahi {
 

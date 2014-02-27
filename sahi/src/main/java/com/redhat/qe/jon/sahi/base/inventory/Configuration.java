@@ -2,13 +2,14 @@ package com.redhat.qe.jon.sahi.base.inventory;
 
 import com.redhat.qe.jon.sahi.base.editor.*;
 import com.redhat.qe.jon.sahi.tasks.*;
+
 import net.sf.sahi.client.*;
 import org.testng.*;
 
 import java.util.logging.*;
 
 public class Configuration extends ResourceTab {
-
+    private final Logger log = Logger.getLogger(this.getClass().getName());
 	public Configuration(SahiTasks tasks, Resource resource) {
 		super(tasks, resource);
 	}
@@ -119,7 +120,16 @@ public class Configuration extends ResourceTab {
 		public void save() {
 			int buttons = tasks.cell("Save").countSimilar();
 			log.info("Save buttons : "+buttons);
-			tasks.xy(tasks.cell("Save["+(buttons-1)+"]"), 3, 3).click();
+			ElementStub saveB = tasks.cell("Save["+(buttons-1)+"]");
+			String classStr = saveB.getAttribute("class");
+			log.fine("Class of picked Save button: "+classStr);
+			if(classStr.equals("buttonTitleDisabled")){
+			    log.severe("Save button" + saveB.toString() + ", is disabled!");
+			    throw new RuntimeException("Save button" + saveB.toString() + ", is disabled!");
+			}
+			tasks.xy(saveB, 3, 3).click();
+			Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("/Configuration updated*/"), 
+	                "Successful update message",Timing.WAIT_TIME),"Successful config update message expected!!");
 		}
 	}
 

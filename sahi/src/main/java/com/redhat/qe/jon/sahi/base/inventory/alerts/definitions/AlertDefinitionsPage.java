@@ -1,15 +1,14 @@
 package com.redhat.qe.jon.sahi.base.inventory.alerts.definitions;
 
-import java.util.ArrayList;
-import java.util.logging.Logger;
-
-import net.sf.sahi.client.ElementStub;
-
 import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.alerts.Alerts;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+import net.sf.sahi.client.ElementStub;
+
+import java.util.ArrayList;
+import java.util.logging.Logger;
 
 
 /**
@@ -40,7 +39,7 @@ public class AlertDefinitionsPage extends Alerts {
 	/**
 	 * Returns a helper object used for filling alert definition dialog. 
 	 * @param alertName name of the alert definition to be created
-	 * @return <class>AlertDefinitionEditor</class>
+	 * @return AlertDefinitionEditor
 	 */
 	public AlertDefinitionEditor createAlarmDefinition(String alertName) {
     	log.finer("Creating a new alarm definition " + alertName);
@@ -57,7 +56,7 @@ public class AlertDefinitionsPage extends Alerts {
 	 * Data are parsed from the alert definitions page.
 	 * @param alertName name of the alert definition
 	 * @return all found alert definitions with given name.
-	 * @throws <class>RuntimeException</class> when parsing of the page failed
+	 * @throws RuntimeException when parsing of the page failed
 	 */
     public ArrayList<AlertDefinition> getAlertDefinitions(String alertName){
     	ArrayList<AlertDefinition> alertDefs = new ArrayList<AlertDefinition>();
@@ -132,7 +131,7 @@ public class AlertDefinitionsPage extends Alerts {
     /**
 	 * Returns a helper object used for setting/getting values from alert definition dialog. 
 	 * @param alertDefName name of the alert definition to be edited.
-	 * @return <class>AlertDefinitionEditor</class>
+	 * @return AlertDefinitionEditor
 	 */
     public AlertDefinitionEditor editAlertDefinition(String alertDefName){
     	log.fine("Editing alert definitions with name " + alertDefName);
@@ -153,7 +152,7 @@ public class AlertDefinitionsPage extends Alerts {
      * Deletes all alert definitions with given name.
      * @param alertDefName
      * @return this object
-     * @throws <class>RuntimeException</class> when a button was not found
+     * @throws RuntimeException when a button was not found
      */
     public AlertDefinitionsPage deleteAlertDefinition(String alertDefName){
     	log.fine("Deleting alert definitions with name " + alertDefName);
@@ -175,7 +174,7 @@ public class AlertDefinitionsPage extends Alerts {
      * Disables all alert definitions with given name.
      * @param alertDefName
      * @return this object
-     * @throws <class>RuntimeException</class> when a button was not found
+     * @throws RuntimeException when a button was not found
      */
     public AlertDefinitionsPage disableAlertDefinition(String alertDefName){
     	log.fine("Disabling alert definitions with name " + alertDefName);
@@ -197,7 +196,7 @@ public class AlertDefinitionsPage extends Alerts {
      * Enables all alert definitions with given name.
      * @param alertDefName
      * @return this object
-     * @throws <class>RuntimeException</class> when a enable button was not found
+     * @throws RuntimeException when a enable button was not found
      */
     public AlertDefinitionsPage enableAlertDefinition(String alertDefName){
     	log.fine("Enabling alert definition with name " + alertDefName);
