@@ -13,6 +13,7 @@ import org.testng.annotations.Test;
 import com.redhat.qe.Assert;
 import com.redhat.qe.jon.common.util.RestClient;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.base.editor.ConfigEditor;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 
 public class CheckForConfigurationErrorsTest extends SahiTestScript {
@@ -31,7 +32,7 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 	    Resource root = new Resource(sahiTasks, agentName);
 	    tree.put(agentName, root);
 	    for (Resource child : root.getChildrenTree()) {
-		tree.put(child.getResourceType(), child);
+	        tree.put(child.getResourceType(), child);
 	    }
 	}
 	log.info("Retrieved "+tree.size()+" resources (max 1 resource of given type)");
@@ -62,9 +63,21 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 	if (es.exists()) {
 	    String text = es.getText();
 	    if (text != null) {
-		if (text.contains("failed to load the configuration")) {
-		    hasConfig = false;
-		}
+            if (text.contains("failed to load the configuration")) {
+                ConfigEditor confEd = resource.inventory().connectionSettings().getEditor();
+                
+                // check if Config Management is enabled, skip this resource if not
+                if(sahiTasks.waitForElementVisible(sahiTasks, 
+                        sahiTasks.cell("Config Management Enabled"), "Config Management Enabled", 5000)){
+                    if(confEd.isRadioNearCellChecked("configManagementEnabled", "Yes")){
+                        hasConfig = false;
+                    }else{
+                        log.info("Resource " + resource.toString() +", doesn't have Config Management Enabled. Skipping");
+                    }
+                }else{
+                    hasConfig = false;
+                }
+            }
 	    }
 	}
 	Assert.assertTrue(hasConfig, "Some configuration was retrieved");
