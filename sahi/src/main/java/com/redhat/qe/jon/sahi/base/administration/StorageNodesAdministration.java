@@ -49,20 +49,25 @@ public class StorageNodesAdministration {
 	
 	public List<StorageNode> getStorageNodes() {
 		int tableRowCount = getStorageNodeCount();
+		
 		List<StorageNode> storageNodes = new LinkedList<StorageNode>();
 		for(int i = 0; i < tableRowCount; i++) {
 			StorageNode storageNode = new StorageNode();
 			ElementStub img = tasks.image("row_collapsed.png[" + i + "]");
 			ElementStub trElem = img.parentNode("tr");
 			
+			log.info("storage node row detected");
 			storageNode.setEndpointAddress(tasks.cell(1).in(trElem).getText());
-			storageNode.setJmxPort(tasks.cell(2).in(trElem).getText());
-			storageNode.setMode(tasks.cell(3).in(trElem).getText());
-			storageNode.setInstallationDate(tasks.cell(4).in(trElem).getText());
-			storageNode.setLastUpdateTime(tasks.cell(5).in(trElem).getText());
-			storageNode.setResourceLinkText(tasks.cell(6).in(trElem).getText());
+			storageNode.setAlerts(tasks.cell(2).in(trElem).getText());
+			storageNode.setMemory(tasks.cell(3).in(trElem).getText());
+			storageNode.setDisk(tasks.cell(4).in(trElem).getText());
+			storageNode.setClusterStatus(tasks.cell(5).in(trElem).getText());
+			storageNode.setInstallationDate(tasks.cell(6).in(trElem).getText());
+			storageNode.setResourceLinkText(tasks.cell(7).in(trElem).getText());
 			
-			String setResourceLink = tasks.link("").in(tasks.cell(6).in(trElem)).fetch("href");
+			log.info("### storage node link to resource detection");
+			String setResourceLink = tasks.link("").in(tasks.cell(7).in(trElem)).fetch("href");
+			log.info("### storage node link to resource detection 2");
 			storageNode.setResourceLink(setResourceLink);
 			storageNodes.add(storageNode);
 		}
@@ -85,13 +90,11 @@ public class StorageNodesAdministration {
 	
 	private Map<String, StorageNodeMetric> createAndFillStorageNodeDetails() {
 		Map<String, StorageNodeMetric> storageNodeDetails = new HashMap<String, StorageNodeMetric>();
-		storageNodeDetails.put(StorageNodeMetricConst.HEAP_MAXIMUM, createAndFillStorageNodeMetric(StorageNodeMetricConst.HEAP_MAXIMUM));
 		storageNodeDetails.put(StorageNodeMetricConst.HEAP_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.HEAP_USED));
 		storageNodeDetails.put(StorageNodeMetricConst.HEAP_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.HEAP_PERCENT_USED));
-		storageNodeDetails.put(StorageNodeMetricConst.LOAD, createAndFillStorageNodeMetric(StorageNodeMetricConst.LOAD));
-		storageNodeDetails.put(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED));
+		storageNodeDetails.put(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED_BY_STORAGE_NODE, createAndFillStorageNodeMetric(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED_BY_STORAGE_NODE));
 		storageNodeDetails.put(StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED));
-		storageNodeDetails.put(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED));
+		storageNodeDetails.put(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED, createAndFillStorageNodeMetric(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED));
 		storageNodeDetails.put(StorageNodeMetricConst.OWNERSHIP, createAndFillStorageNodeMetric(StorageNodeMetricConst.OWNERSHIP));
 		storageNodeDetails.put(StorageNodeMetricConst.NUMBER_OF_TOKENS, createAndFillStorageNodeMetric(StorageNodeMetricConst.NUMBER_OF_TOKENS));
 		storageNodeDetails.put(StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO, createAndFillStorageNodeMetric(StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO));

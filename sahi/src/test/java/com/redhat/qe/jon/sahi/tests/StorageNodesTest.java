@@ -33,12 +33,9 @@ public class StorageNodesTest extends SahiTestScript {
 		// check the first storage node properties
 		Assert.assertEquals(storageNode.getEndpointAddress(), storageNodeName,
 				"Endpoint address");
-		Assert.assertEquals(storageNode.getJmxPort(), "7299", "JMX port");
-		Assert.assertEquals(storageNode.getMode(), "NORMAL", "Mode");
+				Assert.assertEquals(storageNode.getClusterStatus(), "NORMAL", "clusterStatus");
 		Assert.assertNotNull(storageNode.getInstallationDate(),
 				"Installation date");
-		Assert.assertNotNull(storageNode.getLastUpdateTime(),
-				"Last update time");
 		Assert.assertEquals(storageNode.getResourceLinkText(),
 				"Link to Resource");
 		Assert.assertNotNull(storageNode.getResourceLink(),
@@ -83,17 +80,7 @@ public class StorageNodesTest extends SahiTestScript {
 		Assert.assertNotNull(storageNodeMetric.getAvg(), metric + " avg value");
 		Assert.assertNotNull(storageNodeMetric.getMax(), metric + " max value");
 		
-		if (metric.equals(StorageNodeMetricConst.LOAD) ||
-				metric.equals(StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED) ||
-				metric.equals(StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED) ||
-				metric.equals(StorageNodeMetricConst.TOTAL_DISK_SPACE_USED) ||
-				metric.equals(StorageNodeMetricConst.FREE_DISK_TO_DATA_SIZE_RATIO) ||
-				metric.equals(StorageNodeMetricConst.HEAP_MAXIMUM) ||
-				metric.equals(StorageNodeMetricConst.HEAP_USED) ||
-				metric.equals(StorageNodeMetricConst.HEAP_PERCENT_USED)) {
-			// check disk and memory metrics relations
-			checkMetricRelation(storageNodeMetric, metric);
-		}
+		
 	}
 
 	@Test
@@ -110,17 +97,15 @@ public class StorageNodesTest extends SahiTestScript {
 		StorageNode storageNode = storageNodesAdmin
 				.getStorageNodesDetails(storageNodes.get(0));
 
-		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.HEAP_MAXIMUM);
 		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.HEAP_USED);
 		checkStorageNodeMetric(storageNode,
 				StorageNodeMetricConst.HEAP_PERCENT_USED);
-		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.LOAD);
 		checkStorageNodeMetric(storageNode,
 				StorageNodeMetricConst.DATA_DISK_SPACE_PERCENT_USED);
 		checkStorageNodeMetric(storageNode,
 				StorageNodeMetricConst.TOTAL_DISK_SPACE_PERCENT_USED);
 		checkStorageNodeMetric(storageNode,
-				StorageNodeMetricConst.TOTAL_DISK_SPACE_USED);
+				StorageNodeMetricConst.TOTAL_DISK_SPACE_USED_BY_STORAGE_NODE);
 		checkStorageNodeMetric(storageNode, StorageNodeMetricConst.OWNERSHIP);
 		checkStorageNodeMetric(storageNode,
 				StorageNodeMetricConst.NUMBER_OF_TOKENS);

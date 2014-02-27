@@ -5,13 +5,56 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StorageNode {
+	
 	private String endpointAddress;
-	private String jmxPort;
-	private String mode;
+	private String alerts;
+	private String memory;
+	private String disk;
 	private String installationDate;
-	private String lastUpdateTime;
+	private String clusterStatus;
 	private String resourceLinkText;
 	private String resourceLink;
+	
+	public String getAlerts() {
+		return alerts;
+	}
+
+	public void setAlerts(String alerts) {
+		this.alerts = alerts;
+	}
+
+	public String getMemory() {
+		return memory;
+	}
+
+	public void setMemory(String memory) {
+		this.memory = memory;
+	}
+
+	public String getDisk() {
+		return disk;
+	}
+
+	public void setDisk(String disk) {
+		this.disk = disk;
+	}
+
+	public String getInstallationDate() {
+		return installationDate;
+	}
+
+	public void setInstallationDate(String installationDate) {
+		this.installationDate = installationDate;
+	}
+
+	public String getClusterStatus() {
+		return clusterStatus;
+	}
+
+	public void setClusterStatus(String clusterStatus) {
+		this.clusterStatus = clusterStatus;
+	}
+
 	
 	private Map<String, StorageNodeMetric> storageNodeDetails;
 
@@ -31,37 +74,7 @@ public class StorageNode {
 		this.endpointAddress = endpointAddress;
 	}
 
-	public String getJmxPort() {
-		return jmxPort;
-	}
 
-	public void setJmxPort(String jmxPort) {
-		this.jmxPort = jmxPort;
-	}
-
-	public String getMode() {
-		return mode;
-	}
-
-	public void setMode(String mode) {
-		this.mode = mode;
-	}
-
-	public String getInstallationDate() {
-		return installationDate;
-	}
-
-	public void setInstallationDate(String installationDate) {
-		this.installationDate = installationDate;
-	}
-
-	public String getLastUpdateTime() {
-		return lastUpdateTime;
-	}
-
-	public void setLastUpdateTime(String lastUpdateTime) {
-		this.lastUpdateTime = lastUpdateTime;
-	}
 
 	public Map<String, StorageNodeMetric> getStorageNodeDetails() {
 		return storageNodeDetails;
