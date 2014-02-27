@@ -1,26 +1,26 @@
 package com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.conditions;
 
-import java.util.ArrayList;
-
 import com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.AlertDefinitionEditor;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 
+import java.util.ArrayList;
+
 /**
  * This class represents a condition which is used during creation of alert definition.
- * <p>
+ *
  * This class is generic so you can use it to define all possible conditions.
- * Each <class>Field</class> contained in this class defines a form field which
+ * Each Field contained in this class defines a form field which
  * is filled by Sahi during the creation of condition.
- * <p>
+ *
  * Example: To define Availability Change condition
- * <p>
+ *
  * <code>
  * Condition cond = new GenCondition("Availability Change");
  * cond.addField("Availability :","Goes down",AlertDefinitionCreator.Field.FieldType.COMBO);
  * </code>
- * <p>
+ *
  * You can see that a label next to the combo box was used as a near cell locator.
- * @see <class>com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.AlertDefinitionEditor.Field</class>  
+ * @see com.redhat.qe.jon.sahi.base.inventory.alerts.definitions.AlertDefinitionEditor.Field
  *
  */
 public abstract class Condition {

@@ -185,7 +185,7 @@ public class CliTestRunner {
 
     /**
      * add a resource file to CLI test. Given resource will become ready for CLI test under named argument 'asArgument'
-     * <p/>
+     *
      * For example ("deployments/hello1.war","hello.war","deployment") will find hello1.war within project resources, copy it to
      * some /some/path/hello.war and append named argument to CLI deployment=/some/path/hello.war
      *
@@ -201,7 +201,7 @@ public class CliTestRunner {
 
     /**
      * add a resource file to CLI test. Given resource will become ready for CLI test under named argument 'asArgument'
-     * <p/>
+     *
      * For example ("deployments/hello1.war","deployment") will find hello1.war within project resources, copy it to
      * some /some/path/hello1.war and append named argument to CLI deployment=/some/path/hello1.war
      *

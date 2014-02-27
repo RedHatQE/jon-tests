@@ -730,12 +730,10 @@ public class Resource {
      * imports this resource from discovery queue. It is required that parent platform is already imported (this doesn't 
      * apply to platform type).
      * This is done by following steps
-     * <ul>
-     * <ol>it is performed a check - if this resource is already in inventory nothing else happens</ol>
-     * <ol>Manual Autodiscovery operation is performed on parent platform (this doesn't 
-     * apply to platform type)</ol>
-     * <ol>Resource is imported</ol>
-     * </ul>
+     * 1. it is performed a check - if this resource is already in inventory nothing else happens
+     * 2. Manual Autodiscovery operation is performed on parent platform (this doesn't apply to platform type)
+     * 3. Resource is imported
+     *
      * @param sleepTime time miliseconds to sleep after resource has been imported (JON imports it's children asynchronously)
      * @return true if resource was imported, false if it was not due to error or already existed in inventory
      */
@@ -841,12 +839,11 @@ public class Resource {
      * imports this resource from discovery queue. It is required that parent platform is already imported. This
      * function does not work for platforms.
      * This is done by following steps
-     * <ul>
-     * <ol>it is performed a check - if this resource is already in inventory nothing else happens</ol>
-     * <ol>Manual Auto-discovery operation is performed on parent platform</ol>
-     * <ol>Resource is imported</ol>
-     * <ol>Wait more or less 15 minutes for child subsystems to be imported</ol>
-     * </ul>
+     * 1, it is performed a check - if this resource is already in inventory nothing else happens
+     * 2. Manual Auto-discovery operation is performed on parent platform
+     * 3. Resource is imported
+     * 4. Wait more or less 15 minutes for child subsystems to be imported
+     *
      * @return true if resource was imported, false if it was not due to error or already existed in inventory
      */
 	public boolean importFromDiscoQueue() {

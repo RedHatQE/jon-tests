@@ -1,14 +1,24 @@
 package com.redhat.qe.jon.clitest.base;
 
-import com.redhat.qe.jon.clitest.tasks.*;
-import com.redhat.qe.jon.common.util.*;
-import org.apache.commons.lang3.*;
-import org.testng.annotations.*;
+import com.redhat.qe.jon.clitest.tasks.CliTasks;
+import com.redhat.qe.jon.clitest.tasks.CliTasksException;
+import com.redhat.qe.jon.common.util.WebUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.Optional;
 
 import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.logging.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CliEngine extends CliTestScript {
 	private static final Logger _logger = Logger.getLogger(CliEngine.class.getName());
@@ -53,7 +63,7 @@ public class CliEngine extends CliTestScript {
 		    // we have to strip starting "/" because otherwise getClassLoader().getResources(path) finds nothing
 		    path = path.substring(1);
 		}
-		Enumeration<URL> resources = getClass().getClassLoader().getResources(path);		
+		Enumeration<URL> resources = getClass().getClassLoader().getResources(path);
 		URL candidate = null;
 		if (!resources.hasMoreElements()) {
 		    return null;
@@ -393,7 +403,7 @@ public class CliEngine extends CliTestScript {
 	protected void prepareDependencies(String jsFile, String jsDepends, String mainJsFilePath, String targetFile)
 			throws IOException, CliTasksException {
 		int longestDepNameLength=0;
-		Map<String,Integer> lines = new LinkedHashMap<String, Integer>(); 
+		Map<String,Integer> lines = new LinkedHashMap<String, Integer>();
 		_logger.info("Preparing JS file depenencies ... "+jsDepends);
 		String tmpDeps = cliTasks.runCommand("mktemp").trim();
 		for (String dependency : jsDepends.split(",")) {
