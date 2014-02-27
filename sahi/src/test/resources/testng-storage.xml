@@ -20,16 +20,17 @@
   	</test>
   	  	
   
-	<test name="StorageAutoInventoryTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventoryTest">
-			</class>
-		</classes>
-	</test>
-
+	<!-- Storage Node tests should run before StorageAutoInventoryTest -->
 	<test name="StorageNode">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.StorageNodesTest">
+			</class>
+		</classes>
+	</test>
+	
+	<test name="StorageAutoInventoryTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.tests.autoinventory.StorageAutoInventoryTest">
 			</class>
 		</classes>
 	</test>
