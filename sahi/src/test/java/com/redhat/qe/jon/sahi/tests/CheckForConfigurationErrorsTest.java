@@ -23,27 +23,36 @@ public class CheckForConfigurationErrorsTest extends SahiTestScript {
 
     @DataProvider
     public Object[][] getResourceTree() throws Exception {
-
-	// we store all resources into map grouped by resource key
-	// so we do not check more than 1 resource of given type
-	Map<String,Resource> tree = new HashMap<String, Resource>();
-	// get really all resources from all agents
-	for (String agentName : RestClient.getPlatformNames()) {
-	    Resource root = new Resource(sahiTasks, agentName);
-	    tree.put(agentName, root);
-	    for (Resource child : root.getChildrenTree()) {
-	        tree.put(child.getResourceType(), child);
-	    }
-	}
-	log.info("Retrieved "+tree.size()+" resources (max 1 resource of given type)");
-	Object[][] output = new Object[tree.values().size()][];
-	Iterator<Resource> iter = tree.values().iterator();
-	int i = 0;
-	while (iter.hasNext()) {
-	    output[i] = new Object[] {iter.next()};
-	    i+=1;
-	}
-	return output;
+        // these resource types are expected to have no valid configuration (e.g. it requires root permissions)
+        String[] ignoredResTypes = {"Postgres Server","SSHD","Cobbler"};
+        
+        // we store all resources into map grouped by resource key
+        // so we do not check more than 1 resource of given type
+        Map<String,Resource> tree = new HashMap<String, Resource>();
+        // get really all resources from all agents
+        for (String agentName : RestClient.getPlatformNames()) {
+            Resource root = new Resource(sahiTasks, agentName);
+            tree.put(agentName, root);
+            childLoop:
+            for (Resource child : root.getChildrenTree()) {
+                for (String ignoredResType : ignoredResTypes){
+                    if(ignoredResType.equals(child.getResourceType())){
+                        log.finer("Skipping " + ignoredResType + " resource type");
+                        continue childLoop;
+                    }
+                }
+                tree.put(child.getResourceType(), child);
+            }
+        }
+        log.info("Retrieved "+tree.size()+" resources (max 1 resource of given type)");
+        Object[][] output = new Object[tree.values().size()][];
+        Iterator<Resource> iter = tree.values().iterator();
+        int i = 0;
+        while (iter.hasNext()) {
+            output[i] = new Object[] {iter.next()};
+            i+=1;
+        }
+        return output;
     }
 
     @Test(groups = "check", dataProvider = "getResourceTree", description = "This test checks for each imported resource whether there is any error on Configuration tab and configuration can be retrieved")
