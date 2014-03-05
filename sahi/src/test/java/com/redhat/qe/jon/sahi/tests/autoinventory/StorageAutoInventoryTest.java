@@ -18,7 +18,7 @@ public class StorageAutoInventoryTest extends SahiTestScript {
 	Logger log = Logger.getLogger(this.getClass().getName());
 
 	@BeforeClass()
-	protected void uninventoryAllResources() {
+	protected void uninventoryAllResources() throws InterruptedException {
 		checkRequiredProperties("jon.agent.name");
 
 		platformName = System.getProperty("jon.agent.name");
@@ -26,23 +26,22 @@ public class StorageAutoInventoryTest extends SahiTestScript {
 		platform.uninventory(true);
 
 		log.info("platform name  " + platformName);
-
+		
+		// sleep 3 secs
+		Thread.sleep(3000);
+		
+		if(!sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("Platforms"),
+				platformName, Timing.WAIT_TIME))
+		{
+			throw new RuntimeException(platformName + " platform was not inventoried");
+		}
 	}
 
 	@Test
 	public void checkStorageNodeElementAutoInventoried() {
 
 		log.info(platformName);
-//		 sleep for 2 sec
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		// wait for platform auto-inventory
-		sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("Platforms"),
-				platformName, Timing.WAIT_TIME);
-		platform = new Resource(sahiTasks, platformName);
+	
 		// call platform manual auto-discovery
 		platform.operations().newOperation("Manual Autodiscovery");
 		// navigate to platform		
