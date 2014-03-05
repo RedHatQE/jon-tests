@@ -26,6 +26,7 @@ public class StorageAutoInventoryTest extends SahiTestScript {
 		platform.uninventory(true);
 
 		log.info("platform name  " + platformName);
+
 	}
 
 	@Test
@@ -41,6 +42,7 @@ public class StorageAutoInventoryTest extends SahiTestScript {
 		// wait for platform auto-inventory
 		sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("Platforms"),
 				platformName, Timing.WAIT_TIME);
+		platform = new Resource(sahiTasks, platformName);
 		// call platform manual auto-discovery
 		platform.operations().newOperation("Manual Autodiscovery");
 		// navigate to platform		
