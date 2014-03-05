@@ -83,7 +83,7 @@ public class StorageNodesTest extends SahiTestScript {
 		
 	}
 
-	@Test
+	@Test(groups={"blockedByBug-1071282"})
 	public void checkStorageNodeDetails() {
 		List<StorageNode> storageNodes;
 		StorageNodesAdministration storageNodesAdmin;
