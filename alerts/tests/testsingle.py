@@ -137,6 +137,7 @@ class FireControlAlert(RHQAlertTest):
         s.undefineAlert(a1)
 
     @attr('operationInProgress')
+    @blockedBy('1066947')
     def test_operationStatusInProgressRealPlatform(self):
         s = self.rhqServer()
         p = s.findPlatform()
