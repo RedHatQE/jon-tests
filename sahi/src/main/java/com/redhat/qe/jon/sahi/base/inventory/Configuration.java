@@ -118,15 +118,14 @@ public class Configuration extends ResourceTab {
 		 * saves configuration
 		 */
 		public void save() {
+		    tasks.waitFor(Timing.WAIT_TIME);
 			int buttons = tasks.cell("Save").countSimilar();
 			log.info("Save buttons : "+buttons);
 			ElementStub saveB = tasks.cell("Save["+(buttons-1)+"]");
-			String classStr = saveB.getAttribute("class");
-			log.fine("Class of picked Save button: "+classStr);
-			if(classStr.equals("buttonTitleDisabled")){
-			    log.severe("Save button" + saveB.toString() + ", is disabled!");
-			    throw new RuntimeException("Save button" + saveB.toString() + ", is disabled!");
+			if(!saveB.isVisible() && buttons > 1){
+			    saveB = tasks.cell("Save["+(buttons-2)+"]");
 			}
+			log.info("Clicking on Save button: "+saveB.toString());
 			tasks.xy(saveB, 3, 3).click();
 			Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("/Configuration updated*/"), 
 	                "Successful update message",Timing.WAIT_TIME),"Successful config update message expected!!");
