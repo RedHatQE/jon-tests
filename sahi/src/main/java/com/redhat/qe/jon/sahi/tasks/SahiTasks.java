@@ -879,21 +879,14 @@ public class SahiTasks extends ExtendedSahi {
     public boolean recentOperationsQuickLinks() {
     	this.gotoReportRecentOperationsPage();
         this.link("RHQ Agent").click();
-        ElementStub expandElement = this.image("row_collapsed.png").near(this.bold("Tags:"));
-        ElementStub collapsedElement = this.image("row_expanded.png").near(this.bold("Tags:"));
-        if(expandElement.exists()){
-        	expandElement.click();
-        }
+     
         int formTitleCoint = this.cell("formTitle").countSimilar();
         HashMap<String, String> formDetail = new HashMap<String, String>();
         for(int i=0; i<formTitleCoint; i++){
         	formDetail.put(this.cell("formTitle["+i+"]").getText(), this.cell("formCell["+i+"]").getText());
         }
         _logger.log(Level.INFO, "Form Data: "+formDetail);
-        if(!collapsedElement.exists()){
-        	_logger.log(Level.WARNING, "Collapsed Image not found!");
-        	return false;
-        }
+       
         return true;
 
     }
