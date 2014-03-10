@@ -19,6 +19,8 @@ if(configProperty== "rhq.agent.security-token"){
 
 
 var chnageConfiguration = resource.getConfiguration();
+println("CONFIG PROP BEFORE CHANGE IS = "+chnageConfiguration[configProperty]);
+println("INDEX OF , in STRING  "+(String.valueOf(chnageConfiguration[configProperty]).toString().indexOf("$")) )
 chnageConfiguration[configProperty]=configPropValue;
 var result = resource.updateConfiguration(chnageConfiguration);
 println("***************** resource.name *********************** "+resource.name + "\n\r");
@@ -28,8 +30,7 @@ assertTrue(( typeof result == "undefined" || result )  ,"Configuration change fa
 var newConfiguration = resource.getConfiguration();
 
 assertTrue(
-		((newConfiguration[configProperty]).toString()) == ((chnageConfiguration[configProperty])
-				.toString()),
+		((newConfiguration[configProperty]).toString()).equals((chnageConfiguration[configProperty]).toString()),
 				"Configuration change didn't work correctly. Expected value of '"
 				+ configProperty + "' is '"
 				+ chnageConfiguration[configProperty]

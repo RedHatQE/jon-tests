@@ -53,13 +53,13 @@ function getConfigurationsArray() {
 				}
 				value = oldConfiguration[key];
 				if (key != null && value != null
-						&& value.toString().indexOf(",") == -1
-						&& value.toString().indexOf("$") == -1
-						&& value.toString().indexOf(" ") == -1
-						&& value.toString().indexOf("[") == -1
-						&& value.toString().indexOf("]") == -1
-						&& value.toString().indexOf(";") == -1) {
-					if (value.toString() != "" && key != "") {
+						&& String.valueOf(value).toString().indexOf(",") == -1
+						&& String.valueOf(value).toString().indexOf("$") == -1
+						&& String.valueOf(value).toString().indexOf(" ") == -1
+						&& String.valueOf(value).toString().indexOf("[") == -1
+						&& String.valueOf(value).toString().indexOf("]") == -1
+						&& String.valueOf(value).toString().indexOf(";") == -1) {
+					if (String.valueOf(value).toString().toString() != "" && key != "") {
 						println("*******************  config push ************* ")
 						configs.push(key + " bool"
 								+ " " + value + " "
