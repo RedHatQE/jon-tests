@@ -7,14 +7,14 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 public class HelpTest  extends SahiTestScript  {
 	
 	
-	@Test (groups="HelpTest")
+	@Test (groups="HelpTestJON")
 	public void helpAboutTest() {
 		   
 		sahiTasks.helpAbout();
 		 
 	}
 	
-	@Test (groups="HelpTest")
+	@Test (groups="HelpTestJON")
 	public void helpFAQTest() {
 		        		
 		sahiTasks.helpFAQ();
@@ -22,7 +22,7 @@ public class HelpTest  extends SahiTestScript  {
 		
 	}
 	
-	@Test (groups="HelpTest")
+	@Test (groups="HelpTestJON")
 	public void helpDocumentation() {
 		  
 		sahiTasks.helpDocumentation();
@@ -43,28 +43,28 @@ public class HelpTest  extends SahiTestScript  {
 		        		
 	}
 	
-	@Test (groups="HelpTest")
+	@Test (groups="HelpTestJON")
 	public void helpHowToGroupDefinitions() {
 		
 		sahiTasks.helpHowToGroupDefinitions();
 		        		
 	}
 	
-	@Test (groups="HelpTest")
+	@Test (groups="HelpTestJON")
 	public void helpHowToSearchBar() {
 		
 		sahiTasks.helpHowToSearchBar();
 		        		
 	}
 	
-	@Test (groups="HelpTest")
+	@Test (groups="HelpTestJON")
 	public void helpCollapseExpandProduct() {
 		
 		sahiTasks.collapseExpandProduct();
 		        		
 	}
 	
-	@Test (groups="HelpTest")
+	@Test (groups="HelpTestJON")
 	public void helpCollapseExpandDocumentation() {
 		
 		sahiTasks.collapseExpandDocumentation();

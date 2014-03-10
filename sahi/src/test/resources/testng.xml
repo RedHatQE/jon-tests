@@ -119,6 +119,7 @@
 				<include name="setup"/>
 				<include name="teardown"/>
 				<include name="DashboardTest"/>
+				<include name="DashboardTestJON"/>
 			</run>
 		</groups>
 	</test>
@@ -160,6 +161,7 @@
 				<include name="setup"/>
 				<include name="teardown"/>
 				<include name="HelpTest"/>
+				<include name='HelpTestJON" />
 			</run>
 		</groups>
 	</test>
