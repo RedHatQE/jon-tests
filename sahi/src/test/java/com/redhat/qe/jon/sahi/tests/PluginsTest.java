@@ -42,17 +42,17 @@ import org.testng.annotations.Test;
 			ArrayList<List<Object>> agentPluginsdata = new ArrayList<List<Object>>();
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Abstract Augeas Plugin", true}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Abstract Database", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Aliases", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Aliases", false})); //rhq only
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Ant Bundle Plugin", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Apache HTTP Server", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Cobbler", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Cron", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"File Template Bundle Plugin", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Cobbler", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Cron", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"File Template Bundle Plugin", false})); //rhq only
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Generic JMX", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"GRUB Boot Loader", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"GRUB Boot Loader", false})); //rhq only
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Hibernate Services", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Hosts", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Hudson", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Hosts", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Hudson", false})); //rhq only
 			agentPluginsdata.add(Arrays.asList(new Object[]{"IIS", false}));
 //			agentPluginsdata.add(Arrays.asList(new Object[]{"JBoss Application Server", false}));
 //			agentPluginsdata.add(Arrays.asList(new Object[]{"JBoss Application Server 5.x", false}));
@@ -61,23 +61,23 @@ import org.testng.annotations.Test;
 			agentPluginsdata.add(Arrays.asList(new Object[]{"JBoss Application Server 7.x", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"JBossCache 2.x Services", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"JBossCache 3.x Services", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"mod_cluster", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"MySql Database", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Network Services", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"OpenSSH", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"mod_cluster", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"MySql Database", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Network Services", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"OpenSSH", false})); //rhq only
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Operating System Platforms", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Oracle Database", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Performance Test Plugin", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Postfix", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"PostgreSQL Database", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Receiver for SNMP Traps", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Oracle Database", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Performance Test Plugin", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Postfix", false})); //rhq only 
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"PostgreSQL Database", false})); //rhq only
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Receiver for SNMP Traps", false})); //rhq only
 			agentPluginsdata.add(Arrays.asList(new Object[]{"RHQ Agent", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"RHQ Server", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Samba", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Samba", false})); //rhq only
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Script", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Sudo Access", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Sudo Access", false})); //rhq only
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Tomcat Server", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Twitter Plugin", false}));
+//			agentPluginsdata.add(Arrays.asList(new Object[]{"Twitter Plugin", false})); //rhq only
 			return TestNGUtils.convertListOfListsTo2dArray(agentPluginsdata);
 		}
 		
@@ -86,9 +86,9 @@ import org.testng.annotations.Test;
 			ArrayList<List<Object>> serverPluginsdata = new ArrayList<List<Object>>();
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:CLI", true}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Email", false}));
-			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:IRC", false}));
-			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Microblog", false}));
-			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Mobicents", false}));
+//			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:IRC", false})); //rhq only
+//			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Microblog", false})); //rhq only
+//			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Mobicents", false})); //rhq only
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Operations", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Roles", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:SNMP", false}));
@@ -96,11 +96,11 @@ import org.testng.annotations.Test;
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Ant Bundle Processor", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Disk Content", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Drift:JPA (RHQ default)", false}));
-			serverPluginsdata.add(Arrays.asList(new Object[]{"File Template Bundle Processor", false}));
+//			serverPluginsdata.add(Arrays.asList(new Object[]{"File Template Bundle Processor", false})); //rhq only 
 			serverPluginsdata.add(Arrays.asList(new Object[]{"PackageType:CLI", false}));
 			//serverPluginsdata.add(Arrays.asList(new Object[]{"Perspective:Core", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"URL Content", false}));
-			serverPluginsdata.add(Arrays.asList(new Object[]{"Yum Content", false}));				
+//			serverPluginsdata.add(Arrays.asList(new Object[]{"Yum Content", false}));	//rhq only			
 			return TestNGUtils.convertListOfListsTo2dArray(serverPluginsdata);
 		}
 		
