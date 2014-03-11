@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 
 public class BundleComplianceFADTest extends BundleComplianceBase {
 
+    
     @Test()
     public void bundleComplianceFilesAndDirectories() {
         createJSRunner("bundles/init.js")
@@ -17,9 +18,11 @@ public class BundleComplianceFADTest extends BundleComplianceBase {
         createJSRunner("bundles/deployBundle.js").withArg("version", "1.0").addExpect("status : Success").run();
         client.runAndWait("find /tmp/foo");
         assertFile("subdir1/test", false);
-        assertDir("subdir2", true); // only everything under subdir2 must stay
+        assertDir("subdir2", true);
         assertFile("subdir2/test", true);
+        assertFile("test", true);
         assertFile("subdir1/bundle.war", true);
+        assertDir("subdir3", true);
     }
     
     @Test(dependsOnMethods="bundleComplianceFilesAndDirectories")
@@ -30,7 +33,9 @@ public class BundleComplianceFADTest extends BundleComplianceBase {
         client.runAndWait("find /tmp/foo");
         assertFile("subdir1/test", false);
         assertDir("subdir2", true);
-        assertFile("subdir2/test", true); // only everything under subdir2 must stay
+        assertFile("subdir2/test", true);
+        assertFile("test", true);
         assertFile("subdir1/bundle.war", true);
+        assertDir("subdir3", true);
     }
 }

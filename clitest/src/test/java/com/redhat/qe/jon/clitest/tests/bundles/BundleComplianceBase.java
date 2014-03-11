@@ -1,12 +1,12 @@
 package com.redhat.qe.jon.clitest.tests.bundles;
 
-import com.redhat.qe.jon.clitest.base.CliTestRunner;
-import com.redhat.qe.jon.clitest.base.OnAgentCliEngine;
-import com.redhat.qe.jon.common.util.SSHClient;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+
+import com.redhat.qe.jon.clitest.base.CliTestRunner;
+import com.redhat.qe.jon.clitest.base.OnAgentCliEngine;
+import com.redhat.qe.jon.common.util.SSHClient;
 
 public class BundleComplianceBase extends OnAgentCliEngine {
 
@@ -40,8 +40,10 @@ public class BundleComplianceBase extends OnAgentCliEngine {
     protected void createFiles() {
         client.runAndWait("mkdir -p /tmp/foo/subdir2");
         client.runAndWait("touch /tmp/foo/subdir2/test");
+        client.runAndWait("touch /tmp/foo/test");
         client.runAndWait("mkdir -p /tmp/foo/subdir1/subdir1");
         client.runAndWait("touch /tmp/foo/subdir1/test");
+        client.runAndWait("mkdir -p /tmp/foo/subdir3");
     }
     
     protected void assertFile(String file, boolean expectExists) {
