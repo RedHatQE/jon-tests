@@ -161,7 +161,7 @@
 				<include name="setup"/>
 				<include name="teardown"/>
 				<include name="HelpTest"/>
-				<include name='HelpTestJON" />
+				<include name="HelpTestJON" />
 			</run>
 		</groups>
 	</test>
