@@ -31,7 +31,7 @@ public abstract class SahiTestScript extends TestScript {
 	protected String bundleHostURL			= System.getProperty("jon.bundleServer.url");
 	
 	//Added this map to manage data provider for JON and RHQ
-	private LinkedList<String> testNgDataProviderGroups= new LinkedList<String>();
+	private static LinkedList<String> testNgDataProviderGroups= new LinkedList<String>();
 
 	public SahiTestScript() {
 		super();
@@ -54,7 +54,7 @@ public abstract class SahiTestScript extends TestScript {
     private void updateTestNgDataProviderGroups(){
     	String[] groups = System.getProperty("testng.data.provider.groups", "RHQ").split(",");
     	for(String group: groups){
-    		this.testNgDataProviderGroups.addLast(group);
+    		testNgDataProviderGroups.addLast(group);
     	}
     	log.fine("testng.data.provider.groups: "+testNgDataProviderGroups);
     }

@@ -57,7 +57,7 @@ public class PluginsTest extends SahiTestScript {
 		agentPluginsdata.add(Arrays.asList(new Object[]{"Script", false}));
 		agentPluginsdata.add(Arrays.asList(new Object[]{"Tomcat Server", false}));
 
-		if(this.getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.JON.toString())){
+		if(getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.JON.toString())){
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Apache ActiveMQ", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Apache Camel", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Apache CXF", false}));
@@ -81,7 +81,7 @@ public class PluginsTest extends SahiTestScript {
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Teiid Plugin[1]", false}));
 		}
 
-		if(this.getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.RHQ.toString())){
+		if(getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.RHQ.toString())){
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Abstract NO-OP plugin", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Aliases", false}));				
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Cobbler", false}));
@@ -122,12 +122,12 @@ public class PluginsTest extends SahiTestScript {
 		serverPluginsdata.add(Arrays.asList(new Object[]{"PackageType:CLI", false}));
 		serverPluginsdata.add(Arrays.asList(new Object[]{"URL Content", false}));
 
-		if(this.getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.JON.toString())){
+		if(getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.JON.toString())){
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Fuse Fabric Groups Plugin", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"JBoss CSP Content", false}));
 		}
 
-		if(this.getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.RHQ.toString())){
+		if(getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.RHQ.toString())){
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:IRC", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Microblog", false}));
 			serverPluginsdata.add(Arrays.asList(new Object[]{"Alert:Mobicents", false}));
