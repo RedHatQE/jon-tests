@@ -51,17 +51,18 @@ public abstract class SahiTestScript extends TestScript {
     }
     
     //Converts comma separated groups value to LinkedList object.
-    @BeforeSuite(groups={"setup"})
     private void updateTestNgDataProviderGroups(){
     	String[] groups = System.getProperty("testng.data.provider.groups", "RHQ").split(",");
     	for(String group: groups){
     		this.testNgDataProviderGroups.addLast(group);
     	}
+    	log.fine("testng.data.provider.groups: "+testNgDataProviderGroups);
     }
         
 	@BeforeSuite(groups={"setup"})
 	public void openBrowser() {
 		checkForSahiProxyRunning();
+		updateTestNgDataProviderGroups(); //Update system environment to LinkedList
 		log.finer("Opening browser");
 		sahiTasks.open();
 		log.finer("Loading RHQ system page: "+System.getProperty("jon.server.url"));
