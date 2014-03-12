@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -28,6 +29,9 @@ public abstract class SahiTestScript extends TestScript {
 	protected String sahiUserdataDir		= System.getProperty("jon.sahi.userdata.dir", sahiBaseDir+File.separator+"userdata");
 
 	protected String bundleHostURL			= System.getProperty("jon.bundleServer.url");
+	
+	//Added this map to manage data provider for JON and RHQ
+	private LinkedList<String> testNgDataProviderGroups= new LinkedList<String>();
 
 	public SahiTestScript() {
 		super();
@@ -38,6 +42,21 @@ public abstract class SahiTestScript extends TestScript {
     public SahiTestScript(SahiTasks sahiTasksToUse) {
         super();
         sahiTasks = sahiTasksToUse;
+    }
+    
+    
+    //Add entry here if you are using new list of groups, other than listed below
+    public enum TESTNG_DATA_PROVIDER_GROUPS{
+    	JON,RHQ
+    }
+    
+    //Converts comma separated groups value to LinkedList object.
+    @BeforeSuite(groups={"setup"})
+    private void updateTestNgDataProviderGroups(){
+    	String[] groups = System.getProperty("testng.data.provider.groups", "RHQ").split(",");
+    	for(String group: groups){
+    		this.testNgDataProviderGroups.addLast(group);
+    	}
     }
         
 	@BeforeSuite(groups={"setup"})
@@ -95,5 +114,9 @@ public abstract class SahiTestScript extends TestScript {
 					"Unable to connect to SAHI proxy on http://localhost:"+port+" - SAHI is not running! Please start it up");
 		}
 
+	}
+
+	public LinkedList<String> getTestNgDataProviderGroups() {
+		return testNgDataProviderGroups;
 	}
 }
