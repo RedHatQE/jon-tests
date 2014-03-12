@@ -82,7 +82,6 @@ public class PluginsTest extends SahiTestScript {
 		}
 
 		if(getTestNgDataProviderGroups().contains(TESTNG_DATA_PROVIDER_GROUPS.RHQ.toString())){
-			agentPluginsdata.add(Arrays.asList(new Object[]{"Abstract NO-OP plugin", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Aliases", false}));				
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Cobbler", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Cron", false}));
