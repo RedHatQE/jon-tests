@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ -z "$1" ] ; then
+    echo "Missing JON server" 1>&2;
+    exit 1
+fi
+
+
+cat > ~/automation.properties <<DELIM
+jon.server.host=$1
+jon.server.user=hudson
+jon.server.password=hudson
+jon.agent.host=$1
+jon.agent.name=$1
+jon.agent.user=hudson
+jon.agent.password=hudson
+DELIM
+
+cd jon-tests-master/clitest
+gradle clean test
+
+/usr/sbin/nginx 
+
+echo " ***** You are now entering Docker container shell.  'exit' to quit  *****"
+bash
+exit 0
