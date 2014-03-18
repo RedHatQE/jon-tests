@@ -2804,7 +2804,7 @@ var bundles = (function() {
             params.password = params.password || null;
             params.groups = params.groups || null;
             common.trace("bundles.create('params=" + common.objToString(params) + "')");
-            return bundles.createFromDistFile(params.dist, params.username, params.password, params.groups);
+            return _createFromDistFile(params.dist, params.username, params.password, params.groups);
         },
         /**
          * creates a bundle (deprecated)

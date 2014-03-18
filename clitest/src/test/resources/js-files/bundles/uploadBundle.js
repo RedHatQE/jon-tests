@@ -24,7 +24,7 @@ assertTrue(bundles.find().length == 0, "All bundles have been removed");
 
 println("Creating bundle from dist-file using " + url);
 try {
-	var bundle = bundles.createFromDistFile(url, user, pass);
+	var bundle = bundles.create({dist:url, username:user, password:pass});
 	assertTrue(bundle != null);
 	println(bundle);
 	assertTrue(bundles.find().length == 1, "New bundle was returned from server");
