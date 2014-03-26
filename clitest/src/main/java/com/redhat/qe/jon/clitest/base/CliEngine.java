@@ -192,7 +192,7 @@ public class CliEngine extends CliTestScript {
 			}
 		}
 		
-		String command = commandPrefix + " export RHQ_CLI_JAVA_OPTS=-Drhq.client.version-check=false; "+CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+targetFile;
+		String command = commandPrefix + CliEngine.cliShLocation+" -s "+CliEngine.rhqTarget+" -u "+this.cliUsername+" -p "+this.cliPassword+" -f "+targetFile;
 		command +=" "+cliArgs;
 
 		// get live output in log file on server
