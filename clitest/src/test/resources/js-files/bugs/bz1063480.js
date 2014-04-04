@@ -21,9 +21,13 @@ var conf = rhqDS.getConfiguration();
 assertTrue(conf != null, "No configuration retrieved from RHQDS resource!!");
 var dbType = conf['driver-name'];
 assertTrue(dbType == "oracle" || dbType == "postgres", "driver-name is expected to be 'oracle' or 'postgres', but it is '"+dbType+"'");
+var noTxSeparateTool = conf['no-tx-separate-pool']
 if(dbType == "oracle"){
     common.debug("Oracle driver found, checking no-tx-separate-pool..");
-    var noTxSeparateTool = conf['no-tx-separate-pool']
-    assertTrue(noTxSeparateTool == true, "no-tx-separate-tool must be true!! Actual value: '"+noTxSeparateTool+"'");
+    assertTrue(noTxSeparateTool == true, "Oracle db is used, no-tx-separate-tool must be true!! Actual value: '"+noTxSeparateTool+"'");
+    common.debug("no-tx-separate-pool: '"+noTxSeparateTool+"'");
+}else{
+    common.debug("Postgres driver found, checking no-tx-separate-pool..");
+    assertTrue(noTxSeparateTool == false, "Postgres db is used, no-tx-separate-tool should be false!! Actual value: '"+noTxSeparateTool+"'");
     common.debug("no-tx-separate-pool: '"+noTxSeparateTool+"'");
 }
