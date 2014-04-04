@@ -4032,6 +4032,7 @@ var Resource = function (param) {
 				common.debug("Configuration has not been changed");
 				return;
 			}
+			// TODO see https://bugzilla.redhat.com/show_bug.cgi?id=1020374
 			if (update.status == ConfigurationUpdateStatus.INPROGRESS) {
 				var pred = function() {
 					var up = ConfigurationManager.getLatestResourceConfigurationUpdate(_id);
