@@ -1,16 +1,17 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
-import com.redhat.qe.*;
-import com.redhat.qe.jon.sahi.base.editor.*;
-import com.redhat.qe.jon.sahi.tasks.*;
-import net.sf.sahi.client.*;
+import com.redhat.qe.Assert;
+import com.redhat.qe.jon.sahi.base.editor.ConfigEditor;
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tasks.Timing;
+import net.sf.sahi.client.ElementStub;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.*;
+import java.util.logging.Logger;
 
 public class Inventory extends ResourceTab{
 
@@ -207,7 +208,7 @@ public class Inventory extends ResourceTab{
 	    			return;
 	    		}
 	    		if (status_progress.equals(status)) {
-	    			log.fine("Operation in progess, waiting "+Timing.toString(waitTime)+", refreshing ..");
+	    			log.fine("Operation in progress, waiting "+Timing.toString(waitTime)+", refreshing ..");
                     tasks.waitFor(waitTime);
 	    			refresh();
 		    		continue;
@@ -225,7 +226,7 @@ public class Inventory extends ResourceTab{
 	    		}
 
 	    	}
-	    	log.info("Checking resurce addition/removal timed out");
+	    	log.info("Checking resource addition/removal timed out");
 	    	Assert.assertTrue(false, message);
 		}
 
