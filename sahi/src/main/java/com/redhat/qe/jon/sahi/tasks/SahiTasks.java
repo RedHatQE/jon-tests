@@ -605,6 +605,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void loginNewUser(String newUser, String password) {
+        this.waitForElementVisible(this, this.textbox("user"), "Login field", Timing.WAIT_TIME);
         this.textbox("user").setValue(newUser);
         this.password("password").setValue(password);
         this.cell("Login").click();
