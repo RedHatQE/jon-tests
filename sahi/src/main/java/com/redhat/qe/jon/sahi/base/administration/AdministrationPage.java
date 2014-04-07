@@ -15,7 +15,7 @@ import com.redhat.qe.jon.sahi.tasks.Timing;
  *
  */
 public class AdministrationPage {
-	private static Logger log = Logger.getLogger(Navigator.class.getName());
+	private static Logger log = Logger.getLogger(AdministrationPage.class.getName());
 	protected SahiTasks tasks = null;
 	protected Editor editor = null;
 	
