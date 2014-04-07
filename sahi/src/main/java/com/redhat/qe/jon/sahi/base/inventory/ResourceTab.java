@@ -34,6 +34,9 @@ public abstract class ResourceTab {
 		uriToTabmapping.put("Operations/Schedules", new String[] {"Operations","Schedules"});
         uriToTabmapping.put("Operations/History", new String[] {"Operations","History"});
 		uriToTabmapping.put("Summary", new String[] {"Summary"});
+		uriToTabmapping.put("Events", new String[] {"Events"});
+		uriToTabmapping.put("Drift", new String[] {"Drift"});
+		uriToTabmapping.put("Content", new String[] {"Content"});
 	}
 
 	/**

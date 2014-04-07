@@ -212,6 +212,27 @@ public class Resource {
 		return (Monitoring)new Monitoring(tasks, this).navigateFull();
 	}
 	/**
+     * creates <b>Events</b> resource tab for this resource and navigates to it
+     * @return resource tab
+     */
+    public Events events() {
+        return (Events)new Events(tasks, this).navigateFull();
+    }
+    /**
+     * creates <b>Drift</b> resource tab for this resource and navigates to it
+     * @return resource tab
+     */
+    public Drift drift() {
+        return (Drift)new Drift(tasks, this).navigateFull();
+    }
+    /**
+     * creates <b>Content</b> resource tab for this resource and navigates to it
+     * @return resource tab
+     */
+    public Content content() {
+        return (Content)new Content(tasks, this).navigateFull();
+    }
+	/**
 	 * resource's path
 	 * @return resource's path
 	 */
