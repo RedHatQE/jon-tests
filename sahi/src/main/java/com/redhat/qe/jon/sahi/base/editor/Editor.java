@@ -20,8 +20,9 @@ public class Editor {
      * asserts all required input fields have been filled
      */
     public void assertRequiredInputs() {
-        tasks.waitFor(Timing.WAIT_TIME);
-        Assert.assertTrue(!tasks.image("exclamation.png").exists(), "All required inputs were provided");
+        ElementStub exclamationMark = tasks.image("exclamation.png");
+        Assert.assertFalse(tasks.waitForElementExists(tasks, exclamationMark, exclamationMark.toString(), Timing.WAIT_TIME),
+                "All required inputs were provided");
     }
 
     /**
@@ -31,8 +32,10 @@ public class Editor {
      * @param value to be set
      */
     public void setText(String name, String value) {
-        tasks.waitFor(Timing.WAIT_TIME);
-        tasks.textbox(name).setValue(value);
+        ElementStub textbox = tasks.textbox(name);
+        tasks.waitForElementExists(tasks, textbox, textbox.toString(), Timing.WAIT_TIME);
+        textbox.setValue(value);
+        tasks.waitForElementToContainValue(tasks, textbox, value, Timing.WAIT_TIME);
     }
     
     /**
@@ -67,8 +70,9 @@ public class Editor {
      * @return value filled in the specified textbox field
      */
     public String getText(String name) {
-        tasks.waitFor(Timing.WAIT_TIME);
-        return tasks.textbox(name).getValue();
+        ElementStub textbox = tasks.textbox(name);
+        tasks.waitForElementExists(tasks, textbox, textbox.toString(), Timing.WAIT_TIME);
+        return textbox.getValue();
     }
 
     /**
@@ -78,8 +82,10 @@ public class Editor {
      * @param value the text to fill the specified textarea
      */
     public void setTextInTextArea(String name, String value) {
-        tasks.waitFor(Timing.WAIT_TIME);
-        tasks.textarea(name).setValue(value);
+        ElementStub textarea = tasks.textarea(name);
+        tasks.waitForElementExists(tasks, textarea, textarea.toString(), Timing.WAIT_TIME);
+        textarea.setValue(value);
+        tasks.waitForElementToContainValue(tasks, textarea, value, Timing.WAIT_TIME);
     }
     
     /**
@@ -113,13 +119,15 @@ public class Editor {
      * @return text filled in the specified textarea element
      */
     public String getTextInTextArea(String name) {
-        tasks.waitFor(Timing.WAIT_TIME);
+        ElementStub textarea = tasks.textarea(name);
+        tasks.waitForElementExists(tasks, textarea, textarea.toString(), Timing.WAIT_TIME);
         return tasks.textarea(name).getValue();
     }
 
     public void setPassword(String name, String value) {
-        tasks.waitFor(Timing.WAIT_TIME);
-        tasks.password(name).setValue(value);
+        ElementStub password = tasks.password(name);
+        tasks.waitForElementExists(tasks, password, password.toString(), Timing.WAIT_TIME);
+        password.setValue(value);
     }
     
     /**
@@ -182,8 +190,6 @@ public class Editor {
                         return;
                     }
                 }
-
-
             }
         }
         throw new RuntimeException("Unable to jump to section [" + name + "]");
