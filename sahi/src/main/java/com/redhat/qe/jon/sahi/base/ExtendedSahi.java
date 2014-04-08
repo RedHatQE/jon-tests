@@ -1,15 +1,15 @@
 package com.redhat.qe.jon.sahi.base;
 
 
+import net.sf.sahi.client.Browser;
+import net.sf.sahi.client.ElementStub;
+import net.sf.sahi.config.Configuration;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.sf.sahi.client.Browser;
-import net.sf.sahi.client.ElementStub;
-import net.sf.sahi.config.Configuration;
 
 /**
  * This class extends the Browser functionality.  It 
@@ -186,7 +186,33 @@ public class ExtendedSahi extends Browser {
 		_logger.warning("Failed to get the element! ["+element+"]");
 		return false;
 	}
-	
+
+    /**
+     * Waits for specified timeout for specified element to contain specified value
+     * *
+     * @param browser
+     * @param element element which should contain the value
+     * @param value  value of the element
+     * @param waitTime max wait time
+     * @return true if and only if element exists and contains specified value, false otherwise
+     */
+	public boolean waitForElementToContainValue(Browser browser, ElementStub element, String value, long waitTime) {
+        _logger.finer("Waiting for the element: ["+element+"], to contain value ["+value+"] Remaining wait time: "+(waitTime/1000)+" Second(s)...");
+        while(waitTime >=  0){
+            if(element.exists() && element.getValue().equals(value)){
+                _logger.info("Element ["+element+"] is visible and contains specified value ["+value+"]");
+                return true;
+            }else{
+                browser.waitFor(500);
+                waitTime -= 500;
+                if((waitTime) > 0){
+                    _logger.finer("Waiting for the element: ["+element+"], Remaining wait time: "+(waitTime/1000)+" Second(s)...");
+                }
+            }
+        }
+        _logger.warning("Failed to get the element! ["+element+"] with value ["+value+"]");
+        return false;
+    }
 	
 	/**
 	 * Clicks on first found visible element.
