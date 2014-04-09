@@ -75,11 +75,14 @@ public class Operations extends ResourceTab {
         }
         log.fine("Asserting operation [" + opName + "] result, expecting " + succ);
         getResource().operations().history();
-        int allOperationStartedTimeout = Timing.TIME_30S;
+        int allOperationStartedTimeout = Timing.TIME_1M;
         while (tasks.cell("not yet started").in(tasks.div(opName).parentNode("tr")).isVisible() && allOperationStartedTimeout > 0) {
             allOperationStartedTimeout -= Timing.WAIT_TIME;
             tasks.waitFor(Timing.WAIT_TIME);
             tasks.cell("Refresh").click();
+        }
+        if (tasks.cell("not yet started").in(tasks.div(opName).parentNode("tr")).isVisible()) {
+            log.warning("[not yet started] was found even after " + Timing.toString(Timing.TIME_1M));
         }
 
         // sort by Date Submitted
