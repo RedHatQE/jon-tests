@@ -17,6 +17,14 @@ import com.redhat.qe.jon.sahi.base.inventory.groups.AllGroupsPage;
 import com.redhat.qe.jon.sahi.base.inventory.groups.Group;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
+/**
+ * This test creates user with default permissions and navigates through 
+ * resource tabs and top level tabs checking if any Global error message
+ * was shown.
+ * 
+ * @author fbrychta
+ *
+ */
 public class DefaultUserTest extends OnAgentSahiTestScript {
     public static String USER_NAME = "testUser";
     public static String USER_PASSWORD = "password";
@@ -37,6 +45,7 @@ public class DefaultUserTest extends OnAgentSahiTestScript {
         
         groupsPage.deleteGroup(groupName);
         groupsPage.createNewGroup(testGroup);
+        
         
         // create a new role
         RolesPage rolesPage = new RolesPage(sahiTasks);

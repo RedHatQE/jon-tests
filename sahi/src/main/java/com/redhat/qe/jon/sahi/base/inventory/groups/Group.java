@@ -2,6 +2,11 @@ package com.redhat.qe.jon.sahi.base.inventory.groups;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents general resource group.
+ * @author fbrychta
+ *
+ */
 public class Group {
     private String name = null;
     private String description = null;

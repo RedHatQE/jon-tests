@@ -8,6 +8,11 @@ import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
+/**
+ * This class represents All Groups page.
+ * @author fbrychta
+ *
+ */
 public class AllGroupsPage {
     private static Logger log = Logger.getLogger(AllGroupsPage.class.getName());
     protected SahiTasks tasks = null;
@@ -31,6 +36,11 @@ public class AllGroupsPage {
         return this;
     }
     
+    /**
+     * Creates a given group.
+     * @param newGroup
+     * @return this
+     */
     public AllGroupsPage createNewGroup(Group newGroup){
         tasks.cell("New").click();
         tasks.waitForElementVisible(tasks, tasks.cell("Create Group"), "Create Group label", Timing.WAIT_TIME);
@@ -69,6 +79,11 @@ public class AllGroupsPage {
         return this;
     }
     
+    /**
+     * Removes a group with given name.
+     * @param groupName
+     * @return this
+     */
     public AllGroupsPage deleteGroup(String groupName){
         if(tasks.div(groupName).isVisible()){
             log.info("Removing a group named " + groupName);

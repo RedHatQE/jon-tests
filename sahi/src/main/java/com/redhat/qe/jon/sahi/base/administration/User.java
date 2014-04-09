@@ -2,6 +2,11 @@ package com.redhat.qe.jon.sahi.base.administration;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents rhq User.
+ * @author fbrychta
+ *
+ */
 public class User {
     private String name = null;
     private String password = null;

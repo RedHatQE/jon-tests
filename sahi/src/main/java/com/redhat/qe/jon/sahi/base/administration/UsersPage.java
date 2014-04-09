@@ -5,6 +5,11 @@ import java.util.logging.Logger;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
+/**
+ * This class represents Users page.
+ * @author fbrychta
+ *
+ */
 public class UsersPage extends AdministrationPage {
     private static Logger log = Logger.getLogger(UsersPage.class.getName());
     protected SahiTasks tasks = null;
@@ -27,6 +32,11 @@ public class UsersPage extends AdministrationPage {
         return this;
     }
     
+    /**
+     * Creates given user
+     * @param user
+     * @return this
+     */
     public UsersPage createUser(User user){
         tasks.cell("New").click();
         tasks.waitForElementVisible(tasks, tasks.cell("Create New User"), "Create New User label", Timing.WAIT_TIME);
@@ -70,6 +80,11 @@ public class UsersPage extends AdministrationPage {
         return this;
     }
     
+    /**
+     * Removes user with given name.
+     * @param userName
+     * @return this
+     */
     public UsersPage deleteUser(String userName){
         if(tasks.div(userName).isVisible()){
             log.info("Removing a user named " + userName);
@@ -82,5 +97,4 @@ public class UsersPage extends AdministrationPage {
         }
         return this;
     }
-
 }

@@ -5,6 +5,11 @@ import java.util.logging.Logger;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
+/**
+ * Represents Roles page.
+ * @author fbrychta
+ *
+ */
 public class RolesPage extends AdministrationPage {
     private static Logger log = Logger.getLogger(RolesPage.class.getName());
     protected SahiTasks tasks = null;
@@ -27,6 +32,11 @@ public class RolesPage extends AdministrationPage {
         return this;
     }
     
+    /**
+     * Creates given role.
+     * @param role
+     * @return this
+     */
     public RolesPage createRole(Role role){
         tasks.cell("New").click();
         tasks.waitForElementVisible(tasks, tasks.cell("Create New Role"), "Create New Role label", Timing.WAIT_TIME);
@@ -63,6 +73,11 @@ public class RolesPage extends AdministrationPage {
         return this;
     }
     
+    /**
+     * Removes a role with given name.
+     * @param roleName
+     * @return this
+     */
     public RolesPage deleteRole(String roleName){
         if(tasks.div(roleName).isVisible()){
             log.info("Removing a role named " + roleName);

@@ -2,6 +2,11 @@ package com.redhat.qe.jon.sahi.base.administration;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents rhq Role.
+ * @author fbrychta
+ *
+ */
 public class Role {
     private String name = null;
     private String description = null;
