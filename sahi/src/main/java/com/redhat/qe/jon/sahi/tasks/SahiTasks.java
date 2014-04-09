@@ -38,15 +38,25 @@ public class SahiTasks extends ExtendedSahi {
     // Login/Logout
     // ***************************************************************************
     public boolean login(String userName, String password) {
-    	if(this.waitForElementExists(this, this.link("Logout"), "Link: Logout", 1000*3)){
-    		this.link("Logout").click();
-    	}    	
-    	if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*240)){
-    		return false;
-    	}
-        this.textbox("user").setValue(userName);
-        this.password("password").setValue(password);
-        this.cell("Login").click();
+        if(this.waitForElementExists(this, this.link("Logout"), "Link: Logout", 1000*3)){
+            this.link("Logout").click();
+        }
+        // check if a new login page is visible
+        if(!this.waitForElementExists(this, this.textbox("inputUsername"), "inputUsername", 1000*240)){
+            if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*240)){
+                return false;
+            }else{
+                // old login page
+                this.textbox("user").setValue(userName);
+                this.password("password").setValue(password);
+                this.cell("Login").click();
+            }
+        }else{
+            // new login page
+            this.textbox("inputUsername").setValue(userName);
+            this.password("inputPassword").setValue(password);
+            this.submit("Log In").click();
+        }
         return true;
     }
 
@@ -605,11 +615,17 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void loginNewUser(String newUser, String password) {
-        this.waitForElementVisible(this, this.textbox("user"), "Login field", Timing.WAIT_TIME);
-        this.textbox("user").setValue(newUser);
-        this.password("password").setValue(password);
-        this.cell("Login").click();
-
+        if(!this.waitForElementExists(this, this.textbox("inputUsername"), "inputUsername", 1000*240)){
+            this.waitForElementVisible(this, this.textbox("user"), "Login field", Timing.WAIT_TIME);
+            this.textbox("user").setValue(newUser);
+            this.password("password").setValue(password);
+            this.cell("Login").click();
+        }else{
+            // new login page
+            this.textbox("inputUsername").setValue(newUser);
+            this.password("inputPassword").setValue(password);
+            this.submit("Log In").click();
+        }
     }
 
     public void navigateToAllGroups() {

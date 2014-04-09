@@ -19,8 +19,7 @@ public class LoginLogoutTest extends SahiTestScript {
 		_logger.finer("Logging into RHQ system");
 		Assert.assertTrue(sahiTasks.login(guiUsername, guiPassword), "Login status");
 		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
-		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
-		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
+		Assert.assertTrue(sahiTasks.link("Logout").isVisible(), "User should be logged in!");
 	}
 	
 	@SkipIf(property="ldap.configured",notEquals="true")
@@ -30,17 +29,17 @@ public class LoginLogoutTest extends SahiTestScript {
 		_logger.finer("Logging into RHQ system");
 		Assert.assertTrue(sahiTasks.ldapLogin(guiUsername, guiPassword, firstName, lastName, email, phoneNumber, department), "Login status");
 		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
-		Assert.assertFalse(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
-		Assert.assertFalse(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
+		Assert.assertTrue(sahiTasks.link("Logout").isVisible(), "User should be logged in!");
 	}
 	
 	@Test (groups={"functional","sanity","setup","logout"})
 	public void logoutTest(){
 		_logger.finer("Logging out RHQ system");
 		sahiTasks.logout();
-		Assert.assertTrue(sahiTasks.textbox("user").exists(), "Login user TextBox available?: "+sahiTasks.textbox("user").exists());
-		Assert.assertTrue(sahiTasks.password("password").exists(), "Login user password field available?: "+sahiTasks.password("password").exists());
-		Assert.assertTrue(sahiTasks.cell("Login").exists(), "Login button available?: "+sahiTasks.cell("Login").exists());
+		Assert.assertTrue(sahiTasks.textbox("user").exists() || sahiTasks.textbox("inputUsername").exists(),
+		        "Login user TextBox should be visible!");
+		Assert.assertTrue(sahiTasks.password("password").exists() || sahiTasks.password("inputPassword").exists(),
+		        "Login user password field should be visible!");
 	}
 	
 	@SkipIf(property="ldap.url", isNull=true)
