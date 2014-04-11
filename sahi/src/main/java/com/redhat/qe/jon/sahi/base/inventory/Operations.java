@@ -48,10 +48,19 @@ public class Operations extends ResourceTab {
         }
         tasks.cell("New").click();
         if (!tasks.cell("Create New Operation Schedule").isVisible()) {
-           tasks.waitFor(Timing.TIME_1S);
+            tasks.waitFor(Timing.TIME_1S);
+            if (tasks.cell("New").exists()) {
+                log.fine("Trying one more time clicking New button");
+                tasks.cell("New").click();
+            }
         }
-
+        if (!tasks.cell("Create New Operation Schedule").isVisible()) {
+            tasks.waitFor(Timing.TIME_1S);
+        }
         tasks.reloadPage();
+        if (!tasks.cell("Create New Operation Schedule").isVisible()) {
+            tasks.waitFor(Timing.TIME_1S);
+        }
         return new Operation(tasks, name);
     }
 
