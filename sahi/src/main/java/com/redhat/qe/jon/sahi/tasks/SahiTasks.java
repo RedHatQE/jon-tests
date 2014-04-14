@@ -41,21 +41,27 @@ public class SahiTasks extends ExtendedSahi {
         if(this.waitForElementExists(this, this.link("Logout"), "Link: Logout", 1000*3)){
             this.link("Logout").click();
         }
+
+        int timeout = 240*Timing.TIME_1S;
+
+        while (!this.textbox("inputUsername").exists() && !this.textbox("user").exists() && timeout > 0) {
+            timeout -= Timing.TIME_1S;
+            _logger.fine("Waiting another second for login screen to appear, remaining " + Timing.toString(timeout));
+        }
+
         // check if a new login page is visible
-        if(!this.waitForElementExists(this, this.textbox("inputUsername"), "inputUsername", 1000*240)){
-            if(!this.waitForElementExists(this, this.textbox("user"), "user", 1000*240)){
-                return false;
-            }else{
-                // old login page
-                this.textbox("user").setValue(userName);
-                this.password("password").setValue(password);
-                this.cell("Login").click();
-            }
-        }else{
+        if (this.textbox("inputUsername").exists()) {
             // new login page
             this.textbox("inputUsername").setValue(userName);
             this.password("inputPassword").setValue(password);
             this.submit("Log In").click();
+        } else if (this.textbox("user").exists()) {
+            // old login page
+            this.textbox("user").setValue(userName);
+            this.password("password").setValue(password);
+            this.cell("Login").click();
+        } else {
+            return false;
         }
         return true;
     }
