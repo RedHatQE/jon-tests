@@ -22,6 +22,7 @@ Generally, you need a properly configured environment (have JDK (1.6+), setup JA
   * **jon.server.url** (Required) - an url to JON server (i.e. http://10.34.131.88:7080)
   * **jon.browser.opt** (Optional) - additional options passed to firefox process (use -P sahi to run sahi firefox profile) 
   * **jon.browser.path** (Optional) - a path to your firefox binary 
+  * **testng.data.provider.groups** (Optional) - Data provider in sahi tests, either JON or RHQ, default RHQ
 
 #### Ready? Go!
   You can execute automation from this folder by running
