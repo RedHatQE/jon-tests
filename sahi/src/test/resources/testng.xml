@@ -34,12 +34,7 @@
 			</class>
 		</classes>
 	</test>
-    <test name="DefaultUserTest">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.DefaultUserTest">
-            </class>
-        </classes>
-    </test>
+
 	<test name="Metric Collection Schedules validation">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
@@ -400,7 +395,26 @@
 		</classes>
 	</test>
 
-
+    <test name="Postgres Plugin Server Test">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresServerTest">
+            </class>
+        </classes>
+    </test>
+    
+    <test name="Postgres Plugin Database Test">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresDatabaseTest">
+            </class>
+        </classes>
+    </test>
+    
+    <test name="Postgres Plugin Database Table Test">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresDatabaseTableTest">
+            </class>
+        </classes>
+    </test>
 
 	<test name="Setup LDAP">
 		<classes>
