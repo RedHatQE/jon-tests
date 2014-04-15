@@ -34,7 +34,12 @@
 			</class>
 		</classes>
 	</test>
-
+    <test name="DefaultUserTest">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.DefaultUserTest">
+            </class>
+        </classes>
+    </test>
 	<test name="Metric Collection Schedules validation">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
