@@ -29,9 +29,9 @@ public class History {
 
 	/** Constructor. 
 	 *  The default behavior of this object is 
-	 *  Converts HashMap<String, String> values in to History.java object
+	 *  Converts HashMap values to History.java object
 	 *  @param columns
-	 *  @param HashMap<String, String>
+	 *  @param map
 	 */  
 	public History(String columns, HashMap<String, String> map){
 		super();
