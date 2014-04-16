@@ -308,7 +308,6 @@
 		</classes>
 	</test>
 
-
 	<test name="Scheduling Groups">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForGroupsTest">
@@ -331,7 +330,28 @@
 
 	</test>
 
-	<test name="Permissions Test">
+    <test name="Postgres Plugin Server Test">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresServerTest">
+            </class>
+        </classes>
+    </test>
+    
+    <test name="Postgres Plugin Database Test">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresDatabaseTest">
+            </class>
+        </classes>
+    </test>
+    
+    <test name="Postgres Plugin Database Table Test">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresDatabaseTableTest">
+            </class>
+        </classes>
+    </test>
+    
+    <test name="Permissions Test">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.PermissionsTest">
 				<methods>
@@ -399,27 +419,6 @@
 			</class>
 		</classes>
 	</test>
-
-    <test name="Postgres Plugin Server Test">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresServerTest">
-            </class>
-        </classes>
-    </test>
-    
-    <test name="Postgres Plugin Database Test">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresDatabaseTest">
-            </class>
-        </classes>
-    </test>
-    
-    <test name="Postgres Plugin Database Table Test">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresDatabaseTableTest">
-            </class>
-        </classes>
-    </test>
 
 	<test name="Setup LDAP">
 		<classes>
