@@ -22,7 +22,7 @@ abstract class PostgresPluginBase {
 	}
 	
 	public void navigateToPostgresBase() {
-	    Resource agent = new Resource(tasks,System.getProperty("jon.agent.name"),"postgres");
+	    Resource agent = new Resource(tasks,System.getProperty("jon.agent.host"),"postgres");
 	    agent.navigate();
 	    tasks.waitForElementVisible(tasks, tasks.cell("/Databases/"), "Databases Visible",Timing.TIME_5S);
 	}
