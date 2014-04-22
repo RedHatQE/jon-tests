@@ -2,7 +2,10 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.ExtendedSahi;
+import com.redhat.qe.jon.sahi.base.inventory.Resource;
+
 import net.sf.sahi.client.ElementStub;
+
 import org.testng.annotations.Optional;
 
 import java.io.File;
@@ -1097,7 +1100,10 @@ public class SahiTasks extends ExtendedSahi {
         this.link(resourceType[1].trim()).click();
     }
     public void gotoAlertDefinationPage(String resourceName, boolean definitionsPage) {
-    	selectResource(resourceName);
+    	//selectResource(resourceName);
+    	//Above line is not selecting specific resource if we have more than one agent imported, adding the following lines,
+    	Resource agent = new Resource(this,System.getProperty("jon.agent.name"),"RHQ Agent");
+	    agent.navigate();    	
         this.cell("Alerts").click();
         if (definitionsPage) {
             this.xy(this.cell("Definitions"), 3, 3).click();
