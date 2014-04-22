@@ -8,6 +8,7 @@
  */
 
 // bind input params
+var platformName = platform;
 var war = deployment;
 
-findRHQDeployment(war).child({name:"web"}).getMetric("Response Time").set(true,1);
+findRHQDeployment(platformName, war).child({name:"web"}).getMetric("Response Time").set(true,1);
