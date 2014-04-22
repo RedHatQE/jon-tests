@@ -8,13 +8,14 @@
  */
 
 // bind input params
+var platformName = platform;
 var war = deployment;
 var endp = endpoint; // destination to check
 var num = hits; // minimal value of response hits
 
 
 var found = false;
-var res = findRHQDeployment(war).child({name:"web"});
+var res = findRHQDeployment(platformName, war).child({name:"web"});
 if(!res.isAvailable()){
     common.warn("RHQ Deployment ["+war+"] is not available, this could cause problems.");
 }

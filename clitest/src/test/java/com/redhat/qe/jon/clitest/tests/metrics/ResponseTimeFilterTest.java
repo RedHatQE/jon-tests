@@ -20,7 +20,8 @@ public class ResponseTimeFilterTest extends CliEngine {
 
     @Test
     public void responseTimeRestWar() {
-	responseTime("rhq-rest.war", "rest/reports.html","rest/status.xml","rhqadmin","rhqadmin");
+	responseTime(System.getProperty("jon.server.host"), "rhq-rest.war",
+	        "rest/reports.html","rest/status.xml","rhqadmin","rhqadmin");
     }
     
     // commented by lzoubek - works locally but fails on jeninks (no call time data is shown)
@@ -30,9 +31,10 @@ public class ResponseTimeFilterTest extends CliEngine {
 	//responseTime("coregui.war","coregui/","coregui/", null, null);
     //}
 
-    private void responseTime(String deployment, String endPoint,String flushEndpoint, String user, String pass) {
+    private void responseTime(String platform, String deployment, String endPoint,String flushEndpoint, String user, String pass) {
 	int hits = 10;
 	createJSRunner("metrics/enableRTFilter.js")
+	    .withArg("platform", platform)
 		.withArg("deployment", deployment)
 		.run();	
 	for (int i = 0; i < hits;i++) {
@@ -44,9 +46,10 @@ public class ResponseTimeFilterTest extends CliEngine {
 	}
 	waitFor(1000 * 3 * 60,"Waiting for metric collection");
 	createJSRunner("metrics/validateCallTime.js")
-	.withArg("deployment", deployment)
-	.withArg("endpoint", "/"+endPoint)
-	.withArg("hits", String.valueOf(hits))
-	.run();
+    	.withArg("platform", platform)
+    	.withArg("deployment", deployment)
+    	.withArg("endpoint", "/"+endPoint)
+    	.withArg("hits", String.valueOf(hits))
+    	.run();
     }
 }
