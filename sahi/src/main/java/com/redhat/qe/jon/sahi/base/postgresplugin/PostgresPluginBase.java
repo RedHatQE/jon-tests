@@ -25,7 +25,6 @@ abstract class PostgresPluginBase {
 	}
 	
 	public void navigateToPostgresBase() {
-<<<<<<< HEAD
 		Resource agent = null;
 		if(postgresServer == null){
 			_logger.fine("There is no server defined, Looking available servers list...");
@@ -44,9 +43,6 @@ abstract class PostgresPluginBase {
 			_logger.fine("Postgres Server already defined, "+postgresServer);
 		}
 	    agent = new Resource(tasks,System.getProperty("jon.agent.name"), postgresServer.getName());
-=======
-	    Resource agent = new Resource(tasks,System.getProperty("jon.agent.name"),"rhq");
->>>>>>> a3dd2779860dec1ea2b968913f55b65bde9be8e0
 	    agent.navigate();
 	    tasks.waitForElementVisible(tasks, tasks.cell("/Databases/"), "Databases Folder",Timing.TIME_5S);
 	}
