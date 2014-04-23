@@ -82,9 +82,9 @@ public class PostgresPluginOperations extends PostgresPluginBase {
 			return false;
 		}
 
-		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("New"), "New Resouce Name not visible.", Timing.TIME_5S));
+		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("New"), "New", Timing.TIME_5S));
 		tasks.cell("New").click();
-		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.bold("Operation * :"), "New Resouce Name not visible.", Timing.TIME_5S));
+		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.bold("Operation * :"), "Bold: Operation * :", Timing.TIME_5S));
 		tasks.div("selectItemText").near(tasks.bold("Operation * :")).click();
 		tasks.byText(operation, "nobr").click();
 

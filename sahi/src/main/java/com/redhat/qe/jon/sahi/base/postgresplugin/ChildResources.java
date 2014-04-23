@@ -90,5 +90,17 @@ public class ChildResources {
 	public void setAvailability(String value) {
 		this.availability = value;
 	}
+	
+	public String toString(){
+		StringBuilder builder = new StringBuilder();
+		builder.append("Name: ").append(this.name).append(", ");
+		builder.append("Ancestry: ").append(this.ancestry).append(", ");
+		builder.append("Description: ").append(this.description).append(", ");
+		builder.append("Type: ").append(this.type).append(", ");
+		builder.append("Version: ").append(this.version).append(", ");
+		builder.append("Availability: ").append(this.availability);
+
+		return builder.toString();
+	}
 
 }

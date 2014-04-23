@@ -1,8 +1,5 @@
 package com.redhat.qe.jon.sahi.base.postgresplugin;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -31,10 +28,11 @@ public class PostgresPluginInventory extends PostgresPluginBase {
 	
 	public void createDatabaseChildTable() {
 		selectMenu("Create Child", "Table");
-		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.label("New Resource Name"), "New Resouce Name not visible.", Timing.TIME_5S));
+		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.label("New Resource Name"), "Label: New Resouce Name", Timing.TIME_5S));
 		tasks.textbox("resourceName").setValue(uniqueName);
 		tasks.cell("Next").click();
-		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.div("Table Name"), "Table Name not visible.", Timing.TIME_5S));
+		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.div("Table Name"), "Table Name", Timing.TIME_5S));
+		tasks.textbox("schemaName").setValue(uniqueName+"-Schema");
 		tasks.textbox("tableName").setValue(uniqueName);
 		tasks.cell("Finish").click();
 	}
