@@ -32,11 +32,20 @@ public class BzCliTest extends CliEngine {
 	    	.addDepends("/rhqapi.js")
 	    	.run();
 	}
-	@Test(groups={"blockedByBug-1063480"})
+
+    @Test(groups={"blockedByBug-1063480"})
     public void bz1063480() {
         createJSRunner("bugs/bz1063480.js")
             .addDepends("/rhqapi.js")
             .addDepends("jon-common.js")
+            .run();
+    }
+
+    @Test(groups={"blockedByBug-1090790"})
+    public void bz1090790() {
+        createJSRunner("bugs/bz1090790.js")
+            .addDepends("/rhqapi.js")
+            .withResource("antbundle:bundle:1.0", "bundle1") // we use bundles generated at runtime
             .run();
     }
 }
