@@ -32,6 +32,6 @@ bundles.createFromDistFile(bundleFile2).createDestination(platforms,null,"/tmp/f
 var b = bundles.find()
 assertTrue(b.length == 1, "New bundle was returned from server");
 assertTrue(b[0].versions().length == 2, "2 Bundle versions were uploaded");
-assertTrue(b[0].destinations().length == 1, "1 Bundle versions were created");
+assertTrue(b[0].destinations().length == 1, "1 Bundle destination was created");
 
 
