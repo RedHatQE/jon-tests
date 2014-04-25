@@ -351,6 +351,20 @@
         </classes>
     </test>
     
+    <test name="Recent Alerts">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.recentalerts.RecentAlertsTest">
+            </class>
+        </classes>
+    </test>
+
+    <test name="Group Recent Alerts">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.recentalerts.GroupRecentAlertsTest">
+            </class>
+        </classes>
+    </test>
+    
     <test name="Permissions Test">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.PermissionsTest">
