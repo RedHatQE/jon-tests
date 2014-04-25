@@ -50,7 +50,7 @@ abstract class PostgresPluginBase {
 	public void navigateToDatabase(PostgresPluginDefinitions definitions) {
 		tasks.cell("Databases").click();
 		tasks.waitForElementVisible(tasks, tasks.cell(definitions.getDatabaseName()), "Database (" + definitions.getDatabaseName() + ")", Timing.TIME_10S);
-		tasks.image("/Service_up/").near(tasks.cell(definitions.getDatabaseName())).click();
+		tasks.cell(definitions.getDatabaseName()).under(tasks.cell("Databases")).click();
 		_logger.fine("Navigated to database["+definitions.getDatabaseName()+"] location...");
 	}
 	
@@ -58,16 +58,6 @@ abstract class PostgresPluginBase {
 		navigateToDatabase(definitions);
 		tasks.image("/folder_autogroup_closed/").near(tasks.cell("Tables")).click();
 		_logger.fine("Navigated to database["+definitions.getDatabaseName()+"] Tables location...");
-	}
-	
-	public void selectMenu(String menu, String item) {
-		tasks.cell(menu).click();
-		tasks.waitFor(Timing.WAIT_TIME);
-		for (ElementStub es : tasks.table("menuTable").collectSimilar()) {
-		    if (es.isVisible() &&  tasks.cell(item).isVisible()) {
-		    	tasks.xy(tasks.cell(item).in(es), 3, 3).click();
-		    }
-		}
 	}
 	
 	public LinkedList<ChildResources> getChildResourceAll(){
