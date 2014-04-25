@@ -37,9 +37,10 @@ public class PostgresDatabaseTableTest extends SahiTestScript {
 	public void postgresTableScheduleOperation() {
 		PostgresPluginDefinitions definitions = new PostgresPluginDefinitions();
 		
+		ppo.navigateToDatabaseTable(definitions);
+		
 		// Navigate to Operations Tab
 		ppo.navigateToOptionsTabHistoryPage();
-		ppo.navigateToDatabaseTable(definitions);
 		
 		//Get last row reference of history
 		pph.updateOperationHistoryReferenceForDatabases();

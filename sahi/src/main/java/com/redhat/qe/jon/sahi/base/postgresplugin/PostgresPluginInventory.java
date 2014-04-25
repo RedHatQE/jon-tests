@@ -27,7 +27,8 @@ public class PostgresPluginInventory extends PostgresPluginBase {
 	}
 	
 	public void createDatabaseChildTable() {
-		selectMenu("Create Child", "Table");
+		tasks.cell("Create Child").click();
+		tasks.byText("Table", "nobr").click();
 		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.label("New Resource Name"), "Label: New Resouce Name", Timing.TIME_5S));
 		tasks.textbox("resourceName").setValue(uniqueName);
 		tasks.cell("Next").click();

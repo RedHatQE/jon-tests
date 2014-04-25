@@ -36,11 +36,10 @@ public class PostgresDatabaseTest extends SahiTestScript {
 		OPERATION operation = OPERATION.INVOKE_SQL;
 		PostgresPluginDefinitions definitions = new PostgresPluginDefinitions();
 
+		ppo.navigateToDatabase(definitions);
+		
 		// Navigate to Operations Tab History Page
 		ppo.navigateToOptionsTabHistoryPage();
-
-		ppo.navigateToDatabase(definitions);
-
 		pph.updateOperationHistoryReferenceForDatabase();
 
 		// Navigate to Operations Tab Schedules Page
