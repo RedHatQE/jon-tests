@@ -1270,7 +1270,21 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Add").click();
 
         //selectComboBoxes(conditionsDropDown); //Disabled, not stable with this
-        selectComboBoxes(conditionsDropDown, "row");
+        //selectComboBoxes(conditionsDropDown, "row");
+        
+        //Adding Conditions
+        String[] conditionsDropDowns = this.getCommaToArray(conditionsDropDown);
+        for (String option : conditionsDropDowns) {
+            String[] optionTmp = option.split("-->");
+            ElementStub dropDown = this.div("selectItemText").near(this.cell(optionTmp[0]));
+            ElementStub dropDownValue = this.div(optionTmp[1]).under(this.div("selectItemText").near(this.cell(optionTmp[0])));
+            _logger.info("DropDown: "+dropDown+", Is Available? "+dropDown.exists());
+            dropDown.click(); //Clicking Drop Down Box
+            _logger.info("DropDown Value: "+dropDownValue+", Is Available? "+dropDownValue.exists());
+            dropDownValue.click(); //Selecting value for the above drop down box
+        }
+        
+        
         updateTextBoxValues(conditionTextBox);
 
 
@@ -1288,6 +1302,7 @@ public class SahiTasks extends ExtendedSahi {
             _logger.log(Level.WARNING, "Undefined notification type: " + notificationType);
         }
         this.cell("OK").click();
+        this.waitFor(1000);
 
         //Recovery
         this.cell("Recovery").click();
