@@ -1819,7 +1819,9 @@ public class SahiTasks extends ExtendedSahi {
     	}
     }
     public void selectSchedules(String resourceName){
-    	selectResource(resourceName);
+    	//selectResource(resourceName);
+    	Resource agent = new Resource(this,System.getProperty("jon.agent.name"),"RHQ Agent");
+	    agent.navigate();    	
     	this.cell("Monitoring").click();
         this.xy(cell("Schedules"), 3,3).click();    	
     }
