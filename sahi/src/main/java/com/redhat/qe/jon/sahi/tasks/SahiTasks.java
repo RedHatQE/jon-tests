@@ -1349,9 +1349,13 @@ public class SahiTasks extends ExtendedSahi {
         	this.div(alertName+"[1]").click(); //Selecting the definition
         }else{
         	this.div(alertName).click(); //Selecting the definition
-        }        
-        this.cell("Delete[4]").click();
-        this.cell("Yes").click();        
+        }
+        this.cell("Delete").near(this.cell("Disable")).click();
+        //this.cell("Delete[4]").click();
+        
+        this.cell("Yes").near(this.cell("No")).click();
+        //this.cell("Yes").click();        
+
         int numberOfDefinitionsUpdated = this.link(alertName).countSimilar();
         _logger.log(Level.INFO, "[After Deletion] \""+alertName+"\" definition count: "+numberOfDefinitionsUpdated);
         if((numberOfDefinitions - numberOfDefinitionsUpdated) == 1){
@@ -1374,9 +1378,12 @@ public class SahiTasks extends ExtendedSahi {
         	this.div(alertName+"[1]").click(); //Selecting the history
         }else{
         	this.div(alertName).click(); //Selecting the history
-        }    
-        this.cell("Delete[3]").click();
-        this.cell("Yes").click();
+        }
+        this.cell("Delete").near(this.cell("Acknowledge").near(this.cell("Delete All"))).click();
+        //this.cell("Delete[3]").click();
+        
+        this.cell("Yes").near(this.cell("No")).click();
+        //this.cell("Yes").click();
         int numberOfHistoryUpdated = this.link(alertName).countSimilar();
         _logger.log(Level.INFO, "[After Deletion] \""+alertName+"\" history count: "+numberOfHistoryUpdated);
         if((numberOfHistory - numberOfHistoryUpdated) == 1){
