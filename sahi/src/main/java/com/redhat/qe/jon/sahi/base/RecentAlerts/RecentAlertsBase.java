@@ -43,6 +43,7 @@ abstract class RecentAlertsBase {
 		Assert.assertTrue(tasks.cell("Recent Alerts").exists(), "Recent Alerts");
 		tasks.image("/settings/").near(tasks.div("Recent Alerts")).click();
 		tasks.waitForElementVisible(tasks, tasks.cell("Recent Alerts Settings"), "Recent Alerts Setting", Timing.TIME_10S);
+		Assert.assertTrue(tasks.label("Name").exists(), "Name filter not present.");
 		tasks.textbox("/ALERT_NAME/").setValue("abc");
 		tasks.cell("Save").click();
 
