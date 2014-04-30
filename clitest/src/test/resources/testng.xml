@@ -26,7 +26,12 @@
 		</class>
 	</classes>
 </test>
-
+<test name="PredefinedDynaGroupsTest">
+    <classes>
+        <class name="com.redhat.qe.jon.clitest.tests.groups.PredefinedDynaGroupsTest">
+        </class>
+    </classes>
+</test>
 
 <test name="Examples from jon documentation">
 	<classes>
