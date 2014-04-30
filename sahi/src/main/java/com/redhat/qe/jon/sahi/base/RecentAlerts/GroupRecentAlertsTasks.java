@@ -37,12 +37,8 @@ public class GroupRecentAlertsTasks extends RecentAlertsBase {
 		tasks.textarea("description").setValue(Description);
 		tasks.cell("Next").near(tasks.cell("Cancel")).click();
 		tasks.waitForElementVisible(tasks, tasks.div(resource), "Resource not present [" + resource + "].", Timing.TIME_5S);
-		for (int x = 1; x <= 2; x++) {
-			tasks.div(resource).click();
-		}
-		
-		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.image("right.png"), "Right Arrow", Timing.TIME_5S));
-		tasks.image("right.png").click();
+		tasks.div(resource).doubleClick();
+		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.cell("Finish").near(tasks.cell("Previous")).click();
     	Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.link(UniqueID), UniqueID, Timing.TIME_5S), "Group Alert!");
     	_logger.log(Level.INFO, "Created Group Alert [" + UniqueID + "].");
