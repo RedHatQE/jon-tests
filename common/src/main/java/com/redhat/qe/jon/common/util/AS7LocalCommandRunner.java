@@ -98,7 +98,15 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
             }
         }
 
-        runCommand(sb.toString()+"./"+script, new File(asHome, "bin"));
+        // use absolute paths otherwise it doesn't work on HPUX
+        String scriptCmd;
+        if (platform.isHP()) {
+            scriptCmd = new File(asHome, "bin").getAbsolutePath()+"/"+script;
+        } else {
+            scriptCmd = "./"+script;
+        }
+
+        runCommand(sb.toString()+scriptCmd, new File(asHome, "bin"));
         Library.sleepFor(3 * 1000);
     }
 
