@@ -762,13 +762,13 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public boolean verifyUserRole(String userName, String password, ArrayList<String> roleNames) {
-        relogin(userName, password);
-
+       
+    	relogin(userName, password);
         // TODO: Verification of role still needs to be done, however this 
         // hinges on whether we can create a role w/ specific permission 
         // by specifying only the permission name.
 
-        relogin("rhqadmin", "rhqadmin"); // reset
+        relogin(ADMIN_USER, ADMIN_PASSWORD); // reset
         return true;
     }
 

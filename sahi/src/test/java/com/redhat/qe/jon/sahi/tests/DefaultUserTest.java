@@ -26,7 +26,7 @@ import com.redhat.qe.jon.sahi.tasks.Timing;
  *
  */
 public class DefaultUserTest extends OnAgentSahiTestScript {
-    public static String USER_NAME = "testUser";
+    public static String USER_NAME = "defaultTestUser";
     public static String USER_PASSWORD = "password";
     
     @BeforeClass
