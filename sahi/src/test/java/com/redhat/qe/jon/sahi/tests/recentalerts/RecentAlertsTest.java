@@ -6,7 +6,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
-import com.redhat.qe.jon.sahi.base.RecentAlerts.DashboardRecentAlertsTasks;
+import com.redhat.qe.jon.sahi.base.recentalerts.DashboardRecentAlertsTasks;
 
 /**
  * @author mmahoney
