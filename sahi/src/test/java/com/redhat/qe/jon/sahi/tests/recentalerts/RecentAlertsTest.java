@@ -1,8 +1,8 @@
 package com.redhat.qe.jon.sahi.tests.recentalerts;
 
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
@@ -21,7 +21,7 @@ public class RecentAlertsTest extends  SahiTestScript {
 		ra = new DashboardRecentAlertsTasks(sahiTasks);
 	}
 	
-	@BeforeTest
+	@BeforeMethod
 	public void navigateToSummaryDefaultView() {
 	     ra.navigateToDashboardDefaultView();
 	}
@@ -29,6 +29,12 @@ public class RecentAlertsTest extends  SahiTestScript {
 	@Test
 	public void verifyDashboardRecentAlertsPortlet() {
 		Assert.assertTrue(ra.addRecentAlertsPortlet(), "Add Recent Alerts Portlet!");
-		Assert.assertTrue(ra.recentAlertsNameSearch(), "Name Search!");
+		Assert.assertTrue(ra.recentAlertsNameFilter(), "Name Search!");
+	}
+	
+	@Test
+	public void verifyDashboardRecentEventsPortlet() {
+		Assert.assertTrue(ra.addRecentEventsPortlet(), "Add Recent Events Portlet!");
+		Assert.assertTrue(ra.recentEventResourceFilter(), "Resource Search!");
 	}
 }

@@ -39,13 +39,23 @@ abstract class RecentAlertsBase {
 		}
 	}
 
-	public boolean recentAlertsNameSearch() {
-		Assert.assertTrue(tasks.cell("Recent Alerts").exists(), "Recent Alerts");
-		tasks.image("/settings/").near(tasks.div("Recent Alerts")).doubleClick();
-		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("Recent Alerts Settings"), "Recent Alerts Setting", Timing.TIME_5S), "Recent Alert Settings");
-		tasks.textbox("/ALERT_NAME/").setValue("abc");
+	public boolean recentAlertsNameFilter() {
+		return applyFilter("Recent Alerts", "ALERT_NAME");
+	}
+	
+	public boolean recentEventResourceFilter() {
+		return applyFilter("Recent Events", "EVENT_RESOURCE");
+	}
+	
+	private boolean applyFilter(String portletName, String filterName) {
+		String waitFor = portletName + " Settings";
+		
+		Assert.assertTrue(tasks.cell(portletName).exists(), portletName + "!");
+		tasks.image("/settings/").near(tasks.div(portletName)).doubleClick();
+		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell(waitFor), waitFor, Timing.TIME_5S), waitFor);
+		tasks.textbox("/" + filterName + "/").setValue("abc");
 		tasks.cell("Save").click();
 
-        return tasks.waitForElementVisible(tasks, tasks.cell("/No results found using specified criteria/").near(tasks.div("Recent Alerts")), "Text", Timing.TIME_10S);
+        return tasks.waitForElementVisible(tasks, tasks.cell("/No results found using specified criteria/").near(tasks.div(portletName)), "Text", Timing.TIME_10S);
 	}
 }

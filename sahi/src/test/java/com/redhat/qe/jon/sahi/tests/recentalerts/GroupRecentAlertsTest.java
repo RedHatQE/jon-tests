@@ -1,8 +1,8 @@
 package com.redhat.qe.jon.sahi.tests.recentalerts;
 
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
@@ -21,7 +21,7 @@ public class GroupRecentAlertsTest extends  SahiTestScript {
 		ga = new GroupRecentAlertsTasks(sahiTasks);
 	}
 	
-	@BeforeTest
+	@BeforeMethod
 	public void navigateToCompatabilityGroups() {
 		ga.navigateToCompatibleGroups();
 	}
@@ -30,6 +30,13 @@ public class GroupRecentAlertsTest extends  SahiTestScript {
 	public void createCompatibilityGroupAndAddRecentAlerts() {
 		ga.createNewCompatibleGroup();
 		Assert.assertTrue(ga.addGroupRecentAlertsPortlet(), "Group Recent Alerts!");
-		Assert.assertTrue(ga.recentAlertsNameSearch(), "Name Search!");
+		Assert.assertTrue(ga.recentAlertsNameFilter(), "Name Search!");
+	}
+	
+	@Test
+	public void createCompatibilityGroupAndAddRecentEvents() {
+		ga.createNewCompatibleGroup();
+		Assert.assertTrue(ga.addGroupRecentEventsPortlet(), "Group Recent Events!");
+		Assert.assertTrue(ga.recentEventResourceFilter(), "Resource Search!");
 	}
 }
