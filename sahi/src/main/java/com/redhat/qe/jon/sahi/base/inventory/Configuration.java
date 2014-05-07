@@ -127,7 +127,7 @@ public class Configuration extends ResourceTab {
 			}
 			log.info("Clicking on Save button: "+saveB.toString());
 			tasks.xy(saveB, 3, 3).click();
-			Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("/Configuration updated*/"), 
+			Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("/Updating configuration*/"), 
 	                "Successful update message",Timing.WAIT_TIME),"Successful config update message expected!!");
 		}
 	}
