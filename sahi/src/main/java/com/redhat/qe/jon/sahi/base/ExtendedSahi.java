@@ -173,7 +173,7 @@ public class ExtendedSahi extends Browser {
 		_logger.finer("Waiting for the element: ["+element+"], Remaining wait time: "+(waitTimeMilliSeconds/1000)+" Second(s)...");
 		while(waitTimeMilliSeconds >=  0){
 			if(elementStub.isVisible()){
-				_logger.info("Element ["+element+"] is visable");
+				_logger.info("Element ["+element+"] is visible");
 				return true;
 			}else{
 				browser.waitFor(500);
@@ -186,6 +186,34 @@ public class ExtendedSahi extends Browser {
 		_logger.warning("Failed to get the element! ["+element+"]");
 		return false;
 	}
+
+    public boolean waitForAnyElementsToBecomeVisible(Browser browser, ElementStub[] elementStubs, String element, long waitTimeMilliSeconds){
+        _logger.finer("Waiting for the element: ["+element+"], Remaining wait time: "+(waitTimeMilliSeconds/1000)+" Second(s)...");
+        while(waitTimeMilliSeconds >=  0){
+            if(isAnyOfElementsVisible(elementStubs)){
+                _logger.info("Element ["+element+"] is visible");
+                return true;
+            }else{
+                browser.waitFor(500);
+                waitTimeMilliSeconds -= 500;
+                if((waitTimeMilliSeconds%(1000*5)) <= 0){
+                    _logger.finer("Waiting for the element: ["+element+"], Remaining wait time: "+(waitTimeMilliSeconds/1000)+" Second(s)...");
+                }
+            }
+        }
+        _logger.warning("Failed to get the element! ["+element+"]");
+        return false;
+    }
+
+    public boolean isAnyOfElementsVisible(ElementStub[] elementStubs) {
+        for (ElementStub elementStub : elementStubs) {
+            if (elementStub.isVisible()) {
+                _logger.info("Element ["+elementStub+"] is visible");
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Waits for specified timeout for specified element to contain specified value
