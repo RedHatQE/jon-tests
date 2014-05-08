@@ -71,6 +71,7 @@ public class SahiTasks extends ExtendedSahi {
 
     public void logout() {
         this.link("Logout").click();
+        this.waitFor(5*Timing.TIME_1S);
     }
 
     public String getCurrentLogin(){
@@ -767,7 +768,6 @@ public class SahiTasks extends ExtendedSahi {
         // TODO: Verification of role still needs to be done, however this 
         // hinges on whether we can create a role w/ specific permission 
         // by specifying only the permission name.
-
         relogin(ADMIN_USER, ADMIN_PASSWORD); // reset
         return true;
     }
