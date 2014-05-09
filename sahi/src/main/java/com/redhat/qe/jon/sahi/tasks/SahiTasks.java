@@ -1967,9 +1967,9 @@ public class SahiTasks extends ExtendedSahi {
             }
     	}else{
     		if(enable){
-        		this.cell("Enable").click();
+        		this.cell("Enable").under(this.label("Collection Interval")).click();
         	}else{
-        		this.cell("Disable").click();
+        		this.cell("Disable").under(this.label("Collection Interval")).click();
         	}
     	}
     	this.waitFor(1000*2); //wait 2 seconds to get load table details

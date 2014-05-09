@@ -49,12 +49,12 @@ public class SchedulingForResourcesTest extends SahiTestScript {
 		}
 	}
 	
-	@Test (groups="metricCollectionResourceTest", dataProvider="metricTestData")
+	@Test (groups="metricCollectionResourceTest", dataProvider="metricTestData", dependsOnMethods={"disableMetric"})
 	public void enableMetric(HashMap<String, String> metricDetail){
 		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), metricDetail.get(DESCRIPTION), readMetricTable(metricDetail.get(RESOURCE_NAME)), false, metricDetail.get(COLLECTION_INTERVAL), true, tableOffset), "Enable Metric validation");
 	}
 	
-	@Test (groups="metricTest", dataProvider="metricTestData")
+	@Test (groups="metricTest", dataProvider="metricTestData", dependsOnMethods={"updateMetric"})
 	public void disableMetric(HashMap<String, String> metricDetail){
 		Assert.assertTrue(sahiTasks.enableDisableUpdateMetric(metricDetail.get(RESOURCE_NAME), metricDetail.get(METRIC_NAME), metricDetail.get(DESCRIPTION), readMetricTable(metricDetail.get(RESOURCE_NAME)), false, metricDetail.get(COLLECTION_INTERVAL), false, tableOffset), "Disable Metric validation");
 	}
