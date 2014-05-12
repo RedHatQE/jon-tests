@@ -1,14 +1,16 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
-import com.redhat.qe.jon.sahi.base.editor.*;
-import com.redhat.qe.jon.sahi.tasks.*;
+import com.redhat.qe.jon.sahi.base.editor.Editor;
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
+import com.redhat.qe.jon.sahi.tasks.Timing;
+import net.sf.sahi.client.ElementStub;
+import org.testng.Assert;
 
-import net.sf.sahi.client.*;
-import org.testng.*;
-
-import java.util.*;
-import java.util.logging.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * represents <b>Operations</b> Tab of given resource.
@@ -84,18 +86,14 @@ public class Operations extends ResourceTab {
         }
         log.fine("Asserting operation [" + opName + "] result, expecting " + succ);
         final String NOT_YET_STARTED_MESSAGE = "not yet started";
-        getResource().operations().history();
+        this.history();
+        tasks.waitFor(Timing.TIME_1S);
         int allOperationStartedTimeout = 2*Timing.TIME_1M;
         while (tasks.cell(NOT_YET_STARTED_MESSAGE).in(tasks.div(opName).parentNode("tr")).isVisible() && allOperationStartedTimeout > 0) {
             log.finer("Operation not yet started, remaining waiting time "+ Timing.toString(allOperationStartedTimeout));
             allOperationStartedTimeout -= Timing.WAIT_TIME;
             tasks.waitFor(Timing.WAIT_TIME);
             tasks.cell("Refresh").click();
-        }
-
-        if (tasks.cell(NOT_YET_STARTED_MESSAGE).isVisible()) {
-            log.warning("There seems to be some not yet started operation, trying reloading whole page");
-            tasks.reloadPage();
         }
 
         log.finer("Sorting operations by Date Submitted");
@@ -135,6 +133,9 @@ public class Operations extends ResourceTab {
                 Assert.assertTrue(existsImage, "Operation [" + opName + "] result: " + succ + " errorMessage:\n" + message);
                 return null;
             }
+        }
+        if (tasks.cell(NOT_YET_STARTED_MESSAGE).in(tasks.div(opName).parentNode("tr")).isVisible()) {
+            log.warning("There exist to be some not yet started operation");
         }
         Assert.assertTrue(existsImage, "Operation [" + opName + "] result: " + succ);
         log.fine("Getting operation result");
