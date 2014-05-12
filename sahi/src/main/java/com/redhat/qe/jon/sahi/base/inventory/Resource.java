@@ -575,8 +575,8 @@ public class Resource {
 	 */
 	public boolean exists() {
 		// because UI (tree) caches things and we keep refreshing same page
-		// we need to force it to reload .. so we navigate somewhere else
-		tasks.link("Dashboard").click();
+		// we need to force it to reload .. reloading whole page
+		tasks.reloadPage();
 		if(this.isPlatform){
 	        navigateToPlatforms();
 			if (tasks.cell("No items to show").isVisible()) {
@@ -593,9 +593,9 @@ public class Resource {
 	private void navigateToPlatforms(){
 		//TODO hardcoded waiting, make common method for this somewhere
 		tasks.link("Inventory").click();
-		tasks.waitFor(5000);
+		tasks.waitFor(Timing.WAIT_TIME);
 		tasks.cell("Platforms").click();
-		tasks.waitFor(5000);
+		tasks.waitFor(Timing.WAIT_TIME);
 	}
 	
 	/**

@@ -189,8 +189,10 @@ public class SahiTasks extends ExtendedSahi {
      */
     public void sortChildResources() {
         if (!this.cell("Last Modified Time").isVisible()) {
+            ElementStub nameColumnHeaderElement = this.cell("Name").near(this.cell("Ancestry"));
+            this.waitForElementExists(this, nameColumnHeaderElement, nameColumnHeaderElement.toString(), Timing.WAIT_TIME);
             // 1. Add column Last Modified Time
-            this.xy(this.cell("Name").near(this.cell("Ancestry")), 3, 3).rightClick();
+            this.xy(nameColumnHeaderElement, 3, 3).rightClick();
             this.xy(this.cell("Columns"), 3, 3).mouseOver();
             this.xy(this.cell("Last Modified Time"), 3, 3).click();
             // 2. Set Auto Fit All Columns
