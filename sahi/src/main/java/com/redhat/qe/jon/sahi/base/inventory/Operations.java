@@ -83,22 +83,22 @@ public class Operations extends ResourceTab {
             succ = "Success";
         }
         log.fine("Asserting operation [" + opName + "] result, expecting " + succ);
+        final String NOT_YET_STARTED_MESSAGE = "not yet started";
         getResource().operations().history();
         int allOperationStartedTimeout = 2*Timing.TIME_1M;
-        while (tasks.cell("not yet started").in(tasks.div(opName).parentNode("tr")).isVisible() && allOperationStartedTimeout > 0) {
+        while (tasks.cell(NOT_YET_STARTED_MESSAGE).in(tasks.div(opName).parentNode("tr")).isVisible() && allOperationStartedTimeout > 0) {
             log.finer("Operation not yet started, remaining waiting time "+ Timing.toString(allOperationStartedTimeout));
             allOperationStartedTimeout -= Timing.WAIT_TIME;
             tasks.waitFor(Timing.WAIT_TIME);
             tasks.cell("Refresh").click();
         }
-        if (tasks.cell("not yet started").in(tasks.div(opName).parentNode("tr")).isVisible()) {
-            log.finer("Operation not yet started => Lets try to reload whole page");
+
+        if (tasks.cell(NOT_YET_STARTED_MESSAGE).isVisible()) {
+            log.warning("There seems to be some not yet started operation, trying reloading whole page");
             tasks.reloadPage();
         }
-        if (tasks.cell("not yet started").in(tasks.div(opName).parentNode("tr")).isVisible()) {
-            log.warning("[not yet started] was found even after " + Timing.toString(Timing.TIME_1M));
-        }
 
+        log.finer("Sorting operations by Date Submitted");
         // sort by Date Submitted
         tasks.cell("Date Submitted").doubleClick();
         tasks.waitFor(Timing.WAIT_TIME);
