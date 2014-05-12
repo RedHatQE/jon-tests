@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import com.redhat.qe.jon.sahi.tasks.SahiTasksException;
 
 import org.testng.annotations.Test;
 import org.testng.annotations.DataProvider;
@@ -42,7 +43,7 @@ public class ResourceTest extends SahiTestScript{
 	}
 
 	@Test (groups="resourceSearchTest", dataProvider="roleUserAndGroupCreationData")
-	public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, String desc, String compTestGroup, String searchQueryName){
+	public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException{
 		sahiTasks.resourceSearch(searchTestuser, password, firstName, secondName, emailId, searchRoleName, desc, compTestGroup,searchQueryName);
 	}
 	
@@ -56,7 +57,7 @@ public class ResourceTest extends SahiTestScript{
 	}
 	public static List<List<Object>> userRoleAndGroupData() {
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
-		data.add(Arrays.asList(new Object[]{"searchtestuser", "password", "jboss", "operations", "test@redhat.com", "search Test Role1", "Description", "testCompGroup", "name"}));
+		data.add(Arrays.asList(new Object[]{"searchtestuser", "password", "jboss", "operations", "test@redhat.com", "search Test Role1", "Created by Automation", "testCompGroup-gui-auto", "name"}));
 		return data;
 	}
 	
@@ -70,7 +71,7 @@ public class ResourceTest extends SahiTestScript{
 	
 	public List<List<Object>> getDynaGroup() {
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
-		data.add(Arrays.asList(new Object[]{"dyna group", "dyna Group description"}));
+		data.add(Arrays.asList(new Object[]{"dyna group", "dyna Group - Created by Automation"}));
 		return data;
 	}
 	

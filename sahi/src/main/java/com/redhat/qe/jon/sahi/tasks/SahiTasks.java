@@ -75,12 +75,21 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public String getCurrentLogin(){
-		return this.cell(1).near(this.cell("|").in(this.div("toolStrip"))).getText();
+    	if(this.link("Logout").exists()){
+    		return this.cell(1).near(this.cell("|").in(this.div("toolStrip"))).getText();
+    	}else{
+    		return null;
+    	}		
 	}
 	
     public void relogin(String userName, String password) {
     	String currentLogin = this.getCurrentLogin();
-		if(userName.equals(currentLogin)){
+		if(currentLogin == null){
+			_logger.log(Level.FINE, "User not logged in, Checking login box...");
+			if(this.textbox("inputUsername").exists() || this.textbox("user").exists()){
+				login(userName, password);
+			}
+		}else if(userName.equals(currentLogin)){
 			_logger.log(Level.FINE, "User["+userName+"] already logged in");
 		}else{
 			_logger.log(Level.FINE, "Currently logged in as ["+currentLogin+"], Changing login to ["+userName+"]");
@@ -238,6 +247,13 @@ public class SahiTasks extends ExtendedSahi {
         this.xy(this.byText(resourceName, "nobr"), 3,3).doubleClick();
         this.waitFor(2*1000);
     }
+    
+    public void createGroup(String groupPanelName, String groupName, String groupDesc, String resourceName) {
+    	ArrayList<String> resourceList = new ArrayList<String>();
+    	resourceList.add(resourceName);
+    	createGroup(groupPanelName, groupName, groupDesc, resourceList);
+    }
+    
     public void createGroup(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList) {
     	this.selectPage("Inventory-->Compatible Groups", this.textbox("search"), 1000*5, 3);
     	this.cell("New").click();
@@ -599,14 +615,22 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Yes").click();
     }
 
-    public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, String desc, String compGroupName, String searchQueryName) {
-        //createCompatibleGroup(compGroupName, desc);
+    public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, String desc, String compGroupName, String searchQueryName) throws SahiTasksException {
+    	createGroup("Compatible Groups", compGroupName, "Created by Automation", "RHQ Agent");
         createUser(searchTestuser, password, firstName, secondName, emailId);
         createRoleWithoutMangeInvetntory(searchRoleName, desc, compGroupName, searchTestuser);
-        loginNewUser(searchTestuser, password);
+        //Login with new user
+        relogin(searchTestuser, password);
         navigateToAllGroups();
-        setSearchBox(compGroupName="="+searchQueryName);
-        this.cell("name").click();
+        setSearchBox(searchQueryName+"="+compGroupName);
+        Assert.assertTrue(this.div(compGroupName).exists(), "Group["+compGroupName+"] availability status...");
+        // login with rhqadmin user
+     	relogin(ADMIN_USER, ADMIN_PASSWORD);
+     	
+     	//Delete Group, Role and User
+     	deleteUser(searchTestuser);
+     	deleteRole(searchRoleName);
+     	deleteGroup("Compatible Groups", compGroupName);
     }
 
     public void createRoleWithoutMangeInvetntory(String roleName, String desc, String compGroupName, String searchTestuser) {
@@ -616,12 +640,12 @@ public class SahiTasks extends ExtendedSahi {
         this.textbox("name").setValue(roleName);
         this.textbox("description").setValue(desc);
         this.cell("Resource Groups").click();
-        this.div("compGroupName").click();
+        this.div(compGroupName).click();
         this.image("right.png").click();
-        this.cell("users").click();
+        this.cell("Users").click();
         this.div(searchTestuser).click();
         this.image("right.png").click();
-        this.cell("Save").click();
+        this.cell("Save").near(this.cell("Reset")).click(); 
     }
 
     public void loginNewUser(String newUser, String password) {
@@ -1967,9 +1991,11 @@ public class SahiTasks extends ExtendedSahi {
             }
     	}else{
     		if(enable){
-        		this.cell("Enable").under(this.label("Collection Interval")).click();
+        		//this.cell("Enable").under(this.label("Collection Interval")).click();
+    			this.cell("Enable").near(this.cell("/Total Rows:/")).click();
         	}else{
-        		this.cell("Disable").under(this.label("Collection Interval")).click();
+        		//this.cell("Disable").under(this.label("Collection Interval")).click();
+    			this.cell("Disable").near(this.cell("/Total Rows:/")).click();
         	}
     	}
     	this.waitFor(1000*2); //wait 2 seconds to get load table details
@@ -2514,7 +2540,7 @@ public class SahiTasks extends ExtendedSahi {
 		if(!this.isUserAvailable(userName)){
 				createUser(userName, password, firstName, lastName, email);
 		}		
-		createGroup(groupPanelName, groupName, groupDesc);
+		createGroup(groupPanelName, groupName, groupDesc, "RHQ Agent");
 		createRoleWithPermissions(roleName, roleDesc, groupName, userName, permissions);
 		//relogin(userName, password);	
 	}
@@ -2529,7 +2555,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageSecurity(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
 		String [] permissions = new String [] {"Manage Security"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2560,7 +2586,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageInventory(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 
 		String [] permissions = new String [] {"Manage Inventory"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2610,7 +2636,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageRespository(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
 		String [] permissions = new String [] {"Manage Repositories"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		//create test repo
 		String testReponame="testRepo";
@@ -2652,7 +2678,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkViewUsers(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
 		String [] permissions = new String [] {"View Users"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2688,7 +2714,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageSettings(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 	
 		String [] permissions = new String [] {"Manage Settings"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2716,7 +2742,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageBundles(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 	
 		String [] permissions = new String [] {"Manage Bundles"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2747,7 +2773,7 @@ public class SahiTasks extends ExtendedSahi {
 
 	public void checkGroupsPermission(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, null); //this is the default role creation which has View Users checked
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, null); //this is the default role creation which has View Users checked
 		
 		// login with created user
 		relogin(searchTestuser, password);

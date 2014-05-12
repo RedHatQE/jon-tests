@@ -15,6 +15,7 @@ import com.redhat.qe.jon.sahi.base.administration.UsersPage;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.groups.AllGroupsPage;
 import com.redhat.qe.jon.sahi.base.inventory.groups.Group;
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
 /**
@@ -121,12 +122,11 @@ public class DefaultUserTest extends OnAgentSahiTestScript {
     
     @AfterClass
     public void loginAsRhqadmin(){
-        logoutLogin("rhqadmin","rhqadmin");
+        sahiTasks.relogin(SahiTasks.ADMIN_USER, SahiTasks.ADMIN_PASSWORD);
     }
     
     private void logoutLogin(String userName, String password){
-        sahiTasks.logout();
-        sahiTasks.loginNewUser(userName, password);
+        sahiTasks.relogin(userName, password);
         Assert.assertTrue(sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("Inventory Summary"),
                 "Inventory Summary label", Timing.WAIT_TIME),"User should be logged in!");
     }
