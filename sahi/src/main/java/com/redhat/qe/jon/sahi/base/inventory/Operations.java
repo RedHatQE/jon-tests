@@ -89,7 +89,7 @@ public class Operations extends ResourceTab {
         log.fine("Asserting operation [" + opName + "] result, expecting " + succ);
         final String NOT_YET_STARTED_MESSAGE = "not yet started";
         this.history();
-        tasks.waitFor(Timing.TIME_1S);
+        tasks.waitFor(2*Timing.TIME_1S);
         int allOperationStartedTimeout = 2*Timing.TIME_1M;
         while (tasks.cell(NOT_YET_STARTED_MESSAGE).in(tasks.div(opName).parentNode("tr")).isVisible() && allOperationStartedTimeout > 0) {
             log.finer("Operation not yet started, remaining waiting time "+ Timing.toString(allOperationStartedTimeout));
