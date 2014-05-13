@@ -3,6 +3,7 @@
 	<listeners>
 		<!-- Listener to make tests annotated with @SkipIf skipped -->
 		<listener class-name="com.redhat.qe.auto.testng.SkipTestNGListener" />
+		<listener class-name="com.redhat.qe.tools.checklog.CheckLogTestNGListener" />
 		<!-- Listener to send report to Report Engine Server -->
 		<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener"
 			/>
@@ -418,6 +419,12 @@
 			</class>
 		</classes>
 	</test>
+	<test name="Bz1093265Test">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.alerts.Bz1093265Test">
+            </class>
+        </classes>
+    </test>
 
 <!-- Storage Node tests should run before StorageAutoInventoryTest -->
 	<test name="StorageNode">
