@@ -29,11 +29,13 @@ public class Operations extends ResourceTab {
     protected void navigate() {
         navigateUnderResource("Operations/Schedules");
         raiseErrorIfCellDoesNotExist("Operations");
+        raiseErrorIfCellDoesNotExist("Schedules");
     }
 
     public void history() {
         navigateUnderResource("Operations/History");
         raiseErrorIfCellDoesNotExist("Operations");
+        raiseErrorIfCellDoesNotExist("History");
     }
 
     /**
