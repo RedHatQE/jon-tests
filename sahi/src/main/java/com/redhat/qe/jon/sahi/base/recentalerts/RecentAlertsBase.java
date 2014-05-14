@@ -61,6 +61,13 @@ abstract class RecentAlertsBase {
 			tasks.image("/settings/").near(tasks.div(portletName)).doubleClick();
 		}
 		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell(waitFor), waitFor, Timing.TIME_5S), waitFor);
+		
+		if (!tasks.textbox("/" + filterName + "/").exists()) {
+			tasks.cell("Cancel").near(tasks.cell("Save")).click(); // Close the Settings dialog
+			_logger.warning("Filter not available [" + filterName + "]!");
+			return false;
+		}
+		
 		tasks.textbox("/" + filterName + "/").setValue("abc");
 		tasks.cell("Save").click();
 
