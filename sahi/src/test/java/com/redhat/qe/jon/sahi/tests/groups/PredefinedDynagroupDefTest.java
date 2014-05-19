@@ -7,12 +7,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.jon.sahi.base.OnAgentSahiTestScript;
-import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.groups.DynaGroupDefPage;
 import com.redhat.qe.jon.sahi.base.inventory.groups.DynagroupDef;
 
 /**
- * This test creates all available canned expressions and checks if they were
+ * This test creates/deletes all available canned expressions and checks if they were
  * successfully created with correct parameters.
  * @author fbrychta
  *
@@ -35,9 +34,33 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
 
         // try to find created definition and check it's parameters
         dynagroupDefPage.navigate();
+        Assert.assertFalse(dynagroupDefPage.isMarkedAsCanned(changedName),"This definitions is marked as canned");
         DynagroupDef parsedDef = dynagroupDefPage.getDefinition(changedName);
         expectedResult.setName(changedName);
         assertDefinitions(parsedDef,expectedResult);
+    }
+    @Test(dataProvider="cannedExprParameters",dependsOnMethods={"useCannedExpressionsTest"})
+    public void deleteDefinitions(String providedExprName,DynagroupDef expectedResult){
+        DynaGroupDefPage dynagroupDefPage = new DynaGroupDefPage(sahiTasks);
+        dynagroupDefPage.navigate();
+
+        String changedName = expectedResult.getName() +" - user";
+        Assert.assertTrue(dynagroupDefPage.deleteDefinition(changedName),"Definition named "+changedName+
+                " is deleted");
+    }
+    @Test
+    public void defsAreDistinguishableTest(){
+        DynaGroupDefPage dynagroupDefPage = new DynaGroupDefPage(sahiTasks);
+        dynagroupDefPage.navigate();
+        String[] predefinedDefNames= {"Groups by platform",
+                "All RHQ Agent resources in inventory",
+                "All resources currently down",
+                "Managed Servers in domain",
+                "Managed Servers in server-group"};
+        for(String name : predefinedDefNames){
+            log.fine("Checking dynagroup definition named: " + name);
+            Assert.assertTrue(dynagroupDefPage.isMarkedAsCanned(name),"Definition named "+name+" is marked as canned");
+        }
     }
     @DataProvider
     public Object[][] cannedExprParameters(){
@@ -70,7 +93,7 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
                             false,
                             10)},
                 {"JBossAS - Clusters",
-                    new DynagroupDef("Clusters",
+                    new DynagroupDef("Clusters AS4",
                             "JBoss AS4 clusters",
                             "",
                             "groupby resource.trait[partitionName]\n"

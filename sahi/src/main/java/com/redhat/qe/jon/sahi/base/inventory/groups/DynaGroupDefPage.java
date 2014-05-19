@@ -38,6 +38,8 @@ public class DynaGroupDefPage {
 
     /**
      * Creates a new dynagroup definition with given parameters.
+     * 
+     * @param def definition to be created
      * @return true if given definition was successfully created, false otherwise
      */
     public boolean createNew(DynagroupDef def){
@@ -65,6 +67,8 @@ public class DynaGroupDefPage {
         }
 
         log.fine("Saving a definition.");
+        tasks.clickOnFirstVisibleElement(tasks.cell("Save"));
+        // clicking twice to workaround bz 1098911
         tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
         tasks.clickOnFirstVisibleElement(tasks.cell("Save"));
         return tasks.waitForElementVisible(tasks, tasks.cell("/You have successfully saved the group definition named*/"), 
@@ -73,6 +77,7 @@ public class DynaGroupDefPage {
     /**
      * Tries to get parameters of given dynagroup definition.
      * 
+     * @param name name of the definition to get
      * @throws RuntimeException when a definition with given name is not found on the page
      * @return DynagroupDef parsed definition with given name
      */
@@ -93,6 +98,7 @@ public class DynaGroupDefPage {
     /**
      * Deletes a dynagroup definition with given name.
      * 
+     * @param name name of the definition to delete
      * @return true if the definition was successfully deleted, false when the 
      * definition was not found or deletion failed
      */
@@ -102,10 +108,24 @@ public class DynaGroupDefPage {
             tasks.div(name).click();
             tasks.click(tasks.cell("Delete"));
             tasks.click(tasks.cell("Yes"));
-            return tasks.waitForElementVisible(tasks, tasks.cell("/You have successfully deleted [1] group definitions*/"), 
+            return tasks.waitForElementVisible(tasks, tasks.cell("/You have successfully deleted*/"), 
                     "Successful message",Timing.WAIT_TIME);
         }
         return false;
+    }
+    /**
+     * Tests if given definition is marked as canned.
+     * 
+     * @param name name of the definition to be tested
+     * @throws RuntimeException when a definition with given name is not found on the page
+     * @return true if the definition is marked as canned, false otherwise
+     */
+    public boolean isMarkedAsCanned(String name){
+        if(tasks.link(name).isVisible()){
+            return tasks.link(name).parentNode("tr").containsHTML("Plugin_16.png");
+        }else{
+            throw new RuntimeException("Given dynagroup definition ["+name+"] was not found!!");
+        }
     }
 
 }
