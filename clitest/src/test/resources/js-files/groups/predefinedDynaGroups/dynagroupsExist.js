@@ -17,17 +17,20 @@ var allLinuxPlat = resources.find({resourceTypeName:"Linux"});
 var allWinPlat = resources.find({resourceTypeName:"Windows"});
 var allResDown = resources.find({availability:"DOWN"});
 var allManagedServers = resources.find({pluginName:"JBossAS7",resourceTypeName:"Managed Server"});
+var allAgents = resources.find({pluginName:"RHQAgent",name:"RHQ Agent"});
 
 
 // arrays with input parameters
 var defNames = ["Groups by platform",
                 "All resources currently down",
                 "Managed Servers in domain",
-                "Managed Servers in server-group"];
+                "Managed Servers in server-group",
+                "All RHQ Agent resources in inventory"];
 var defDescriptions = ["Generates groups by platform",
                        "Group of all resources currently down",
                        "JBoss AS7 Managed servers in server in domains",
-                       "JBoss AS7 Managed servers in server in server-groups"];
+                       "JBoss AS7 Managed servers in server in server-groups",
+                       "Maintains a group of all RHQ agents in inventory"];
 var expressions = ["resource.type.category = PLATFORM\n"+
                    "groupby resource.type.name",
 
@@ -39,11 +42,14 @@ var expressions = ["resource.type.category = PLATFORM\n"+
 
                    "groupby resource.resourceConfiguration[group]\n"+
                    "resource.type.plugin = JBossAS7\n"+
-                   "resource.type.name = Managed Server"
+                   "resource.type.name = Managed Server",
+                   
+                   "resource.type.plugin = RHQAgent\n" +
+                   "resource.type.name = RHQ Agent"
                    ];
-var isRecursive = [false,false,false,false];
+var isRecursive = [false,false,false,false,false];
 var tenMinutes = 1000 * 60 * 10;
-var recalInterval = [tenMinutes, tenMinutes, tenMinutes, tenMinutes];
+var recalInterval = [tenMinutes, tenMinutes, tenMinutes, tenMinutes, tenMinutes];
 
 // get expected number of groups which will be managed by created dynaGroup definition
 var numberOfPlatformTypes = 0;
@@ -56,6 +62,7 @@ if(allWinPlat.length > 0){
 
 var numberOfManagedServersWithDifHostname = 0;
 var numberOfManagedServersWithDifGroup = 0;
+// TODO, cp this to EAP6 suite and fix Managed Servers in domain
 var foundHostnames = [];
 var foundGroups = [];
 for(var x in allManagedServers){
@@ -73,7 +80,7 @@ for(var x in allManagedServers){
         numberOfManagedServersWithDifGroup++;
     }
 }
-var expectedNumberOfManagedGroups = [numberOfPlatformTypes, 1,numberOfManagedServersWithDifHostname,numberOfManagedServersWithDifGroup];
+var expectedNumberOfManagedGroups = [numberOfPlatformTypes, 1,numberOfManagedServersWithDifHostname,numberOfManagedServersWithDifGroup,1];
 
 
 // assert values
@@ -86,3 +93,4 @@ for (i in defNames) {
 // check if number of resources in created managed groups is correct
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[0]), allLinuxPlat.length);
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[1]), allResDown.length);
+checkNumberOfResourcesInGroup(getManagedGroup(defNames[4]), allAgents.length);
