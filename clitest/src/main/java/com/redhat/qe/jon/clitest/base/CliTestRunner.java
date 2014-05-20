@@ -169,6 +169,15 @@ public class CliTestRunner {
         }
         return this;
     }
+    /**
+     * specify message that makes test fail, if produced as output of test
+     * @param failOn could be set to null if you want to skip this check
+     * @return this
+     */
+    public CliTestRunner setFailOn(String failOn) {
+        this.makeFailure = failOn;
+        return this;
+    }
 
     /**
      * specify message - if such message is missing in output produced by CLI, test will fail
@@ -180,6 +189,16 @@ public class CliTestRunner {
         if (expect != null) {
             this.expectedResult += "," + expect;
         }
+        return this;
+    }
+    /**
+     * specify message - if such message is missing in output produced by CLI, test will fail
+     *
+     * @param expect could be set to null if you want to skip this check
+     * @return this
+     */
+    public CliTestRunner setExpect(String expect) {
+        this.expectedResult = expect;
         return this;
     }
 
