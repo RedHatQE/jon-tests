@@ -6,6 +6,7 @@
 var cases = [
     {
         name: "Tests Create child resource permission",
+        loginWithoutRoles: true,
         key: "createChild_",
         res_groups: [
             {
@@ -27,6 +28,28 @@ var cases = [
             },
             {
                 name: "U2",
+                roles: [ ]
+            }
+        ]
+    },
+    {
+        name: "Tests login user without roles enabled",
+        loginWithoutRoles: true,
+        key: "loginWithoutRolesEnabled_",
+        users: [
+            {
+                name: "U1",
+                roles: [ ]
+            }
+        ]
+    },
+    {
+        name: "Tests login user without roles disabled",
+        loginWithoutRoles: false,
+        key: "loginWithoutRolesDisabled_",
+        users: [
+            {
+                name: "U1",
                 roles: [ ]
             }
         ]
@@ -322,6 +345,7 @@ var cases = [
     ,
     {
         name: "Tests admin user and user without permissions",
+        loginWithoutRoles: true,
         key: "userRoles_",
         roles: [
             {

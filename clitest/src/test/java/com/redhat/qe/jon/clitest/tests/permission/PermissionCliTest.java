@@ -42,7 +42,21 @@ public class PermissionCliTest extends CliEngine {
         runPermissionTest("createChild_U1", action, true);  // this will endup resource creation timeout, because user has no permission to resource he just created
         runPermissionTest("createChild_U2", action, false);
 	}
-	
+    @Test()
+    public void loginUserWithoutRolesEnabledTest() {
+        initCase("loginWithoutRolesEnabled_");
+        String action =  "";
+        runPermissionTest("loginWithoutRolesEnabled_U1", action, true);
+    }
+    @Test()
+    public void loginUserWithoutRolesDisabledTest() {
+        initCase("loginWithoutRolesDisabled_");
+        createJSRunner("permissions/testPermissions.js")
+            .asUser("loginWithoutRolesEnabled_U1")
+            .setFailOn(null)
+            .setExpect("Login failed: There are no preconfigured roles for user [loginWithoutRolesEnabled_U1]")
+            .run();
+    }
 	@Test
 	public void deleteChildResourceTest() {
         initCase("deleteChild_");

@@ -15,6 +15,7 @@
 // make sure case 'key' is unique across all test cases
 //var case1 = {
 //        name:"User Deploying His Own Bundle To Specific Resource Group. (using 1 role)", // name or desc of case
+//        loginWithoutRoles: true, // by default a user without any role can't be logged in, you can change it using this
 //        key:"case1", // case key name - all object will have this prefix in names
 //          res_groups: [ // array of resource groups to be created within setup 
 //                      {name:"rg1",children:resources.platforms({type:"Linux"})} // specify it's name and array of resources to contain
@@ -74,6 +75,11 @@ function tearDownTestCase(tc) {
 function setupTestCase(tc) {
     println("Creating stuff for case '" + tc.key + "' : " + tc.name);
     var _prefix = tc.key;
+    if(tc.loginWithoutRoles == true){
+        setLoginWithoutRoles(true);
+    }else{
+        setLoginWithoutRoles(false);
+    }
     tc.res_groups = tc.res_groups || [];
     tc.bundle_groups = tc.bundle_groups || [];
     tc.roles = tc.roles || [];
@@ -227,4 +233,11 @@ function createRepoForUser(repoName,userName){
     var repo = new Repo(repoName);
     repo.setOwner(users.getUser(userName).nativeObj);
     RepoManager.createRepo(repo);
+}
+
+function setLoginWithoutRoles(enabled){
+    var settings = SystemManager.getSystemSettings();
+    println("Setting LOGIN_WITHOUT_ROLES_ENABLED to:" + enabled)
+    settings.put(SystemSetting.LOGIN_WITHOUT_ROLES_ENABLED,new java.lang.String(enabled));
+    SystemManager.setSystemSettings(settings);
 }
