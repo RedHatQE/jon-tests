@@ -46,7 +46,7 @@ public class DynaGroupDefPage {
         tasks.click(tasks.cell("New"));
         tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
         if(def.getProvidedExprName() != null){
-            tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Provided Expression :", def.getProvidedExprName());
+            tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Provided Expression :", def.getProvidedExprName());
         }
         if(def.getName() != null){
             editor.setText("name", def.getName());
