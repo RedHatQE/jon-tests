@@ -309,10 +309,16 @@ public class Inventory extends ResourceTab{
             if (!tasks.cell(name).isVisible()) {
                 tasks.sortChildResources();
             }
-            if (!tasks.cell(name).isVisible() && tasks.image("hscroll_Over_start.png").isVisible()) {
-                for(int i=10;i<15;i++){
-                    tasks.image("hscroll_Over_start.png").click();
-                    tasks.waitFor(200);
+            if (!tasks.cell(name).isVisible() && 
+                    (tasks.image("hscroll_start.png").isVisible()||
+                            tasks.image("hscroll_Over_start.png").isVisible())) {
+                log.fine("Trying to scroll..");
+                for(int i=0;i<40;i++){
+                    if(tasks.image("hscroll_start.png").isVisible()){
+                        tasks.image("hscroll_start.png").click();
+                    }else{
+                        tasks.image("hscroll_Over_start.png").click();
+                    }
                     if(tasks.cell(name).isVisible()){
                         return true;
                     }
