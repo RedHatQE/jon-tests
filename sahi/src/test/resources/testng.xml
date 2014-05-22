@@ -51,9 +51,9 @@
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.SchedulingForResourcesTest">
 				<methods>
-					<include name="enableMetric"></include>
-					<include name="disableMetric"></include>
 					<include name="updateMetric"></include>
+					<include name="disableMetric"></include>
+					<include name="enableMetric"></include>					
 				</methods>
 			</class>
 		</classes>
