@@ -176,7 +176,7 @@ project(":common") {
       "org.apache.velocity:velocity:1.7",
       "org.jacoco:org.jacoco.ant:0.6.4.201312101107",
 //      "org.jacoco:org.jacoco.ant:0.5.10.201208310627",
-			"com.report.engine:java-client:0.0.2-SNAPSHOT"
+			"com.report.engine:java-client:0.0.3-SNAPSHOT"
                 compile("com.redhat.qe:bz-checker:1.0.3-SNAPSHOT"){
                     force = true
                 }	
