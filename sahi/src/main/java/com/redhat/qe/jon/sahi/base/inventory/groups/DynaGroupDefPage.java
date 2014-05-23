@@ -45,26 +45,8 @@ public class DynaGroupDefPage {
     public boolean createNew(DynagroupDef def){
         tasks.click(tasks.cell("New"));
         tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
-        if(def.getProvidedExprName() != null){
-            tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Provided Expression :", def.getProvidedExprName());
-        }
-        if(def.getName() != null){
-            editor.setText("name", def.getName());
-        }
-        if(def.getDescription() != null){
-            editor.setTextInTextArea("description", def.getDescription());
-        }
-        if(def.getExpression() != null){
-            // TODO: \n is not working
-            editor.setTextInTextArea("expression", def.getExpression());
-        }
-        boolean isRecursive = !tasks.div("Recursive").containsHTML("unchecked");
-        if(def.isRecursive() != isRecursive){
-            tasks.div("Recursive").click();
-        }
-        if(def.getRecalcInt() >=0){
-            editor.setText("recalculationInterval", Integer.toString(def.getRecalcInt()));
-        }
+
+        fillFields(def);
 
         log.fine("Saving a definition.");
         tasks.clickOnFirstVisibleElement(tasks.cell("Save"));
@@ -114,6 +96,32 @@ public class DynaGroupDefPage {
         return false;
     }
     /**
+     * Edits a dynagroup definition with given name.
+     * 
+     * @param name name of the definition to be edited
+     * @param def values from this definition will be used
+     * @return true if the definition was successfully edited, false when the 
+     * definition was not found or edit failed
+     */
+    public boolean editDefinition(String name, DynagroupDef def){
+        log.fine("Trying to edit a definition with name " + name);
+        if(tasks.link(name).isVisible()){
+            tasks.link(name).click();
+            tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
+
+            fillFields(def);
+
+            tasks.clickOnFirstVisibleElement(tasks.cell("Save"));
+            // take care of question dialog when editing predefined dynagroup definition
+            if(tasks.cell("Yes").isVisible()){
+                tasks.cell("Yes").click();
+            }
+            return tasks.waitForElementVisible(tasks, tasks.cell("/You have successfully saved the group definition named*/"), 
+                    "Successful message",Timing.WAIT_TIME);
+        }
+        return false;
+    }
+    /**
      * Tests if given definition is marked as canned.
      * 
      * @param name name of the definition to be tested
@@ -125,6 +133,29 @@ public class DynaGroupDefPage {
             return tasks.link(name).parentNode("tr").containsHTML("Plugin_16.png");
         }else{
             throw new RuntimeException("Given dynagroup definition ["+name+"] was not found!!");
+        }
+    }
+    
+    private void fillFields(DynagroupDef def){
+        if(def.getProvidedExprName() != null){
+            tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Provided Expression :", def.getProvidedExprName());
+        }
+        if(def.getName() != null){
+            editor.setText("name", def.getName());
+        }
+        if(def.getDescription() != null){
+            editor.setTextInTextArea("description", def.getDescription());
+        }
+        if(def.getExpression() != null){
+            // TODO: \n is not working
+            editor.setTextInTextArea("expression", def.getExpression());
+        }
+        boolean isRecursive = !tasks.div("Recursive").containsHTML("unchecked");
+        if(def.isRecursive() != isRecursive){
+            tasks.div("Recursive").click();
+        }
+        if(def.getRecalcInt() >=0){
+            editor.setText("recalculationInterval", Integer.toString(def.getRecalcInt()));
         }
     }
 

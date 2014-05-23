@@ -12,7 +12,7 @@ import com.redhat.qe.jon.sahi.base.inventory.groups.DynagroupDef;
 
 /**
  * This test creates/deletes all available canned expressions and checks if they were
- * successfully created with correct parameters.
+ * successfully created with correct parameters. Tries to edit predefined definition.
  * @author fbrychta
  *
  */
@@ -61,6 +61,22 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
             log.fine("Checking dynagroup definition named: " + name);
             Assert.assertTrue(dynagroupDefPage.isMarkedAsCanned(name),"Definition named "+name+" is marked as canned");
         }
+    }
+    @Test(dependsOnMethods={"defsAreDistinguishableTest"})
+    public void editDefinition(){
+        DynaGroupDefPage dynagroupDefPage = new DynaGroupDefPage(sahiTasks);
+        dynagroupDefPage.navigate();
+        
+        DynagroupDef def = new DynagroupDef();
+        String name = "All resources currently down";
+        def.setName(name + "edited");
+        Assert.assertTrue(dynagroupDefPage.editDefinition(name, def), "It should be possible to edit predefined definition");
+        dynagroupDefPage.navigate();
+        Assert.assertFalse(dynagroupDefPage.isMarkedAsCanned(name + "edited"),
+                "Edited definition should not be marked as canned!");
+        // set original name
+        def.setName(name);
+        Assert.assertTrue(dynagroupDefPage.editDefinition(name + "edited", def),"It should be possible to edit a definition");
     }
     @DataProvider
     public Object[][] cannedExprParameters(){
