@@ -130,7 +130,8 @@ public class Configuration extends ResourceTab {
 			Assert.assertTrue(tasks.waitForAnyElementsToBecomeVisible(tasks,
                      new ElementStub[]{
                             tasks.cell("/Configuration updated*/"),
-                            tasks.cell("/Updating configuration*/")
+                            tasks.cell("/Updating configuration*/"),
+                            tasks.div("/Updating configuration*/")
                     }, "Successful update message", Timing.WAIT_TIME),
                     "Successful config update message expected!!");
 		}

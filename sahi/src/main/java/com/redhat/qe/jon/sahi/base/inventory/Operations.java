@@ -4,7 +4,9 @@ package com.redhat.qe.jon.sahi.base.inventory;
 import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+
 import net.sf.sahi.client.ElementStub;
+
 import org.testng.Assert;
 
 import java.util.HashMap;
@@ -216,7 +218,10 @@ public class Operations extends ResourceTab {
          */
         public void schedule() {
             tasks.cell("Schedule").click();
-            Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell("/Operation Schedule created.*/"), "Successful message",Timing.WAIT_TIME)
+            String msg = "/Operation Schedule created.*/";
+            Assert.assertTrue(tasks.waitForAnyElementsToBecomeVisible(tasks,
+                    new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                    "Successful message", Timing.WAIT_TIME)
                     ,"Operation was scheduled");
         }
     }
