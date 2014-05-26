@@ -2,6 +2,8 @@ package com.redhat.qe.jon.sahi.base.administration;
 
 import java.util.logging.Logger;
 
+import net.sf.sahi.client.ElementStub;
+
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -67,7 +69,11 @@ public class RolesPage extends AdministrationPage {
         //TODO LDAP groups
         
         tasks.cell("Save").click();
-        tasks.waitForElementVisible(tasks, tasks.cell("Role created."), "Role was created message", Timing.WAIT_TIME);
+        
+        String msg = "Role created.";
+        tasks.waitForAnyElementsToBecomeVisible(tasks,
+                new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                "Successful message", Timing.WAIT_TIME);
         
         // TODO, check for errors (validation etc.)
         return this;
@@ -84,8 +90,12 @@ public class RolesPage extends AdministrationPage {
             tasks.div(roleName).click();
             tasks.cell("Delete").click();
             tasks.cell("Yes").click();
-            tasks.waitForElementVisible(tasks, tasks.cell("Role ["+roleName+"] deleted."),
-                    "Role was deleted message", Timing.WAIT_TIME);
+            
+            String msg = "Role ["+roleName+"] deleted.";
+            tasks.waitForAnyElementsToBecomeVisible(tasks,
+                    new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                    "Successful message", Timing.WAIT_TIME);
+            
             // TODO check errors
         }
         return this;

@@ -19,7 +19,9 @@ public class LoginLogoutTest extends SahiTestScript {
 		_logger.finer("Logging into RHQ system");
 		Assert.assertTrue(sahiTasks.login(guiUsername, guiPassword), "Login status");
 		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
-		Assert.assertTrue(sahiTasks.link("Logout").isVisible(), "User should be logged in!");
+		Assert.assertTrue(sahiTasks.link("Logout").isVisible() || sahiTasks.link("Dashboard").isVisible(), 
+		        "User should be logged in!");
+		
 	}
 	
 	@SkipIf(property="ldap.configured",notEquals="true")
@@ -29,7 +31,8 @@ public class LoginLogoutTest extends SahiTestScript {
 		_logger.finer("Logging into RHQ system");
 		Assert.assertTrue(sahiTasks.ldapLogin(guiUsername, guiPassword, firstName, lastName, email, phoneNumber, department), "Login status");
 		Assert.assertFalse(sahiTasks.cell(loginErrorMessgae).exists(), "Login error message["+loginErrorMessgae+"] available?: "+sahiTasks.cell(loginErrorMessgae).exists());
-		Assert.assertTrue(sahiTasks.link("Logout").isVisible(), "User should be logged in!");
+		Assert.assertTrue(sahiTasks.link("Logout").isVisible() || sahiTasks.link("Dashboard").isVisible(), 
+                "User should be logged in!");
 	}
 	
 	@Test (groups={"functional","sanity","setup","logout"})

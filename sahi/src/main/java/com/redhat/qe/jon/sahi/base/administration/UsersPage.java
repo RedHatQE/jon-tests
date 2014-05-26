@@ -2,6 +2,8 @@ package com.redhat.qe.jon.sahi.base.administration;
 
 import java.util.logging.Logger;
 
+import net.sf.sahi.client.ElementStub;
+
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
@@ -74,7 +76,11 @@ public class UsersPage extends AdministrationPage {
         }
         
         tasks.cell("Save").click();
-        tasks.waitForElementVisible(tasks, tasks.cell("User created."), "User was created message", Timing.WAIT_TIME);
+        
+        String msg = "User created.";
+        tasks.waitForAnyElementsToBecomeVisible(tasks,
+                new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                "Successful message", Timing.WAIT_TIME);
         
         // TODO, check for errors (validation etc.)
         return this;
@@ -91,8 +97,12 @@ public class UsersPage extends AdministrationPage {
             tasks.div(userName).click();
             tasks.cell("Delete").click();
             tasks.cell("Yes").click();
-            tasks.waitForElementVisible(tasks, tasks.cell("Deleted user [["+userName+"]]"),
-                    "User was deleted message", Timing.WAIT_TIME);
+            
+            String msg = "Deleted user [["+userName+"]]";
+            tasks.waitForAnyElementsToBecomeVisible(tasks,
+                    new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                    "Successful message", Timing.WAIT_TIME);
+            
             // TODO check errors
         }
         return this;

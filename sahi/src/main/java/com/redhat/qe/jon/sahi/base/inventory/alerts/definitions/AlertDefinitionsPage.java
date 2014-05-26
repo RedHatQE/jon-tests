@@ -5,6 +5,7 @@ import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.alerts.Alerts;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+
 import net.sf.sahi.client.ElementStub;
 
 import java.util.ArrayList;
@@ -163,7 +164,10 @@ public class AlertDefinitionsPage extends Alerts {
         	}
         	delBut.click();
         	editor.serveConfirmDialog("Yes");
-        	tasks.waitForElementVisible(tasks, tasks.cell("/Successfully deleted.*/"), "Successful message", Timing.WAIT_TIME);
+        	String msg = "/Successfully deleted.*/";
+            tasks.waitForAnyElementsToBecomeVisible(tasks,
+                    new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                    "Successful message", Timing.WAIT_TIME);
         }
     	
     	return this;
@@ -187,7 +191,10 @@ public class AlertDefinitionsPage extends Alerts {
         	}
         	disBut.click();
         	editor.serveConfirmDialog("Yes");
-        	tasks.waitForElementVisible(tasks, tasks.cell("/Successfully disabled.*/"), "Successful message", Timing.WAIT_TIME);
+        	String msg = "/Successfully disabled.*/";
+            tasks.waitForAnyElementsToBecomeVisible(tasks,
+                    new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                    "Successful message", Timing.WAIT_TIME);
     	}
     	return this;
     }
@@ -209,7 +216,10 @@ public class AlertDefinitionsPage extends Alerts {
           	}
           	enBut.click();
           	editor.serveConfirmDialog("Yes");
-        	tasks.waitForElementVisible(tasks, tasks.cell("/Successfully enabled.*/"), "Successful message", Timing.WAIT_TIME);
+        	String msg = "/Successfully enabled.*/";
+            tasks.waitForAnyElementsToBecomeVisible(tasks,
+                    new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                    "Successful message", Timing.WAIT_TIME);
     	}
     	
     	return this;

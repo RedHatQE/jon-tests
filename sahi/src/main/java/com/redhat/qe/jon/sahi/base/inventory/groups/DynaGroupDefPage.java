@@ -2,6 +2,8 @@ package com.redhat.qe.jon.sahi.base.inventory.groups;
 
 import java.util.logging.Logger;
 
+import net.sf.sahi.client.ElementStub;
+
 import com.redhat.qe.jon.sahi.base.editor.Editor;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
@@ -53,8 +55,10 @@ public class DynaGroupDefPage {
         // clicking twice to workaround bz 1098911
         tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
         tasks.clickOnFirstVisibleElement(tasks.cell("Save"));
-        return tasks.waitForElementVisible(tasks, tasks.cell("/You have successfully saved the group definition named*/"), 
-                "Successful message",Timing.WAIT_TIME);
+        String msg = "/You have successfully saved the group definition named*/";
+        return tasks.waitForAnyElementsToBecomeVisible(tasks,
+                new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                "Successful message", Timing.WAIT_TIME);
     }
     /**
      * Tries to get parameters of given dynagroup definition.
@@ -90,8 +94,10 @@ public class DynaGroupDefPage {
             tasks.div(name).click();
             tasks.click(tasks.cell("Delete"));
             tasks.click(tasks.cell("Yes"));
-            return tasks.waitForElementVisible(tasks, tasks.cell("/You have successfully deleted*/"), 
-                    "Successful message",Timing.WAIT_TIME);
+            String msg = "/You have successfully deleted*/";
+            return tasks.waitForAnyElementsToBecomeVisible(tasks,
+                    new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                    "Successful message", Timing.WAIT_TIME);
         }
         return false;
     }
@@ -116,8 +122,10 @@ public class DynaGroupDefPage {
             if(tasks.cell("Yes").isVisible()){
                 tasks.cell("Yes").click();
             }
-            return tasks.waitForElementVisible(tasks, tasks.cell("/You have successfully saved the group definition named*/"), 
-                    "Successful message",Timing.WAIT_TIME);
+            String msg = "/You have successfully saved the group definition named*/";
+            return tasks.waitForAnyElementsToBecomeVisible(tasks,
+                    new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
+                    "Successful message", Timing.WAIT_TIME);
         }
         return false;
     }

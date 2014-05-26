@@ -75,8 +75,11 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public String getCurrentLogin(){
-    	if(this.link("Logout").exists()){
+    	// we need to differentiate between old and new look&feel
+        if(this.link("Logout").isVisible()){
     		return this.cell(1).near(this.cell("|").in(this.div("toolStrip"))).getText();
+    	}else if(this.span("pficon pficon-user").isVisible()){
+    	    return this.link(0).near(this.span("pficon pficon-user")).getText();
     	}else{
     		return null;
     	}		

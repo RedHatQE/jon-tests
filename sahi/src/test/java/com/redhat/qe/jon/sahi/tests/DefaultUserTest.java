@@ -2,6 +2,8 @@ package com.redhat.qe.jon.sahi.tests;
 
 import java.util.ArrayList;
 
+import net.sf.sahi.client.ElementStub;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -132,7 +134,9 @@ public class DefaultUserTest extends OnAgentSahiTestScript {
     }
     
     private void checkErrors(){
-        if(sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("ErrorBlock"),"Error block",Timing.WAIT_TIME)){
+        if(sahiTasks.waitForAnyElementsToBecomeVisible(sahiTasks, 
+                new ElementStub[]{sahiTasks.cell("ErrorBlock"),sahiTasks.span("pficon pficon-error-exclamation")},
+                "Error block",Timing.WAIT_TIME)){
             throw new RuntimeException("Error block is visible. Text: " + sahiTasks.cell("ErrorBlock").getText());
         }
     }
