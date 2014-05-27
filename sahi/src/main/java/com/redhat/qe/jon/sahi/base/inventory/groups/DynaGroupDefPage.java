@@ -64,8 +64,8 @@ public class DynaGroupDefPage {
      * Tries to get parameters of given dynagroup definition.
      * 
      * @param name name of the definition to get
-     * @throws RuntimeException when a definition with given name is not found on the page
-     * @return DynagroupDef parsed definition with given name
+     * @return DynagroupDef parsed definition with given name or null when the definition
+     * was not found
      */
     public DynagroupDef getDefinition(String name){
         if(tasks.link(name).isVisible()){
@@ -78,7 +78,7 @@ public class DynaGroupDefPage {
                     !tasks.div("Recursive").containsHTML("unchecked"),
                     Integer.parseInt(editor.getText("recalculationInterval")));
         }else{
-            throw new RuntimeException("Given dynagroup definition ["+name+"] was not found!!");
+            return null;
         }
     }
     /**

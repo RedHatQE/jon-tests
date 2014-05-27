@@ -68,7 +68,7 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
         dynagroupDefPage.navigate();
         
         DynagroupDef def = new DynagroupDef();
-        String name = "All resources currently down";
+        String name = "Managed Servers in domain";
         def.setName(name + "edited");
         Assert.assertTrue(dynagroupDefPage.editDefinition(name, def), "It should be possible to edit predefined definition");
         dynagroupDefPage.navigate();
@@ -77,6 +77,17 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
         // set original name
         def.setName(name);
         Assert.assertTrue(dynagroupDefPage.editDefinition(name + "edited", def),"It should be possible to edit a definition");
+    }
+    @Test(dependsOnMethods={"defsAreDistinguishableTest"})
+    public void deletePredefinedDefinition(){
+        DynaGroupDefPage dynagroupDefPage = new DynaGroupDefPage(sahiTasks);
+        dynagroupDefPage.navigate();
+        
+        String name = "Managed Servers in server-group";
+        Assert.assertTrue(dynagroupDefPage.deleteDefinition(name),
+                "Failed to delete group definition named "+name+"!!");
+        Assert.assertTrue(dynagroupDefPage.getDefinition(name) == null,
+                "Group definition named "+name+", should be deleted!");
     }
     @DataProvider
     public Object[][] cannedExprParameters(){
