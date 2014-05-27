@@ -3418,6 +3418,11 @@ discoveryQueue = (function () {
 			if(children != false){children = true;}
 
 			if (!resource.exists()) {
+			    // import resource's parent as well if it's not already imported
+			    var resParent = resource.parent();
+			    if(resParent && !resParent.exists()){
+			        DiscoveryBoss.importResources([resParent.getId()]);
+			    }
 				DiscoveryBoss.importResources([resource.getId()]);
 				common.waitFor(resource.exists);
 			}
