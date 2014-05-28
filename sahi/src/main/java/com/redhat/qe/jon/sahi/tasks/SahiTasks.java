@@ -607,7 +607,10 @@ public class SahiTasks extends ExtendedSahi {
         		"resource.type.plugin = JBossAS \n\r" +
         		"resource.type.name = JBossAS Server");
         this.cell("Save & Recalculate").click();
-        org.testng.Assert.assertTrue(this.waitForElementExists(this, this.cell("You have successfully recalculated this group definition"), "Cell: You have successfully recalculated this group definition", 1000*20), "Successful message check"); //Wait 20 seconds
+        String msg = "You have successfully recalculated this group definition";
+        org.testng.Assert.assertTrue(this.waitForAnyElementsToBecomeVisible(this,
+                new ElementStub[]{this.cell(msg),this.div(msg)},
+                msg, 1000*20),"Successful message check"); //Wait 20 seconds
         this.bold("Back to List").click();
         this.link(groupName).click();
         this.bold("Back to List").click();
@@ -2829,7 +2832,10 @@ public class SahiTasks extends ExtendedSahi {
 		this.link(name).click();
 		this.textbox("interval").setValue("123456");
 		this.cell("Save").click();
-		Assert.assertTrue(this.cell("Drift template updated and changes pushed to attached definitions.").exists());
+		String msg = "Drift template updated and changes pushed to attached definitions.";
+		Assert.assertTrue(this.waitForAnyElementsToBecomeVisible(this,
+                new ElementStub[]{this.cell(msg),this.div(msg)},
+                "Successful message", Timing.WAIT_TIME),msg);
 		
 	}
 	
