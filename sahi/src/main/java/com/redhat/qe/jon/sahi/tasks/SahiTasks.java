@@ -2693,7 +2693,8 @@ public class SahiTasks extends ExtendedSahi {
 		
 		// go to Administration-->Users
 		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
-		Assert.assertTrue(this.link(searchTestuser).exists());
+		Assert.assertTrue(this.waitForElementVisible(this, this.link(searchTestuser),
+		        "Tested user link", Timing.WAIT_TIME),"User exists");
 		Assert.assertTrue(this.link("rhqadmin").exists());
 		this.link(searchTestuser).click();
 		Assert.assertTrue(this.password("password").exists());
