@@ -379,7 +379,7 @@ public class AlertDefinitionEditor {
 		okBut.click();
 		
 		// this is a hack, sometimes first click simply doesn't work
-		tasks.waitFor(300);
+		tasks.waitFor(500);
 		if(okBut.isVisible()){
 		    okBut.click();
 		}
