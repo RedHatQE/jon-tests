@@ -77,6 +77,7 @@ public abstract class ResourceTab {
 
 	private void navigateDirectly(String uri) {
 		String url = tasks.getNavigator().getServerBaseUrl()+"/#Resource/"+resource.getId()+"/"+uri;
+        log.finer("Navigating directly to " + url);
 		tasks.navigateTo(url,false);
 		tasks.waitFor(Timing.WAIT_TIME);
 	}

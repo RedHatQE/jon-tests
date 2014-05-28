@@ -75,12 +75,24 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public String getCurrentLogin(){
-		return this.cell(1).near(this.cell("|").in(this.div("toolStrip"))).getText();
+    	// we need to differentiate between old and new look&feel
+        if(this.link("Logout").isVisible()){
+    		return this.cell(1).near(this.cell("|").in(this.div("toolStrip"))).getText();
+    	}else if(this.span("pficon pficon-user").isVisible()){
+    	    return this.link(0).near(this.span("pficon pficon-user")).getText();
+    	}else{
+    		return null;
+    	}		
 	}
 	
     public void relogin(String userName, String password) {
     	String currentLogin = this.getCurrentLogin();
-		if(userName.equals(currentLogin)){
+		if(currentLogin == null){
+			_logger.log(Level.FINE, "User not logged in, Checking login box...");
+			if(this.textbox("inputUsername").exists() || this.textbox("user").exists()){
+				login(userName, password);
+			}
+		}else if(userName.equals(currentLogin)){
 			_logger.log(Level.FINE, "User["+userName+"] already logged in");
 		}else{
 			_logger.log(Level.FINE, "Currently logged in as ["+currentLogin+"], Changing login to ["+userName+"]");
@@ -180,8 +192,10 @@ public class SahiTasks extends ExtendedSahi {
      */
     public void sortChildResources() {
         if (!this.cell("Last Modified Time").isVisible()) {
+            ElementStub nameColumnHeaderElement = this.cell("Name").near(this.cell("Ancestry"));
+            this.waitForElementExists(this, nameColumnHeaderElement, nameColumnHeaderElement.toString(), Timing.WAIT_TIME);
             // 1. Add column Last Modified Time
-            this.xy(this.cell("Name").near(this.cell("Ancestry")), 3, 3).rightClick();
+            this.xy(nameColumnHeaderElement, 3, 3).rightClick();
             this.xy(this.cell("Columns"), 3, 3).mouseOver();
             this.xy(this.cell("Last Modified Time"), 3, 3).click();
             // 2. Set Auto Fit All Columns
@@ -238,6 +252,13 @@ public class SahiTasks extends ExtendedSahi {
         this.xy(this.byText(resourceName, "nobr"), 3,3).doubleClick();
         this.waitFor(2*1000);
     }
+    
+    public void createGroup(String groupPanelName, String groupName, String groupDesc, String resourceName) {
+    	ArrayList<String> resourceList = new ArrayList<String>();
+    	resourceList.add(resourceName);
+    	createGroup(groupPanelName, groupName, groupDesc, resourceList);
+    }
+    
     public void createGroup(String groupPanelName, String groupName, String groupDesc, ArrayList<String> resourceList) {
     	this.selectPage("Inventory-->Compatible Groups", this.textbox("search"), 1000*5, 3);
     	this.cell("New").click();
@@ -586,7 +607,10 @@ public class SahiTasks extends ExtendedSahi {
         		"resource.type.plugin = JBossAS \n\r" +
         		"resource.type.name = JBossAS Server");
         this.cell("Save & Recalculate").click();
-        org.testng.Assert.assertTrue(this.waitForElementExists(this, this.cell("You have successfully recalculated this group definition"), "Cell: You have successfully recalculated this group definition", 1000*20), "Successful message check"); //Wait 20 seconds
+        String msg = "You have successfully recalculated this group definition";
+        org.testng.Assert.assertTrue(this.waitForAnyElementsToBecomeVisible(this,
+                new ElementStub[]{this.cell(msg),this.div(msg)},
+                msg, 1000*20),"Successful message check"); //Wait 20 seconds
         this.bold("Back to List").click();
         this.link(groupName).click();
         this.bold("Back to List").click();
@@ -599,14 +623,22 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Yes").click();
     }
 
-    public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, String desc, String compGroupName, String searchQueryName) {
-        //createCompatibleGroup(compGroupName, desc);
+    public void resourceSearch(String searchTestuser, String password, String firstName, String secondName, String emailId, String searchRoleName, String desc, String compGroupName, String searchQueryName) throws SahiTasksException {
+    	createGroup("Compatible Groups", compGroupName, "Created by Automation", "RHQ Agent");
         createUser(searchTestuser, password, firstName, secondName, emailId);
         createRoleWithoutMangeInvetntory(searchRoleName, desc, compGroupName, searchTestuser);
-        loginNewUser(searchTestuser, password);
+        //Login with new user
+        relogin(searchTestuser, password);
         navigateToAllGroups();
-        setSearchBox(compGroupName="="+searchQueryName);
-        this.cell("name").click();
+        setSearchBox(searchQueryName+"="+compGroupName);
+        Assert.assertTrue(this.div(compGroupName).exists(), "Group["+compGroupName+"] availability status...");
+        // login with rhqadmin user
+     	relogin(ADMIN_USER, ADMIN_PASSWORD);
+     	
+     	//Delete Group, Role and User
+     	deleteUser(searchTestuser);
+     	deleteRole(searchRoleName);
+     	deleteGroup("Compatible Groups", compGroupName);
     }
 
     public void createRoleWithoutMangeInvetntory(String roleName, String desc, String compGroupName, String searchTestuser) {
@@ -616,12 +648,12 @@ public class SahiTasks extends ExtendedSahi {
         this.textbox("name").setValue(roleName);
         this.textbox("description").setValue(desc);
         this.cell("Resource Groups").click();
-        this.div("compGroupName").click();
+        this.div(compGroupName).click();
         this.image("right.png").click();
-        this.cell("users").click();
+        this.cell("Users").click();
         this.div(searchTestuser).click();
         this.image("right.png").click();
-        this.cell("Save").click();
+        this.cell("Save").near(this.cell("Reset")).click(); 
     }
 
     public void loginNewUser(String newUser, String password) {
@@ -1967,9 +1999,11 @@ public class SahiTasks extends ExtendedSahi {
             }
     	}else{
     		if(enable){
-        		this.cell("Enable").under(this.label("Collection Interval")).click();
+        		//this.cell("Enable").under(this.label("Collection Interval")).click();
+    			this.cell("Enable").near(this.cell("/Total Rows:/")).click();
         	}else{
-        		this.cell("Disable").under(this.label("Collection Interval")).click();
+        		//this.cell("Disable").under(this.label("Collection Interval")).click();
+    			this.cell("Disable").near(this.cell("/Total Rows:/")).click();
         	}
     	}
     	this.waitFor(1000*2); //wait 2 seconds to get load table details
@@ -2514,7 +2548,7 @@ public class SahiTasks extends ExtendedSahi {
 		if(!this.isUserAvailable(userName)){
 				createUser(userName, password, firstName, lastName, email);
 		}		
-		createGroup(groupPanelName, groupName, groupDesc);
+		createGroup(groupPanelName, groupName, groupDesc, "RHQ Agent");
 		createRoleWithPermissions(roleName, roleDesc, groupName, userName, permissions);
 		//relogin(userName, password);	
 	}
@@ -2529,7 +2563,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageSecurity(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
 		String [] permissions = new String [] {"Manage Security"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2560,7 +2594,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageInventory(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 
 		String [] permissions = new String [] {"Manage Inventory"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2610,7 +2644,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageRespository(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
 		String [] permissions = new String [] {"Manage Repositories"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		//create test repo
 		String testReponame="testRepo";
@@ -2652,14 +2686,15 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkViewUsers(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
 		String [] permissions = new String [] {"View Users"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
 		
 		// go to Administration-->Users
 		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
-		Assert.assertTrue(this.link(searchTestuser).exists());
+		Assert.assertTrue(this.waitForElementVisible(this, this.link(searchTestuser),
+		        "Tested user link", Timing.WAIT_TIME),"User exists");
 		Assert.assertTrue(this.link("rhqadmin").exists());
 		this.link(searchTestuser).click();
 		Assert.assertTrue(this.password("password").exists());
@@ -2688,7 +2723,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageSettings(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 	
 		String [] permissions = new String [] {"Manage Settings"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2716,7 +2751,7 @@ public class SahiTasks extends ExtendedSahi {
 	public void checkManageBundles(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 	
 		String [] permissions = new String [] {"Manage Bundles"};
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, permissions);
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, permissions);
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2747,7 +2782,7 @@ public class SahiTasks extends ExtendedSahi {
 
 	public void checkGroupsPermission(String searchTestuser, String password, String firstName, String secondName, String emailId, String roleName, String desc, String compTestGroup, String searchQueryName) throws SahiTasksException {
 		
-		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "All Groups", compTestGroup, desc, roleName, desc, null); //this is the default role creation which has View Users checked
+		preConfigPermissionTest(searchTestuser, password, firstName, secondName, emailId, "Compatible Groups", compTestGroup, desc, roleName, desc, null); //this is the default role creation which has View Users checked
 		
 		// login with created user
 		relogin(searchTestuser, password);
@@ -2798,7 +2833,10 @@ public class SahiTasks extends ExtendedSahi {
 		this.link(name).click();
 		this.textbox("interval").setValue("123456");
 		this.cell("Save").click();
-		Assert.assertTrue(this.cell("Drift template updated and changes pushed to attached definitions.").exists());
+		String msg = "Drift template updated and changes pushed to attached definitions.";
+		Assert.assertTrue(this.waitForAnyElementsToBecomeVisible(this,
+                new ElementStub[]{this.cell(msg),this.div(msg)},
+                "Successful message", Timing.WAIT_TIME),msg);
 		
 	}
 	

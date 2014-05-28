@@ -1,12 +1,11 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
-import java.util.List;
-import java.util.logging.Logger;
-
-import net.sf.sahi.client.ElementStub;
-
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+import net.sf.sahi.client.ElementStub;
+
+import java.util.List;
+import java.util.logging.Logger;
 
 public class Monitoring extends ResourceTab {
 
@@ -93,8 +92,13 @@ public class Monitoring extends ResourceTab {
 	    tasks.xy(getMetricCell(metric), 3, 3).click();
 	    ElementStub textbox = tasks.textbox("interval");
 	    textbox.setValue(interval);
-	    for (ElementStub e : tasks.cell("Set").collectSimilar()) {
-		tasks.xy(e, 3, 3).click();
+	    for (ElementStub setButton : tasks.cell("Set").collectSimilar()) {
+            String setButtonClass = setButton.getAttribute("class");
+            if ("buttonDisabled".equals(setButtonClass)) {
+                log.finer("Clicking again on the " + metric + " in order to enable the set button");
+                tasks.xy(getMetricCell(metric), 3, 3).click();
+            }
+		    tasks.xy(setButton, 3, 3).click();
 	    }
 	}
 	/**

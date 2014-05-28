@@ -2,6 +2,8 @@ package com.redhat.qe.jon.sahi.tests;
 
 import java.util.ArrayList;
 
+import net.sf.sahi.client.ElementStub;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -15,6 +17,7 @@ import com.redhat.qe.jon.sahi.base.administration.UsersPage;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 import com.redhat.qe.jon.sahi.base.inventory.groups.AllGroupsPage;
 import com.redhat.qe.jon.sahi.base.inventory.groups.Group;
+import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
 
 /**
@@ -121,18 +124,19 @@ public class DefaultUserTest extends OnAgentSahiTestScript {
     
     @AfterClass
     public void loginAsRhqadmin(){
-        logoutLogin("rhqadmin","rhqadmin");
+        sahiTasks.relogin(SahiTasks.ADMIN_USER, SahiTasks.ADMIN_PASSWORD);
     }
     
     private void logoutLogin(String userName, String password){
-        sahiTasks.logout();
-        sahiTasks.loginNewUser(userName, password);
+        sahiTasks.relogin(userName, password);
         Assert.assertTrue(sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("Inventory Summary"),
                 "Inventory Summary label", Timing.WAIT_TIME),"User should be logged in!");
     }
     
     private void checkErrors(){
-        if(sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("ErrorBlock"),"Error block",Timing.WAIT_TIME)){
+        if(sahiTasks.waitForAnyElementsToBecomeVisible(sahiTasks, 
+                new ElementStub[]{sahiTasks.cell("ErrorBlock"),sahiTasks.span("pficon pficon-error-exclamation")},
+                "Error block",Timing.WAIT_TIME)){
             throw new RuntimeException("Error block is visible. Text: " + sahiTasks.cell("ErrorBlock").getText());
         }
     }

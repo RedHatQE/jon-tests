@@ -195,6 +195,11 @@
 	</classes>
 </test -->
 
+<test name="Import Port Services">
+    <classes>
+        <class name="com.redhat.qe.jon.clitest.tests.importPortServices.ImportPortServicesTest"> </class>
+    </classes>
+</test>
 
 <!--  This case SHOULD BE LAST ONE -->
 <!-- Remove all the platforms on completion of all CLI test, This will help to validate import resource on other test suites like GUI automation -->

@@ -1,5 +1,8 @@
 package com.redhat.qe.jon.sahi.base.recentalerts;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.logging.Logger;
 
 import org.testng.Assert;
@@ -50,9 +53,21 @@ abstract class RecentAlertsBase {
 	private boolean applyFilter(String portletName, String filterName) {
 		String waitFor = portletName + " Settings";
 		
+		_logger.fine("Apply filter [" + filterName + "] on portlet [" + portletName + "]");
 		Assert.assertTrue(tasks.cell(portletName).exists(), portletName + "!");
-		tasks.image("/settings/").near(tasks.div(portletName)).doubleClick();
+		tasks.execute("_sahi._keyPress(_sahi._image('/settings/',_sahi._near(_sahi._div('"+portletName+"'))), [13,13]);");
+		if (!tasks.div(waitFor).exists()) {
+			_logger.fine("Attempting filter on portlet [" + portletName + "]");
+			tasks.image("/settings/").near(tasks.div(portletName)).doubleClick();
+		}
 		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.cell(waitFor), waitFor, Timing.TIME_5S), waitFor);
+		
+		if (!tasks.textbox("/" + filterName + "/").exists()) {
+			tasks.cell("Cancel").near(tasks.cell("Save")).click(); // Close the Settings dialog
+			_logger.warning("Filter not available [" + filterName + "]!");
+			return false;
+		}
+		
 		tasks.textbox("/" + filterName + "/").setValue("abc");
 		tasks.cell("Save").click();
 

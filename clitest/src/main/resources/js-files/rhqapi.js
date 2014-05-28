@@ -3418,6 +3418,12 @@ discoveryQueue = (function () {
 			if(children != false){children = true;}
 
 			if (!resource.exists()) {
+			    // import resource's parent as well if it's not already imported
+			    var resParent = resource.parent(false);
+			    if(resParent){
+			        common.debug("Importing resources's parent");
+			        DiscoveryBoss.importResources([resParent.getId()]);
+			    }
 				DiscoveryBoss.importResources([resource.getId()]);
 				common.waitFor(resource.exists);
 			}
@@ -3697,9 +3703,12 @@ var Resource = function (param) {
 	var _exists = function() {
 		return _find().size() == 1;
 	};
-	var _parent = function() {
+	var _parent = function(imported) {
 		var criteria = resources.createCriteria({id:_id});
 		criteria.fetchParentResource(true);
+		if(imported == false){
+		    criteria.addFilterInventoryStatus(InventoryStatus.NEW);
+		}
 		var res = ResourceManager.findResourcesByCriteria(criteria);
 		if (res.size()==1 && res.get(0).parentResource) {
 			return new Resource(res.get(0).parentResource.id);
@@ -3876,12 +3885,13 @@ var Resource = function (param) {
 			return ProxyFactory.getResource(_id);
 		},
     /**
+	  * @param {Boolean} true means InventoryStatus.COMMITED, false InventoryStatus.NEW, default is true
 	  * @returns parent resource
 	  * @type Resource
 	  */
-		parent : function() {
-			common.trace("Resource("+_id+").parent()");
-			return _parent();
+		parent : function(imported) {
+			common.trace("Resource("+_id+").parent("+imported+")");
+			return _parent(imported);
 		},
 		/**
 		 * removes/deletes this resource from inventory.

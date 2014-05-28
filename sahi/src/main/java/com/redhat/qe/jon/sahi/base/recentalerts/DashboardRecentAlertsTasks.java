@@ -36,7 +36,8 @@ public class DashboardRecentAlertsTasks extends RecentAlertsBase {
 		
 		// Add the Portlet if it does not already exist
 		if (!tasks.cell(portletName).exists()) {
-				
+			_logger.fine("Adding portlet [" + portletName + "]");
+
 			this.putIntoEditMode("New Dashboard");
 			tasks.waitForElementVisible(tasks, tasks.cell("Add Portlet"), "Add Portlet.", Timing.TIME_5S);
 
