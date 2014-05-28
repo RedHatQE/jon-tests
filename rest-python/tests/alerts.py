@@ -190,6 +190,63 @@ class AlertDefinitionTest(RHQRestTest):
         self.log.info(data)
         assert_equal(r.status_code,406)
         
+    @test(groups=['myAlertTest']) # todo -> remove 'myAlertTest' annotation -> just for debug
+    def delete_1000_group_alertdefs(self):        
+        ## create compatible group (for Port Services)
+        req = 'group'
+        body = {'name':'Port Services'}
+        r = self.post(req, body)        
+        assert_equal(r.status_code, 201)        
+        groupId = json.loads(r.text)['id']
+        
+        ## create >1000 resources (Port Service) and add them to group                
+        portStart   = 20000
+        newResCount = 1001        
+        resourceIds = []
+
+        self.log.info('Creating %d resources - Port Services' % newResCount)
+                
+        for port in range(portStart, portStart + newResCount + 1):   
+            # create resource
+            req = 'resource'         
+            body = {'resourceName':'Port 127.0.0.1:%d' % port, 'typeName':'PortService', 
+                    'pluginName':'NetworkServices', 'parentId':self.plat_id,
+                    'resourceConfig':{}, 'pluginConfig':{'address':'127.0.0.1', 'port':'%d' % port}}
+            r = self.post(req, body)
+            assert_equal(r.status_code, 201)
+            resId = json.loads(r.text)['resourceId']
+            resourceIds.append(resId)
+            
+            # add resource to group
+            req = 'group/%d/resource/%d' % (groupId, resId)
+            r = self.put(req, {})
+            assert_equal(r.status_code, 200)
+            
+            self.log.info('Resource with id %d created and added to group with id %d' % (resId, groupId))
+        
+        ## define group alert
+        req = 'alert/definitions?groupId=%d' % groupId
+        body = {'name':'restAlertDef', 'enabled':True, 
+                'dampeningCategory':'NONE', 'conditionMode':'ANY'}
+        r = self.post(req, body)
+        alertDefId = json.loads(r.text)['id']
+        assert_equal(r.status_code, 201)
+        
+        ## delete group alert
+        req = 'alert/definition/%d' % alertDefId
+        r = self.delete(req)        
+        assert_equal(r.status_code, 204)        
+                
+        ## clean up - delete group and uninventory resources
+        req = 'group/%d' % groupId
+        self.delete(req)
+        assert_equal(r.status_code, 204)
+        
+        for resId in resourceIds:
+            req = 'resource/%d' % resId
+            self.delete(req)
+            assert_equal(r.status_code, 204)                    
+        
         
 @test(groups=['alert'])
 class AlertTest(RHQRestTest):
