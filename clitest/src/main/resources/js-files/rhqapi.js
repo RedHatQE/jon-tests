@@ -3706,12 +3706,16 @@ var Resource = function (param) {
 	var _parent = function(imported) {
 		var criteria = resources.createCriteria({id:_id});
 		criteria.fetchParentResource(true);
-		if(imported == false){
-		    criteria.addFilterInventoryStatus(InventoryStatus.NEW);
-		}
 		var res = ResourceManager.findResourcesByCriteria(criteria);
 		if (res.size()==1 && res.get(0).parentResource) {
-			return new Resource(res.get(0).parentResource.id);
+		    var par = res.get(0).parentResource;
+		    if(imported == false){
+			    if(par.getInventoryStatus() == InventoryStatus.NEW){
+			        return new Resource(par.id);
+			    }
+			}else{
+			    return new Resource(par.id);
+			}
 		}
 	};
 
@@ -3885,7 +3889,8 @@ var Resource = function (param) {
 			return ProxyFactory.getResource(_id);
 		},
     /**
-	  * @param {Boolean} true means InventoryStatus.COMMITED, false InventoryStatus.NEW, default is true
+	  * @param {Boolean} if set to true, we will search for parent resource with inventory status COMMITED
+	  * false will search for parent resource with status NEW, default is true
 	  * @returns parent resource
 	  * @type Resource
 	  */
