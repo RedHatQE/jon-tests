@@ -99,9 +99,16 @@ public class Operations extends ResourceTab {
         log.fine("Asserting operation [" + opName + "] result, expecting " + succ);
         final String NOT_YET_STARTED_MESSAGE = "not yet started";
         this.history();
-        tasks.waitFor(2*Timing.TIME_1S);
+
+        tasks.reloadPage();
+
+        if (tasks.div(NOT_YET_STARTED_MESSAGE).exists() || tasks.cell(NOT_YET_STARTED_MESSAGE).exists()) {
+            log.finer("Page contains " + NOT_YET_STARTED_MESSAGE);
+        }
         int allOperationStartedTimeout = 2*Timing.TIME_1M;
-        while (tasks.cell(NOT_YET_STARTED_MESSAGE).in(tasks.div(opName).parentNode("tr")).isVisible() && allOperationStartedTimeout > 0) {
+        while ((tasks.cell(NOT_YET_STARTED_MESSAGE).in(tasks.div(opName).parentNode("tr")).isVisible()
+                || tasks.div(NOT_YET_STARTED_MESSAGE).in(tasks.div(opName).parentNode("tr")).isVisible())
+                && allOperationStartedTimeout > 0) {
             log.finer("Operation not yet started, remaining waiting time "+ Timing.toString(allOperationStartedTimeout));
             allOperationStartedTimeout -= Timing.WAIT_TIME;
             tasks.waitFor(Timing.WAIT_TIME);

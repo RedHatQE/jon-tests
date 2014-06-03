@@ -2696,12 +2696,14 @@ public class SahiTasks extends ExtendedSahi {
 		Assert.assertTrue(this.waitForElementVisible(this, this.link(searchTestuser),
 		        "Tested user link", Timing.WAIT_TIME),"User exists");
 		Assert.assertTrue(this.link("rhqadmin").exists());
-		this.link(searchTestuser).click();
-		Assert.assertTrue(this.password("password").exists());
+		this.link(searchTestuser).under(this.cell("User Name")).click();
+		Assert.assertTrue(this.waitForElementVisible(this, this.password("password"),
+                "Tested user pasword field", Timing.WAIT_TIME),"pasword field exists");
 		Assert.assertTrue(this.span("Edit User ["+searchTestuser+"]").exists());
 		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
-		this.link("rhqadmin").click();
-		Assert.assertFalse(this.password("password").exists());
+		this.link("rhqadmin").under(this.cell("User Name")).click();
+		Assert.assertFalse(this.waitForElementVisible(this, this.password("password"),
+                "Tested user pasword field", Timing.WAIT_TIME),"pasword field exists");
 		Assert.assertTrue(this.span("View User [rhqadmin]").exists());
 		// login with rhqadmin user
 		relogin(ADMIN_USER, ADMIN_PASSWORD);
@@ -2712,10 +2714,12 @@ public class SahiTasks extends ExtendedSahi {
 		relogin(searchTestuser, password);
 		
 		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
-		Assert.assertTrue(this.link(searchTestuser).exists());
+		Assert.assertTrue(this.waitForElementVisible(this, this.link(searchTestuser),
+                "Tested user link", Timing.WAIT_TIME),"User exists");
 		Assert.assertFalse(this.link("rhqadmin").exists());
-		this.link(searchTestuser).click();
-		Assert.assertTrue(this.password("password").exists());
+		this.link(searchTestuser).under(this.cell("User Name")).click();
+		Assert.assertTrue(this.waitForElementVisible(this, this.password("password"),
+                "Tested user pasword field", Timing.WAIT_TIME),"pasword field exists");
 		Assert.assertTrue(this.span("Edit User ["+searchTestuser+"]").exists());
 		
 		postConfigPermissionTest(searchTestuser, roleName, "All Groups", compTestGroup);

@@ -179,7 +179,7 @@ public class Monitoring extends ResourceTab {
 	    return false;
 	}
 	public void refresh() {
-	    tasks.cell("Refresh").click();
+	    tasks.reloadPage();
 	}
 
 	/**
