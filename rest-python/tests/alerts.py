@@ -198,15 +198,16 @@ class AlertDefinitionTest(RHQRestTest):
         r = self.post(req, body)        
         assert_equal(r.status_code, 201)        
         groupId = json.loads(r.text)['id']
-        
+         
         ## create >1000 resources (Port Service) and add them to group                
         portStart   = 20000
         newResCount = 1001        
         resourceIds = []
-
+ 
         self.log.info('Creating %d resources - Port Services' % newResCount)
-                
-        for port in range(portStart, portStart + newResCount + 1):   
+        i = 1
+        
+        for port in range(portStart, portStart + newResCount):   
             # create resource
             req = 'resource'         
             body = {'resourceName':'Port 127.0.0.1:%d' % port, 'typeName':'PortService', 
@@ -216,14 +217,17 @@ class AlertDefinitionTest(RHQRestTest):
             assert_equal(r.status_code, 201)
             resId = json.loads(r.text)['resourceId']
             resourceIds.append(resId)
-            
+             
             # add resource to group
             req = 'group/%d/resource/%d' % (groupId, resId)
             r = self.put(req, {})
             assert_equal(r.status_code, 200)
-            
-            self.log.info('Resource with id %d created and added to group with id %d' % (resId, groupId))
+             
+            self.log.info('Resource %d created and added to group %d (%d / %d)' % (resId, groupId, i, newResCount))
+            i += 1
         
+        self.log.info('Defining group alert')
+                      
         ## define group alert
         req = 'alert/definitions?groupId=%d' % groupId
         body = {'name':'restAlertDef', 'enabled':True, 
@@ -231,21 +235,28 @@ class AlertDefinitionTest(RHQRestTest):
         r = self.post(req, body)
         alertDefId = json.loads(r.text)['id']
         assert_equal(r.status_code, 201)
-        
+         
+        self.log.info('Deleting group alert')                
+          
         ## delete group alert
-        req = 'alert/definition/%d' % alertDefId
+        req = 'alert/definition/%d?validate=true' % alertDefId
         r = self.delete(req)        
         assert_equal(r.status_code, 204)        
-                
-        ## clean up - delete group and uninventory resources
-        req = 'group/%d' % groupId
+                 
+        self.log.info('Deleting group %d and %d resources - Port services' % (groupId, newResCount))                
+                 
+        ## clean up - delete group and uninventory resources        
+        req = 'group/%d?validate=true' % groupId
         self.delete(req)
-        assert_equal(r.status_code, 204)
+        assert_equal(r.status_code, 204)        
+        i = 1
         
         for resId in resourceIds:
-            req = 'resource/%d' % resId
+            req = 'resource/%d?validate=true' % resId
             self.delete(req)
-            assert_equal(r.status_code, 204)                    
+            self.log.info('%d / %d' % (i, newResCount))
+            assert_equal(r.status_code, 204)        
+            i += 1            
         
         
 @test(groups=['alert'])
