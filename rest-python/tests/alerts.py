@@ -190,7 +190,8 @@ class AlertDefinitionTest(RHQRestTest):
         self.log.info(data)
         assert_equal(r.status_code,406)
         
-    @test(groups=['myAlertTest']) # todo -> remove 'myAlertTest' annotation -> just for debug
+    @test
+    @blockedBy('1105062')
     def delete_1000_group_alertdefs(self):        
         ## create compatible group (for Port Services)
         req = 'group'
