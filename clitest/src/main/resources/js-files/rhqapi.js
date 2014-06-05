@@ -3706,6 +3706,9 @@ var Resource = function (param) {
 	var _parent = function(imported) {
 		var criteria = resources.createCriteria({id:_id});
 		criteria.fetchParentResource(true);
+		if(imported == false){
+		    criteria.addFilterInventoryStatus(InventoryStatus.NEW);
+		}
 		var res = ResourceManager.findResourcesByCriteria(criteria);
 		if (res.size()==1 && res.get(0).parentResource) {
 		    var par = res.get(0).parentResource;
