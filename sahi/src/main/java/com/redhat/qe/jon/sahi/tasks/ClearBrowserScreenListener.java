@@ -89,7 +89,7 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	//To take Screen shot
 	public void takeScreenShot(ITestResult result){
         String disableScreenShots = System.getenv("DISABLE_SCREENSHOTS");
-        if (disableScreenShots != null && !disableScreenShots.isEmpty() && Boolean.parseBoolean(disableScreenShots) == true) {
+        if (disableScreenShots != null && !disableScreenShots.isEmpty() && Boolean.parseBoolean(disableScreenShots)) {
            _logger.log(Level.WARNING, "Screenshots are disabled => skipping making a screenshot");
            return;
         }
@@ -108,8 +108,8 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 			Rectangle screenRectangle = new Rectangle(screenSize);
 			Robot robot = new Robot();
 			BufferedImage image = robot.createScreenCapture(screenRectangle);
-			_logger.log(Level.INFO, "ScreenShot File name: "+fileDirPath+fileName);
-			ImageIO.write(image, "png", new File(fileDirPath+fileName));			
+			_logger.log(Level.INFO, "ScreenShot File name: "+new File(fileDirPath,fileName).getPath());
+			ImageIO.write(image, "png", new File(fileDirPath,fileName));
 			Reporter.log("<a href=\""+fileName+"\"><b>Screen Shot</b></a>");
 			_logger.log(Level.INFO, "Screen shot done!!");
 		}catch(Exception ex){
@@ -117,9 +117,11 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 		} finally {
             if (fileDirPath != null) {
                 try {
-                    String fileName = "PageHtml_" + timestamp + ".html";
+                    String fileName = "PageHtmlSource_" + timestamp + ".html";
                     String html = sahiTasks.fetch("document.body.innerHTML");
+                    _logger.log(Level.INFO, "Page html source file name: "+new File(fileDirPath,fileName).getPath());
                     FileUtils.writeStringToFile(new File(fileDirPath, fileName), html);
+                    Reporter.log("<a href=\""+fileName+"\"><b>Page Html source</b></a>");
                 } catch (Exception ex) {
                     _logger.log(Level.WARNING, "Unable to fetch the html page to file, ", ex);
                 }
