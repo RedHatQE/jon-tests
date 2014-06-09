@@ -118,7 +118,7 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
             if (fileDirPath != null) {
                 try {
                     String fileName = "PageHtml_" + timestamp + ".html";
-                    String html = sahiTasks.fetch("innerHTML");
+                    String html = sahiTasks.fetch("document.body.innerHTML");
                     FileUtils.writeStringToFile(new File(fileDirPath, fileName), html);
                 } catch (Exception ex) {
                     _logger.log(Level.WARNING, "Unable to fetch the html page to file, ", ex);
