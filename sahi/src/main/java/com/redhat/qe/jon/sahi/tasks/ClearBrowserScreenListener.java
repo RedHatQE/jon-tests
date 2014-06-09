@@ -1,18 +1,7 @@
 package com.redhat.qe.jon.sahi.tasks;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-
+import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import org.apache.commons.io.FileUtils;
 import org.testng.ISuite;
 import org.testng.ISuiteListener;
 import org.testng.ITestContext;
@@ -20,7 +9,14 @@ import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.internal.IResultListener;
 
-import com.redhat.qe.jon.sahi.base.SahiTestScript;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -97,15 +93,17 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
            _logger.log(Level.WARNING, "Screenshots are disabled => skipping making a screenshot");
            return;
         }
+        String fileDirPath = null;
+        String timestamp = new SimpleDateFormat("dd_MMM_yyyy_hh_mm_ssaa").format(new Date());
 		try{
 			_logger.log(Level.INFO, "Taking screen shot...");
-			String fileDirPath = new File(result.getTestContext().getOutputDirectory()).getParent()+File.separator+"html"+File.separator;
+			fileDirPath = new File(result.getTestContext().getOutputDirectory()).getParent()+File.separator+"html"+File.separator;
 			if(new File(fileDirPath).mkdirs()){
 				_logger.log(Level.INFO, "Directory Created... : "+fileDirPath);
 			}else{
 				_logger.log(Level.FINER, "Directory might be available: "+fileDirPath);
 			}
-			String fileName = "ScreenShot_"+new SimpleDateFormat("dd_MMM_yyyy_hh_mm_ssaa").format(new Date())+".png";
+			String fileName = "ScreenShot_"+timestamp+".png";
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			Rectangle screenRectangle = new Rectangle(screenSize);
 			Robot robot = new Robot();
@@ -116,10 +114,19 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 			_logger.log(Level.INFO, "Screen shot done!!");
 		}catch(Exception ex){
 			_logger.log(Level.WARNING, "Unable to take screen shot, ", ex);
-		}
-		
-	}
-	
+		} finally {
+            if (fileDirPath != null) {
+                try {
+                    String fileName = "PageHtml_" + timestamp + ".html";
+                    String html = sahiTasks.fetch("innerHTML");
+                    FileUtils.writeStringToFile(new File(fileDirPath, fileName), html);
+                } catch (Exception ex) {
+                    _logger.log(Level.WARNING, "Unable to fetch the html page to file, ", ex);
+                }
+            }
+        }
+    }
+
 	@Override
 	public void onTestFailure(ITestResult result) {
 		takeScreenShot(result);
@@ -167,9 +174,13 @@ public class ClearBrowserScreenListener extends SahiTestScript implements IResul
 	}
 
 	@Override
-	public void onConfigurationFailure(ITestResult arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onConfigurationFailure(ITestResult result) {
+        takeScreenShot(result);
+        try {
+            cleanPopUpOnScreen();
+        } catch (Exception ex) {
+            _logger.log(Level.SEVERE, "Failed to clean pop-ups on screen!!", ex);
+        }
 	}
 
 	@Override
