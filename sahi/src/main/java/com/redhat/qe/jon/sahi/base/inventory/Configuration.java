@@ -121,7 +121,10 @@ public class Configuration extends ResourceTab {
 		    tasks.waitFor(Timing.WAIT_TIME);
 			int buttons = tasks.cell("Save").countSimilar();
 			log.info("Save buttons : "+buttons);
-			ElementStub saveB = tasks.cell("Save["+(buttons-1)+"]");
+            ElementStub saveB = tasks.cell("Save[0]");
+            if (buttons > 0) {
+                saveB = tasks.cell("Save["+(buttons-1)+"]");
+            }
 			if(!saveB.isVisible() && buttons > 1){
 			    saveB = tasks.cell("Save["+(buttons-2)+"]");
 			}
