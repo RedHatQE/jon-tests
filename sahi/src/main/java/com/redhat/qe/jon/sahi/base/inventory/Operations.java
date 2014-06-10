@@ -58,6 +58,7 @@ public class Operations extends ResourceTab {
         // try one more time to navigate to operations page if you don't see the button
         // (sometimes it failed to correctly load the page and this should improve stability)
         if (!tasks.cell("New").exists()) {
+            tasks.reloadPage();
             this.navigate();
         }
         tasks.cell("New").click();
@@ -71,9 +72,8 @@ public class Operations extends ResourceTab {
         if (!tasks.cell("Create New Operation Schedule").isVisible()) {
             tasks.waitFor(Timing.TIME_1S);
         }
-        tasks.reloadPage();
         if (!tasks.cell("Create New Operation Schedule").isVisible()) {
-            tasks.waitFor(Timing.TIME_1S);
+            tasks.reloadPage();
         }
         return new Operation(tasks, name);
     }
