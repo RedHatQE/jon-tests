@@ -6,17 +6,29 @@ from bzchecker import *
 from proboscis.asserts import *
 from proboscis import before_class
 from proboscis import test
+import paramiko
+import time
 
 from testcase import RHQRestTest
 
 import link_header
+from nose.tools import assert_not_equal
 
 @test
 class CreateResourceTest(RHQRestTest):
 
     @before_class
     def setUp(self):
+        self.pf_server_id = int(self.find_resource_platform()['resourceId'])
+        self.pf_server_name = self.find_resource_platform()['resourceName']
         self.res_id = int(self.find_resource_eap6standalone()['resourceId'])
+        self.script_server_body = {
+                'resourceName' : '',
+                'typeName' : 'Script Server',
+                'pluginName':'Script',
+                'parentId' : self.pf_server_id,
+                'pluginConfig' : {},
+                'resourceConfig' : {}}
         self.net_iface_body = {'resourceName':'testnetiface-rest',
                 'typeName':'Network Interface',
                 'pluginName':'JBossAS7',
@@ -98,7 +110,114 @@ class CreateResourceTest(RHQRestTest):
         r = self.get('resource/%s' % self.content_id)
         data = r.json()
         assert_equal(data['status'],'DELETED','Returned unexpected status %s for deleted resource' % data['status'])
-
+        
+    
+    @test(groups=['resource'])
+    def scriptServerTest(self):
+        test_script_name = 'test_quoting_arguments.sh'
+        od_id = 0
+        
+        ## Upload test shell script to server
+        server, port, username, password = (self.pf_server_name, 22, 'hudson', 'hudson')
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.load_host_keys(os.path.expanduser(os.path.join("~", ".ssh", "known_hosts")))
+        ssh.connect(server, username=username, password=password, allow_agent=False, look_for_keys=False)                    
+        sftp = ssh.open_sftp()
+        sftp.put('resources/%s' % test_script_name, '/home/hudson/%s' % test_script_name)
+        ssh.exec_command('chmod 777 /home/hudson/%s' % test_script_name)
+        sftp.close()
+        ssh.close()
+        
+        script_servers = {'testScriptServer-noEscape' : {'pluginConfig' : {'executable' : '/home/hudson/%s' % test_script_name, 
+                                                                       'quotingEnabled' : False},
+                                                         'testCases'    : [('a b c',     3), 
+                                                                           ('a\ b c',    3),
+                                                                           ('"a b" c',   3),
+                                                                           ('\'a b\' c', 3)]},
+                          'testScriptServer-[\\]' :     {'pluginConfig' : {'executable' : '/home/hudson/%s' % test_script_name, 
+                                                                       'quotingEnabled' : True, 
+                                                                       'escapeCharacter' : '\\'},
+                                                         'testCases'    : [('a b c',       3), 
+                                                                           ('a\ b c',      2),
+                                                                           ('"a b" c',     2),
+                                                                           ('\'a b\' c',   2),
+                                                                           ('"a b\\" c"',  1),
+                                                                           ('"a b\\\\" c', 2),
+                                                                           ('\'a b\\\' c', 2)]},
+                          'testScriptServer-["]' :      {'pluginConfig' : {'executable' : '/home/hudson/%s' % test_script_name,
+                                                                       'quotingEnabled' : True,
+                                                                       'escapeCharacter' : '"'},
+                                                         'testCases'    : [('a" b c',       2), 
+                                                                           ('"a b" c',      2),
+                                                                           ('\'a b\' c',    2),
+                                                                           ('\'a b"\' c',   2),
+                                                                           ('a b\"\' c"',   3)]},
+                          }            
+        # test each Script Server (different escaping scenarios)
+        for s in script_servers.keys():
+            ## create Script Server
+            self.log.info('creating script server %s' % s)
+            self.log.info(script_servers[s]['pluginConfig'])
+            req = 'resource'
+            body = self.script_server_body
+            body['resourceName'] = s
+            body['pluginConfig'] = script_servers[s]['pluginConfig']
+            r = self.post(req, body)
+            assert_equal(r.status_code,201)        
+            script_server_id = r.json()['resourceId']                      
+            
+            ## Get operation definition id
+            self.log.info('Getting operation definition id')
+            if od_id == 0:
+                r = self.get('operation/definitions?resourceId=%d' % script_server_id)
+                for od in r.json():
+                    if od['name'] == 'execute':
+                        od_id = int(od['id'])
+                assert_not_equal(od_id, 0, 'Resource definition id not found')
+            
+            for test in script_servers[s]['testCases']:                            
+                ## create, set and schedule operation        
+                req = 'operation/definition/%d?resourceId=%d' % (od_id, script_server_id)        
+                r = self.post(req, {})        
+                assert_equal(r.status_code, 200)
+                operation_id = r.json()['id']
+                
+                self.log.info('Executing operation with args: %s = %d' % (test[0], test[1])) 
+                req = 'operation/%d' % operation_id
+                body = {'id' : operation_id, 
+                        'name' : 'execute', 
+                        'readyToSubmit' : True, 
+                        'resourceId' : script_server_id,
+                        'definitionId' : od_id,
+                        'params' : {'arguments' : test[0]}}
+                r = self.put(req, body)        
+                assert_equal(r.status_code, 200)     
+             
+                ## get the operation result        
+                # get the job name
+                req = 'operation/%d' % operation_id
+                r = self.get(req)
+                assert_equal(r.status_code, 200)
+                job_name = r.json()['links'][0]['history']['href'].split('/')[-1]
+                 
+                # get the operation outcome
+                req = 'operation/history/%s' % job_name
+                r = self.get(req)
+                assert_equal(r.status_code, 200)                
+                exit_code = r.json()['result']['exitCode']
+                assert_equal(int(exit_code), test[1], 'Wrong argument count detected: %d vs %d expected' % (int(exit_code), test[1]))            
+            
+            ## delete script server
+            self.log.info('deleting script server %s' % s)            
+            req = 'resource/%d?validate=true' % script_server_id
+            r = self.delete(req)
+            assert_equal(r.status_code, 204)  
+            
+            self.log.info('sleeping 10 s')
+            time.sleep(10)
+        
+        
 @test(groups=['getresource'])
 class GetResourceTest(RHQRestTest):
 
