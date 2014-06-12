@@ -302,7 +302,7 @@ public class Editor {
         tasks.xy(picker, 3, 3).mouseOver();
         ElementStub pickerOver = tasks.image("comboBoxPicker_Over.png");
         if (pickerOver.exists()) {
-            pickerOver.click();
+            tasks.xy(pickerOver, 3, 3).click();
         }
         else {
             log.fine("Method via mouseOver failed, fallback to click()");
