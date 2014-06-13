@@ -3,12 +3,16 @@ package com.redhat.qe.jon.common.util;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.util.Enumeration;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
  * @author rhatlapa@redhat.com
+ * @author Jeeva Kandasamy (jkandasa@redhat.com)
  */
 public class ZipUtils {
 
@@ -107,4 +111,28 @@ public class ZipUtils {
             }
         }
     }
+    
+    /**
+	 * Read and return properties file from a given zip file.
+	 * @param zipFile zip file location
+	 * @param propertiesFile properties file name in zip file
+	 * @return Properties file
+	 * @throws IOException 
+	 */
+	public static Properties getOnePropertiesFromZip(String zipFile, String propertiesFile) throws IOException{
+		File file = new File(zipFile);
+		ZipFile actaulZipFile = new ZipFile(file);
+		Properties properties = new Properties();
+		ZipEntry zipentry;
+
+		for (Enumeration<? extends ZipEntry> e = actaulZipFile.entries(); e.hasMoreElements();) {
+			zipentry = e.nextElement();
+			if (!zipentry.isDirectory() && zipentry.getName().equals(propertiesFile)) {
+				InputStream inputstream = actaulZipFile.getInputStream(zipentry);
+				properties.load(inputstream);
+			}
+		}
+		actaulZipFile.close();
+		return properties;
+	}
 }

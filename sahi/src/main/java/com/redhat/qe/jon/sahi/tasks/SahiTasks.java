@@ -2,6 +2,7 @@ package com.redhat.qe.jon.sahi.tasks;
 
 import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.ExtendedSahi;
+import com.redhat.qe.jon.sahi.base.SahiSettings;
 import com.redhat.qe.jon.sahi.base.inventory.Resource;
 
 import net.sf.sahi.client.ElementStub;
@@ -335,29 +336,7 @@ public class SahiTasks extends ExtendedSahi {
     
     }
      */
-    // ***************************************************************************
-    // Bundle
-    // ***************************************************************************
-    public void createBundleURL(String bundleURL) {
-        this.link("Bundles").click();
-        this.cell("New").near(this.cell("Deploy")).click();
-        this.radio("URL").click();
-        this.textbox("url").setValue(bundleURL);
-        this.cell("Next").click();
-        this.waitFor(3000);
-        this.cell("Next").near(this.cell("Previous")).click();
-        this.waitFor(3000);
-        this.cell("Next").near(this.cell("Previous")).click();
-        this.waitFor(3000);
-        this.cell("Finish").near(this.cell("Previous")).click();
-    }
-
-    public void deleteBundle(String bundleName) {
-        this.link("Bundles").click();
-        this.div(bundleName).click();
-        this.cell("Delete").near(this.cell("Deploy")).click();
-        this.cell("Yes").near(this.cell("No")).click();
-    }
+  
     // ***************************************************************************
     // Menus
     // ***************************************************************************
@@ -1557,7 +1536,7 @@ public class SahiTasks extends ExtendedSahi {
     public boolean addDrift(String baseDir, String resourceName, String templateName, String driftName, String textBoxKeyValue, String radioButtons, String fileIncludes, String fileExcludes ) throws InterruptedException, IOException {
     	//Remove old file History If any
     	DriftManagementSSH driftSSH = new DriftManagementSSH();
-		driftSSH.getConnection(System.getenv().get("AGENT_NAME"), System.getenv().get("AGENT_HOST_USER"), System.getenv().get("AGENT_HOST_PASSWORD"));
+		driftSSH.getConnection(SahiSettings.getJonAgentName(), SahiSettings.getJonAgentSSHUser(), SahiSettings.getJonAgentSSHPassword());
 		if(!driftSSH.deleteFilesDirs(baseDir)){
 			return false;
 		}

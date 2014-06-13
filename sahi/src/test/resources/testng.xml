@@ -86,7 +86,7 @@
 	</test>
 	<test name="BundleTest">
 		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.BundleTest"/>
+			<class name="com.redhat.qe.jon.sahi.tests.bundle.BundleTest"/>
 		</classes>
 		<groups>
 			<run>

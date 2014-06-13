@@ -2,15 +2,14 @@ package com.redhat.qe.jon.sahi.tests;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.redhat.qe.Assert;
 import com.redhat.qe.auto.testng.TestNGUtils;
+import com.redhat.qe.jon.sahi.base.SahiSettings;
 import com.redhat.qe.jon.sahi.base.SahiTestScript;
 
 
@@ -20,9 +19,7 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
  * Sep 16, 2011
  */
 public class DriftManagementTest extends SahiTestScript {
-	private static Logger _logger = Logger.getLogger(DriftManagementTest.class.getName());
-	private static long driftCreationTime;
-	private static final int driftDelayTime = 1000*60*2;
+
 
 	public static String RESOURCE_NAME 						= "resourceName";
 	public static String DRIFT_NAME 						= "driftName";
@@ -50,7 +47,6 @@ public class DriftManagementTest extends SahiTestScript {
 	@Test (groups="driftTest", dataProvider="driftCreationData")
 	public void createDrift(HashMap<String, String> driftDetail) throws InterruptedException, IOException{
 		Assert.assertTrue(sahiTasks.addDrift(driftDetail.get(DRIFT_BASE_DIR), driftDetail.get(RESOURCE_NAME), driftDetail.get(DRIFT_TEMPLATE), driftDetail.get(DRIFT_NAME), driftDetail.get(DRIFT_TEXT_BOXES), driftDetail.get(DRIFT_RADIO_BUTTONS), driftDetail.get(DRIFT_FILE_INCLUDES), driftDetail.get(DRIFT_FILE_EXCLUDES)), "Resource [Drift Name]: "+driftDetail.get(RESOURCE_NAME)+"["+driftDetail.get(DRIFT_NAME)+"]");
-		driftCreationTime  = new Date().getTime();
 	}
 	
 	@Test (groups="driftTest", dataProvider="driftCreationData", dependsOnMethods={"createDrift"})
@@ -80,8 +76,7 @@ public class DriftManagementTest extends SahiTestScript {
 		ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
 		HashMap<String, String> map = new HashMap<String, String>();
 				
-		String agentName = System.getenv().get("AGENT_NAME");
-		map.put(RESOURCE_NAME, "Platforms="+agentName);
+		map.put(RESOURCE_NAME, "Platforms="+SahiSettings.getJonAgentName());
 		map.put(DRIFT_TEMPLATE, "Template-File System --> Template-File System");
 		map.put(DRIFT_NAME, "File SystemDrift - monitor changes in file");
 		map.put(DRIFT_BASE_DIR, "/tmp/automationDriftManagementDir/");

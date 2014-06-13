@@ -28,13 +28,13 @@ public abstract class SahiTestScript extends TestScript {
 	protected String sahiBaseDir			= System.getProperty("jon.sahi.base.dir", "/home/hudson/sahi");
 	protected String sahiUserdataDir		= System.getProperty("jon.sahi.userdata.dir", sahiBaseDir+File.separator+"userdata");
 
-	protected String bundleHostURL			= System.getProperty("jon.bundleServer.url");
 	
 	//Added this map to manage data provider for JON and RHQ
 	private static LinkedList<String> testNgDataProviderGroups= new LinkedList<String>();
 
 	public SahiTestScript() {
 		super();
+		SahiSettings.initSettings(); //Load sahi settings from environment variables
 		checkForCorrectSahiLocation();
 		sahiTasks = new SahiTasks(browserPath, browserName, browserOpt, sahiBaseDir, sahiUserdataDir);
 	}
