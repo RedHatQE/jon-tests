@@ -162,7 +162,7 @@ project(":common") {
 	dependencies {
 		compile "com.redhat.qe:ssh-tools:1.0.0",
 			"com.redhat.qe:assertions:1.0.2",
-			"com.redhat.qe:testng-listeners:1.0.4",
+			"com.redhat.qe:testng-listeners:1.0.5",
 			"com.redhat.qe:log-checker:1.0.1-SNAPSHOT",
 			"org.jboss.as:jboss-as-controller-client:7.2.0.Final",
 			"org.testng:testng:6.5.1",
