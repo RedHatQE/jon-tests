@@ -324,7 +324,7 @@ public class Inventory extends ResourceTab{
                     }
                 }
             }
-            return tasks.cell(name).isVisible();
+            return tasks.link(name).isVisible();
         }
 
 		public void refresh() {
