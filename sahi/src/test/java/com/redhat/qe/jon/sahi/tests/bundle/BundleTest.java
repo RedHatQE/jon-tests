@@ -27,7 +27,7 @@ public class BundleTest extends SahiTestScript{
 	private static final String bundleFileRelativeNormalName 					= "relative_normal.zip";
 	private static final String bundleFileRelativeNormalFilesAndDirectoriesName = "relative_normal_filesAndDirectories.zip";
 
-	@BeforeClass
+	@BeforeClass(alwaysRun=true)
 	public void setUp() {
 		_bundle = new BundleRemote(sahiTasks);
 		sahiTasks.createGroup("Compatible Groups", "platform-group-automation", "Created by Automation", SahiSettings.getJonAgentName());
@@ -35,7 +35,6 @@ public class BundleTest extends SahiTestScript{
 	
 	@AfterClass
 	public void tearDown() {
-		_bundle = new BundleRemote(sahiTasks);
 		sahiTasks.deleteGroup("Compatible Groups", "platform-group-automation");
 	}
 

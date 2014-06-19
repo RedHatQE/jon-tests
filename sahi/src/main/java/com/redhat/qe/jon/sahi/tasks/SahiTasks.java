@@ -1683,7 +1683,7 @@ public class SahiTasks extends ExtendedSahi {
     	}
     	//Add files on back-end
 		DriftManagementSSH driftSSH = new DriftManagementSSH();
-		driftSSH.getConnection(System.getenv().get("AGENT_NAME"), System.getenv().get("AGENT_HOST_USER"), System.getenv().get("AGENT_HOST_PASSWORD"));
+		driftSSH.getConnection(SahiSettings.getJonAgentName(), SahiSettings.getJonAgentSSHUser(), SahiSettings.getJonAgentSSHPassword());
 		
 		// Include files action
 		HashMap<String, String>filesInclude = new HashMap<String,String>();
@@ -1748,7 +1748,7 @@ public class SahiTasks extends ExtendedSahi {
         }
     	//Delete files on back-end
 		DriftManagementSSH driftSSH = new DriftManagementSSH();
-		driftSSH.getConnection(System.getenv().get("AGENT_NAME"), System.getenv().get("AGENT_HOST_USER"), System.getenv().get("AGENT_HOST_PASSWORD"));
+		driftSSH.getConnection(SahiSettings.getJonAgentName(), SahiSettings.getJonAgentSSHUser(), SahiSettings.getJonAgentSSHPassword());
 		if(!driftSSH.deleteFilesDirs(baseDir)){
 			return false;
 		}
