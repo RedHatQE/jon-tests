@@ -48,4 +48,11 @@ public class BzCliTest extends CliEngine {
             .withResource("antbundle:bundle:1.0", "bundle1") // we use bundles generated at runtime
             .run();
     }
+    @Test(groups={"blockedByBug-1095016"})
+    public void bz1095016() {
+        createJSRunner("bugs/bz1095016.js")
+            .addDepends("/rhqapi.js")
+            .addDepends("jon-common.js")
+            .run();
+    }
 }
