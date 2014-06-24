@@ -146,22 +146,21 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
                             + "resource.type.name = JBossAS Server\n",
                             false,
                             10)},
-                {"JBossAS7 - Enabled deployments in server-group",
-                    new DynagroupDef("Enabled deployments in server-group",
+                {"JBossAS7 - Deployments in server-group",
+                    new DynagroupDef("Deployments in server-group",
                             "JBoss AS7 Deployments in server-groups",
                             "",
-                            "groupby resource.parent.name\n"
+                            "groupby resource.grandParent.trait[domain-name]\n"
+                            + "groupby resource.parent.resourceConfiguration[group]\n"
                             + "resource.type.plugin = JBossAS7\n"
-                            + "resource.type.name = Deployment\n"
-                            + "resource.parent.type.name.contains = ServerGroup\n"
-                            + "resource.resourceConfiguration[enabled] = true\n",
+                            + "resource.type.name = ManagedServerDeployment\n",
                             false,
                             10)},
                 {"JBossAS7 - Managed Servers in domain",
                     new DynagroupDef("Managed Servers in domain",
                             "JBoss AS7 Managed servers in server in domains",
                             "",
-                            "groupby resource.resourceConfiguration[hostname]\n"
+                            "groupby resource.parent.trait[domain-name]\n"
                             + "resource.type.plugin = JBossAS7\n"
                             + "resource.type.name = Managed Server\n",
                             false,
@@ -170,7 +169,8 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
                     new DynagroupDef("Managed Servers in server-group",
                             "JBoss AS7 Managed servers in server in server-groups",
                             "",
-                            "groupby resource.resourceConfiguration[group]\n"
+                            "groupby resource.parent.trait[domain-name]\n"
+                            + "groupby resource.resourceConfiguration[group]\n"
                             + "resource.type.plugin = JBossAS7\n"
                             + "resource.type.name = Managed Server\n",
                             false,
