@@ -158,7 +158,11 @@ public class Configuration extends ResourceTab {
 		 * @param value to be set
 		 */
 		public void setField(String name, String value) {
-			tasks.textbox(name).setValue(value);
+		    int count = tasks.textbox(name).countSimilar();
+		    log.finer("Count of similar elements: " + count);
+		    String locator = name+"["+ (count-1) +"]";
+		    log.finer("Using following: " + locator);
+		    tasks.textbox(locator).setValue(value);
 		}
 
 		/**
