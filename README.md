@@ -2,6 +2,8 @@
 
 Welcome to Jboss ON automation repository. You can find RHQ or JBoss ON related automation frameworks and integration tests here.
 
+This branch was created to support JON 3.2.x releases.  New development should be done in master.  
+
 There are several projects:
 
 * **sahi** - sahi framework & JBoss ON Core automation
