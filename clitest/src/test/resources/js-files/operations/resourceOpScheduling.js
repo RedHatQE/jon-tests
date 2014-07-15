@@ -12,7 +12,7 @@ var common = new _common();
 
 // check that we have at least 1 platform imported
 var platforms = resources.platforms();
-assertTrue(platforms.length>0,"At least 1 platform is requred to run this test");
+assertTrue(platforms.length>0,"At least 1 platform is required to run this test");
 var platform = platforms[0];
 
 // check that we have at least 1 agent imported
