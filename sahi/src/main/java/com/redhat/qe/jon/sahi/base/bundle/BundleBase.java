@@ -136,7 +136,7 @@ public class BundleBase {
 		_tasks.waitFor(3000);
 		_tasks.textbox("name").setValue(properties.getProperty(bundleDistinationName));
 		_tasks.textarea("description").setValue(properties.getProperty(bundleDistinationDescription));
-		_tasks.image("comboBoxPicker.png").near(_tasks.textbox("group")).click();
+		_tasks.image("/comboBoxPicker/").near(_tasks.textbox("group")).click(); //PatternFly Change: 15-Jul-2014
 		//_tasks.div(properties.getProperty(bundleResourceGroup)).near(_tasks.textbox("group")).click();
 		_tasks.div(properties.getProperty(bundleResourceGroup)).click();
 		_tasks.waitFor(3000);

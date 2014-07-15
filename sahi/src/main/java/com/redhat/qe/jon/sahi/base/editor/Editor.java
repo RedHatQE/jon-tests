@@ -366,10 +366,10 @@ public class Editor {
     public void checkBox(int index, boolean check) {
         tasks.waitFor(Timing.TIME_1S);
         String checkBox = null;
-        if (check) {
-            checkBox = "unchecked.png[" + index + "]";
+        if (check) { //PatternFly Change: 15-Jul-2014
+            checkBox = "/unchecked/[" + index + "]";
         } else {
-            checkBox = "checked.png[" + index + "]";
+            checkBox = "/checked/[" + index + "]";
         }
         tasks.image(checkBox).parentNode().focus();
         log.fine("Sending keypress to " + checkBox);

@@ -292,7 +292,7 @@ public class SahiTasks extends ExtendedSahi {
         this.image("isc_I9").click(); // refresh timer set to 1m
          */
         this.cell("Save").click();
-        this.cell("Back to List").click();
+        this.div("/Back to List/").click(); //PatternFly Change: 15-Jul-2014
     }
 
     public boolean verifyGroup(String groupPanelName, String groupName) {
@@ -590,9 +590,9 @@ public class SahiTasks extends ExtendedSahi {
         org.testng.Assert.assertTrue(this.waitForAnyElementsToBecomeVisible(this,
                 new ElementStub[]{this.cell(msg),this.div(msg)},
                 msg, 1000*20),"Successful message check"); //Wait 20 seconds
-        this.bold("Back to List").click();
+        this.div("/Back to List/").click();//PatternFly Change: 15-Jul-2014
         this.link(groupName).click();
-        this.bold("Back to List").click();
+        this.div("/Back to List/").click();//PatternFly Change: 15-Jul-2014
     }
 
     public void deleteDynaGroup(String groupDesc) {
@@ -768,7 +768,7 @@ public class SahiTasks extends ExtendedSahi {
     	this.link(userName).click();
         for (String role : roleNames) {
             this.div(role).click();
-            this.image("right.png").click();
+            this.image("/right/").click(); //PatternFly Change: 15-Jul-2014
         }
         this.cell("Save").click();
     }
@@ -973,7 +973,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void messagePortletRefresh() {
-        this.image("refresh.png").click();
+        this.image("/refresh/").click();//PatternFly Change: 15-Jul-2014
     }
 
     public void messagePortletMinimizeMaximize() {
@@ -1078,22 +1078,23 @@ public class SahiTasks extends ExtendedSahi {
 		HashMap<String, String> version = new HashMap<String, String>();
     	//Old - About dialog(if loop): Should be removed after sometime. Modified on: 18-Oct-2013
     	//RHQ Build: 4.10.0-SNAPSHOT
+		ElementStub closeIcon = this.image("close.png").near(this.image("/maximize/"));  //PatternFly Change: 15-Jul-2014
+		
     	if(selectPage("Help-->About", this.span("DisplayLabel[0]"), 1000*5, 3)){
         	version.put("version", this.span("DisplayLabel[0]").getText());
         	version.put("build.number", this.span("DisplayLabel[1]").getText());
         	version.put("gwt.version", this.span("DisplayLabel[2]").getText());
         	version.put("smart.gwt.version", this.span("DisplayLabel[3]").getText());
         	this.row("Close").click();
-    	}else if(selectPage("Help-->About", this.image("close.png").near(this.image("maximize.png")), 1000*5, 3)){ // New dialog approach: Date: 18-Oct-2013
+    	}else if(selectPage("Help-->About", closeIcon, 1000*5, 3)){ // New dialog approach: Date: 18-Oct-2013
     		version.put("application.name", this.cell("formTitle[0]").getText()+this.div("staticTextItem[1]").getText());
     		version.put("version", this.cell("formTitle[1]").getText()+this.div("staticTextItem[2]").getText());
         	version.put("build.number", this.cell("formTitle[2]").getText()+this.div("staticTextItem[3]").getText());
         	version.put("gwt.version", this.cell("formTitle[3]").getText()+this.div("staticTextItem[4]").getText());
         	version.put("smart.gwt.version", this.cell("formTitle[4]").getText()+this.div("staticTextItem[5]").getText());
-        	this.image("close.png").near(this.image("maximize.png")).click();
-    	}    	
-    	_logger.log(Level.INFO, "Version Information: "+version);
-    	
+        	closeIcon.click();
+    	}
+    	_logger.log(Level.INFO, "Version Information: "+version);    	
     	return version;
     }
     //*********************************************************************************
@@ -1328,7 +1329,7 @@ public class SahiTasks extends ExtendedSahi {
 
         //Final step
         this.xy(this.cell("Save"), 3, 3).click();
-        this.bold("Back to List").click();
+        this.div("/Back to List/").click(); //PatternFly Change: 15-Jul-2014
 
         return getNumberAlert(alertName) - similarAlert;
     }
