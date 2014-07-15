@@ -41,10 +41,11 @@ class CreateResourceTest(RHQRestTest):
         self.deployment = '../sahi/src/test/resources/deploy/original/hello.war'
 
     @test(groups=['resource'])
+    #@test(groups=['pokus'])
     @blockedBy('958922')
     def create_child(self):
         r = self.post('resource',self.net_iface_body)
-        assert_equal(r.status_code,201)
+        assert_equal(r.status_code,200)
         data = r.json()
         assert_is_not_none(data['resourceId'])
         self.iface_id = data['resourceId']
