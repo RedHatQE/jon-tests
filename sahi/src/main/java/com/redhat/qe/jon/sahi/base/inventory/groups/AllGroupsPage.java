@@ -68,7 +68,7 @@ public class AllGroupsPage {
             
             tasks.waitFor(Timing.WAIT_TIME);
             tasks.div(resName).click();
-            tasks.image("right.png").click();
+            tasks.image("/right/").click();//PatternFly Change: 15-Jul-2014
         }
         
         tasks.cell("Finish").click();

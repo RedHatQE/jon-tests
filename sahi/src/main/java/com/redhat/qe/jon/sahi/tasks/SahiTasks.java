@@ -789,10 +789,11 @@ public class SahiTasks extends ExtendedSahi {
     public void helpAbout() {
         //Old - About dialog(if loop): Should be removed after sometime. Modified on: 18-Oct-2013
     	//RHQ Build: 4.10.0-SNAPSHOT
+    	ElementStub closeIcon = this.image("close.png").near(this.image("/maximize/"));  //PatternFly Change: 15-Jul-2014
     	if(selectPage("Help-->About", this.span("DisplayLabel[0]"), 1000*5, 3)){
         	this.row("Close").click();
-    	}else if(selectPage("Help-->About", this.image("close.png").near(this.image("maximize.png")), 1000*5, 3)){ // New dialog approach: Date: 18-Oct-2013
-    		this.image("close.png").near(this.image("maximize.png")).click();
+    	}else if(selectPage("Help-->About", closeIcon, 1000*5, 3)){ // New dialog approach: Date: 18-Oct-2013
+    		closeIcon.click();
     	}    
     }
 
