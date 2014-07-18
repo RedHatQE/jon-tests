@@ -1981,10 +1981,12 @@ public class SahiTasks extends ExtendedSahi {
     	}else{
     		if(enable){
         		//this.cell("Enable").under(this.label("Collection Interval")).click();
-    			this.cell("Enable").near(this.cell("/Total Rows:/")).click();
+    			//this.cell("Enable").near(this.cell("/Total Rows:/")).click();
+    			this.cell("Enable").in(this.div("/EnableDisableTotal Rows:/")).click(); //General Fix : 18-Jul-2014
         	}else{
         		//this.cell("Disable").under(this.label("Collection Interval")).click();
-    			this.cell("Disable").near(this.cell("/Total Rows:/")).click();
+    			//this.cell("Disable").near(this.cell("/Total Rows:/")).click();
+    			this.cell("Disable").in(this.div("/EnableDisableTotal Rows:/")).click(); //General Fix : 18-Jul-2014
         	}
     	}
     	this.waitFor(1000*2); //wait 2 seconds to get load table details

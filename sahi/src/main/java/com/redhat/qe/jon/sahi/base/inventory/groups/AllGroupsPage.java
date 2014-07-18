@@ -61,7 +61,8 @@ public class AllGroupsPage {
         
         // select resources which will belong to this group
         for (String resName : newGroup.getResourceNames()){
-            ElementStub elem =tasks.textbox("/textItem.*/").near(tasks.cell("Search :[1]"));
+            //ElementStub elem =tasks.textbox("/textItem.*/").near(tasks.cell("Search :[1]"));
+            ElementStub elem =tasks.textbox("textItem").under(tasks.cell("Select Members")); //General failure fix : 18-Jul-2014
             elem.setValue(resName);
             // click there to invoke filtering
             elem.click();
