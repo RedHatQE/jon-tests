@@ -160,7 +160,12 @@ public class Configuration extends ResourceTab {
 		public void setField(String name, String value) {
 		    int count = tasks.textbox(name).countSimilar();
 		    log.finer("Count of similar elements: " + count);
-		    String locator = name+"["+ (count-1) +"]";
+            String locator = name;
+            // use specifier for the last only if there is more of them
+            // if there is one, the name can already contain specifier which name to use
+            if (count > 1) {
+		        locator = name+"["+ (count-1) +"]";
+            }
 		    log.finer("Using following: " + locator);
 		    tasks.textbox(locator).setValue(value);
 		}
