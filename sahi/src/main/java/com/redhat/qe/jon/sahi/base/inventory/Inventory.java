@@ -388,9 +388,16 @@ public class Inventory extends ResourceTab{
 		 */
 		public void deleteChild(String name) {
 			selectChild(name);
-			int buttons = tasks.byXPath("//td[@class='buttonTitle' and .='Delete']").countSimilar();
+			List<ElementStub> buttons = tasks.byXPath("//td[@class='buttonTitle' and .='Delete']").collectSimilar();
+			// class was renamed in jon3.3
+			if(buttons.size() == 0){
+			    buttons = tasks.byXPath("//td[@class='button' and .='Delete']").collectSimilar();    
+			}
 			log.fine("Found Delete buttons :"+buttons);
-			tasks.byXPath("//td[@class='buttonTitle' and .='Delete']").click();
+			if(buttons.size() == 0){
+			    throw new RuntimeException("Delete button was not found!");
+			}
+			buttons.get(buttons.size() - 1).click();
 			//tasks.cell("Delete").near(tasks.cell("Uninventory")).click();
             tasks.waitFor(Timing.TIME_1S);
 			for (ElementStub es : tasks.cell("Yes").collectSimilar()) {

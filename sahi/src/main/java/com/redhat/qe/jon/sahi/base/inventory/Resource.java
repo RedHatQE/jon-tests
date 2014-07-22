@@ -801,7 +801,7 @@ public class Resource {
 			return false;
 		}
 		
-		ElementStub elm = tasks.image("unchecked.png").near(
+		ElementStub elm = tasks.image("/unchecked.*/").near(
 				tasks.cell(resourceName));
         if (elm.exists()) {
             log.fine("Resource \""
@@ -815,7 +815,7 @@ public class Resource {
                 tasks.image("opener_closed.png").near(elmUpper).click();
             }
 
-            elm = tasks.image("unchecked.png").near(
+            elm = tasks.image("/unchecked.*/").near(
                     tasks.cell(resourceName));
             if (elm.exists()) {
                 log.fine("Resource \""
@@ -885,7 +885,7 @@ public class Resource {
 		tasks.cell("Discovery Queue").click();
 		tasks.waitFor(Timing.WAIT_TIME);
 		
-		tasks.image("unchecked.png").near(tasks.cell(platformName)).click();
+		tasks.image("/unchecked.*/").near(tasks.cell(platformName)).click();
 		tasks.cell("Yes").click();
 		tasks.cell("Import").click();
 	}

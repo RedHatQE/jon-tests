@@ -20,7 +20,7 @@ public class Editor {
      * asserts all required input fields have been filled
      */
     public void assertRequiredInputs() {
-        ElementStub exclamationMark = tasks.image("exclamation.png");
+        ElementStub exclamationMark = tasks.image("/exclamation.*/");
         Assert.assertFalse(tasks.waitForElementExists(tasks, exclamationMark, exclamationMark.toString(), Timing.WAIT_TIME),
                 "All required inputs were provided");
     }
@@ -34,6 +34,7 @@ public class Editor {
     public void setText(String name, String value) {
         ElementStub textbox = tasks.textbox(name);
         tasks.waitForElementExists(tasks, textbox, textbox.toString(), Timing.WAIT_TIME);
+        log.info("class: "+ textbox.getAttribute("class"));
         textbox.setValue(value);
         tasks.waitForElementToContainValue(tasks, textbox, value, Timing.WAIT_TIME);
     }
@@ -222,7 +223,7 @@ public class Editor {
     }
 
     private ElementStub getScrollButton(String type) {
-        List<ElementStub> scrolls = tasks.image("vscroll_" + type + ".png").collectSimilar();
+        List<ElementStub> scrolls = tasks.image("/.*vscroll_" + type + ".*/").collectSimilar();
         if (scrolls.size() > 0) {
             return scrolls.get(scrolls.size() - 1);
         }
@@ -241,7 +242,7 @@ public class Editor {
                 tasks.xy(scroll.parentNode(), 3, 3).click();
 
                 log.fine("Clicked scroll arrow");
-                scroll = getScrollButton("Over_end");
+                //scroll = getScrollButton("Over_end");
             } else {
                 log.warning("Scroll arrow not found!");
             }
@@ -291,7 +292,7 @@ public class Editor {
         // if you decide to fix this method you are a brave man
         // I've spent hours of tuning this **cking code to work
         // 
-        List<ElementStub> pickers = tasks.image("comboBoxPicker.png").collectSimilar();
+        List<ElementStub> pickers = tasks.image("/comboBoxPicker.*/").collectSimilar();
         log.fine("Found " + pickers.size() + " comboboxes, required index=" + index);
         if (index > pickers.size()-1) {
             index = pickers.size() -1;
@@ -300,7 +301,7 @@ public class Editor {
         ElementStub picker = pickers.get(index);
         log.fine("Performing click on combo via mouseOver + click on hovered picker");
         tasks.xy(picker, 3, 3).mouseOver();
-        ElementStub pickerOver = tasks.image("comboBoxPicker_Over.png");
+        ElementStub pickerOver = tasks.image("/comboBoxPicker_Over.*/");
         if (pickerOver.exists()) {
             tasks.xy(pickerOver, 3, 3).click();
         }
@@ -388,11 +389,11 @@ public class Editor {
         tasks.waitFor(Timing.TIME_1S);
         String checkBox = null;
         if (check) {
-            checkBox = "unchecked.png";
+            checkBox = "/unchecked.*/";
         } else {
-            checkBox = "checked.png";
+            checkBox = "/checked.*/";
         }
-        ElementStub elem = tasks.image(checkBox).in(tasks.row(cellSelection));
+        ElementStub elem = tasks.image(checkBox).near(tasks.cell(cellSelection));
         if (tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME)) {
             elem.parentNode().focus();
             log.fine("Sending keypress to " + checkBox);

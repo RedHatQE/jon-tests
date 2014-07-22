@@ -29,7 +29,7 @@ public class ConfigEditor extends Editor {
         int i = 0;
         for (ElementStub es : buttons) {
             ElementStub cell = es.parentNode().parentNode();
-            if (cell.fetch("innerHTML").contains("class=\"buttonTitle") && cell.isVisible()) {
+            if (cell.fetch("innerHTML").contains("class=\"button") && cell.isVisible()) {
                 log.fine(cell.fetch("innerHTML"));
                 if (i == index) {
                     tasks.xy(cell, 3, 3).click();

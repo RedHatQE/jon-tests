@@ -111,7 +111,7 @@ public class Configuration extends ResourceTab {
 			tasks.image("remove.png[" + index + "]").focus();
 			tasks.execute("_sahi._keyPress(_sahi._image('remove.png[" + index
 					+ "]'), 32);");
-			tasks.xy(tasks.byXPath("//td[@class='buttonTitleOver' or @class='buttonTitle' and .='Yes']"),3,3).click();
+			tasks.xy(tasks.byXPath("//td[@class='buttonTitleOver' or @class='buttonTitle' or @class='button' and .='Yes']"),3,3).click();
 		}
 
 		/**
