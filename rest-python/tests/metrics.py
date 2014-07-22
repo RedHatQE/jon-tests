@@ -187,7 +187,6 @@ class MetricsTest(RHQRestTest):
         r = self.put('metric/data/%d/raw/%d' % (9999,t),{'value':0.5})
         assert_equal(r.status_code,404)
 
-
     @test(groups=['putmetric'])
     def put_data_raw_with_trait_schedule_id(self):
         sid = self._find_schedule('Trait.hostname')
@@ -195,4 +194,30 @@ class MetricsTest(RHQRestTest):
             raise Exception('Schedule not found')
         t = int(time.time() * 1000) 
         r = self.put('metric/data/%d/raw/%d' % (sid,t),{'value':0.5})
-        assert_equal(r.status_code,406)
+        assert_equal(r.status_code,406)        
+    
+    @test        
+    def post_data_raw(self):        
+        # push metric data
+        value = 1000000000        
+        t = int(time.time() * 1000)
+        req = 'metric/data/raw'
+        body = [{'timeStamp':t, 'value':value, 'scheduleId':self.sid}]        
+        r = self.post(req, body)        
+        assert_equal(r.status_code,204)
+
+        # check that pushed data was stored
+        req = 'metric/data/%d/raw' % self.sid
+        r = self.get(req)
+        assert_equal(r.status_code,200)
+        data = r.json()
+        found = False
+        for item in data:
+            if item["timeStamp"] == t:
+                assert_equal(item["value"], value,
+                  'Different value was pushed to the schedule: expected %d, received %d' % (value, item["value"]))
+                found = True
+                break
+        assert_true(found, 'The pushed value was not found')        
+        
+        
