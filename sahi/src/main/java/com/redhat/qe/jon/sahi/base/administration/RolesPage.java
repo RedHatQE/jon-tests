@@ -61,7 +61,7 @@ public class RolesPage extends AdministrationPage {
                 throw new RuntimeException("Resource group named " +resGroupName+", was not found in Available Resource Groups list");
             }
             tasks.xy(tasks.cell(resGroupName),3,3).click();
-            tasks.image("right.png").click();
+            tasks.image("/right/").click(); //PatternFly fix: 18-Jul-2014
         }
         
         //TODO bundle groups
