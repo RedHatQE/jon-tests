@@ -43,17 +43,28 @@ public class StorageNodesAdministration {
 	}
 	
 	private int getStorageNodeCount() {
-		ElementStub storageNodeElements = tasks.image("row_collapsed.png");
-		return storageNodeElements.countSimilar();
+		if(tasks.image("row_collapsed.png").exists()){
+			return tasks.image("row_collapsed.png").countSimilar(); //JON 3.2 collapsed
+		}else{
+			return tasks.image("group_opening.gif").countSimilar(); //JON 3.3 collapsed (PatternFly Fix)
+		}
 	}
 	
 	public List<StorageNode> getStorageNodes() {
 		int tableRowCount = getStorageNodeCount();
 		
 		List<StorageNode> storageNodes = new LinkedList<StorageNode>();
+		String collapsedIcon=null;
+		if(tableRowCount > 0){
+			if(tasks.image("row_collapsed.png").exists()){ //JON 3.3 collapsed (PatternFly Fix)
+				collapsedIcon = "row_collapsed.png";
+			}else{
+				collapsedIcon = "group_opening.gif";
+			}
+		}
 		for(int i = 0; i < tableRowCount; i++) {
 			StorageNode storageNode = new StorageNode();
-			ElementStub img = tasks.image("row_collapsed.png[" + i + "]");
+			ElementStub img = tasks.image(collapsedIcon+"[" + i + "]");
 			ElementStub trElem = img.parentNode("tr");
 			
 			log.info("storage node row detected");

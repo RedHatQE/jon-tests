@@ -362,7 +362,7 @@ public class AlertDefinitionEditor {
 				"Select the repository where the script should reside :", repository);
 		if(existingScript!= null){
 			// select last picker
-			int pickers = tasks.image("comboBoxPicker.png").countSimilar();
+			int pickers = tasks.image("/comboBoxPicker.*/").countSimilar();
 			editor.selectCombo(pickers -1, existingScript);
 			//tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR,"Existing Script", existingScript);
 		}
