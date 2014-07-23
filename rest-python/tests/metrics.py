@@ -196,18 +196,8 @@ class MetricsTest(RHQRestTest):
         r = self.put('metric/data/%d/raw/%d' % (sid,t),{'value':0.5})
         assert_equal(r.status_code,406)        
     
-    @test        
-    def post_data_raw(self):        
-        # push metric data
-        value = 1000000000        
-        t = int(time.time() * 1000)
-        req = 'metric/data/raw'
-        body = [{'timeStamp':t, 'value':value, 'scheduleId':self.sid}]        
-        r = self.post(req, body)        
-        assert_equal(r.status_code,204)
-
-        # check that pushed data was stored
-        req = 'metric/data/%d/raw' % self.sid
+    def check_metric_record_exists(self, sid, t, value):
+        req = 'metric/data/%d/raw' % sid
         r = self.get(req)
         assert_equal(r.status_code,200)
         data = r.json()
@@ -215,9 +205,44 @@ class MetricsTest(RHQRestTest):
         for item in data:
             if item["timeStamp"] == t:
                 assert_equal(item["value"], value,
-                  'Different value was pushed to the schedule: expected %d, received %d' % (value, item["value"]))
+                  'Unexpected value found in schedule for given time stamp: expected %d, received %d' % (value, item["value"]))
                 found = True
                 break
-        assert_true(found, 'The pushed value was not found')        
+        assert_true(found, 'The pushed value was not found')
+        
+    def post_data_raw(self):        
+        # push metric data
+        value = 1e9        
+        t = int(time.time() * 1000)
+        req = 'metric/data/raw'
+        body = [{'timeStamp':t, 'value':value, 'scheduleId':self.sid}]        
+        r = self.post(req, body)        
+        assert_equal(r.status_code,204)
+
+        # check that pushed data was stored
+        self.check_metric_record_exists(self.sid, t, value)      
+            
+    def post_data_raw_resid(self):        
+        # push metric data
+        value = 2e9
+        sch_name = 'Native.MemoryInfo.actualUsed'        
+        t = int(time.time() * 1000)
+        req = 'metric/data/raw/%d' % self.res_id
+        body = [{'timestamp':t, 'value':value, 'metric':sch_name}]        
+        r = self.post(req, body)        
+        assert_equal(r.status_code,204)
+
+        # check that pushed data was stored
+        self.check_metric_record_exists(self.sid, t, value)      
+            
+    @blockedBy('1122444')
+    def post_data_raw_nonexistent_schedule(self): 
+        # push metric data
+        value = 1e9
+        t = int(time.time() * 1000)
+        req = 'metric/data/raw'
+        body = [{'timeStamp':t, 'value':value, 'scheduleId':0}]        
+        r = self.post(req, body)        
+        assert_equal(r.status_code,404)
         
         

@@ -21,7 +21,7 @@ class CreateResourceTest(RHQRestTest):
     def setUp(self):
         self.pf_server_id = int(self.find_resource_platform()['resourceId'])
         self.pf_server_name = self.find_resource_platform()['resourceName']
-        self.res_id = int(self.find_resource_eap6standalone()['resourceId'])
+        self.res_id = int(self.find_resource_eap6standalone()['resourceId'])        
         self.script_server_body = {
                 'resourceName' : '',
                 'typeName' : 'Script Server',
@@ -251,7 +251,7 @@ class GetResourceTest(RHQRestTest):
         assert_equal(self.get('resource/%d/children' % r).status_code,404)
         assert_equal(self.get('resource/%d/alerts' % r).status_code,404)
         assert_equal(self.get('resource/%d/schedules' % r).status_code,404)
-
+    
     @test
     def get_resource_hierarchy(self):
         r = self.get('resource/%d/hierarchy' % self.res_id)
