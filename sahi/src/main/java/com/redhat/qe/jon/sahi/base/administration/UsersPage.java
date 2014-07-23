@@ -72,7 +72,7 @@ public class UsersPage extends AdministrationPage {
         
         for(String roleName : user.getRoleNames()){
             tasks.xy(tasks.div(roleName),3,3).click();
-            tasks.image("right.png").click();
+            tasks.image("/right.*/").click();
         }
         
         tasks.cell("Save").click();
