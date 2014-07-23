@@ -185,7 +185,7 @@ public class Editor {
         // because smartGWT is so smart, that it leaves invisible menuTable within a DOM model
         for (ElementStub es : tasks.table("menuTable").collectSimilar()) {
             if (es.isVisible()) {
-                for (ElementStub cell : tasks.cell("menuTitleField").in(es).collectSimilar()) {
+                for (ElementStub cell : tasks.cell("/menu.*/").in(es).collectSimilar()) {
                     if (cell.fetch("innerHTML").contains(name)) {
                         tasks.xy(cell, 3, 3).click();
                         return;
@@ -379,12 +379,10 @@ public class Editor {
 
     /**
      * check checkbox near a cell
-     * Not ready yet, doesn't work as expected
      *
      * @param cellSelection cell name for tightening which checkbox to use
      * @param check true to check, false to uncheck
      */
-    @Deprecated
     public void checkBoxNearCell(String cellSelection, boolean check) {
         tasks.waitFor(Timing.TIME_1S);
         String checkBox = null;

@@ -125,9 +125,6 @@ public class Configuration extends ResourceTab {
             if (buttons > 0) {
                 saveB = tasks.cell("Save["+(buttons-1)+"]");
             }
-			if(!saveB.isVisible() && buttons > 1){
-			    saveB = tasks.cell("Save["+(buttons-2)+"]");
-			}
 			log.info("Clicking on Save button: "+saveB.toString());
 			tasks.xy(saveB, 3, 3).click();
 			Assert.assertTrue(tasks.waitForAnyElementsToBecomeVisible(tasks,
