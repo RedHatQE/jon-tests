@@ -14,11 +14,11 @@ import com.redhat.qe.jon.sahi.base.SahiTestScript;
 public class AlertDefinitionTemplateTest extends SahiTestScript{
 	
 	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data")
-	public void createAlertDefinitionTemplate(String groupPanelName, String templateName){
-		sahiTasks.createAlertDefinitionTemplate(groupPanelName, templateName);
+	public void createAlertDefinitionTemplate(String groupPanelName, String templateName, String platform){
+		sahiTasks.createAlertDefinitionTemplate(groupPanelName, templateName, platform);
 	}
 	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="checkDefinitionTemplateExists")
-	public void navigationWithConditionsTab(String groupPanelName, String templateName){
+	public void navigationWithConditionsTab(String groupPanelName, String templateName, String platform){
 		sahiTasks.navigationThruConditionsTabAlertDefTemplate(groupPanelName, templateName);
 	}
 	
@@ -28,19 +28,19 @@ public class AlertDefinitionTemplateTest extends SahiTestScript{
 	}*/
 	
 	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="navigationWithConditionsTab")
-	public void navigationWithRecoveryTab(String groupPanelName, String templateName){
+	public void navigationWithRecoveryTab(String groupPanelName, String templateName, String platform){
 		sahiTasks.navigationThruRecoveryTabAlertDefTemplate(groupPanelName, templateName);
 	}
 	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="navigationWithRecoveryTab")
-	public void navigationWithDampeningTab(String groupPanelName, String templateName){
+	public void navigationWithDampeningTab(String groupPanelName, String templateName, String platform){
 		sahiTasks.navigationThruDampeningTabAlertDefTemplate(groupPanelName, templateName);
 	}
 	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="navigationWithDampeningTab")
-	public void deleteAlertDefinitionTemplate(String groupPanelName, String templateName){
+	public void deleteAlertDefinitionTemplate(String groupPanelName, String templateName, String platform){
 		Assert.assertFalse(sahiTasks.deleteAlertDefinitionTemplate(templateName), "Template ["+templateName+"] deletion status");
 	}
 	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="createAlertDefinitionTemplate")
-	public void checkDefinitionTemplateExists(String groupPanelName, String templateName){
+	public void checkDefinitionTemplateExists(String groupPanelName, String templateName, String platform){
 		Assert.assertTrue(sahiTasks.verifyDefinitionTemplateExists(groupPanelName, templateName));
 	}
 	
@@ -51,7 +51,7 @@ public class AlertDefinitionTemplateTest extends SahiTestScript{
 	
 	public List<List<Object>> getAlertDefTemplateData() {
 		ArrayList<List<Object>> data = new ArrayList<List<Object>>();
-		data.add(Arrays.asList(new Object[]{"Alert Definition Templates", "testAlertDefTemplate" }));
+		data.add(Arrays.asList(new Object[]{"Alert Definition Templates", "testAlertDefTemplate", "Java" }));
 		return data;
 	}
 	

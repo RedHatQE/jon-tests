@@ -628,10 +628,10 @@ public class SahiTasks extends ExtendedSahi {
         this.textbox("description").setValue(desc);
         this.cell("Resource Groups").click();
         this.div(compGroupName).click();
-        this.image("right.png").click();
+        this.image("/right.*/").click();
         this.cell("Users").click();
         this.div(searchTestuser).click();
-        this.image("right.png").click();
+        this.image("/right.*/").click();
         this.cell("Save").near(this.cell("Reset")).click(); 
     }
 
@@ -978,8 +978,8 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void messagePortletMinimizeMaximize() {
-        this.image("cascade_Disabled.png").click();
-        this.image("minimize_Disabled.png").click();
+        this.image("/minimize.*/").click();
+        this.image("/restore.*/").click();
 
     }
 
@@ -1079,7 +1079,7 @@ public class SahiTasks extends ExtendedSahi {
 		HashMap<String, String> version = new HashMap<String, String>();
     	//Old - About dialog(if loop): Should be removed after sometime. Modified on: 18-Oct-2013
     	//RHQ Build: 4.10.0-SNAPSHOT
-		ElementStub closeIcon = this.image("close.png").near(this.image("/maximize/"));  //PatternFly Change: 15-Jul-2014
+		ElementStub closeIcon = this.image("close.png").near(this.image("/maximize.*/"));  //PatternFly Change: 15-Jul-2014
 		
     	if(selectPage("Help-->About", this.span("DisplayLabel[0]"), 1000*5, 3)){
         	version.put("version", this.span("DisplayLabel[0]").getText());
@@ -1578,16 +1578,14 @@ public class SahiTasks extends ExtendedSahi {
         //Select Radio Buttons
         updateRadioButtons(radioButtons);
         
-        int addImgCount = this.image("add.png").countSimilar();
-        _logger.log(Level.INFO, "Number of add.png images: "+addImgCount);
         //File name Includes
         if(fileIncludes != null){
         	String[] files = this.getCommaToArray(fileIncludes);
         	for(String fileName : files){
-        		this.image("add.png["+(addImgCount-2)+"]").focus();
-                this.execute("_sahi._keyPress(_sahi._image('add.png["+(addImgCount-2)+"]'), 32);"); //32 - Space bar
-                if(this.image("checked.png").near(this.bold("Path")).exists()){
-                	this.image("checked.png").near(this.bold("Path")).click();
+        		this.image("add.png").near(this.div("Includes")).click();
+        		ElementStub checkBox = this.image("/checked.*/").near(this.textbox("path"));
+                if(checkBox.exists()){
+                	checkBox.click();
                 	_logger.log(Level.INFO, "Path Check/uncheck available to select and selected...");
                 }else{
                 	_logger.log(Level.INFO, "Path Check/uncheck not available...");
@@ -1602,8 +1600,7 @@ public class SahiTasks extends ExtendedSahi {
         if(fileExcludes != null){
         	String[] files = this.getCommaToArray(fileExcludes);
         	for(String fileName : files){
-        		this.image("add.png["+(addImgCount-1)+"]").focus();
-                this.execute("_sahi._keyPress(_sahi._image('add.png["+(addImgCount-1)+"]'), 32);"); //32 - Space bar
+        		this.image("add.png").near(this.div("Excludes")).click();
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Excludes]: "+fileName);
                 this.cell("OK").click();
@@ -2311,7 +2308,7 @@ public class SahiTasks extends ExtendedSahi {
         	for(int i=0; i<discoveryQueue.size(); i++){
         		if(resourceName.equalsIgnoreCase(discoveryQueue.get(i).get("Resource Name"))){
         			_logger.log(Level.INFO, "Row: ["+(i+1)+"]: "+discoveryQueue.get(i));
-        			this.image("unchecked.png["+i+"]").click();
+        			this.image("/unchecked.*/["+i+"]").click();
         		}     		
         	}
     	}else{
@@ -2355,37 +2352,29 @@ public class SahiTasks extends ExtendedSahi {
     //************************************************************************************************
     // AlertDefinitionTemplate Tests
     //***************************************************************************************************
-    public void createAlertDefinitionTemplate(String groupPanelName, String templateName){
+    public void createAlertDefinitionTemplate(String groupPanelName, String templateName, String platform){
     	this.link("Administration").click();
     	this.cell(groupPanelName).click();
-    	this.image("edit.png[3]").click();
+    	this.image("edit.png").near(this.div(platform));
     	this.cell("New").click();
     	this.textbox("textItem").setValue(templateName);
-    	this.textarea("textItem").setValue("Desc");
+    	this.textarea("textItem").setValue("Created by Automation");
     	this.cell("Save").click();
     }
     public boolean verifyDefinitionTemplateExists(String groupPanelName, String templateName) {
-    	/*this.cell("Administration").click();
-        this.waitFor(5000);*/
     	this.bold("Back to List").click();
-       /* this.cell(groupPanelName).click();
-        this.image("edit.png[3]");*/
         return this.div(templateName).exists();
     }
     
     public void navigationThruConditionsTabAlertDefTemplate(String groupPanelName, String templateName){
-    	/*this.cell("Administration").click();
-        this.waitFor(5000);
-        this.cell(groupPanelName).click();
-        this.image("edit.png[3]");*/
-        this.link(templateName).click();
+    	this.link(templateName).click();
         this.cell("Edit").click();
         this.cell("Conditions").click();
         this.cell("Add").click();
-        //this.div("selectItemText[2]").click();
         this.cell("OK").click();
         this.cell("Save").click();       
-        this.bold("Back to List").click();
+        this.div("/Back to List/").click(); //PatternFly Change: 15-Jul-2014
+
     	
     }
     public void navigationThruNotificationsTabAlertDefTemplate(String groupPanelName, String templateName){
@@ -2400,7 +2389,7 @@ public class SahiTasks extends ExtendedSahi {
         // this.div("selectItemText[2]").click();
         // this.div(templateName).click();
         //this.image("right.png").click();
-        this.div("right_all.png").click();
+        this.div("/right_all.*/").click();
         this.cell("OK").click();
         this.cell("Save").click();
         this.bold("Back to List").click();
@@ -2463,7 +2452,7 @@ public class SahiTasks extends ExtendedSahi {
 	        this.textbox("name").setValue(groupName);
 	        this.textarea("description").setValue(groupDesc);
 	        this.cell("Next").click();
-	        this.image("right_all.png").click();
+	        this.image("/right_all.*/").click();
 	        this.cell("Finish").click();
 	    }
 	    public void  removeResourcesFromGroup(String groupPanelName, String groupName){
@@ -2471,9 +2460,9 @@ public class SahiTasks extends ExtendedSahi {
 			this.waitFor(5000);
 			this.cell(groupPanelName).click();
 			this.link(groupName).click();
-			this.image("Inventory_grey_16.png").click();
+			this.image("/Inventory_grey_16.*/").click();
 			this.cell("Update Membership...").click();
-			this.image("left_all.png").click();
+			this.image("/left_all.*/").click();
 			this.cell("Save").click();
 	    }
 	    
@@ -2486,17 +2475,17 @@ public class SahiTasks extends ExtendedSahi {
 	        if (permissions != null){
 	        	for (int i =0; i< permissions.length ;i++ ){
 	        		this.div(permissions[i]).click();
-	        		if(this.image("unchecked.png").near(this.div(permissions[i])).exists()){
-	        			this.image("unchecked.png").near(this.div(permissions[i])).click();
+	        		if(this.image("/unchecked.*/").near(this.div(permissions[i])).exists()){
+	        			this.image("/unchecked.*/").near(this.div(permissions[i])).click();
 	        		}
 	        	}
 	        }
 	        this.cell("Resource Groups").click();
 	        this.div(compGroupName).click();
-	        this.image("right.png").click();
+	        this.image("/right.*/").click();//PatternFly fix: 23-Jul-2014
 	        this.cell("Users").click();
 	        this.div(searchTestuser).click();
-	        this.image("right.png").click();
+	        this.image("/right.*/").click(); //PatternFly fix: 23-Jul-2014
 	        this.cell("Save").click();
 	    }
 	    
@@ -2511,7 +2500,7 @@ public class SahiTasks extends ExtendedSahi {
 	        		this.div(permissions[i]).click();
 	        	}
 	        }
-	        this.image("checked.png").click();
+	        this.image("/checked.*/").click();
 	        this.cell("Save").click();
 	    }
 
