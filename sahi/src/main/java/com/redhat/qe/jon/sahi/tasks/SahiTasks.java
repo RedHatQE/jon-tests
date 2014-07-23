@@ -500,10 +500,10 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void expandCollapseSections() {
-        this.image("opener_closed.png").click();
-        this.image("opener_opened.png[1]").click();
-        this.image("opener_closed.png").click();
-        this.image("opener_opened.png").click();
+        this.image("/opener_closed.*/").click();
+        this.image("/opener_opened.*/[1]").click();
+        this.image("/opener_closed.*/").click();
+        this.image("/opener_opened.*/").click();
     }
 
     //******************************************************************
