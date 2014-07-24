@@ -111,31 +111,33 @@ public class Configuration extends ResourceTab {
 			tasks.image("remove.png[" + index + "]").focus();
 			tasks.execute("_sahi._keyPress(_sahi._image('remove.png[" + index
 					+ "]'), 32);");
-			tasks.xy(tasks.byXPath("//td[@class='buttonTitleOver' or @class='buttonTitle' or @class='button' and .='Yes']"),3,3).click();
+			tasks.xy(tasks.byXPath("//td[@class='buttonTitleOver' or @class='buttonTitle' or @class='button' or @class='buttonOver' and .='Yes']"),3,3).click();
 		}
 
-		/**
-		 * saves configuration
-		 */
-		public void save() {
-		    tasks.waitFor(Timing.WAIT_TIME);
-			int buttons = tasks.cell("Save").countSimilar();
-			log.info("Save buttons : "+buttons);
-            ElementStub saveB = tasks.cell("Save[0]");
-            if (buttons > 0) {
-                saveB = tasks.cell("Save["+(buttons-1)+"]");
+        /**
+         * saves configuration
+         */
+        public void save() {
+            tasks.waitFor(Timing.WAIT_TIME);
+            int buttons = tasks.cell("Save").countSimilar();
+            log.info("Save buttons : " + buttons);
+            ElementStub saveB = null;
+            for (int i = 0; i < buttons; i++) {
+                saveB = tasks.cell("Save[" + i + "]");
+                if(saveB.isVisible()){
+                    log.info("Clicking on Save button: " + saveB.toString());
+                    tasks.xy(saveB, 3, 3).click();
+                }
             }
-			log.info("Clicking on Save button: "+saveB.toString());
-			tasks.xy(saveB, 3, 3).click();
-			Assert.assertTrue(tasks.waitForAnyElementsToBecomeVisible(tasks,
-                     new ElementStub[]{
-                            tasks.cell("/Configuration updated*/"),
+            Assert.assertTrue(tasks.waitForAnyElementsToBecomeVisible(
+                    tasks,
+                    new ElementStub[] { tasks.cell("/Configuration updated*/"),
                             tasks.cell("/Updating configuration*/"),
-                            tasks.div("/Updating configuration*/")
-                    }, "Successful update message", Timing.WAIT_TIME),
+                            tasks.div("/Updating configuration*/") },
+                    "Successful update message", Timing.WAIT_TIME),
                     "Successful config update message expected!!");
-		}
-	}
+        }
+    }
 
 	public static class ConfigEntry {
 		private final Logger log = Logger.getLogger(this.getClass().getName());

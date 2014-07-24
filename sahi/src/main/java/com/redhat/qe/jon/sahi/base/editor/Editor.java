@@ -347,13 +347,16 @@ public class Editor {
             ElementStub es = cells.get(i);
             if (es.isVisible()) {
                 tasks.xy(es, 3, 3).click();
-                log.fine("Selected [" + selection + "].");
-                return;
+                log.fine("Selecting [" + selection + "].");
             }
             else {
                 log.fine("Selection [" + selection + "] was not visible");
             }
-        }   
+        }
+        if(!tasks.div(selection).isVisible())
+        {
+            throw new RuntimeException("Selection of [" + selection + "] failed. It's not visible anymore.");
+        }
         return;
 	}
     }
@@ -368,9 +371,9 @@ public class Editor {
         tasks.waitFor(Timing.TIME_1S);
         String checkBox = null;
         if (check) { //PatternFly Change: 15-Jul-2014
-            checkBox = "/unchecked/[" + index + "]";
+            checkBox = "/^unchecked/[" + index + "]";
         } else {
-            checkBox = "/checked/[" + index + "]";
+            checkBox = "/^checked/[" + index + "]";
         }
         tasks.image(checkBox).parentNode().focus();
         log.fine("Sending keypress to " + checkBox);
@@ -387,9 +390,9 @@ public class Editor {
         tasks.waitFor(Timing.TIME_1S);
         String checkBox = null;
         if (check) {
-            checkBox = "/unchecked.*/";
+            checkBox = "/^unchecked.*/";
         } else {
-            checkBox = "/checked.*/";
+            checkBox = "/^checked.*/";
         }
         ElementStub elem = tasks.image(checkBox).near(tasks.cell(cellSelection));
         if (tasks.waitForElementVisible(tasks, elem, elem.toString(), Timing.WAIT_TIME)) {
