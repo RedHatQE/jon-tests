@@ -269,6 +269,9 @@ public class Editor {
         List<ElementStub> visible = new ArrayList<ElementStub>();
         ElementStub parent = tasks.div("pickListMenuBody");
         if (!parent.exists()) {
+            parent = tasks.div("scrollingMenu");
+        }
+        if (!parent.exists()) {
             log.warning("Not returning any visible cells because parent div does not exist");
             return visible;
         }
