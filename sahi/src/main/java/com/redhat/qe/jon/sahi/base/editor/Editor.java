@@ -353,10 +353,7 @@ public class Editor {
                 log.fine("Selection [" + selection + "] was not visible");
             }
         }
-        if(!tasks.div(selection).isVisible())
-        {
-            throw new RuntimeException("Selection of [" + selection + "] failed. It's not visible anymore.");
-        }
+
         return;
 	}
     }
