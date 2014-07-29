@@ -367,14 +367,17 @@ public class Editor {
     public void checkBox(int index, boolean check) {
         tasks.waitFor(Timing.TIME_1S);
         String checkBox = null;
-        if (check) { //PatternFly Change: 15-Jul-2014
-            checkBox = "/^unchecked/[" + index + "]";
+        if (check) { //PatternFly Change: 15-Jul-2014, regular expr was not working for some reason, using full name
+            checkBox = "unchecked.gif[" + index + "]";
         } else {
-            checkBox = "/^checked/[" + index + "]";
+            checkBox = "checked.gif[" + index + "]";
         }
-        tasks.image(checkBox).parentNode().focus();
+        tasks.image(checkBox).click();
+        // this approach is not working for patternFly
+        /*tasks.image(checkBox).parentNode().focus();
         log.fine("Sending keypress to " + checkBox);
         tasks.execute("_sahi._keyPress(_sahi._image('" + checkBox + "'), 32);");
+        */
     }
 
     /**
