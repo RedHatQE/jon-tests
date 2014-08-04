@@ -11,6 +11,7 @@ var common = new _common(); // object with common methods
 // find the agent
 var rc = ResourceCriteria();
 rc.addFilterResourceTypeName("RHQ Agent");
+rc.setStrict(true);
 //rc.addFilterVersion("3.1");
 
 var agent = ResourceManager.findResourcesByCriteria(rc);

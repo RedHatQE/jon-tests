@@ -12,6 +12,7 @@ var common = new _common(); // object with common methods
 
 criteria = new ResourceCriteria(); // find the resource
 criteria.addFilterResourceTypeName('RHQ Agent')
+criteria.setStrict(true);
 //criteria.addFilterAgentName('agent1.example.com')
 
 var resources = ResourceManager.findResourcesByCriteria(criteria);

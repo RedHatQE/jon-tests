@@ -9,6 +9,7 @@ var rc = ResourceCriteria();
 rc.addFilterPluginName("RHQAgent");
 //rc.addFilterName("RHQ Agent");
 rc.addFilterResourceTypeName("RHQ Agent");
+rc.setStrict(true);
 //rc.addFilterDescription("Agent");
 
 var agent = ResourceManager.findResourcesByCriteria(rc);

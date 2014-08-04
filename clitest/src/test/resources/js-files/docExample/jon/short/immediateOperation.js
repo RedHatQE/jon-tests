@@ -6,6 +6,7 @@
 
 var criteria = new ResourceCriteria();
 criteria.addFilterResourceTypeName('RHQ Agent');
+criteria.setStrict(true);
 var agents = ResourceManager.findResourcesByCriteria(criteria);
 
 assertTrue(agents.size() > 0,"There are no RHQ agents!!");

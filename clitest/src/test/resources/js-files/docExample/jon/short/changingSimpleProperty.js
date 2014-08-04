@@ -7,6 +7,7 @@
 // find the resource
 criteria = new ResourceCriteria(); 
 criteria.addFilterResourceTypeName('RHQ Agent')
+criteria.setStrict(true);
 // this only updates the resource for this specific agent
 //criteria.addFilterAgentName('agent1.example.com')
 var resources = ResourceManager.findResourcesByCriteria(criteria);

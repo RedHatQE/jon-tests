@@ -7,10 +7,12 @@ assertTrue(platforms.length>0,"At least 1 platform is requred to run this test")
 var platform = platforms[0];
 
 platform.invokeOperation("viewProcessList");
+var platformName = platform.getName();
 
 //find the resource
 criteria = new ResourceCriteria(); 
 criteria.addFilterResourceTypeName('Linux');
+criteria.addFilterName(platformName);
 
 var resource = ResourceManager.findResourcesByCriteria(criteria);
 
