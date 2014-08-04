@@ -52,6 +52,8 @@ var expectedNumberOfManagedGroups = [numberOfPlatformTypes, 1,1];
 
 // assert values
 for (i in defNames) {
+    var def = dynaGroupDefinitions.find({name:defNames[i]})[0];
+    def.recalculate();
     assertDynaGroupDefParams(defNames[i], defDescriptions[i], expressions[i],
             expectedNumberOfManagedGroups[i], isRecursive[i], recalInterval[i]);
 }
