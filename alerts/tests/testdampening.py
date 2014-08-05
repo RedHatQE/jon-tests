@@ -11,6 +11,7 @@ class AlertDampeningOnce(RHQAlertTest):
     '''This class tests alerts dampening=once. Such alert has to get disabled after it was fired once. There can be
     recovery alert, which can re-enable such alert once is fired'''
 
+    @blockedBy('1126853')
     def test_dampeningOnce(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')
@@ -50,6 +51,7 @@ class AlertDampeningOnce(RHQAlertTest):
         s1.deleteResource(p)
 
     @attr('event')
+    @blockedBy('1126853')
     def test_dampeningOnceEvent(self):
         s = self.rhqServer()
         p = s.findPlatform()
