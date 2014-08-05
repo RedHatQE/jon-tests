@@ -5,10 +5,12 @@ import com.redhat.qe.Assert;
 import com.redhat.qe.jon.sahi.base.editor.ConfigEditor;
 import com.redhat.qe.jon.sahi.tasks.SahiTasks;
 import com.redhat.qe.jon.sahi.tasks.Timing;
+
 import net.sf.sahi.client.ElementStub;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -399,14 +401,19 @@ public class Inventory extends ResourceTab{
 			}
 			buttons.get(buttons.size() - 1).click();
 			//tasks.cell("Delete").near(tasks.cell("Uninventory")).click();
-            tasks.waitFor(Timing.TIME_1S);
-			for (ElementStub es : tasks.cell("Yes").collectSimilar()) {
-				if (es.isVisible()) {
-                    log.finer("Yes button (" + es.toString() + ") is visible, clicking");
-					tasks.xy(es,3,3).click();
-				}
-			}
-		}
+            if (tasks.waitForElementVisible(tasks, tasks.cell("Yes"),
+                    "Yes button", Timing.WAIT_TIME)) {
+                for (ElementStub es : tasks.cell("Yes").collectSimilar()) {
+                    if (es.isVisible()) {
+                        log.info("Yes button (" + es.toString()
+                                + ") is visible, clicking");
+                        tasks.xy(es, 3, 3).click();
+                    }
+                }
+            } else {
+                throw new RuntimeException("Confirmation dialog didn't pop up");
+            }
+        }
 		/**
 		 * lists children resrource names
 		 * @return list of children

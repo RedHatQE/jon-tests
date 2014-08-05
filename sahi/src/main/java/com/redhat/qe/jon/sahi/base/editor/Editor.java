@@ -34,7 +34,6 @@ public class Editor {
     public void setText(String name, String value) {
         ElementStub textbox = tasks.textbox(name);
         tasks.waitForElementExists(tasks, textbox, textbox.toString(), Timing.WAIT_TIME);
-        log.info("class: "+ textbox.getAttribute("class"));
         textbox.setValue(value);
         tasks.waitForElementToContainValue(tasks, textbox, value, Timing.WAIT_TIME);
     }
@@ -240,8 +239,8 @@ public class Editor {
         for (int i = 0; i < clicks; i++) {
             if (scroll != null && scroll.exists() && scroll.isVisible()) {
                 tasks.xy(scroll.parentNode(), 3, 3).click();
-
                 log.fine("Clicked scroll arrow");
+                tasks.waitFor(Timing.TIME_5S / 5);
                 //scroll = getScrollButton("Over_end");
             } else {
                 log.warning("Scroll arrow not found!");
