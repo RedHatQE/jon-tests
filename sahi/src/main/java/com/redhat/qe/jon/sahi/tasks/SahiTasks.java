@@ -1079,7 +1079,7 @@ public class SahiTasks extends ExtendedSahi {
 		HashMap<String, String> version = new HashMap<String, String>();
     	//Old - About dialog(if loop): Should be removed after sometime. Modified on: 18-Oct-2013
     	//RHQ Build: 4.10.0-SNAPSHOT
-		ElementStub closeIcon = this.image("close.png").near(this.image("/maximize.*/"));  //PatternFly Change: 15-Jul-2014
+		ElementStub closeIcon = this.image("/close.*/").near(this.image("/maximize.*/"));  //PatternFly Change: 15-Jul-2014
 		
     	if(selectPage("Help-->About", this.span("DisplayLabel[0]"), 1000*5, 3)){
         	version.put("version", this.span("DisplayLabel[0]").getText());
