@@ -599,15 +599,15 @@ public class Resource {
 	}
 	
 	/**
-	 *  runs <b>Manual Autodiscovery</b> operation on parent platform of this resource
+	 *  runs <b>Run Autodiscovery</b> operation on parent platform of this resource
 	 */
 	public void performManualAutodiscovery() {
-		log.info("Performing [Manual Autodiscovery]"); 
+		log.info("Performing [Run Autodiscovery]"); 
 		Resource platform = new Resource(tasks, getPlatform());
-	     Operation op = platform.operations().newOperation("Manual Autodiscovery");
+	     Operation op = platform.operations().newOperation("Run Autodiscovery");
 	     op.schedule();
 	     platform.operations().assertOperationResult(op, true);
-	     log.info("Manual Autodiscovery DONE");
+	     log.info("Run Autodiscovery DONE");
 	}
 	/**
 	 * removes resource from inventory
@@ -752,7 +752,7 @@ public class Resource {
      * apply to platform type).
      * This is done by following steps
      * 1. it is performed a check - if this resource is already in inventory nothing else happens
-     * 2. Manual Autodiscovery operation is performed on parent platform (this doesn't apply to platform type)
+     * 2. Run Autodiscovery operation is performed on parent platform (this doesn't apply to platform type)
      * 3. Resource is imported
      *
      * @param sleepTime time miliseconds to sleep after resource has been imported (JON imports it's children asynchronously)
@@ -772,7 +772,7 @@ public class Resource {
 			return false;
 		}
 		if(!this.isPlatform){
-			log.fine("Will perform manual autodiscovery first.");
+			log.fine("Will perform Run Autodiscovery first.");
 			this.performManualAutodiscovery();
 		}
 		
@@ -797,7 +797,7 @@ public class Resource {
 		} catch (IllegalStateException ex) {
 			log.fine("Could not inventorize resource "
 					+ resourceName
-					+ ", nothing appeared in autodiscovery queue even after performing manual autodiscovery");
+					+ ", nothing appeared in autodiscovery queue even after performing Run Autodiscovery");
 			return false;
 		}
 		

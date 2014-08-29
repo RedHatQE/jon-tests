@@ -43,7 +43,7 @@ public class StorageAutoInventoryTest extends SahiTestScript {
 		log.info(platformName);
 	
 		// call platform manual auto-discovery
-		platform.operations().newOperation("Manual Autodiscovery");
+		platform.performManualAutodiscovery();
 		// navigate to platform		
 		platform.navigate();
 		//assert Storage Node exist
