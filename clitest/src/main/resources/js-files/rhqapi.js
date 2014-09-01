@@ -3106,6 +3106,16 @@ var Bundle = function(param) {
 				common.info("Bundle deployment finished with status : "+deployment.status);
 				if(deployment.status != BundleDeploymentStatus.SUCCESS){
 				    common.error("Bundle deployment err msg: " +deployment.getErrorMessage());
+				    var resDeployments = deployment.getResourceDeployments();
+				    for(i = 0;i < resDeployments.size();i++){
+				        var status = resDeployments.get(i).getStatus();
+				        var name = resDeployments.get(i).getResource().getName();
+				        common.info("Resource name: " +name+", status: "+status);
+				        if(status != BundleDeploymentStatus.SUCCESS){
+				            var hist = resDeployments.get(i).getBundleResourceDeploymentHistories();
+				            common.error("Resource name: " +name+", err msg:" +hist.get(0).getMessage());
+				        }
+				    }
 				}
 				return new Deployment(deployment);
 			}
