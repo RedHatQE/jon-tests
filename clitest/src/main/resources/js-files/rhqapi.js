@@ -3104,6 +3104,9 @@ var Bundle = function(param) {
 			var deployment = common.waitFor(func);
 			if (deployment) {
 				common.info("Bundle deployment finished with status : "+deployment.status);
+				if(deployment.status != BundleDeploymentStatus.SUCCESS){
+				    common.error("Bundle deployment err msg: " +deployment.getErrorMessage());
+				}
 				return new Deployment(deployment);
 			}
 			throw "Bundle deployment error";
