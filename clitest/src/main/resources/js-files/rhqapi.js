@@ -3093,6 +3093,7 @@ var Bundle = function(param) {
 			deployment = BundleManager.scheduleBundleDeployment(deployment.id, isClean);
 			var func = function() {
 				var crit = common.createCriteria(new BundleDeploymentCriteria(),{id:deployment.id});
+				crit.fetchResourceDeployments(true);
 		        var result = BundleManager.findBundleDeploymentsByCriteria(crit);
 		        if (!result.isEmpty()) {
 		        	result = result.get(0);
@@ -3112,8 +3113,19 @@ var Bundle = function(param) {
 				        var name = resDeployments.get(i).getResource().getName();
 				        common.info("Resource name: " +name+", status: "+status);
 				        if(status != BundleDeploymentStatus.SUCCESS){
-				            var hist = resDeployments.get(i).getBundleResourceDeploymentHistories();
-				            common.error("Resource name: " +name+", err msg:" +hist.get(0).getMessage());
+				            common.error("Bundle deployment on resource named " +name+" failed!");
+				            var resCri = new BundleResourceDeploymentCriteria();
+				            resCri.addFilterId(resDeployments.get(i).getId());
+				            resCri.fetchHistories(true);
+				            var resDep = BundleManager.findBundleResourceDeploymentsByCriteria(resCri).get(0);
+				            
+				            var hists = resDep.getBundleResourceDeploymentHistories();
+				            for(x = 0; x < hists.size();x++){
+				                if(hists.get(x).getStatus() != BundleResourceDeploymentHistory.Status.SUCCESS){
+				                    common.error("Failed operation: "+hists.get(x).getInfo());
+				                    common.error("Msg: "+hists.get(x).getMessage());
+				                }
+				            }
 				        }
 				    }
 				}
