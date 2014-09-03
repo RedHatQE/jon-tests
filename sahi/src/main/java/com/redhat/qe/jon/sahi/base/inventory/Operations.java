@@ -146,8 +146,14 @@ public class Operations extends ResourceTab {
                 message = tasks.preformatted("").getText();
             }
             tasks.waitFor(Timing.WAIT_TIME);
-            int buttons = tasks.image("close.png").countSimilar();
-            tasks.xy(tasks.image("close.png[" + (buttons - 1) + "]"), 3, 3).click();
+            String imgName = "close.png";
+            int buttons = tasks.image(imgName).countSimilar();
+            // patternFly change
+            if(buttons == 0){
+                imgName = "close.gif";
+                buttons = tasks.image(imgName).countSimilar();
+            }
+            tasks.xy(tasks.image(imgName + "[" + (buttons - 1) + "]"), 3, 3).click();
             if (message != null) {
                 Assert.assertTrue(existsImage, "Operation [" + opName + "] result: " + succ + " errorMessage:\n" + message);
                 return null;
