@@ -91,6 +91,6 @@ class AlertDampeningOnce(RHQAlertTest):
         fired = s.alertCount(p) - fired
         self.assertEqual(fired, 10, '10 alerts should be fired, but was %d' % fired)
         # if test passed clean up our test resource
-        s1.deleteResource(p)
+        s.deleteResource(p)
 
 
