@@ -72,7 +72,7 @@ class AlertDampeningOnce(RHQAlertTest):
         s.undefineAlert([a1,a2])
  
     @attr('event','syntetic')
-    @blockedBy('1058658')
+    @blockedBy('1035890')
     def test_dampeningOnceEventSynteticPlatform(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')

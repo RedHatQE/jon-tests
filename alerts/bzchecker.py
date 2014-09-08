@@ -23,7 +23,7 @@ class blockedBy(object):
                 result = r.json()['result']
                 if result and result.has_key('bugs'):
                     for bug in result['bugs']:
-                        if bug['status'] in ['NEW','MODIFIED','ASSIGNED','ON_DEV']:
+                        if bug['status'] in ['NEW','MODIFIED','ASSIGNED','ON_DEV','POST']:
                             bzLink = '%sshow_bug.cgi?id=%s' % (BUGZILLA,bug['id'])
                             msg = 'BZ [%s] %s (%s)' % (bug['status'],bug['summary'],bzLink)
                             try:
