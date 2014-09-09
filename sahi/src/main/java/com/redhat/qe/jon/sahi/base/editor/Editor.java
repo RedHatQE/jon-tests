@@ -206,8 +206,8 @@ public class Editor {
             if (scroll != null && scroll.exists() && scroll.isVisible()) {
                 tasks.xy(scroll, 3, 3).click();
                 log.fine("Clicked scroll arrow");
-                tasks.waitFor(Timing.TIME_5S / 5);
-                scroll = getScrollButton("Over_start");
+                tasks.waitFor(Timing.TIME_1S);
+//                scroll = getScrollButton("Over_start");
             } else {
                 log.warning("Scroll arrow not found!");
             }
@@ -240,7 +240,7 @@ public class Editor {
             if (scroll != null && scroll.exists() && scroll.isVisible()) {
                 tasks.xy(scroll.parentNode(), 3, 3).click();
                 log.fine("Clicked scroll arrow");
-                tasks.waitFor(Timing.TIME_5S / 5);
+                tasks.waitFor(Timing.TIME_1S);
                 //scroll = getScrollButton("Over_end");
             } else {
                 log.warning("Scroll arrow not found!");
