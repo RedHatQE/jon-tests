@@ -220,8 +220,14 @@ public class Inventory extends ResourceTab{
 	    				tasks.xy(getFirstRow(),3,3).doubleClick();
 	    				if (tasks.textarea("errorMessage").isVisible()) {
 	    					message +="\n ERROR Message:\n" + tasks.textarea("errorMessage").getText();
-	    					int buttons = tasks.image("close.png").countSimilar();
-	    		    		tasks.xy(tasks.image("close.png["+(buttons-1)+"]"),3,3).click();
+	    					String imgName = "close.png";
+	    					int buttons = tasks.image(imgName).countSimilar();
+	    					// patternFly change
+	    					if(buttons == 0){
+	    					    imgName = "close.gif";
+	    					    buttons = tasks.image(imgName).countSimilar();
+	    					}
+	    					tasks.xy(tasks.image(imgName + "[" + (buttons - 1) + "]"), 3, 3).click();
 	    				}
 	    			}
 	    			Assert.assertEquals(!success, success,message);
