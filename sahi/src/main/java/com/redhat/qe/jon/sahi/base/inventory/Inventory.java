@@ -1,19 +1,16 @@
 package com.redhat.qe.jon.sahi.base.inventory;
 
 
-import com.redhat.qe.Assert;
-import com.redhat.qe.jon.sahi.base.editor.ConfigEditor;
-import com.redhat.qe.jon.sahi.tasks.SahiTasks;
-import com.redhat.qe.jon.sahi.tasks.Timing;
-
-import net.sf.sahi.client.ElementStub;
+import com.redhat.qe.*;
+import com.redhat.qe.jon.sahi.base.editor.*;
+import com.redhat.qe.jon.sahi.tasks.*;
+import net.sf.sahi.client.*;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.sql.Time;
-import java.util.ArrayList;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class Inventory extends ResourceTab{
 
@@ -408,7 +405,7 @@ public class Inventory extends ResourceTab{
 			buttons.get(buttons.size() - 1).click();
 			//tasks.cell("Delete").near(tasks.cell("Uninventory")).click();
             if (tasks.waitForElementVisible(tasks, tasks.cell("Yes"),
-                    "Yes button", Timing.WAIT_TIME)) {
+                    "Yes button", Timing.WAIT_TIME*2)) {
                 for (ElementStub es : tasks.cell("Yes").collectSimilar()) {
                     if (es.isVisible()) {
                         log.info("Yes button (" + es.toString()
@@ -417,6 +414,8 @@ public class Inventory extends ResourceTab{
                     }
                 }
             } else {
+                ElementStub yesButton = tasks.cell("Yes");
+                log.fine("Yes button exists: " + yesButton.exists() + " and it is visible: " + yesButton.isVisible());
                 throw new RuntimeException("Confirmation dialog didn't pop up");
             }
         }
