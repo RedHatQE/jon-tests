@@ -413,9 +413,17 @@ public class Inventory extends ResourceTab{
                         tasks.xy(es, 3, 3).click();
                     }
                 }
+            } else if (tasks.waitForElementExists(tasks, tasks.cell("Yes"),
+                    "Yes button", Timing.WAIT_TIME*2)) {
+                // when removing connector from EAP 6 it often happen that the Yes button doesn't become visible
+                for (ElementStub es : tasks.cell("Yes").collectSimilar()) {
+                    if (es.exists()) {
+                        log.info("Yes button (" + es.toString()
+                                + ") exists, clicking");
+                        tasks.xy(es, 3, 3).click();
+                    }
+                }
             } else {
-                ElementStub yesButton = tasks.cell("Yes");
-                log.fine("Yes button exists: " + yesButton.exists() + " and it is visible: " + yesButton.isVisible());
                 throw new RuntimeException("Confirmation dialog didn't pop up");
             }
         }
