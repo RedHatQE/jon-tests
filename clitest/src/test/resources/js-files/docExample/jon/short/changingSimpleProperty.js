@@ -16,7 +16,8 @@ var resources = ResourceManager.findResourcesByCriteria(criteria);
 assertTrue(resources.size() > 0, "No RHQ Agent found in inventory!!");
 
 //get current configuration
-var config = ConfigurationManager.getResourceConfiguration(resources.get(0).id);
+// we need to get live configuration here because the configuration might not have been loaded yet 
+var config = ConfigurationManager.getLiveResourceConfiguration(resources.get(0).id,false);
 
 //set the new value in the form 'property', 'value'
 config.setSimpleValue("rhq.agent.plugins.server-discovery.period-secs",3700)
