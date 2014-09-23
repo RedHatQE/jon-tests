@@ -28,6 +28,7 @@ opcrit.fetchResults(true);
 var r = OperationManager.findResourceOperationHistoriesByCriteria(opcrit)
 assertTrue(r.size() >0, "Didn't get any operation histories");
 var h = r.get(0);
+pretty.print(h);
 var c = h.getResults();
 
 if(c == null){
