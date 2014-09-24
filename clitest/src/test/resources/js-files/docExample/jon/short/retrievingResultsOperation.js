@@ -2,11 +2,17 @@
 
 
 // preparation
+verbose = 2;
+var common = new _common();
+
 var platforms = resources.platforms();
 assertTrue(platforms.length>0,"At least 1 platform is requred to run this test");
 var platform = platforms[0];
 
-platform.invokeOperation("viewProcessList");
+var ret = platform.invokeOperation("viewProcessList");
+if(ret.status != OperationRequestStatus.SUCCESS){
+    common.error("Operation failed with error: " + ret.error)
+}
 var platformName = platform.getName();
 
 //find the resource
@@ -29,6 +35,7 @@ var r = OperationManager.findResourceOperationHistoriesByCriteria(opcrit)
 assertTrue(r.size() >0, "Didn't get any operation histories");
 var h = r.get(0);
 pretty.print(h);
+
 var c = h.getResults();
 
 if(c == null){
