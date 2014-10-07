@@ -201,13 +201,13 @@ public class Editor {
      * @param clicks - how many times to click
      */
     public void scrollUp(int clicks) {
-        ElementStub scroll = getScrollButton("start");
+        ElementStub scroll = getVScrollButton("start");
         for (int i = 0; i < clicks; i++) {
             if (scroll != null && scroll.exists() && scroll.isVisible()) {
                 tasks.xy(scroll, 3, 3).click();
                 log.fine("Clicked scroll arrow");
                 tasks.waitFor(Timing.TIME_1S);
-//                scroll = getScrollButton("Over_start");
+//                scroll = getVScrollButton("Over_start");
             } else {
                 log.warning("Scroll arrow not found!");
             }
@@ -221,12 +221,68 @@ public class Editor {
         scrollUp(1);
     }
 
-    private ElementStub getScrollButton(String type) {
+    private ElementStub getVScrollButton(String type) {
         List<ElementStub> scrolls = tasks.image("/.*vscroll_" + type + ".*/").collectSimilar();
         if (scrolls.size() > 0) {
             return scrolls.get(scrolls.size() - 1);
         }
         return null;
+    }
+
+    private ElementStub getHScrollButton(String type) {
+        List<ElementStub> scrolls = tasks.image("/.*hscroll_" + type + ".*/").collectSimilar();
+        if (scrolls.size() > 0) {
+            return scrolls.get(scrolls.size() - 1);
+        }
+        return null;
+    }
+
+    /**
+     * clicks on left scroll button
+     * @param clicks number of clicks
+     */
+    public void scrollLeft(int clicks) {
+        ElementStub scroll = getHScrollButton("start");
+        for (int i = 0; i < clicks; i++) {
+            if (scroll != null && scroll.exists() && scroll.isVisible()) {
+                tasks.xy(scroll.parentNode(), 3, 3).click();
+                log.fine("Clicked scroll arrow");
+                tasks.waitFor(Timing.TIME_1S);
+            } else {
+                log.warning("Scroll arrow not found!");
+            }
+        }
+    }
+
+    /**
+     * clicks once on left scroll arrow
+     */
+    public void scrollLeft() {
+        scrollLeft(1);
+    }
+
+    /**
+     * clicks on right scroll button
+     * @param clicks number of clicks
+     */
+    public void scrollRight(int clicks) {
+        ElementStub scroll = getHScrollButton("end");
+        for (int i = 0; i < clicks; i++) {
+            if (scroll != null && scroll.exists() && scroll.isVisible()) {
+                tasks.xy(scroll.parentNode(), 3, 3).click();
+                log.fine("Clicked scroll arrow");
+                tasks.waitFor(Timing.TIME_1S);
+            } else {
+                log.warning("Scroll arrow not found!");
+            }
+        }
+    }
+
+    /**
+     * clicks once on right scroll arrow
+     */
+    public void scrollRight() {
+        scrollRight(1);
     }
 
     /**
@@ -235,13 +291,13 @@ public class Editor {
      * @param clicks - how many times to click
      */
     public void scrollDown(int clicks) {
-        ElementStub scroll = getScrollButton("end");
+        ElementStub scroll = getVScrollButton("end");
         for (int i = 0; i < clicks; i++) {
             if (scroll != null && scroll.exists() && scroll.isVisible()) {
                 tasks.xy(scroll.parentNode(), 3, 3).click();
                 log.fine("Clicked scroll arrow");
                 tasks.waitFor(Timing.TIME_1S);
-                //scroll = getScrollButton("Over_end");
+                //scroll = getVScrollButton("Over_end");
             } else {
                 log.warning("Scroll arrow not found!");
             }
