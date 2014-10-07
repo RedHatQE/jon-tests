@@ -96,7 +96,7 @@ public class Configuration extends ResourceTab {
 		public void removeEntry(String name) {
 			tasks.xy(tasks.image("remove.png").in(tasks.cell(name).parentNode("tr")),3,3).click();
             if (!tasks.cell("OK").exists()) {
-                tasks.image("remove.png").in(tasks.cell(name)).click();
+                tasks.image("remove.png").in(tasks.cell(name).parentNode("tr")).click();
             }
 			tasks.xy(tasks.cell("OK"), 3, 3).click();
 		}
