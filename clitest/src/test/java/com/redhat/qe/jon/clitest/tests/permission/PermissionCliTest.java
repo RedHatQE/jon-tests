@@ -54,7 +54,7 @@ public class PermissionCliTest extends CliEngine {
         createJSRunner("permissions/testPermissions.js")
             .asUser("loginWithoutRolesEnabled_U1")
             .setFailOn(null)
-            .setExpect("Login failed: PBOX000070: Password invalid/Password required")
+            .setExpect("PBOX000070: Password invalid/Password required")
             .run();
     }
 	@Test
