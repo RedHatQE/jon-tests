@@ -241,7 +241,7 @@ public class Operations extends ResourceTab {
             String msg = "/Operation Schedule created.*/";
             Assert.assertTrue(tasks.waitForAnyElementsToBecomeVisible(tasks,
                     new ElementStub[]{tasks.cell(msg),tasks.div(msg)},
-                    "Successful message", Timing.WAIT_TIME)
+                    "Successful message", 2*Timing.WAIT_TIME)
                     ,"Operation was scheduled");
         }
     }
