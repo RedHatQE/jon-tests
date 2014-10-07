@@ -745,6 +745,8 @@ public class Resource {
     		children.refresh();
     	}
     	log.warning("Checking resurce (un)existence timed out");
+        ChildHistory childHistory = inventory.childHistory(); // lets go to childHistory to see whether adding/removing ended with error
+        log.fine("Last child resource change ended with status " + childHistory.getLastResourceChangeStatus());
     	Assert.assertEquals(!shouldExist,shouldExist, "Resource ["+resourceName+"] exists.");
     }
     /**
