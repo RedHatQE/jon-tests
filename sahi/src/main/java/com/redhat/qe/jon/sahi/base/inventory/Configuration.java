@@ -96,11 +96,12 @@ public class Configuration extends ResourceTab {
 		public void removeEntry(String name) {
             ElementStub removeElement = tasks.image("remove.png").in(tasks.cell(name).parentNode("tr"));
             if (!removeElement.isVisible()) {
-                log.fine("remove button is probably hidden lets scroll to the right");
+                log.fine("Remove button might be just hidden, lets scroll to the right");
                 this.getEditor().scrollRight(5);
             }
 			tasks.xy(removeElement,3,3).click();
             if (!tasks.cell("OK").exists()) {
+                log.finer("Confirmation dialog didn't pop up lets try direct click on the cell");
                 removeElement.click();
             }
 			tasks.xy(tasks.cell("OK"), 3, 3).click();
