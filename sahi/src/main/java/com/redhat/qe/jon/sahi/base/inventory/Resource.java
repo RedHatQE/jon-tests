@@ -363,14 +363,14 @@ public class Resource {
 	 * @return id of platform
 	 */
 	private String findPlatformId(com.redhat.qe.jon.common.util.RestClient rc) {
-		Map<String, Object> result = rc.getResponse( URIs.PLATFORMS.getUri()+".json");
+		Map<String, Object> result = rc.getResponseWithoutPaging( URIs.PLATFORMS.getUri()+".json");
 		
 		JSONArray jsonArray = null;
 		try {
 			jsonArray = rc.getJSONArray((String) result.get("response.content"));
 		} catch (Exception ex) {
             log.fine("getJSONArray thrown an Exception, trying one more time after " + Timing.toString(Timing.WAIT_TIME) + " due to BZ#952265");
-            result = rc.getResponse(URIs.PLATFORMS.getUri()+".json");
+            result = rc.getResponseWithoutPaging(URIs.PLATFORMS.getUri()+".json");
             try {
               jsonArray = rc.getJSONArray((String) result.get("response.content"));
             } catch (ParseException pex) {
@@ -429,14 +429,14 @@ public class Resource {
 	 */
 	private Map<String,String> getChildren(RestClient rc, String resourceId) throws Exception {
 		Map<String,String> children = new HashMap<String, String>();
-		Map<String, Object> result = rc.getResponse("resource/"+resourceId+"/children.json");
+		Map<String, Object> result = rc.getResponseWithoutPaging("resource/"+resourceId+"/children.json");
 		
 		JSONArray jsonArray = null;
         try {
             jsonArray = rc.getJSONArray((String)result.get("response.content"));
         } catch (Exception ex) {
             log.fine("getJSONArray thrown an Exception, trying one more time after " + Timing.toString(Timing.WAIT_TIME) + " due to BZ#952265");
-            result = rc.getResponse(URIs.PLATFORMS.getUri()+".json");
+            result = rc.getResponseWithoutPaging(URIs.PLATFORMS.getUri()+".json");
             jsonArray = rc.getJSONArray((String) result.get("response.content"));
         }
 		
