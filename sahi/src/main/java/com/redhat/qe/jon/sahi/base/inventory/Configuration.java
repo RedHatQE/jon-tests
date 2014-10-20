@@ -227,23 +227,24 @@ public class Configuration extends ResourceTab {
 			return false;
 		}
 
-		public void failOnFailure() {
-			if (!waitForPending()) {
-				Assert.assertFalse(true,"Configuration change took too much time!");
-			}
-			String message = "Configuration change failed";
-			boolean failure = hasFailure();
-			if (failure) {
-				tasks.xy(tasks.image("Configure_failed_16.png").in(getFirstRow()),3,3).click();
-				if (tasks.preformatted("").isVisible()) {
-	    			message += "\n ERROR message:\n"+tasks.preformatted("").getText();
-	    		}
-	    		tasks.waitFor(Timing.WAIT_TIME);
-	    		int buttons = tasks.image("close.png").countSimilar();
-	    		tasks.xy(tasks.image("close.png["+(buttons-1)+"]"),3,3).click();				
-			}
-			Assert.assertFalse(failure,message);
-		}
+        public void failOnFailure() {
+            if (!waitForPending()) {
+                Assert.assertFalse(true,
+                        "Configuration change took too much time!");
+            }
+            String message = "Configuration change failed";
+            boolean failure = hasFailure();
+            if (failure) {
+                tasks.xy(tasks.image("Configure_failed_16.png").in(getFirstRow()), 3, 3).click();
+                if (tasks.preformatted("").isVisible()) {
+                    message += "\n ERROR message:\n" + tasks.preformatted("").getText();
+                }
+                tasks.waitFor(Timing.WAIT_TIME);
+                int buttons = tasks.image("close.gif").countSimilar();
+                tasks.xy(tasks.image("close.gif[" + (buttons - 1) + "]"), 3, 3).click();
+            }
+            Assert.assertFalse(failure, message);
+        }
 		private ElementStub getFirstRow() {
 			int tables = tasks.table("listTable").countSimilar();
 			log.fine("Tables :"+tables);
