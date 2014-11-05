@@ -1,5 +1,15 @@
 package com.redhat.qe.jon.common.util;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
@@ -14,19 +24,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.bind.DatatypeConverter;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.filter.ClientFilter;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 /**
  * @author jkandasa (Jeeva Kandasamy)
@@ -160,7 +157,7 @@ public class RestClient {
         public static List<String> getPlatformNames() throws Exception {
         	List<String> ret = new ArrayList<String>();
         	RestClient self = RestClient.getDefault();
-        	Map<String, Object> result = self.getResponse(URIs.PLATFORMS.getUri() + ".json");
+        	Map<String, Object> result = self.getResponseWithoutPaging(URIs.PLATFORMS.getUri() + ".json");
         	JSONArray jsonArray = null;
         	try {
         	    jsonArray = self.getJSONArray((String) result.get("response.content"));
