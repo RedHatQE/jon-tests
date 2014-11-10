@@ -16,7 +16,7 @@ mailTo = 'fbrychta@redhat.com'
 
 # baselines
 baselines = [
-        {'select':('.*','RHQ Agent','JVM','Threading'),'metric':'Thread Count','max':180},
+        {'select':('.*','RHQ Agent','JVM','Threading'),'metric':'Thread Count','max':190},
         {'select':('.*','RHQ Agent','JVM','Memory Subsystem'),'metric':'Heap Usage','max':mb(150)},
         {'select':('.*','RHQ Server','platform-mbean','threading'),'metric':'Thread Count','max':300},
         {'select':('.*','RHQ Server','platform-mbean','memory$'),'metric':'Used heap','max':mb(1000)},
