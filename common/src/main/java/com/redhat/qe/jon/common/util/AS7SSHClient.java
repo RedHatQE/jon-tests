@@ -102,7 +102,8 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
                 sb.append("export ").append(e).append("; ");
             }
         }
-        run("cd "+asHome+"/bin && "+sb.toString()+" nohup ./"+script+" &");
+        //run("cd "+asHome+"/bin && "+sb.toString()+" nohup ./"+script+" &");
+        run("cd "+asHome+"/bin && "+sb.toString()+" nohup ./"+script);
     }
 
     /**
