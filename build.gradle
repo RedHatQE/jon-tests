@@ -9,6 +9,13 @@ subprojects {
 	group = "com.redhat.qe.jon"
 	version = "1.0.0-SNAPSHOT"
 
+        // force testng version
+        configurations.all {
+            resolutionStrategy {
+                force 'org.testng:testng:6.8.13'
+            }
+        }
+
 	eclipse {
 		classpath {
 			defaultOutputDir = file("bin")
@@ -166,6 +173,7 @@ project(":common") {
 			"com.redhat.qe:log-checker:1.0.1-SNAPSHOT",
 			"org.jboss.as:jboss-as-controller-client:7.2.0.Final",
 			"com.google.inject:guice:3.0",
+                        "org.testng:testng:6.8.13",
 			"com.googlecode.json-simple:json-simple:1.1.1",
 			"com.sun.jersey:jersey-client:1.18.1",
 			"com.sun.jersey:jersey-core:1.18.1",
@@ -177,10 +185,6 @@ project(":common") {
 //      "org.jacoco:org.jacoco.ant:0.5.10.201208310627",
 			"com.report.engine:java-client:0.0.3-SNAPSHOT"
                 compile("com.redhat.qe:bz-checker:1.0.3-SNAPSHOT"){
-                    force = true
-                }
-                // version 6.8.14 was not working -> forcing older one	
-	        compile("org.testng:testng:6.8.13"){
                     force = true
                 }
         }
