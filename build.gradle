@@ -165,7 +165,6 @@ project(":common") {
 			"com.redhat.qe:testng-listeners:1.0.5",
 			"com.redhat.qe:log-checker:1.0.1-SNAPSHOT",
 			"org.jboss.as:jboss-as-controller-client:7.2.0.Final",
-			"org.testng:testng:6.5.1",
 			"com.google.inject:guice:3.0",
 			"com.googlecode.json-simple:json-simple:1.1.1",
 			"com.sun.jersey:jersey-client:1.18.1",
@@ -179,7 +178,11 @@ project(":common") {
 			"com.report.engine:java-client:0.0.3-SNAPSHOT"
                 compile("com.redhat.qe:bz-checker:1.0.3-SNAPSHOT"){
                     force = true
-                }	
+                }
+                // version 6.8.14 was not working -> forcing older one	
+	        compile("org.testng:testng:6.5.1"){
+                    force = true
+                }
         }
 }
 // rest-groovy project also uses "groovy" plugin
