@@ -72,7 +72,7 @@ class RHQRestTest(object):
 
     def find_resource_eap6standalone(self):
         '''Finds EAP6 Standalone Server in inventory, returns first found instance'''
-        return self.__find_resource({'q':'EAP (0.0.0.0:10090)','category':'SERVER'})
+        return self.__find_resource({'q':'EAP (127.0.0.1:6990)','category':'SERVER'})
 
     def find_resource_platform(self):
         '''Finds a Platform in inventory, returns first found instance'''
