@@ -99,6 +99,10 @@ class FireControlAlert(RHQAlertTest):
     def test_operationStatusSuccess(self):
         s = self.rhqServer()
         agent = s.findRHQAgent()
+        if agent is None:
+            s.importResources()
+            s.sleep(10)
+            agent = s.findRHQAgent()
         # define 2  but only a1 should be fired
         a1 = s.defineAlert(agent,operationExecution('executePromptCommand'))
         a2 = s.defineAlert(agent,operationExecution('executePromptCommand',status='FAILURE'))
