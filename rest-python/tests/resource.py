@@ -21,7 +21,8 @@ class CreateResourceTest(RHQRestTest):
     def setUp(self):
         self.pf_server_id = int(self.find_resource_platform()['resourceId'])
         self.pf_server_name = self.find_resource_platform()['resourceName']
-        self.res_id = int(self.find_resource_eap6standalone()['resourceId'])        
+        self.res_eap6 = self.find_resource_eap6standalone()
+        self.res_eap6_id = int(self.res_eap6['resourceId'])
         self.script_server_body = {
                 'resourceName' : '',
                 'typeName' : 'Script Server',
@@ -32,12 +33,12 @@ class CreateResourceTest(RHQRestTest):
         self.net_iface_body = {'resourceName':'testnetiface-rest',
                 'typeName':'Network Interface',
                 'pluginName':'JBossAS7',
-                'parentId':self.res_id}
+                'parentId':self.res_eap6_id}
         self.content_body = {'resourceName':'hello.war',
                 'typeName':'Deployment',
                 'resourceConfig':{'runtimeName':'hello.war'},
                 'pluginName':'JBossAS7',
-                'parentId':self.res_id}
+                'parentId':self.res_eap6_id}
         self.deployment = '../sahi/src/test/resources/deploy/original/hello.war'
 
     @test(groups=['resource'])
@@ -69,6 +70,7 @@ class CreateResourceTest(RHQRestTest):
 
     @test(groups=['resource'])
     def create_child_content(self):
+        self.__checkEap6IsImported()
         self.log.info('Uploading content')
         req = requests.post(
                 self.url('content/fresh'),
@@ -88,6 +90,7 @@ class CreateResourceTest(RHQRestTest):
     @test(depends_on=[create_child_content],groups='resource')
     @blockedBy('1025388')
     def create_child_content_when_exists(self):
+        self.__checkEap6IsImported()
         self.log.info('Uploading content')
         req = requests.post(
                 self.url('content/fresh'),
@@ -105,6 +108,7 @@ class CreateResourceTest(RHQRestTest):
 
     @test(depends_on=[create_child_content],groups='resource')
     def delete_child_content(self):
+        self.__checkEap6IsImported()
         r = self.delete('resource/%s?physical=true' % self.content_id)
         assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
         r = self.get('resource/%s' % self.content_id)
@@ -216,6 +220,10 @@ class CreateResourceTest(RHQRestTest):
             
             self.log.info('sleeping 10 s')
             time.sleep(10)
+
+    def __checkEap6IsImported(self):
+        if self.res_eap6['availability'] != 'UP' or 'RHQ Server' in self.res_eap6['resourceName']:
+            raise SkipTest('No eap6 found suitable for this test found')
         
         
 @test(groups=['getresource'])
