@@ -55,9 +55,8 @@ class CreateResourceTest(RHQRestTest):
     def create_child_when_exists(self):
         r = self.post('resource',self.net_iface_body)
         data = r.json()
-        assert_is_not_none(data['resourceId'])
-        assert_equal(self.iface_id,data['resourceId'],'Returned unexpected resource %s' % data['resourceId'])
-        assert_equal(r.status_code,201,'Returned unexpected status %d' % r.status_code)
+        assert_equal(r.status_code,500,'Returned unexpected status %d' % r.status_code)
+        assert_true("Duplicate resource" in data['value'], 'Value doesnt contain expected string %s ' % data['value'])
 
     @test(depends_on=[create_child],groups=['resource'])
     @blockedBy('958922')
@@ -66,7 +65,7 @@ class CreateResourceTest(RHQRestTest):
         assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
         r = self.get('resource/%s' % self.iface_id)
         data = r.json()
-        assert_equal(data['status'],'DELETED','Returned unexpected status %s for deleted resource' % data['status'])
+        assert_equal(data['parentId'],0,'Returned unexpected parentId %s for deleted resource' % data['parentId'])
 
     @test(groups=['resource'])
     def create_child_content(self):
