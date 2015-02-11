@@ -64,6 +64,7 @@ class CreateResourceTest(RHQRestTest):
     def delete_child(self):
         r = self.delete('resource/%s?physical=true' % self.iface_id)
         assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
+        time.sleep(5)
         r = self.get('resource/%s' % self.iface_id)
         data = r.json()
         assert_equal(data['parentId'],0,'Returned unexpected parentId %s for deleted resource' % data['parentId'])
@@ -206,9 +207,11 @@ class CreateResourceTest(RHQRestTest):
                 job_name = r.json()['links'][0]['history']['href'].split('/')[-1]
                  
                 # get the operation outcome
+                time.sleep(5)
                 req = 'operation/history/%s' % job_name
                 r = self.get(req)
-                assert_equal(r.status_code, 200)                
+                assert_equal(r.status_code, 200)
+                self.log.debug('History: %s' % r.json())
                 exit_code = r.json()['result']['exitCode']
                 assert_equal(int(exit_code), test[1], 'Wrong argument count detected: %d vs %d expected' % (int(exit_code), test[1]))            
             
