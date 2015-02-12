@@ -64,10 +64,10 @@ class CreateResourceTest(RHQRestTest):
     def delete_child(self):
         r = self.delete('resource/%s?physical=true' % self.iface_id)
         assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
-        time.sleep(5)
         r = self.get('resource/%s' % self.iface_id)
         data = r.json()
-        assert_equal(data['parentId'],0,'Returned unexpected parentId %s for deleted resource' % data['parentId'])
+        # old vs. new way
+        assert_true(data['parentId'] == 0 or data['status'] == 'DELETED','parentId must be 0 or status must be DELETED for deleted resource. Actual is: %s, %s' % (data['parentId'], data['status']))
 
     @test(groups=['resource'])
     def create_child_content(self):
@@ -114,7 +114,8 @@ class CreateResourceTest(RHQRestTest):
         assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
         r = self.get('resource/%s' % self.content_id)
         data = r.json()
-        assert_equal(data['status'],'DELETED','Returned unexpected status %s for deleted resource' % data['status'])
+        # old vs. new way
+        assert_true(data['parentId'] == 0 or data['status'] == 'DELETED','parentId must be 0 or status must be DELETED for deleted resource. Actual is: %s, %s' % (data['parentId'], data['status']))
         
     
     @test(groups=['resource'])
