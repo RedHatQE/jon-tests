@@ -64,6 +64,7 @@ class CreateResourceTest(RHQRestTest):
     def delete_child(self):
         r = self.delete('resource/%s?physical=true' % self.iface_id)
         assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
+        time.sleep(5)
         r = self.get('resource/%s' % self.iface_id)
         data = r.json()
         # old vs. new way
@@ -112,6 +113,7 @@ class CreateResourceTest(RHQRestTest):
         self.__checkEap6IsImported()
         r = self.delete('resource/%s?physical=true' % self.content_id)
         assert_equal(r.status_code,204,'Returned unexpected status %d' % r.status_code)
+        time.sleep(5)
         r = self.get('resource/%s' % self.content_id)
         data = r.json()
         # old vs. new way
