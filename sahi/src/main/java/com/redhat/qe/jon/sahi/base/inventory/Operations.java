@@ -30,7 +30,7 @@ public class Operations extends ResourceTab {
     @Override
     protected void navigate() {
         navigateUnderResource("Operations/Schedules");
-        if (!tasks.cell("Operations").exists() || !tasks.cell("Schedules").exists()) {
+        if (!tasks.cell("Operations").isVisible() || !tasks.cell("Schedules").isVisible()) {
             log.fine("Sometimes the browser becomes stuck when navigating to other page, lets try one more time");
             navigateUnderResource("Operations/Schedules");
         }
@@ -40,7 +40,7 @@ public class Operations extends ResourceTab {
 
     public void history() {
         navigateUnderResource("Operations/History");
-        if (!tasks.cell("Operations").exists() || !tasks.cell("History").exists()) {
+        if (!tasks.cell("Operations").isVisible() || !tasks.cell("History").isVisible()) {
             log.fine("Sometimes the browser becomes stuck when navigating to other page, lets try one more time");
             navigateUnderResource("Operations/History");
         }
