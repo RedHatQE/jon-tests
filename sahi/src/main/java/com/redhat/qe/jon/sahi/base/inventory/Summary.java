@@ -11,7 +11,7 @@ public class Summary extends ResourceTab {
 	@Override
 	protected void navigate() {
 		navigateUnderResource("Summary");
-		raiseErrorIfCellDoesNotExist("Summary");
+		raiseErrorIfCellIsNotVisible("Summary");
 	}
 
 }

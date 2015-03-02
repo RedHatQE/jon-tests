@@ -34,8 +34,8 @@ public class Operations extends ResourceTab {
             log.fine("Sometimes the browser becomes stuck when navigating to other page, lets try one more time");
             navigateUnderResource("Operations/Schedules");
         }
-        raiseErrorIfCellDoesNotExist("Operations");
-        raiseErrorIfCellDoesNotExist("Schedules");
+        raiseErrorIfCellIsNotVisible("Operations");
+        raiseErrorIfCellIsNotVisible("Schedules");
     }
 
     public void history() {
@@ -44,8 +44,8 @@ public class Operations extends ResourceTab {
             log.fine("Sometimes the browser becomes stuck when navigating to other page, lets try one more time");
             navigateUnderResource("Operations/History");
         }
-        raiseErrorIfCellDoesNotExist("Operations");
-        raiseErrorIfCellDoesNotExist("History");
+        raiseErrorIfCellIsNotVisible("Operations");
+        raiseErrorIfCellIsNotVisible("History");
     }
 
     /**

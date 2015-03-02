@@ -24,7 +24,7 @@ public class Alerts extends ResourceTab {
     @Override
     protected void navigate() {
         navigateUnderResource("Alerts");
-        raiseErrorIfCellDoesNotExist("Alerts");
+        raiseErrorIfCellIsNotVisible("Alerts");
     }
     
     

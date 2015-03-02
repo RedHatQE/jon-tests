@@ -21,7 +21,7 @@ public class Inventory extends ResourceTab{
 	@Override
 	protected void navigate() {
 		navigateUnderResource("Inventory");
-		raiseErrorIfCellDoesNotExist("Inventory");
+		raiseErrorIfCellIsNotVisible("Inventory");
 	}
 	/**
 	 * selects <b>Child Resources</b> subtab and returns helper object

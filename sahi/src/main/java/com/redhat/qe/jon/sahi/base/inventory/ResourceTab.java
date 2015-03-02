@@ -108,9 +108,10 @@ public abstract class ResourceTab {
 			navigateByClick(uri);
 		}
 	}
-	protected void raiseErrorIfCellDoesNotExist(String cell) {
-		if (!tasks.cell(cell).exists()) {
-			throw new RuntimeException("Tab ["+cell+"] does not exist for resource "+getResource().toString());
-		}
-	}
+
+	protected void raiseErrorIfCellIsNotVisible(String cell) {
+        if (!tasks.cell(cell).isVisible()) {
+            throw new RuntimeException("Tab ["+cell+"] is not visible for resource "+getResource().toString());
+        }
+    }
 }

@@ -19,7 +19,7 @@ public class Configuration extends ResourceTab {
 		navigateUnderResource("Configuration");
 		// we need to assert it, because direct navigation could redirect us somewhere else, 
 		// when Configuration tab does not exist
-		raiseErrorIfCellDoesNotExist("Configuration");
+		raiseErrorIfCellIsNotVisible("Configuration");
 	}
 
 	/**

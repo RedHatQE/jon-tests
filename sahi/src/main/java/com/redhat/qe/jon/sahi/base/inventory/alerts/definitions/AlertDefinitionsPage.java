@@ -27,7 +27,7 @@ public class AlertDefinitionsPage extends Alerts {
      */
     public AlertDefinitionsPage navigateTo() {
         navigateUnderResource("Alerts/Definitions");
-        raiseErrorIfCellDoesNotExist("Definitions");
+        raiseErrorIfCellIsNotVisible("Definitions");
 
         return this;
     }
