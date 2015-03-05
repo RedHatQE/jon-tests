@@ -4,6 +4,8 @@ import com.redhat.qe.jon.sahi.tasks.*;
 
 import java.util.*;
 import java.util.logging.*;
+
+import net.sf.sahi.client.ElementStub;
 /**
  * this abstract class is extended by each Resource Tab (Inventory, Configuration, Operations etc)
  * it has always reference to {@link Resource} object
@@ -110,12 +112,15 @@ public abstract class ResourceTab {
 	}
 
 	protected void raiseErrorIfCellIsNotVisible(String cell) {
-        if (!tasks.cell(cell).isVisible()) {
-            tasks.waitFor(Timing.WAIT_TIME);
-            if (!tasks.cell(cell).isVisible()) {
-                log.fine("Number of cells: " + tasks.cell(cell).countSimilar());
-                throw new RuntimeException("Tab ["+cell+"] is not visible for resource "+getResource().toString());
+        boolean isVisible = false;
+        List <ElementStub> els = tasks.cell(cell).collectSimilar();
+        for (ElementStub el : els){
+            if (el.isVisible()){
+                isVisible = true;
             }
+        }
+        if (!isVisible) {
+            throw new RuntimeException("Tab ["+cell+"] is not visible for resource "+getResource().toString());
         }
     }
 }
