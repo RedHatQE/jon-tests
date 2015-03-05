@@ -111,7 +111,11 @@ public abstract class ResourceTab {
 
 	protected void raiseErrorIfCellIsNotVisible(String cell) {
         if (!tasks.cell(cell).isVisible()) {
-            throw new RuntimeException("Tab ["+cell+"] is not visible for resource "+getResource().toString());
+            tasks.waitFor(Timing.WAIT_TIME);
+            if (!tasks.cell(cell).isVisible()) {
+                log.fine("Number of cells: " + tasks.cell(cell).countSimilar());
+                throw new RuntimeException("Tab ["+cell+"] is not visible for resource "+getResource().toString());
+            }
         }
     }
 }
