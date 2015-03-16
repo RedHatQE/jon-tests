@@ -12,7 +12,7 @@ There are several projects:
 * **rest-groovy** - JBoss ON REST API automation written in groovy
 * ...
 
-For more details about each project, go to it's source folder and check README.
+For more details about each project, go to its source folder and check README.
 
 #### How do I run all this?
 First you need to build it. Get latest [gradle] (http://gradle.org), navigate to the root of this repository and run:
@@ -29,7 +29,7 @@ Great, we're happy for that. Just fork our repo and send pull request. If you ar
 ```
 gradle eclipse
 ```
-which generates all eclipse project files required for successfull import.
+which generates all Eclipse project files required for successful import.
 
 #### License
 GPL License
