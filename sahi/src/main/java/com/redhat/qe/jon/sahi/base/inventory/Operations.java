@@ -73,6 +73,8 @@ public class Operations extends ResourceTab {
             tasks.waitFor(Timing.TIME_1S);
         }
         if (!tasks.cell("Create New Operation Schedule").isVisible()) {
+            log.warning("Cell Create New Operation Schedule is still not visible! Page source: "
+                    + tasks.fetch("document.body.innerHTML"));
             tasks.reloadPage();
         }
         return new Operation(tasks, name);
