@@ -57,7 +57,8 @@ public class Operations extends ResourceTab {
     public Operation newOperation(String name) {
         // try one more time to navigate to operations page if you don't see the button
         // (sometimes it failed to correctly load the page and this should improve stability)
-        if (!tasks.cell("New").exists()) {
+        if (!tasks.cell("New").isVisible()) {
+            log.fine("Count of New buttons: " + tasks.cell("New").countSimilar());
             tasks.reloadPage();
             this.navigate();
         }
@@ -73,8 +74,6 @@ public class Operations extends ResourceTab {
             tasks.waitFor(Timing.TIME_1S);
         }
         if (!tasks.cell("Create New Operation Schedule").isVisible()) {
-            log.warning("Cell Create New Operation Schedule is still not visible! Page source: "
-                    + tasks.fetch("document.body.innerHTML"));
             tasks.reloadPage();
         }
         return new Operation(tasks, name);
