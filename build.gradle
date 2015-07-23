@@ -193,8 +193,8 @@ project(":common") {
 project(":rest-groovy") {
 	apply plugin: "groovy"
 	dependencies {
-		groovy localGroovy()
-		groovy group: "org.codehaus.groovy.modules.http-builder", name:"http-builder", version:"0.5.2"
+		compile 'org.codehaus.groovy:groovy-all:2.3.10'
+		compile group: "org.codehaus.groovy.modules.http-builder", name:"http-builder", version:"0.5.2"
 		compile project(":common")
 		testCompile  project(":common")
 	}
