@@ -18,7 +18,7 @@ if(typeof createSnapshot != "function"){
 }
 
 // constants
-var driftDefName = "Test drift def";
+var driftDefName = drDefName;
 
 
 /**
@@ -47,7 +47,7 @@ function waitForNewSnapshotVersion(expectedVersion){
 	    var snapshot = createSnapshot(platform.id,driftDefName);
 	}
 	var count = 0;
-	var timoutSec = 60; 
+	var timoutSec = 70; 
 	while(snapshot.getVersion() != expectedVersion && count < timoutSec){
 		sleep(1000);
 		if(useModule){
