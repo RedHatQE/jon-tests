@@ -10,6 +10,7 @@ import com.redhat.qe.Assert;
 import com.redhat.qe.auto.bugzilla.BlockedByBzBug;
 import com.redhat.qe.jon.common.util.CryptoUtils;
 import com.redhat.qe.jon.common.util.HTTPClient;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.testng.annotations.BeforeClass;
@@ -75,44 +76,30 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 	
 	@Test(description = "This tests all methods from drift.js sample file.")
 	public void driftTest() throws IOException, CliTasksException{
-		CliTasks agentMachine = prepareAgentMachine();
-		
-		// run the first part
-		createJSRunner("samplesFromCliClient/driftTestPart1.js").
-				addDepends("rhqapi.js," +
-				"file://"+getCliSampleFileLocation("util.js")+
-				",file://"+getCliSampleFileLocation("drift.js")+
-				",samplesFromCliClient/driftCommon.js").
-				run();
-		
-		createDrift(agentMachine);
-		
-		// run second part
-		createJSRunner("samplesFromCliClient/driftTestPart2.js").
-				addDepends("rhqapi.js," +
-				"file://"+getCliSampleFileLocation("util.js")+
-				",file://"+getCliSampleFileLocation("drift.js")+
-				",samplesFromCliClient/driftCommon.js").
-				addExpect("+second line,Retrieved content of file: first line,baca3ae8	bin/file1.txt").
-				run();
+	    // run it twice to cover bz1252136
+	    runDriftTest("Drift def 1");
+	    runDriftTest("Drift def 2");
 	}
 	@Test(description = "This test loads 'drift' module and tests all methods there.")
 	public void driftModuleTest() throws CliTasksException{
-		CliTasks agentMachine = prepareAgentMachine();
+	    CliTasks agentMachine = prepareAgentMachine();
 		
+	    String driftDefName = "Drift def 1";
 		// run the first part
 		createJSRunner("samplesFromCliClient/driftTestPart1.js").
+		        withArg("drDefName", driftDefName).
 				addDepends("rhqapi.js," +
 				"samplesFromCliClient/driftCommon.js").
 				run();
 		
-		createDrift(agentMachine);
+		createDrift(agentMachine,driftDefName);
 		
 		// run second part
 		createJSRunner("samplesFromCliClient/driftTestPart2.js").
+		        withArg("drDefName", driftDefName).
 				addDepends("rhqapi.js," +
 				"samplesFromCliClient/driftCommon.js").
-				addExpect("+second line,Retrieved content of file: first line,baca3ae8	bin/file1.txt").
+				addExpect("+second line,Retrieved content of file: first line,baca3ae8\tbin/file1.txt").
 				run();
 	}
 	
@@ -210,8 +197,9 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 				withArg("expectedVersion", version).
 				run();
 	}
-	private void waitForNewSnapshotVersionUsingModule(String version){
+	private void waitForNewSnapshotVersionUsingModule(String version,String driftDefName){
 		createJSRunner("samplesFromCliClient/drift-waitForNewSnapshot.js").
+		        withArg("drDefName", driftDefName).
 				addDepends("rhqapi.js," +
 				"samplesFromCliClient/driftCommon.js").
 				withArg("expectedVersion", version).
@@ -226,22 +214,47 @@ public class SamplesFromCliClientCliTest extends OnAgentCliEngine {
 		// clean monitored directory
 		agentMachine.runCommand("rm -rf /tmp/driftFiles");
 		agentMachine.runCommand("mkdir -p /tmp/driftFiles/bin");
+		agentMachine.runCommand("mkdir -p /tmp/driftFiles/etc");
 		
 		return agentMachine;
 	}
-	private void createDrift(CliTasks agentMachine) throws CliTasksException{
+	private void createDrift(CliTasks agentMachine,String driftDefName) throws CliTasksException{
 		// add one new file
 		String file1Path = "/tmp/driftFiles/bin/file1.txt";
 		String file2Path = "/tmp/driftFiles/bin/file2.txt";
 		agentMachine.runCommand("echo \"first line\" > " + file1Path);
-		waitForNewSnapshotVersionUsingModule("1");
+		waitForNewSnapshotVersionUsingModule("1", driftDefName);
 		
 		// add another new file
 		agentMachine.runCommand("echo \"first line\" > " + file2Path);
-		waitForNewSnapshotVersionUsingModule("2");
+		waitForNewSnapshotVersionUsingModule("2", driftDefName);
 		
 		// add one new line
 		agentMachine.runCommand("echo \"second line\" >> " + file1Path);
-		waitForNewSnapshotVersionUsingModule("3");
+		waitForNewSnapshotVersionUsingModule("3" ,driftDefName);
+	}
+
+    private void runDriftTest(String driftDefName) throws CliTasksException,IOException {
+        CliTasks agentMachine = prepareAgentMachine();
+        // run the first part
+        createJSRunner("samplesFromCliClient/driftTestPart1.js").
+                withArg("drDefName", driftDefName).
+                addDepends("rhqapi.js," +
+                "file://"+getCliSampleFileLocation("util.js")+
+                ",file://"+getCliSampleFileLocation("drift.js")+
+                ",samplesFromCliClient/driftCommon.js").
+                run();
+
+        createDrift(agentMachine, driftDefName);
+
+        // run second part
+        createJSRunner("samplesFromCliClient/driftTestPart2.js").
+                withArg("drDefName", driftDefName).
+                addDepends("rhqapi.js," +
+                "file://"+getCliSampleFileLocation("util.js")+
+                ",file://"+getCliSampleFileLocation("drift.js")+
+                ",samplesFromCliClient/driftCommon.js").
+                addExpect("+second line,Retrieved content of file: first line,baca3ae8\tbin/file1.txt").
+                run();
 	}
 }
