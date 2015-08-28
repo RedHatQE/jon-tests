@@ -4,6 +4,7 @@
 var filePath = bundle;
 
 var eap = findStandaloneEAP6();
+eap.waitForAvailable();
 
 var bundleGroup = toGroup == "true";
 

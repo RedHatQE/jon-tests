@@ -3,6 +3,7 @@ var warPath = war;
 
 
 var eap = findStandaloneEAP6();
+eap.waitForAvailable();
 // check whether deployment already exists
 name = warPath.replace(/.*\//, '');
 
