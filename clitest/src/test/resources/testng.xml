@@ -4,7 +4,7 @@
   	  	<!-- Listener to send report to Report Engine Server -->
   	  	<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener" />
   	  	<!-- Listener to ignore tests which reproduce known and still unfixed bugs -->
-  	  	<listener class-name="com.redhat.qe.auto.bugzilla.BugzillaTestNGListener"/>
+  	  	<!--<listener class-name="com.redhat.qe.auto.bugzilla.BugzillaTestNGListener"/> -->
   	  	<!-- Listener to check agent.log and potentially fail tests, where ERROR in log was found 
   		<listener class-name="com.redhat.qe.tools.remotelog.RemoteLogCheckTestNGListener" />
   		-->
@@ -48,7 +48,12 @@
 		</class>
 	</classes>
 </test>
-
+<test name="bz reproduction test bz1232006">
+	<classes>
+		<class name="com.redhat.qe.jon.clitest.tests.bz.Testbz1232006">
+		</class>
+	</classes>
+</test>
 
 <test name="Examples from rhq documentation">
 	<classes>
