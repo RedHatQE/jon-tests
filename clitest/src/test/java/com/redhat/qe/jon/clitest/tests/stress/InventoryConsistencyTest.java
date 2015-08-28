@@ -43,6 +43,7 @@ public class InventoryConsistencyTest extends CliEngine {
 		createJSRunner("inventory/ImportResources.js").
 		run();
 		createJSRunner("inventory/UninventoryResources.js").
+		addDepends("/rhqapi.js").
 		run();
 	}
 }
