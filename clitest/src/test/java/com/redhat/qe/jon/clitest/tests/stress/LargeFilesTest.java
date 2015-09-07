@@ -20,7 +20,7 @@ public class LargeFilesTest extends CliEngine {
 	@Test(groups={"blockedByBug-1015560"})
 	public void deployLargeWar() {
 		createJSRunner("stress/test_LargeWarDeploy.js")
-		    .withResource("war:50","war")
+		    .withResource("war:500","war")
 			.run();
 	}
 	
@@ -28,14 +28,14 @@ public class LargeFilesTest extends CliEngine {
     public void updateBackingContentWithLargeWar() {
         createJSRunner("stress/updateBackingContentWithLargeWar.js")
             .withResource("deployments/hello1.war", "starter")
-            .withResource("war:50","war")  
+            .withResource("war:500","war")  
             .run();
     }
 	
 	@Test(groups={"blockedByBug-1015560"})
 	public void deployLargeBundle(){
 		createJSRunner("stress/test_LargeBundleDeploy.js")
-			.withResource("bundle:50","bundle")
+			.withResource("bundle:500","bundle")
             .withArg("toGroup","false")
             .addExpect("status : Success")
 			.run();
@@ -44,7 +44,7 @@ public class LargeFilesTest extends CliEngine {
     @Test(groups={"blockedByBug-1015560"})
     public void deployLargeBundleToBundleGroup(){
         createJSRunner("stress/test_LargeBundleDeploy.js")
-                .withResource("bundle:50","bundle")
+                .withResource("bundle:500","bundle")
                 .withArg("toGroup","true")
                 .addExpect("status : Success")
                 .run();
