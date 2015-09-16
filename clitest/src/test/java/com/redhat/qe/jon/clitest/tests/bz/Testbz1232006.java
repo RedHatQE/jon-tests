@@ -66,7 +66,7 @@ public class Testbz1232006 extends CliEngine {
 		client.connect();
 	}
 
-	@AfterClass
+	@AfterClass(alwaysRun=true)
 	public void disconnectClient() {
 		if (client != null) {
 			roolbackFile();
