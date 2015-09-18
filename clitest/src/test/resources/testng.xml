@@ -48,12 +48,12 @@
 		</class>
 	</classes>
 </test>
-<test name="bz reproduction test bz1232006">
+<!-- test name="bz reproduction test bz1232006">
 	<classes>
 		<class name="com.redhat.qe.jon.clitest.tests.bz.Testbz1232006">
 		</class>
 	</classes>
-</test>
+</test-->
 
 <test name="Examples from rhq documentation">
 	<classes>
