@@ -45,6 +45,8 @@ public class ExtendedSahi extends Browser {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			// try to click again
+			browser.xy(dropDownBox, 3,3).click();
 		}
 		optionToSelectSimilar = optionToSelect.collectSimilar();
 		
