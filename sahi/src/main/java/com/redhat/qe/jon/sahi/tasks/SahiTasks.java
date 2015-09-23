@@ -430,7 +430,7 @@ public class SahiTasks extends ExtendedSahi {
     // Users and Groups
     // ***************************************************************************
     public void createDeleteUser() {
-    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+    	selectPage("Administration-->Users", this.cell("Username"), 1000*5, 2);
         this.cell("New").click();
         this.textbox("name").setValue("test1");
         this.password("password").setValue("password");
@@ -712,7 +712,7 @@ public class SahiTasks extends ExtendedSahi {
     // Administration 
     // ***************************************************************************
     public void createUser(String userName, String password, String firstName, String lastName, String email) {
-    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+    	selectPage("Administration-->Users", this.cell("Username"), 1000*5, 2);
     	this.cell("New").click();
         this.textbox("name").setValue(userName);
         this.password("password").setValue(password);
@@ -724,7 +724,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void deleteUser(String userName) {
-    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+    	selectPage("Administration-->Users", this.cell("Username"), 1000*5, 2);
     	this.div(userName).click();
         this.cell("Delete").click();
         this.cell("Yes").click();
@@ -764,7 +764,7 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public void addRolesToUser(String userName, ArrayList<String> roleNames) {
-    	selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+    	selectPage("Administration-->Users", this.cell("Username"), 1000*5, 2);
     	this.link(userName).click();
         for (String role : roleNames) {
             this.div(role).click();
@@ -2490,7 +2490,8 @@ public class SahiTasks extends ExtendedSahi {
 	        this.image("/right.*/").click();//PatternFly fix: 23-Jul-2014
 	        this.cell("Users").click();
 	        this.div(searchTestuser).click();
-	        this.image("/right.*/").click(); //PatternFly fix: 23-Jul-2014
+	        int count = this.image("/right.*/").countSimilar();
+	        this.image("/right.*/["+(count-1)+"]").click(); //PatternFly fix: 23-Jul-2014
 	        this.cell("Save").click();
 	    }
 	    
@@ -2510,7 +2511,7 @@ public class SahiTasks extends ExtendedSahi {
 	    }
 
 	public boolean isUserAvailable(String userName){
-		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+		selectPage("Administration-->Users", this.cell("Username"), 1000*5, 2);
 		if(this.link(userName).in(this.div("gridBody")).exists()){
 			return true;
 		}
@@ -2669,16 +2670,16 @@ public class SahiTasks extends ExtendedSahi {
 		relogin(searchTestuser, password);
 		
 		// go to Administration-->Users
-		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+		selectPage("Administration-->Users", this.cell("Username"), 1000*5, 2);
 		Assert.assertTrue(this.waitForElementVisible(this, this.link(searchTestuser),
 		        "Tested user link", Timing.WAIT_TIME),"User exists");
 		Assert.assertTrue(this.link("rhqadmin").exists());
-		this.link(searchTestuser).under(this.cell("User Name")).click();
+		this.link(searchTestuser).under(this.cell("Username")).click();
 		Assert.assertTrue(this.waitForElementVisible(this, this.password("password"),
                 "Tested user pasword field", Timing.WAIT_TIME),"pasword field exists");
 		Assert.assertTrue(this.span("Edit User ["+searchTestuser+"]").exists());
-		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
-		this.link("rhqadmin").under(this.cell("User Name")).click();
+		selectPage("Administration-->Users", this.cell("Username"), 1000*5, 2);
+		this.link("rhqadmin").under(this.cell("Username")).click();
 		Assert.assertFalse(this.waitForElementVisible(this, this.password("password"),
                 "Tested user pasword field", Timing.WAIT_TIME),"pasword field exists");
 		Assert.assertTrue(this.span("View User [rhqadmin]").exists());
@@ -2690,11 +2691,11 @@ public class SahiTasks extends ExtendedSahi {
 		// login with created user
 		relogin(searchTestuser, password);
 		
-		selectPage("Administration-->Users", this.cell("User Name"), 1000*5, 2);
+		selectPage("Administration-->Users", this.cell("Username"), 1000*5, 2);
 		Assert.assertTrue(this.waitForElementVisible(this, this.link(searchTestuser),
                 "Tested user link", Timing.WAIT_TIME),"User exists");
 		Assert.assertFalse(this.link("rhqadmin").exists());
-		this.link(searchTestuser).under(this.cell("User Name")).click();
+		this.link(searchTestuser).under(this.cell("Username")).click();
 		Assert.assertTrue(this.waitForElementVisible(this, this.password("password"),
                 "Tested user pasword field", Timing.WAIT_TIME),"pasword field exists");
 		Assert.assertTrue(this.span("Edit User ["+searchTestuser+"]").exists());
