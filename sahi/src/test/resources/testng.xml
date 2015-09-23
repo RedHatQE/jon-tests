@@ -256,7 +256,7 @@
 	</test>
 
 
-	<test name="Administration JSP page validation">
+	<!-- test name="Administration JSP page validation">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.AdministrationPages">
 				<methods>
@@ -269,7 +269,7 @@
 				</methods>
 			</class>
 		</classes>
-	</test>
+	</test-->
 
 	<test name="Drift management-Create-[add/change/remove]-Delete">
 		<classes>
