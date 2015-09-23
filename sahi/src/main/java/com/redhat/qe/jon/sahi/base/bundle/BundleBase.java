@@ -113,7 +113,7 @@ public class BundleBase {
 
 	public boolean deleteBundleGroupGUI(BundleGroup bundleGroup) {
 		this.navigateToBundlePage();
-		_tasks.div(bundleGroup.getName()).in(this.bundleGroup).click();
+		_tasks.div(bundleGroup.getName()).click();
 		_tasks.cell("Delete").under(this.bundleGroup).click();
 		_tasks.cell("Yes").near(_tasks.cell("No")).click();
 		return ! this.isBundleGroupAvailable(bundleGroup);
@@ -126,7 +126,7 @@ public class BundleBase {
 	
 	public boolean isBundleGroupAvailable(BundleGroup bundleGroup){
 		this.navigateToBundlePage();
-		return _tasks.link(bundleGroup.getName()).in(this.bundleGroup).exists();
+		return _tasks.link(bundleGroup.getName()).exists();
 	}
 	
 	public boolean deployBundle(Bundle bundle, Properties properties){
