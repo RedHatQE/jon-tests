@@ -35,10 +35,13 @@ public class AlertDefTemplatesPage {
             if(tasks.div(name).exists()){
                 found = true;
             }else{
-                if(tasks.image("/vscroll_end.*/[1]").isVisible()){
-                    tasks.image("/vscroll_end.*/[1]").click();
+                int count = tasks.image("/vscroll_end.*/").countSimilar();
+                log.info("Number of vscroll elements: " + count);
+                if(tasks.image("/vscroll_end.*/["+ (count-1) +"]").isVisible()){
+                    tasks.image("/vscroll_end.*/["+ (count-1) +"]").click();
                 }else{
-                    tasks.image("/vscroll_Over_end.*/[1]").click();
+                    count = tasks.image("/vscroll_Over_end.*/["+ (count-1) +"]").countSimilar();
+                    tasks.image("/vscroll_Over_end.*/["+ (count-1) +"]").click();
                 }
             }
         }
