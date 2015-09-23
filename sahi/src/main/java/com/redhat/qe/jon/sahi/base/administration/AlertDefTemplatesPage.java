@@ -23,7 +23,7 @@ public class AlertDefTemplatesPage {
         String serverBaseUrl = tasks.getNavigator().getServerBaseUrl();
         String url = serverBaseUrl+"/#Administration/Configuration/AlertDefTemplates";
         log.fine("Navigating to ["+url+"]");
-        tasks.navigateTo(url,false);
+        tasks.navigateTo(url,true);
         
         return this;
     }
