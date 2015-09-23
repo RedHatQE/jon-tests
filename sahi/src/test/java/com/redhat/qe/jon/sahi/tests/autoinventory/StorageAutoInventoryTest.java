@@ -19,9 +19,9 @@ public class StorageAutoInventoryTest extends SahiTestScript {
 
 	@BeforeClass()
 	protected void uninventoryAllResources() throws InterruptedException {
-		checkRequiredProperties("jon.agent.name");
+		checkRequiredProperties("jon.server.host");
 
-		platformName = System.getProperty("jon.agent.name");
+		platformName = System.getProperty("jon.server.host");
 		platform = new Resource(sahiTasks, platformName);
 		platform.uninventory(true);
 
@@ -47,13 +47,13 @@ public class StorageAutoInventoryTest extends SahiTestScript {
 		// navigate to platform		
 		platform.navigate();
 		//assert Storage Node exist
-		platform.assertChildExists("RHQ Storage Node", true);
+		platform.assertChildExists("RHQ Storage Node(" + platformName + ")", true);
 
 	}
 
 
 	
-	@AfterClass()
+	@AfterClass(alwaysRun=true)
 	protected void inventoryAllResources() {
 
 		platform.inventoryAll(platformName);
