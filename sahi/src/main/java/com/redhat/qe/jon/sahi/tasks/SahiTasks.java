@@ -2359,14 +2359,15 @@ public class SahiTasks extends ExtendedSahi {
     public void createAlertDefinitionTemplate(String groupPanelName, String templateName, String platform){
     	this.link("Administration").click();
     	this.cell(groupPanelName).click();
-    	this.image("edit.png").near(this.div(platform));
+    	ElementStub row = this.div(platform).parentNode("tr");
+        this.image("edit.png").in(row).click();
     	this.cell("New").click();
     	this.textbox("textItem").setValue(templateName);
     	this.textarea("textItem").setValue("Created by Automation");
     	this.cell("Save").click();
     }
     public boolean verifyDefinitionTemplateExists(String groupPanelName, String templateName) {
-    	this.bold("Back to List").click();
+    	this.div("/Back to List/").click();
         return this.div(templateName).exists();
     }
     
@@ -2396,7 +2397,7 @@ public class SahiTasks extends ExtendedSahi {
         this.div("/right_all.*/").click();
         this.cell("OK").click();
         this.cell("Save").click();
-        this.bold("Back to List").click();
+        this.div("/Back to List/").click();
     	
     }
     public void navigationThruRecoveryTabAlertDefTemplate(String groupPanelName, String templateName){
@@ -2412,7 +2413,7 @@ public class SahiTasks extends ExtendedSahi {
         this.radio("yes[1]").click();
         this.radio("no[1]").click();
         this.cell("Save").click();
-        this.bold("Back to List").click();
+        this.div("/Back to List/").click();
     	
     }
     public void navigationThruDampeningTabAlertDefTemplate(String groupPanelName, String templateName){
@@ -2425,7 +2426,7 @@ public class SahiTasks extends ExtendedSahi {
         this.cell("Dampening").click();
        // this.div("selectItemText[2]").click();
         this.cell("Save").click();
-        this.bold("Back to List").click();
+        this.div("/Back to List/").click();
     	
     }
     public boolean deleteAlertDefinitionTemplate(String templateName){
