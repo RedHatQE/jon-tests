@@ -351,7 +351,7 @@ public class AlertDefinitionEditor {
 		// TODO check that all the fields were filled successfully
 		if(userName!=null){
 			editor.checkRadioNearCell("AnotherUser", "Another User");
-			editor.setTextNearCell(TEXT_FIELD_SELECTOR, userName, "User Name :");
+			editor.setTextNearCell(TEXT_FIELD_SELECTOR, userName, "Username :");
 		}
 		if(password!=null){
 			editor.setPasswordNearCell("password", password, "Password :");
