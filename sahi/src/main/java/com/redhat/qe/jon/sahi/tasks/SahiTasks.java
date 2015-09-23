@@ -682,10 +682,10 @@ public class SahiTasks extends ExtendedSahi {
     	ElementStub resourceEl = this.image("folder_autogroup_closed.png").near(this.cell(resource));
     	Assert.assertTrue(resourceEl.exists(), "Resource["+resource+"] status..");
     	resourceEl.click();
-    	Assert.assertTrue(this.row("Summary").near(this.cell("tabTitleSelected")).exists(), "Sub Menu["+resource+"->Summary] Status...");
-    	Assert.assertTrue(this.row("Inventory").near(this.cell("tabTitle")).exists(), "Sub Menu["+resource+"->Inventory] Status...");
-    	Assert.assertTrue(this.row("Alerts").near(this.cell("tabTitle")).exists(), "Sub Menu["+resource+"->Alerts] Status...");
-    	Assert.assertTrue(this.row("Monitoring").near(this.cell("tabTitle")).exists(), "Sub Menu["+resource+"->Monitoring] Status...");
+    	Assert.assertTrue(this.row("Summary").near(this.cell("tabButtonTopSelected")).exists(), "Sub Menu["+resource+"->Summary] Status...");
+    	Assert.assertTrue(this.row("Inventory").near(this.cell("tabButtonTop")).exists(), "Sub Menu["+resource+"->Inventory] Status...");
+    	Assert.assertTrue(this.row("Alerts").near(this.cell("tabButtonTop")).exists(), "Sub Menu["+resource+"->Alerts] Status...");
+    	Assert.assertTrue(this.row("Monitoring").near(this.cell("tabButtonTop")).exists(), "Sub Menu["+resource+"->Monitoring] Status...");
     }
     
     // ***************************************************************************
