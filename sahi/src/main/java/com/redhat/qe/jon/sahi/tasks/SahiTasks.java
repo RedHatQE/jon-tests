@@ -1584,6 +1584,8 @@ public class SahiTasks extends ExtendedSahi {
         	for(String fileName : files){
         		this.image("add.png").near(this.div("Includes")).click();
         		ElementStub checkBox = this.image("/checked.*/").near(this.textbox("path"));
+        		int count = checkBox.countSimilar();
+        		checkBox = checkBox.collectSimilar().get(count-1);
                 if(checkBox.exists()){
                 	checkBox.click();
                 	_logger.log(Level.INFO, "Path Check/uncheck available to select and selected...");
