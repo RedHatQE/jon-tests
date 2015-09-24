@@ -25,7 +25,7 @@ public class GroupRecentAlertsTasks extends RecentAlertsBase {
 		tasks.link("Inventory").click();
 		tasks.waitForElementVisible(tasks, tasks.cell("Compatible Groups"), "Compatible Groups", Timing.TIME_10S);
 		tasks.cell("Compatible Groups").click();
-		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.label("Search"), "Label Search", Timing.TIME_5S), "Label Search");
+		Assert.assertTrue(tasks.waitForElementVisible(tasks, tasks.textbox("search"), "Label Search", Timing.TIME_5S), "Label Search");
 	}
 	
 	public void createNewCompatibleGroup() {
