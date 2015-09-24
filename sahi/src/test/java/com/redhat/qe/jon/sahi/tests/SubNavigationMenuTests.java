@@ -17,7 +17,7 @@ public class SubNavigationMenuTests extends SahiTestScript {
 		sahiTasks.scondLevelMandatoryMenuLinksExist();
 	}
 
-	@Test(groups = "SubnavigationMenuTests")
+	//@Test(groups = "SubnavigationMenuTests")
 	public void checkAutoGroupSubnavigation() {
 		sahiTasks.checkAutoGroupResourceMenues();
 	}
