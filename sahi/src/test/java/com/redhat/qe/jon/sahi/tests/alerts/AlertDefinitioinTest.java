@@ -85,7 +85,7 @@ public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 		
 		measBaselineTresholdCond = new MeasBaselineTresholdCondition(sahiTasks);
 		measBaselineTresholdCond.setComparator(MeasAbsValTresholdCondition.Comparator.LESS_THEN);
-		measBaselineTresholdCond.setMetric("Up Time").
+		measBaselineTresholdCond.setMetric("JVM Free Memory").
 			setBaselinePercentage("12").
 			setBaseline(MeasBaselineTresholdCondition.Baseline.Maximum);
 		
@@ -201,7 +201,7 @@ public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 		
 		
 		EventDetectionCondition eventDetectionCondParsed = alertDefEditor.
-				getCondition("Event Detection [WARN] with event source matching '10'",EventDetectionCondition.class);
+				getCondition("Event Detection [WARN] with event details matching '10'",EventDetectionCondition.class);
 		Assert.assertTrue(eventDetectionCondParsed.getEventSeverity().equals(eventDetectionCond.getEventSeverity()),
 				"Expected event severity is: "+eventDetectionCond.getEventSeverity()+
 				", but actual is:"+eventDetectionCondParsed.getEventSeverity());
@@ -224,7 +224,7 @@ public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 		
 		
 		MeasBaselineTresholdCondition measBaselineTresholdCondParsed = alertDefEditor.
-				getCondition("Metric Value Baseline [Up Time < 12.0 % of max]",MeasBaselineTresholdCondition.class);
+				getCondition("Metric Value Baseline [JVM Free Memory < 12.0 % of max]",MeasBaselineTresholdCondition.class);
 		Assert.assertTrue(measBaselineTresholdCondParsed.getMetric().equals(measBaselineTresholdCond.getMetric()),
 				"Expected metric is: "+measBaselineTresholdCond.getMetric()+", but actual is:"+
 						measBaselineTresholdCondParsed.getMetric());
@@ -304,7 +304,7 @@ public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 
 		alertDefEditor.editCondition("Resource Configuration Change",operationExecutionCond);
 		
-		alertDefEditor.deleteCondition("Event Detection [WARN] with event source matching '10'");
+		alertDefEditor.deleteCondition("Event Detection [WARN] with event details matching '10'");
 		
 		alertDefEditor.save();
 		
@@ -318,7 +318,7 @@ public class AlertDefinitioinTest extends OnAgentSahiTestScript{
 				AlertDefinition.Priority.Low, "", "N/A");
 		
 		alertDefEditor = alertDefPage.editAlertDefinition(ALERT_DEF_NAME1);
-		Assert.assertFalse(alertDefEditor.doesConditionExist("Event Detection [WARN] with event source matching '10'"),
+		Assert.assertFalse(alertDefEditor.doesConditionExist("Event Detection [WARN] with event details matching '10'"),
 				"Removed condition is still visible on the page.");
 		
 		OperationExecutionCondition operationExecutionCondParsed = alertDefEditor.
