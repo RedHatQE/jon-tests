@@ -658,7 +658,8 @@ public class SahiTasks extends ExtendedSahi {
     public void checkPlatform(){
     	this.link("Inventory").click();
     	Assert.assertTrue(this.cell("Platforms").exists());
-    	this.cell("Platforms").click();
+    	int count = this.cell("Platforms").countSimilar();
+    	this.cell("Platforms").collectSimilar().get(count-1).click();
     	Assert.assertTrue(this.div("Linux").exists());
     	this.div("Linux").doubleClick();
     }
