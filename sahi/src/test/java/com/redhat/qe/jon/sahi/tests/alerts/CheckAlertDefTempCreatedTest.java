@@ -38,9 +38,9 @@ public class CheckAlertDefTempCreatedTest extends SahiTestScript {
         @Test
         public void checkTemplateInjection(){
                 
-                checkRequiredProperties("jon.agent.name");
+                checkRequiredProperties("jon.server.host");
 
-                platformName = System.getProperty("jon.agent.name");
+                platformName = System.getProperty("jon.server.host");
                 platform = new Resource(sahiTasks, platformName);
                 storageNodeName = System.getProperty("jon.server.host");
                 
@@ -62,7 +62,7 @@ public class CheckAlertDefTempCreatedTest extends SahiTestScript {
                 log.info("storageNode name  "+storageNode.getName());
                                 
                 // Retrieve the Cassandra Server JVM resource
-                cassandraServerJVM = storageNode.child("Cassandra Server JVM");
+                cassandraServerJVM = storageNode.child("JVM");
                 
                 
                 //Assert that the Cassandra Server JVM resource was found
@@ -92,7 +92,7 @@ public class CheckAlertDefTempCreatedTest extends SahiTestScript {
                 
                 
         
-                Iterator<AlertDefinition> alertDefintionIterator = memorySubsystem.alerts().alertDefinitionsPage().getAlertDefinitions("StorageNodeHighHeapTemplate").iterator();
+                Iterator<AlertDefinition> alertDefintionIterator = memorySubsystem.alerts().alertDefinitionsPage().getAlertDefinitions("StorageNodeHighHeap").iterator();
                 
                 //Check if Alert Definition is found
                 Assert.assertTrue(alertDefintionIterator.hasNext(),"Alert Definition Template not found");
