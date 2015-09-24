@@ -1281,7 +1281,6 @@ public class SahiTasks extends ExtendedSahi {
         //Add conditions
         this.cell("Conditions").click();
         int count = this.cell("Add").countSimilar();
-        _logger.info("Count of Add elements: " + count);
         this.cell("Add").collectSimilar().get(count-1).click();
 
         //selectComboBoxes(conditionsDropDown); //Disabled, not stable with this
@@ -1308,7 +1307,8 @@ public class SahiTasks extends ExtendedSahi {
 
         //Add notifications
         this.cell("Notifications").click();
-        this.cell("Add[1]").click();
+        count = this.cell("Add").countSimilar();
+        this.cell("Add").collectSimilar().get(count-1).click();
         //Select Notification type
         selectComboBoxes(notificationType, "row");
         if (notificationType.contains("System Users")) {
