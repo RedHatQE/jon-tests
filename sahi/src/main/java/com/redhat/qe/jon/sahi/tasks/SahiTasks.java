@@ -853,7 +853,7 @@ public class SahiTasks extends ExtendedSahi {
     // Recent Operations
     //************************************************************
     public void gotoReportRecentOperationsPage() {
-    	this.selectPage("Reports-->Recent Operations", this.cell("Date Submitted"), 1000*5, 3);
+    	this.selectPage("Reports-->Recent Operations", this.cell("Recent Operations"), 1000*5, 3);
     }
     
     public void gotoOperationsSchedulesPage(String resourceName, boolean selectSchedules) {
@@ -1049,7 +1049,7 @@ public class SahiTasks extends ExtendedSahi {
     		this.link(pageLocations[0].trim()).click();
         	this.waitForElementExists(this, this.span(pageLocations[0].trim()), "SPAN: "+pageLocations[0].trim(), waitTime);
         	this.cell(pageLocations[1].trim()).click();
-        	if(!this.waitForElementExists(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
+        	if(!this.waitForElementVisible(this, elementReference, "Element: "+elementReference.toString(), waitTime)){
         		_logger.log(Level.INFO, "Filed to load : "+pageLocation+", Retry Count: ["+i+" of "+retryCount+"]");        		
         	}else{
         		_logger.log(Level.FINE, "Loaded Successfully: "+pageLocation);
