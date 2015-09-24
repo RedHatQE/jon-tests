@@ -1585,10 +1585,9 @@ public class SahiTasks extends ExtendedSahi {
         	String[] files = this.getCommaToArray(fileIncludes);
         	for(String fileName : files){
         		this.image("add.png").near(this.div("Includes")).click();
-        		ElementStub checkBox = this.image("/checked.*/").near(this.textbox("path"));
-        		int count = checkBox.countSimilar();
-        		checkBox = checkBox.collectSimilar().get(count-1);
-                if(checkBox.exists()){
+        		ElementStub row = this.textbox("path").parentNode("tr");
+        		ElementStub checkBox = this.image("/checked/").in(row);;
+                if(checkBox.isVisible()){
                 	checkBox.click();
                 	_logger.log(Level.INFO, "Path Check/uncheck available to select and selected...");
                 }else{
@@ -1596,15 +1595,16 @@ public class SahiTasks extends ExtendedSahi {
                 }
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Includes]: "+fileName);
-                this.cell("OK").click();   
-        	}        	     	
-        }        
+                this.cell("OK").click();
+        	}
+        }
         
         //File Excludes
         if(fileExcludes != null){
         	String[] files = this.getCommaToArray(fileExcludes);
         	for(String fileName : files){
-        		this.image("add.png").near(this.div("Excludes")).click();
+        	    int count = this.image("add.png").countSimilar();
+        	    this.image("add.png").collectSimilar().get(count - 1).click();
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Excludes]: "+fileName);
                 this.cell("OK").click();
