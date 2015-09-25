@@ -106,7 +106,7 @@ public class BundleBase {
 
 	public boolean deleteBundleGUI(Bundle bundle) {
 		this.navigateToBundlePage();
-		_tasks.div(bundle.getName()).in(this.bundle).click();
+		_tasks.div(bundle.getName()).click();
 		_tasks.cell("Delete").near(_tasks.cell("Deploy")).click();
 		_tasks.cell("Yes").near(_tasks.cell("No")).click();
 		return ! this.isBundleAvailable(bundle);
@@ -123,7 +123,7 @@ public class BundleBase {
 	
 	public boolean isBundleAvailable(Bundle bundle){
 		this.navigateToBundlePage();
-		return _tasks.link(bundle.getName()).in(this.bundle).exists();
+		return _tasks.link(bundle.getName()).exists();
 	}
 	
 	public boolean isBundleGroupAvailable(BundleGroup bundleGroup){
@@ -133,7 +133,7 @@ public class BundleBase {
 	
 	public boolean deployBundle(Bundle bundle, Properties properties){
 		this.navigateToBundlePage();
-		_tasks.div(bundle.getName()).in(this.bundle).click();
+		_tasks.div(bundle.getName()).click();
 		_tasks.cell("Deploy").click();
 		_tasks.waitFor(3000);
 		_tasks.textbox("name").setValue(properties.getProperty(bundleDistinationName));
