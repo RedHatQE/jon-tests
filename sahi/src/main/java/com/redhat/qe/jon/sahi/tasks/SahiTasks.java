@@ -1120,6 +1120,8 @@ public class SahiTasks extends ExtendedSahi {
 	    agent.navigate();    	
         int count = this.cell("Alerts").countSimilar();
         this.cell("Alerts").collectSimilar().get(count - 1).click();
+        // trying again with different locator
+        this.cell("Alerts").click();
         if (definitionsPage) {
             this.xy(this.cell("Definitions"), 3, 3).click();
         } else {
