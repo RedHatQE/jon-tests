@@ -103,7 +103,6 @@ public class CheckAlertDefTempCreatedTest extends SahiTestScript {
                 Assert.assertTrue(alertDefinition.isEnabled(),"Alert Definition not enabled");
                 
                 log.info("CheckAlertDefTempCreated class finished");
-                sahiTasks.logout();
         }
 
         
