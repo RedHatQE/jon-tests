@@ -1118,7 +1118,8 @@ public class SahiTasks extends ExtendedSahi {
     	//Above line is not selecting specific resource if we have more than one agent imported, adding the following lines,
     	Resource agent = new Resource(this,System.getProperty("jon.agent.name"),"RHQ Agent");
 	    agent.navigate();    	
-        this.cell("Alerts").click();
+        int count = this.cell("Alerts").countSimilar();
+        this.cell("Alerts").collectSimilar().get(count - 1).click();
         if (definitionsPage) {
             this.xy(this.cell("Definitions"), 3, 3).click();
         } else {
@@ -1844,8 +1845,9 @@ public class SahiTasks extends ExtendedSahi {
     	//selectResource(resourceName);
     	Resource agent = new Resource(this,System.getProperty("jon.agent.name"),"RHQ Agent");
 	    agent.navigate();    	
-    	this.cell("Monitoring").click();
-        this.xy(cell("Schedules"), 3,3).click();    	
+	    int count = this.cell("Monitoring").countSimilar();
+	    this.cell("Monitoring").collectSimilar().get(count - 1).click();
+	    this.xy(cell("Schedules"), 3,3).click();
     }
     public int getMetricTableOffset(String resourceName){
     	if(resourceName != null){

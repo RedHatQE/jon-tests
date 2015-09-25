@@ -34,7 +34,8 @@ public class BundleBase {
 
 	public boolean createBundleGroup(BundleGroup bundleGroup){
 		this.navigateToBundlePage();
-		_tasks.cell("New").under(this.bundleGroup).click();
+		int count = _tasks.cell("New").countSimilar();
+		_tasks.cell("New").collectSimilar().get(count -1).click();
 		this.bundleGroup(bundleGroup);
 		return this.isBundleGroupAvailable(bundleGroup);
 	}
@@ -114,7 +115,8 @@ public class BundleBase {
 	public boolean deleteBundleGroupGUI(BundleGroup bundleGroup) {
 		this.navigateToBundlePage();
 		_tasks.div(bundleGroup.getName()).click();
-		_tasks.cell("Delete").under(this.bundleGroup).click();
+		int count = _tasks.cell("Delete").countSimilar();
+		_tasks.cell("Delete").collectSimilar().get(count -1).click();
 		_tasks.cell("Yes").near(_tasks.cell("No")).click();
 		return ! this.isBundleGroupAvailable(bundleGroup);
 	}
