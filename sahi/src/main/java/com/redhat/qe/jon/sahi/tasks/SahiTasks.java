@@ -1374,7 +1374,8 @@ public class SahiTasks extends ExtendedSahi {
         
         this.cell("Yes").near(this.cell("No")).click();
         //this.cell("Yes").click();        
-
+        // it seems that sometimes it takes a while for definition to disappear
+        this.waitFor(1000);
         int numberOfDefinitionsUpdated = this.link(alertName).countSimilar();
         _logger.log(Level.INFO, "[After Deletion] \""+alertName+"\" definition count: "+numberOfDefinitionsUpdated);
         if((numberOfDefinitions - numberOfDefinitionsUpdated) == 1){
