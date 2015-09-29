@@ -913,15 +913,22 @@ public class SahiTasks extends ExtendedSahi {
     	this.gotoReportRecentOperationsPage();
         this.link("RHQ Agent").click();
      
+        /* not sure what this should do but it's failing
         int formTitleCoint = this.cell("formTitle").countSimilar();
         HashMap<String, String> formDetail = new HashMap<String, String>();
         for(int i=0; i<formTitleCoint; i++){
         	formDetail.put(this.cell("formTitle["+i+"]").getText(), this.cell("formCell["+i+"]").getText());
         }
         _logger.log(Level.INFO, "Form Data: "+formDetail);
-       
-        return true;
-
+       */
+        // make sure that we are on RHQ Agent resource page
+        if (this.cell("Summary").isVisible() && this.span("RHQ Agent").isVisible())
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
     }
 
     public boolean opreationsWithRefreshButtonFunctionality() {
