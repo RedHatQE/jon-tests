@@ -108,6 +108,10 @@ public class BundleBase {
 		_tasks.div(bundle.getName()).click();
 		_tasks.cell("Delete").near(_tasks.cell("Deploy")).click();
 		_tasks.cell("Yes").near(_tasks.cell("No")).click();
+		_tasks.waitForElementVisible(_tasks, _tasks.div("You successfully deleted the bundles"),
+                "Succesful message", 1000 * 10);
+		// just to be sure
+        _tasks.waitFor(1000);
 		return ! this.isBundleAvailable(bundle);
 	}
 
@@ -116,6 +120,10 @@ public class BundleBase {
 		_tasks.div(bundleGroup.getName()).click();
 		_tasks.cell("Delete[1]").click();
 		_tasks.cell("Yes").near(_tasks.cell("No")).click();
+		_tasks.waitForElementVisible(_tasks, _tasks.div("You successfully deleted the bundle groups"),
+		        "Succesful message", 1000 * 10);
+		// just to be sure
+		_tasks.waitFor(1000);
 		return ! this.isBundleGroupAvailable(bundleGroup);
 	}
 	
