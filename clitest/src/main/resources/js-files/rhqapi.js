@@ -2726,7 +2726,7 @@ var bundles = (function() {
                 return new Bundle(version.bundle);
             }
             if (groupsSupported) {
-                var version = BundleManager.createBundleVersionViaURL(groups,dist);
+                var version = BundleManager.createInitialBundleVersionViaURL(groups,dist);
             }
             else {
                 var version = BundleManager.createBundleVersionViaURL(dist);
