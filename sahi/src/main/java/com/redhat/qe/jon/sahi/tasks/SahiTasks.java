@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1376,13 +1377,17 @@ public class SahiTasks extends ExtendedSahi {
         }else{
         	this.div(alertName).click(); //Selecting the definition
         }
-        this.cell("Delete").near(this.cell("Disable")).click();
-        //this.cell("Delete[4]").click();
-        
+        // trying to find correct Delete button (it was not working without this)
+        List<ElementStub> delButtons = this.cell("Delete").collectSimilar();
+        for (ElementStub e : delButtons){
+            if(e.isVisible()){
+                e.click();
+            }
+        }
         this.cell("Yes").near(this.cell("No")).click();
-        //this.cell("Yes").click();        
-        // it seems that sometimes it takes a while for definition to disappear
-        this.waitFor(1000);
+
+        this.waitForElementVisible(this, this.div("Successfully deleted 1 alert definitions"),
+                "Success msg", Timing.TIME_10S);
         int numberOfDefinitionsUpdated = this.link(alertName).countSimilar();
         _logger.log(Level.INFO, "[After Deletion] \""+alertName+"\" definition count: "+numberOfDefinitionsUpdated);
         if((numberOfDefinitions - numberOfDefinitionsUpdated) == 1){
