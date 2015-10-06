@@ -57,15 +57,17 @@ public class PostgresPluginHistory extends PostgresPluginBase {
 	private boolean wasPostgresScheduledOperationSuccess(OPERATION op, String columns) {
 		String operation = op.get().toString();
 		History row = null;
-
-		tasks.waitForElementVisible(tasks, tasks.cell("/" + operation + "/" ), "Operations Tab Visible.", Timing.TIME_10S);
+		
+		_logger.info("Operation: " + operation);
+		tasks.waitForElementVisible(tasks, tasks.cell("/" + operation + "/" ), "Operations Tab Visible.", Timing.TIME_5S);
 
 		long timeOut = System.currentTimeMillis() + (Timing.TIME_1M * 3);
 		boolean isComplete = false;
 		
 		do {
-			tasks.cell("Refresh").click();
-			row = getHistoryByRow(0, columns);
+			tasks.cell("Refresh").near(tasks.cell("New Schedule")).click();
+			
+			row = getPostgresOperationHistoryByRow(0, columns);
 
 			if(historyReference != null){
 				if(columns.equals(History.historyTableColumnsDatabase) || columns.equals(History.historyTableColumnsServer)){
@@ -84,6 +86,8 @@ public class PostgresPluginHistory extends PostgresPluginBase {
 					tasks.waitFor(Timing.TIME_5S);
 				}
 			}
+			
+			_logger.info("Status: " + row.getStatus());
 			if(row.getStatus().equals(History.STATUS.IN_PROGRESS.toString())){
 				isComplete = false;
 				tasks.waitFor(Timing.TIME_5S);
@@ -102,6 +106,11 @@ public class PostgresPluginHistory extends PostgresPluginBase {
 	 */
 	public History getHistoryByRow(int rowNumber, String columns){
 		int tableCountOffset = 0;
+		return new History(columns, tasks.getRHQgwtTableRowDetails(History.tableName, tableCountOffset, columns, History.statusImageToString, rowNumber));
+	}
+	
+	public History getPostgresOperationHistoryByRow(int rowNumber, String columns){
+		int tableCountOffset = 2;
 		return new History(columns, tasks.getRHQgwtTableRowDetails(History.tableName, tableCountOffset, columns, History.statusImageToString, rowNumber));
 	}
 }

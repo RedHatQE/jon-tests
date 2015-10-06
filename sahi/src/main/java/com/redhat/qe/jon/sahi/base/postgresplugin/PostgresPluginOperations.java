@@ -90,7 +90,7 @@ public class PostgresPluginOperations extends PostgresPluginBase {
 
 		if (operation.equals(OPERATION.INVOKE_SQL.get().toString())) {
 			tasks.textbox("sql").setValue(SQLToInvoke);
-			tasks.radio("").near(tasks.label("query")).click();
+			tasks.radio("").near(tasks.label("Query")).click();
 		}
 
 		tasks.radio("").near(tasks.label(scheduleFrequency)).click();

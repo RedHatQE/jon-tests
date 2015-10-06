@@ -337,27 +337,27 @@
 
 	</test>
 
-    <test name="Postgres Plugin Server Test">
-        <classes>
-            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresServerTest">
-            </class>
-        </classes>
-    </test>
-    
     <test name="Postgres Plugin Database Test">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresDatabaseTest">
             </class>
         </classes>
     </test>
-    
+
+    <test name="Postgres Plugin Server Test">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresServerTest">
+            </class>
+        </classes>
+    </test>
+<!--    
     <test name="Postgres Plugin Database Table Test">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.postgresplugin.PostgresDatabaseTableTest">
             </class>
         </classes>
     </test>
-    
+-->    
     <test name="Recent Alerts">
         <classes>
             <class name="com.redhat.qe.jon.sahi.tests.recentalerts.RecentAlertsTest">
