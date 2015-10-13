@@ -2863,6 +2863,13 @@ var Bundle = function(param) {
 				common.trace("Destination("+_id+").purge()");
 				BundleManager.purgeBundleDestination(_id);
 			},
+			/**
+			 * deletes this destination
+			 */
+      deleteDest : function() {
+				common.trace("Destination("+_id+").deleteDest()");
+				BundleManager.deleteBundleDestination(_id);
+			},
       /**
 		 * reverts bundle deployment in this destination
 		 *

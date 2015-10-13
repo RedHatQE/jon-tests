@@ -63,6 +63,11 @@ public class BundleWorkflowTest extends CliEngine {
 	.run();
     }
     @Test(dependsOnMethods="purge")
+    public void deleteDestination() {
+    createJSRunner("bundles/deleteDestination.js")
+        .run();
+    }
+    @Test(dependsOnMethods="deleteDestination")
     public void remove() {
 	createJSRunner("bundles/removeBundle.js")
 	.run();

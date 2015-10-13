@@ -1,14 +1,12 @@
 /**
- * @author lzoubek@redhat.com (Libor Zoubek)
- * Jun 25, 2013
+ * @author fbrychta@redhat.com
+ * Jun 13, 2015
  */
 
 /**
- * This test deploys a specific version of bundle to all platforms 
+ * This test deletes bundle destination
  */
 verbose = 10;
-// requred input parameters
-var bundleVersion = version;
 
 var b = bundles.find()
 assertTrue(b.length == 1, "New bundle was returned from server");
@@ -17,6 +15,7 @@ var bundle = b[0];
 assertTrue(bundle.versions().length == 2, "2 Bundle versions were uploaded");
 assertTrue(bundle.destinations().length == 2, "2 Bundle destination was created");
 
-bundle.deploy(bundle.destinations()[0],{},bundleVersion,false);
+bundle.destinations()[0].deleteDest();
 
+assertTrue(bundle.destinations().length == 1, "Bundle destination was deleted");
 

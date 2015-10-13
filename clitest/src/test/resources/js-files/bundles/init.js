@@ -27,11 +27,13 @@ var platforms = groups.create(group,resources.platforms({type:"Linux"}));
 
 println("Creating bundle from dist-files");
 bundles.createFromDistFile(bundleFile1);
-bundles.createFromDistFile(bundleFile2).createDestination(platforms,null,"/tmp/foo");
+var newB = bundles.createFromDistFile(bundleFile2);
+newB.createDestination(platforms,null,"/tmp/foo");
+newB.createDestination(platforms,null,"/tmp/foo2");
 
 var b = bundles.find()
 assertTrue(b.length == 1, "New bundle was returned from server");
 assertTrue(b[0].versions().length == 2, "2 Bundle versions were uploaded");
-assertTrue(b[0].destinations().length == 1, "1 Bundle destination was created");
+assertTrue(b[0].destinations().length == 2, "2 Bundle destination was created");
 
 
