@@ -13,7 +13,7 @@ assertTrue(b.length == 1, "New bundle was returned from server");
 
 var bundle = b[0];
 assertTrue(bundle.versions().length == 2, "2 Bundle versions were uploaded");
-assertTrue(bundle.destinations().length == 1, "1 Bundle destination was created");
+assertTrue(bundle.destinations().length == 0, "0 Bundle destination was created");
 
 bundle.versions().forEach(function(b) {
 	assertTrue(b.files().length == 1,"There is 1 file within bundle version");

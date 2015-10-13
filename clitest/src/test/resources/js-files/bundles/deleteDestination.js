@@ -13,9 +13,9 @@ assertTrue(b.length == 1, "New bundle was returned from server");
 
 var bundle = b[0];
 assertTrue(bundle.versions().length == 2, "2 Bundle versions were uploaded");
-assertTrue(bundle.destinations().length == 2, "2 Bundle destination was created");
+assertTrue(bundle.destinations().length == 1, "1 Bundle destination was created");
 
 bundle.destinations()[0].deleteDest();
 
-assertTrue(bundle.destinations().length == 1, "Bundle destination was deleted");
+assertTrue(bundle.destinations().length == 0, "Bundle destination was deleted");
 
