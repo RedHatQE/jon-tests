@@ -212,18 +212,18 @@ public class Monitoring extends ResourceTab {
                     int maxScrollAtempts = 10;
                     int scrollAttempts = 0;
                     // it is possible that the element is in the page, just it isn't in the visible area, lets try scrolling
-                    while (!metricCell.isVisible() && scrollAttempts < maxScrollAtempts) {
-                        scrollDown(20);
-                        scrollAttempts++;
-                        metricCell = tasks.cell(metricName).in(table);
-                    }
-                    // it is possible we weren't at the top, lets try scrolling back up, twise as much attempts as we need to
-                    // first get back to original position and continue further up
-                    scrollAttempts = 0;
-                    while (!metricCell.isVisible() && scrollAttempts < maxScrollAtempts*2) {
-                        scrollUp(20);
-                        scrollAttempts++;
-                        metricCell = tasks.cell(metricName).in(table);
+                    if (getVScrollButton("track") != null) { // scroller exists, lets try scrolling to find
+                        if (!metricCell.isVisible()) {
+                            log.fine("metric " + metricName + " is not visible, reloading page and starting scrolling from top");
+                            tasks.reloadPage(); // reloading whole page => making sure we start at top,
+                        }
+                        // whether element exists on the page
+                        while (!metricCell.isVisible() && scrollAttempts < maxScrollAtempts) {
+                            scrollDown(10);
+                            scrollAttempts++;
+                            refresh();
+                            metricCell = tasks.cell(metricName).in(table);
+                        }
                     }
                     if (metricCell.isVisible()) {
                         return metricCell;
@@ -292,6 +292,10 @@ public class Monitoring extends ResourceTab {
                 return scrolls.get(scrolls.size() - 1);
             }
             return null;
+        }
+
+        private void refresh() {
+            tasks.cell("Refresh").click();
         }
 
     }
