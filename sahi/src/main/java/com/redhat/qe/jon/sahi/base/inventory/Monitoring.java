@@ -171,14 +171,15 @@ public class Monitoring extends ResourceTab {
                     int maxScrollAtempts = 10;
                     int scrollAttempts = 0;
                     // it is possible that the element is in the page, just it isn't in the visible area, lets try scrolling
-                    while (metricCell.exists() && !metricCell.isVisible() && scrollAttempts < maxScrollAtempts) {
+                    while (!metricCell.isVisible() && scrollAttempts < maxScrollAtempts) {
                         scrollDown(20);
                         scrollAttempts++;
                         metricCell = tasks.cell(metricName).in(table);
                     }
-                    // it is possible we weren't at the top, lets try scrolling back up
+                    // it is possible we weren't at the top, lets try scrolling back up, twise as much attempts as we need to
+                    // first get back to original position and continue further up
                     scrollAttempts = 0;
-                    while (metricCell.exists() && !metricCell.isVisible() && scrollAttempts < maxScrollAtempts*2) {
+                    while (!metricCell.isVisible() && scrollAttempts < maxScrollAtempts*2) {
                         scrollUp(20);
                         scrollAttempts++;
                         metricCell = tasks.cell(metricName).in(table);
