@@ -63,26 +63,13 @@ public class Monitoring extends ResourceTab {
     public static class Schedules {
         private final SahiTasks tasks;
         private final Logger log = Logger.getLogger(this.getClass().getName());
+        private final MetricsFinder metricsFinder;
 
         private Schedules(SahiTasks tasks) {
             this.tasks = tasks;
+            this.metricsFinder = new MetricsFinder(tasks);
         }
 
-        private ElementStub getMetricCell(String metricName) {
-            List<ElementStub> tables = tasks.table("listTable")
-                    .collectSimilar();
-            log.fine("listTable count = " + tables.size());
-            for (ElementStub table : tables) {
-                if (table.isVisible()) {
-                    ElementStub metricCell = tasks.cell(metricName).in(table);
-                    if (metricCell.isVisible()) {
-                        return metricCell;
-                    }
-                }
-            }
-            throw new RuntimeException("Unable to find metric cell called ["
-                    + metricName + "]");
-        }
 
         /**
          * sets collection interval for givem metric
@@ -91,14 +78,14 @@ public class Monitoring extends ResourceTab {
          * @param interval in minutes
          */
         public void setInterval(String metric, String interval) {
-            tasks.xy(getMetricCell(metric), 3, 3).click();
+            tasks.xy(metricsFinder.getMetricCell(metric), 3, 3).click();
             ElementStub textbox = tasks.textbox("interval");
             textbox.setValue(interval);
             for (ElementStub setButton : tasks.cell("Set").collectSimilar()) {
                 String setButtonClass = setButton.getAttribute("class");
                 if ("buttonDisabled".equals(setButtonClass)) {
                     log.finer("Clicking again on the " + metric + " in order to enable the set button");
-                    tasks.xy(getMetricCell(metric), 3, 3).click();
+                    tasks.xy(metricsFinder.getMetricCell(metric), 3, 3).click();
                 }
                 tasks.xy(setButton, 3, 3).click();
             }
@@ -112,7 +99,7 @@ public class Monitoring extends ResourceTab {
          */
         public String getInterval(String metric) {
             tasks.waitFor(Timing.TIME_1S);
-            return tasks.cell(4).in(getMetricCell(metric).parentNode("tr")).getText();
+            return tasks.cell(4).in(metricsFinder.getMetricCell(metric).parentNode("tr")).getText();
         }
 
         /**
@@ -121,9 +108,9 @@ public class Monitoring extends ResourceTab {
          * @param metric
          */
         public void enable(String metric) {
-            tasks.xy(getMetricCell(metric), 3, 3).click();
-            for (ElementStub disable : tasks.cell("Enable").collectSimilar()) {
-                disable.click();
+            tasks.xy(metricsFinder.getMetricCell(metric), 3, 3).click();
+            for (ElementStub enable : tasks.cell("Enable").collectSimilar()) {
+                enable.click();
             }
         }
 
@@ -133,7 +120,7 @@ public class Monitoring extends ResourceTab {
          * @param metric
          */
         public void disable(String metric) {
-            tasks.xy(getMetricCell(metric), 3, 3).click();
+            tasks.xy(metricsFinder.getMetricCell(metric), 3, 3).click();
             for (ElementStub disable : tasks.cell("Disable").collectSimilar()) {
                 disable.click();
             }
@@ -143,8 +130,62 @@ public class Monitoring extends ResourceTab {
     public static class Tables {
         private final SahiTasks tasks;
         private final Logger log = Logger.getLogger(this.getClass().getName());
+        private final MetricsFinder metricsFinder;
 
         private Tables(SahiTasks tasks) {
+            this.tasks = tasks;
+            this.metricsFinder = new MetricsFinder(tasks);
+        }
+
+        /**
+         * @param metricName
+         * @return true if metric with given name is present in metrics table
+         */
+        public boolean containsMetric(String metricName) {
+            ElementStub metricCell = metricsFinder.getMetricCellWithScrolling(metricName);
+            return (metricCell != null && metricCell.isVisible());
+        }
+
+        public void refresh() {
+            tasks.reloadPage();
+        }
+
+        /**
+         * checks whether given metric row contains given value
+         *
+         * @param metric name of metric
+         * @param value  to be contained within metric row
+         * @return true if given value is contained in metric row
+         */
+        public boolean containsMetricRowValue(String metric, String value) {
+            ElementStub metricCell = metricsFinder.getMetricCell(metric);
+            ElementStub row = metricCell.parentNode("tr");
+            return row.getText().contains(value);
+        }
+
+        /**
+         * Retrieves measured value for given metric
+         *
+         * @param metric           name of metric
+         * @param valueColumnIndex index in metric table (note that 0 will return metric
+         *                         name)
+         * @return String value found in given column for given metric
+         */
+        public String getMetricRowValue(String metric, int valueColumnIndex) {
+            ElementStub metricCell = metricsFinder.getMetricCell(metric);
+            ElementStub row = metricCell.parentNode("tr");
+            return tasks.cell(valueColumnIndex).in(row).getText();
+        }
+    }
+
+    /**
+     * Helper class for finding proper metrics in tables used by Tables and Schedules classes.
+     */
+    private static class MetricsFinder {
+        private final SahiTasks tasks;
+        private final Logger log = Logger.getLogger(this.getClass().getName());
+
+        private MetricsFinder(SahiTasks tasks) {
             this.tasks = tasks;
         }
 
@@ -191,47 +232,6 @@ public class Monitoring extends ResourceTab {
             }
             return null;
         }
-
-        /**
-         * @param metricName
-         * @return true if metric with given name is present in metrics table
-         */
-        public boolean containsMetric(String metricName) {
-            ElementStub metricCell = getMetricCellWithScrolling(metricName);
-            return (metricCell != null && metricCell.isVisible());
-        }
-
-        public void refresh() {
-            tasks.reloadPage();
-        }
-
-        /**
-         * checks whether given metric row contains given value
-         *
-         * @param metric name of metric
-         * @param value  to be contained within metric row
-         * @return true if given value is contained in metric row
-         */
-        public boolean containsMetricRowValue(String metric, String value) {
-            ElementStub metricCell = getMetricCell(metric);
-            ElementStub row = metricCell.parentNode("tr");
-            return row.getText().contains(value);
-        }
-
-        /**
-         * Retrieves measured value for given metric
-         *
-         * @param metric           name of metric
-         * @param valueColumnIndex index in metric table (note that 0 will return metric
-         *                         name)
-         * @return String value found in given column for given metric
-         */
-        public String getMetricRowValue(String metric, int valueColumnIndex) {
-            ElementStub metricCell = getMetricCell(metric);
-            ElementStub row = metricCell.parentNode("tr");
-            return tasks.cell(valueColumnIndex).in(row).getText();
-        }
-
 
         /**
          * clicks on bottom scroll arrow
@@ -293,6 +293,7 @@ public class Monitoring extends ResourceTab {
             }
             return null;
         }
+
     }
 
 
