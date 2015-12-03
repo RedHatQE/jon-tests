@@ -218,7 +218,7 @@ public class Monitoring extends ResourceTab {
 
                         metricCell = tasks.cell(metricName).in(table);
                         // whether element exists on the page
-                        while (!metricCell.isVisible() || scrollAttempts < maxScrollAtempts) {
+                        while (!metricCell.isVisible() && (scrollAttempts < maxScrollAtempts)) {
                             scrollDown(10);
                             scrollAttempts++;
                             metricCell = tasks.cell(metricName).in(table);
