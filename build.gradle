@@ -166,12 +166,17 @@ project(":rest-java") {
 	}
 }
 project(":common") {
+ext.controllerClientVersion='org.jboss.as:jboss-as-controller-client:7.2.0.Final'
+if(JavaVersion.current() == JavaVersion.VERSION_1_8){
+logger.debug('Using wildfly-controller-client')
+ext.controllerClientVersion='org.wildfly.core:wildfly-controller-client:2.0.5.Final'
+}
 	dependencies {
 		compile "com.redhat.qe:ssh-tools:1.0.0",
 			"com.redhat.qe:assertions:1.0.2",
 			"com.redhat.qe:testng-listeners:1.0.5",
 			"com.redhat.qe:log-checker:1.0.1-SNAPSHOT",
-			"org.jboss.as:jboss-as-controller-client:7.2.0.Final",
+			controllerClientVersion,
 			"com.google.inject:guice:3.0",
                         "org.testng:testng:6.8.13",
 			"com.googlecode.json-simple:json-simple:1.1.1",
