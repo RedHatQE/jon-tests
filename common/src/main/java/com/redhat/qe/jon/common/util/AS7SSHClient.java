@@ -13,7 +13,6 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
 
     private String serverConfig; // allows to recognize the correct AS7 server process
 	private final String asHome;
-	private static final SimpleDateFormat sdfServerLog = new SimpleDateFormat("HH:mm:ss");
     private String asIdentifier;
     private static final Platform platform = new Platform();
 
@@ -232,6 +231,16 @@ public class AS7SSHClient extends SSHClient implements IAS7CommandRunner {
 
                 // retrive only the date time part
                 String dateStr = lastStartupDateStr.split(",")[0];
+
+                SimpleDateFormat sdfServerLog = null;
+                // create correct date format based on EAP version
+                if (dateStr.contains("-")){
+                    // long format in EAP7
+                    sdfServerLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                }else{
+                    // short format in EAP6
+                    sdfServerLog = new SimpleDateFormat("HH:mm:ss");
+                }
                 return sdfServerLog.parse(dateStr.trim());
             }
 
