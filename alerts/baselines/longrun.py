@@ -16,13 +16,13 @@ mailTo = 'fbrychta@redhat.com'
 
 # baselines
 baselines = [
-        {'select':('.*','RHQ Agent','JVM','Threading'),'metric':'Thread Count','max':190},
+        {'select':('.*','RHQ Agent','JVM','Threading'),'metric':'Thread Count','max':200},
         {'select':('.*','RHQ Agent','JVM','Memory Subsystem'),'metric':'Heap Usage','max':mb(150)},
         {'select':('.*','RHQ Server','platform-mbean','threading'),'metric':'Thread Count','max':300},
         {'select':('.*','RHQ Server','platform-mbean','memory$'),'metric':'Used heap','max':mb(1000)},
-        {'select':('.*',),'metric':'System Load','max':4},
-        {'select':('.*','/$'),'metric':'Used Percentage','max':80},
+       # blocked by bz1319019{'select':('.*',),'metric':'System Load','max':4},
+       # blocked by bz1319019 {'select':('.*','/$'),'metric':'Used Percentage','max':0.8},
         {'select':('.*','/$'),'metric':'Free Files','min':100000},
-        {'select':('.*','RHQ Storage Node','Cassandra Server JVM','Threading'),'metric':'Thread Count','max':200},
-        {'select':('.*','RHQ Storage Node','Cassandra Server JVM','Memory Subsystem'),'metric':'Heap Usage','max':mb(400)}
+        {'select':('.*','RHQ Storage Node','JVM','Threading'),'metric':'Thread Count','max':240},
+        {'select':('.*','RHQ Storage Node','JVM','Memory Subsystem'),'metric':'Heap Usage','max':mb(400)}
     ]
