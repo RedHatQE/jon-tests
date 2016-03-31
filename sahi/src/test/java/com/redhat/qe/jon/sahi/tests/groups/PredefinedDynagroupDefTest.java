@@ -56,7 +56,10 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
                 "All RHQ Agent resources in inventory",
                 "All resources currently down",
                 "Managed Servers in domain",
-                "Managed Servers in server-group"};
+                "Managed Servers in server-group",
+                "Managed EAP7 Servers in domain",
+                "Managed EAP7 Servers in server-group"
+                };
         for(String name : predefinedDefNames){
             log.fine("Checking dynagroup definition named: " + name);
             Assert.assertTrue(dynagroupDefPage.isMarkedAsCanned(name),"Definition named "+name+" is marked as canned");
@@ -92,6 +95,35 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
     @DataProvider
     public Object[][] cannedExprParameters(){
         return new Object[][] {
+                {"EAP7 - Deployments in EAP7 server-group",
+                    new DynagroupDef("Deployments in EAP7 server-group",
+                            "EAP7 Deployments in server-groups",
+                            "",
+                            "groupby resource.grandParent.trait[domain-name]\n"
+                            + "groupby resource.parent.resourceConfiguration[group]\n"
+                            + "resource.type.plugin = EAP7\n"
+                            + "resource.type.name = ManagedServerDeployment\n",
+                            false,
+                            10)},
+                {"EAP7 - Managed EAP7 Servers in domain",
+                    new DynagroupDef("Managed EAP7 Servers in domain",
+                            "EAP 7 Managed servers in server in domains",
+                            "",
+                            "groupby resource.parent.trait[domain-name]\n"
+                            + "resource.type.plugin = EAP7\n"
+                            + "resource.type.name = Managed Server\n",
+                            false,
+                            10)},
+                {"EAP7 - Managed EAP7 Servers in server-group",
+                    new DynagroupDef("Managed EAP7 Servers in server-group",
+                            "EAP 7 Managed servers in server in server-groups",
+                            "",
+                            "groupby resource.parent.trait[domain-name]\n"
+                            + "groupby resource.resourceConfiguration[group]\n"
+                            + "resource.type.plugin = EAP7\n"
+                            + "resource.type.name = Managed Server\n",
+                            false,
+                            10)},
                 {"JBossAS - All hosting any version of "+'"'+"my"+'"'+" app",
                     new DynagroupDef("All hosting any version of \"my\" app",
                             "All hosting any version of \"my\" app",
