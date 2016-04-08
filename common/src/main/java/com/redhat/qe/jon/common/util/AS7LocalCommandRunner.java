@@ -1,11 +1,13 @@
 package com.redhat.qe.jon.common.util;
 
-import com.redhat.qe.jon.common.*;
-import com.redhat.qe.tools.*;
+import com.redhat.qe.jon.common.Constants;
+import com.redhat.qe.jon.common.Platform;
+import com.redhat.qe.tools.SSHCommandResult;
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * AS7LocalCommandRunner provides platform independent implementation of IAS7CommandRunner
@@ -15,7 +17,6 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
 
     private String serverConfig; // allows to recognize the correct AS7 server process
     private final String asHome;
-    private static final SimpleDateFormat sdfServerLog = new SimpleDateFormat("HH:mm:ss");
     private String asIdentifier;
     private static final Platform platform = new Platform();
     private static final String sep = File.separator;
@@ -267,6 +268,16 @@ public class AS7LocalCommandRunner extends LocalCommandRunner implements IAS7Com
 
                 // retrive only the date time part
                 String dateStr = lastStartupDateStr.split(",")[0];
+
+                SimpleDateFormat sdfServerLog;
+                // create correct date format based on EAP version
+                if (dateStr.contains("-")) {
+                    // long format in EAP7
+                    sdfServerLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                } else {
+                    // short format in EAP6
+                    sdfServerLog = new SimpleDateFormat("HH:mm:ss");
+                }
                 return sdfServerLog.parse(dateStr.trim());
             }
 
