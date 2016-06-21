@@ -1,1 +1,1 @@
-pretty.print(null);
+pretty.printObject(null);
