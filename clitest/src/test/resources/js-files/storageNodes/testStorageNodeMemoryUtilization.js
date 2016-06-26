@@ -16,7 +16,9 @@ var now = new java.util.Date().getTime();
 var before8hours = now - (1000 * 60 * 60 * 8);
 
 // get storage node disk metrics
+println("Getting load from " + node);
 var disk = StorageNodeManager.getLoad(node, before8hours, now);
+assertNotNull(disk, "Some load was received");
 
 // check Heap Maximum metric values
 assertNotNull(disk.heapCommitted.aggregate.min, "Check Heap Maximum min value not null");
