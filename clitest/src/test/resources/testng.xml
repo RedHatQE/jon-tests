@@ -199,7 +199,11 @@
 		</class>
 	</classes>
 </test -->
-
+<test name="Revert configuration test">
+    <classes>
+        <class name="com.redhat.qe.jon.clitest.tests.configuration.RevertConfigurationTest" />
+    </classes>
+</test>
 <test name="Import Port Services">
     <classes>
         <class name="com.redhat.qe.jon.clitest.tests.importPortServices.ImportPortServicesTest"> </class>
