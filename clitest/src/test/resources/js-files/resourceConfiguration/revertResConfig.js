@@ -37,6 +37,7 @@ assertTrue(agentConfig["rhq.agent.wait-for-server-at-startup-msecs"] == startupO
 var configUpdatesPost = ConfigurationManager.findResourceConfigurationUpdatesByCriteria(criteria);
 assertTrue(configUpdatesPre.size() + 2 == configUpdatesPost.size(), "Correct count of configuration updates was returned");
 
+println("# of config updates: " + configUpdatesPost.size()));
 // check configuration returned in configuration update
 var originalCongigUpdate = configUpdatesPost.get(configUpdatesPost.size()-3);
 var valueFromOriginalConfigUpdate = originalCongigUpdate.getConfiguration().getSimpleValue("rhq.agent.wait-for-server-at-startup-msecs");
