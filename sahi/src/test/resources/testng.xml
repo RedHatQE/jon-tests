@@ -109,7 +109,19 @@
 		</groups>
 	</test>
 
-
+    <test name="DashboardTest">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.DashboardTest" />
+        </classes>
+        <groups>
+            <run>
+                <include name="setup"/>
+                <include name="teardown"/>
+                <include name="DashboardTest"/>
+                <include name="DashboardTestJON"/>
+            </run>
+        </groups>
+    </test>
 	<test name="ReportsTest">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.tests.ReportsTest" />
@@ -122,19 +134,7 @@
 			</run>
 		</groups>
 	</test>
-	<test name="DashboardTest">
-		<classes>
-			<class name="com.redhat.qe.jon.sahi.tests.DashboardTest" />
-		</classes>
-		<groups>
-			<run>
-				<include name="setup"/>
-				<include name="teardown"/>
-				<include name="DashboardTest"/>
-				<include name="DashboardTestJON"/>
-			</run>
-		</groups>
-	</test>
+	
 
 	<test name="ResourcesTest">
 		<classes>
