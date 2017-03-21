@@ -1,22 +1,22 @@
 package com.redhat.qe.jon.common.util;
 
+import com.redhat.qe.Assert;
+import org.jboss.as.controller.client.ModelControllerClient;
+import org.jboss.dmr.ModelNode;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.RealmCallback;
-
-import org.jboss.as.controller.client.ModelControllerClient;
-import org.jboss.dmr.ModelNode;
-
-import com.redhat.qe.Assert;
 /**
  * AS 7 DMR Management client
  * @author lzoubek
@@ -191,6 +191,25 @@ public class AS7DMRClient {
 		log.fine("Operation executed result: " + ret.toString());
 		return ret;
 	}
+
+	/**
+	 * Waits for server to be in running state, throws TimeoutException in case server isn't running after specified timeout
+	 */
+	public void waitUntilRunning(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+		long startTime = System.currentTimeMillis();
+		boolean running = false;
+		while (!running && System.currentTimeMillis() < startTime + unit.toMillis(timeout)) {
+			TimeUnit.SECONDS.sleep(1);
+			try {
+				ModelNode res = executeOperation(readAttribute("/", "server-state"));
+				running = "success".equals(res.get("outcome").asString()) && "running".equals(res.get("result").asString());
+			} catch (Exception e) {
+				running = false;
+			}
+		}
+		if (!running) throw new TimeoutException("Server not running after " + timeout + " " + unit.toString());
+	}
+
 	/**
 	 * checks, whether client's connection is valid, by simply calling some operation
 	 */
@@ -299,11 +318,29 @@ public class AS7DMRClient {
 	 */
 	public void reload() {
 		executeOperationVoid("/", "reload", new String[]{});
+		log.fine("Waiting maximum 60s for server to reload");
 		try {
-			log.fine("Waiting 30s for server to reload");
-			Thread.currentThread().join(30*1000);
+			TimeUnit.MILLISECONDS.sleep(500); // needed to not start checking before actual reload is started
+			waitUntilRunning(60, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * invokes 'shutdown(restart=true)' command on server
+	 */
+	public void restart() {
+		executeOperationVoid("/", "shutdown", new String[]{"restart=true"});
+		log.fine("Waiting maximum 60s for server to restart");
+		try {
+			TimeUnit.MILLISECONDS.sleep(500); // needed to not start checking before actual restart is started
+			waitUntilRunning(60, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (TimeoutException e) {
 			e.printStackTrace();
 		}
 	}
@@ -311,9 +348,9 @@ public class AS7DMRClient {
 	/**
 	 * @return true if resource on given address is present (returns some value when calling `read-resource` operation on it)
 	 */
-        public boolean isResourcePresent(String address) {
-        	return executeOperationVoid(address, "read-resource",  new String[]{});
-        }
+	public boolean isResourcePresent(String address) {
+		return executeOperationVoid(address, "read-resource", new String[]{});
+	}
 
 	/**
 	 * asserts whether given resource is/is not present on server
