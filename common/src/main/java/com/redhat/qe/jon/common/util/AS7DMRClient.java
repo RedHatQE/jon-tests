@@ -201,8 +201,10 @@ public class AS7DMRClient {
 		while (!running && System.currentTimeMillis() < startTime + unit.toMillis(timeout)) {
 			TimeUnit.SECONDS.sleep(1);
 			try {
-				ModelNode res = executeOperation(readAttribute("/", "server-state"));
-				running = "success".equals(res.get("outcome").asString()) && "running".equals(res.get("result").asString());
+				ModelNode res = readAttribute("/", "server-state");
+				if (res != null) {
+					running = "success".equals(res.get("outcome").asString()) && "running".equals(res.get("result").asString());
+				}
 			} catch (Exception e) {
 				running = false;
 			}
