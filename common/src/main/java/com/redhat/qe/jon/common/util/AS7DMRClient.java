@@ -205,7 +205,7 @@ public class AS7DMRClient {
 				if (res != null) {
 					running = "success".equals(res.get("outcome").asString()) && "running".equals(res.get("result").asString());
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				running = false;
 			}
 		}
