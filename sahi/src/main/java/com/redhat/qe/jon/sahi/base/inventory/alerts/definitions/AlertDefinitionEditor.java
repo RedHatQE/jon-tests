@@ -68,7 +68,7 @@ public class AlertDefinitionEditor {
 		log.fine("Setting general options of alert definition: description:" +description+", priority: " +
 				priority.toString()+", enabled: " +Boolean.toString(enabled));
 		editor.setTextInTextAreaNearCell(TEXT_FIELD_SELECTOR, description, "Description :");
-    	tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Priority :", priority.toString());
+    	tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Priority :", priority.toString());
     	
     	if(enabled){
     		editor.checkRadioNearCell("enabled", "Yes");
@@ -172,7 +172,7 @@ public class AlertDefinitionEditor {
 	}
 	
 	private void fillCondition(Condition condition){
-		tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Condition Type :", condition.getType());
+		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Condition Type :", condition.getType());
 		fillFields(condition.getFields());
 		
 		tasks.cell("OK").click();
@@ -484,9 +484,9 @@ public class AlertDefinitionEditor {
 			switch (f.getType()){
 				case COMBO:
 					if(f.getFieldLocator()==null){
-						tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR,f.getNearLocator(), f.getValue());
+						tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR,f.getNearLocator(), f.getValue());
 					}else{
-						tasks.selectComboBoxByNearCellOptionByRow(tasks, f.getFieldLocator(),f.getNearLocator(), f.getValue());
+						tasks.selectComboBoxByNearCellOptionByDiv(tasks, f.getFieldLocator(),f.getNearLocator(), f.getValue());
 					}
 					break;
 				case TEXT:
