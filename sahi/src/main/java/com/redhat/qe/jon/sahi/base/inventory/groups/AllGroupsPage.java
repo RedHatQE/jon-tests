@@ -35,6 +35,12 @@ public class AllGroupsPage {
         
         return this;
     }
+    public void selectGroup(String groupName){
+        // TODO add page object for returned type
+        tasks.link(groupName).click();
+        tasks.waitForElementVisible(tasks, tasks.cell("Summary"), "Summary label", Timing.WAIT_TIME);
+
+    }
     
     /**
      * Creates a given group.

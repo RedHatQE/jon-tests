@@ -391,7 +391,31 @@ public class AlertDefinitionEditor {
 		
 		return this;
 	}
-	
+	public AlertDefinitionEditor addSystemUserNotification(String userName){
+	    tasks.cell("Notifications").click();
+	    tasks.cell("Add[1]").click();
+	    log.fine("Adding system user notificantion");
+	    tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Notification Sender :", "System Users");
+
+	    if(userName!=null){
+	        tasks.cell(userName).doubleClick();
+	    }
+	    ElementStub okBut = tasks.cell("OK");
+	    tasks.waitForElementVisible(tasks, okBut, "OK button", Timing.WAIT_TIME);
+	    okBut.click();
+
+	    // this is a hack, sometimes first click simply doesn't work
+	    tasks.waitFor(500);
+	    if(okBut.isVisible()){
+	        okBut.click();
+	    }
+
+	    if(tasks.isVisible(tasks.cell("formCellError"))){
+	        throw new RuntimeException("Form which you are submitting contains validation errors!");
+	    }
+	    tasks.waitFor(Timing.WAIT_TIME);
+	    return this;
+	}
 	/**
 	 * Sets fields on Recovery tab.
 	 * @param recoveryAlert full displayed name of recovery alert in combo box

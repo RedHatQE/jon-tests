@@ -91,10 +91,14 @@ public class AlertDefinitionPageSnippet {
             }else{
                 throw new RuntimeException("Couldn't parse a priority from the alert definitions page.");
             }
-            
-            alertDef.setParent(tasks.cell("/tallCell.*/[6]").in(row).getText());
-            alertDef.setProtectedField(tasks.cell("/tallCell.*/[7]").in(row).getText());
-    
+
+            if(tasks.cell("/tallCell.*/[6]").in(row).isVisible()){
+                alertDef.setParent(tasks.cell("/tallCell.*/[6]").in(row).getText());
+            }
+            if(tasks.cell("/tallCell.*/[7]").in(row).isVisible()){
+                alertDef.setProtectedField(tasks.cell("/tallCell.*/[7]").in(row).getText());
+            }
+
             log.finer("Following values were parsed from the page:"+
                     " Description: "+alertDef.getDescription()+
                     ", Creation time: "+alertDef.getCreationTime()+
