@@ -417,6 +417,12 @@
             </class>
         </classes>
     </test>
+    <test name="ResourceGroupAlertDefinitionTest">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.alerts.ResourceGroupAlertDefinitionTest">
+            </class>
+        </classes>
+    </test>
 
 <!-- Storage Node tests should run before StorageAutoInventoryTest -->
 	<test name="StorageNode">
