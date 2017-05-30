@@ -54,6 +54,17 @@ public class ExtendedSahi extends Browser {
                 if (optionToSelectSimilar.size() != 0) {
                     break;
                 }
+                // and again (sometimes it's necessary to click twice)
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                browser.xy(el, 3, 3).click();
+                optionToSelectSimilar = optionToSelect.collectSimilar();
+                if (optionToSelectSimilar.size() != 0) {
+                    break;
+                }
             }
             counter++;
         }
