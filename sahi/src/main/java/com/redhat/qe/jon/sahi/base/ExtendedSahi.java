@@ -40,7 +40,7 @@ public class ExtendedSahi extends Browser {
 
         int counter = 0;
         // if the given option is not found, wait for a while and try it again for different locator
-        while (optionToSelectSimilar.size() == 0 && counter < 2) {
+        while (optionToSelectSimilar.size() == 0 && counter <= 2) {
             for (ElementStub el : similarDropDownBoxes) {
                 try {
                     Thread.sleep(500);
@@ -54,8 +54,8 @@ public class ExtendedSahi extends Browser {
                 if (optionToSelectSimilar.size() != 0) {
                     break;
                 }
-                counter++;
             }
+            counter++;
         }
         _logger.log(Level.INFO, "Selecting the element [" + optionToSelect + "]");
 
