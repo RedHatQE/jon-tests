@@ -5,6 +5,7 @@ import net.sf.sahi.client.Browser;
 import net.sf.sahi.client.ElementStub;
 import net.sf.sahi.config.Configuration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,63 +27,92 @@ public class ExtendedSahi extends Browser {
 		Configuration.initJava(sahiDir, userDataDir);
 	}
 	
+	public void selectDropDownByElementStub(Browser browser, ElementStub dropDownBox, ElementStub optionToSelect) {
+	    selectDropDownByElementStub(browser, dropDownBox, optionToSelect, null);
+	}
     //Core Drop Down selector
-    public void selectDropDownByElementStub(Browser browser, ElementStub dropDownBox, ElementStub optionToSelect) {
-        List<ElementStub> similarDropDownBoxes = dropDownBox.collectSimilar();
-        if (similarDropDownBoxes.size() > 1) {
-            _logger.warning("More then 1 drop down box with given locator found on the page. Make sure " +
-                    "that correct one is picked. Using the one with following inner text: " + dropDownBox.getText());
-        }
-        browser.xy(dropDownBox, 3, 3).click();
-        _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "]");
+	public void selectDropDownByElementStub(Browser browser, ElementStub dropDownBox, ElementStub optionToSelect, ElementStub alternativeOptionToSelect) {
+	    List<ElementStub> similarDropDownBoxes = dropDownBox.collectSimilar();
+	    if (similarDropDownBoxes.size() > 1) {
+	        _logger.warning("More then 1 drop down box with given locator found on the page. Make sure " +
+	                "that correct one is picked. Using the one with following inner text: " + dropDownBox.getText());
+	    }
+	    browser.xy(dropDownBox, 3, 3).click();
+	    _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "]");
 
-        List<ElementStub> optionToSelectSimilar = optionToSelect.collectSimilar();
+	    List<ElementStub> optionToSelectSimilar = optionToSelect.collectSimilar();
 
-        int counter = 0;
-        // if the given option is not found, wait for a while and try it again for different locator
-        while (optionToSelectSimilar.size() == 0 && counter <= 2) {
-            for (ElementStub el : similarDropDownBoxes) {
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                // try to click again
-                _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "] trying again");
-                browser.xy(el, 3, 3).click();
-                optionToSelectSimilar = optionToSelect.collectSimilar();
-                if (optionToSelectSimilar.size() != 0) {
-                    break;
-                }
-                // and again (sometimes it's necessary to click twice)
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                browser.xy(el, 3, 3).click();
-                optionToSelectSimilar = optionToSelect.collectSimilar();
-                if (optionToSelectSimilar.size() != 0) {
-                    break;
-                }
-            }
-            counter++;
-        }
-        _logger.log(Level.INFO, "Selecting the element [" + optionToSelect + "]");
+	    List<ElementStub> alternativeOptionToSelectSimilar = new ArrayList<ElementStub>();
+	    if (alternativeOptionToSelect != null){
+	        alternativeOptionToSelectSimilar = alternativeOptionToSelect.collectSimilar();
+	    }
 
-        if (optionToSelectSimilar.size() == 0) {
-            _logger.severe("Option " + optionToSelect.getText() + " not found in drop down box " + dropDownBox +
-                    "Check that option locator is correct! Hint: count of similar options using row locator: " +
-                    browser.row(optionToSelect.getText()).countSimilar()
-                    + ", count of similar options using div locator: " +
-                    browser.div(optionToSelect.getText()).countSimilar());
-            throw new RuntimeException(
-                    "Option " + optionToSelect.getText() + " not found in drop down box " + dropDownBox);
-        }
+	    int counter = 0;
+	    // if the given option is not found, wait for a while and try it again for different locator
+	    while (!isAnyOfElementsVisible(optionToSelectSimilar) && !isAnyOfElementsVisible(alternativeOptionToSelectSimilar) && counter <= 2) {
+	        for (ElementStub el : similarDropDownBoxes) {
+	            try {
+	                Thread.sleep(500);
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	            // try to click again
+	            _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "] trying again");
+	            browser.xy(el, 3, 3).click();
+	            optionToSelectSimilar = optionToSelect.collectSimilar();
+	            if (alternativeOptionToSelect != null){
+	                alternativeOptionToSelectSimilar = alternativeOptionToSelect.collectSimilar();
+	            }
+	            if (isAnyOfElementsVisible(optionToSelectSimilar) || isAnyOfElementsVisible(alternativeOptionToSelectSimilar)) {
+	                break;
+	            }
+	            // and again (sometimes it's necessary to click twice)
+	            try {
+	                Thread.sleep(500);
+	            } catch (InterruptedException e) {
+	                e.printStackTrace();
+	            }
+	            browser.xy(el, 3, 3).click();
+	            optionToSelectSimilar = optionToSelect.collectSimilar();
+	            if (alternativeOptionToSelect != null){
+	                alternativeOptionToSelectSimilar = alternativeOptionToSelect.collectSimilar();
+	            }
+	            if (isAnyOfElementsVisible(optionToSelectSimilar) || isAnyOfElementsVisible(alternativeOptionToSelectSimilar)){
+	                break;
+	            }
+	        }
+	        counter++;
+	    }
 
-        optionToSelect = optionToSelectSimilar.get(optionToSelectSimilar.size() - 1);
-        _logger.log(Level.INFO, "Selected Option Name: " + optionToSelect.getText());
-        browser.xy(optionToSelect, 3, 3).click();
+
+	    if(!isAnyOfElementsVisible(optionToSelectSimilar) && !isAnyOfElementsVisible(alternativeOptionToSelectSimilar)){
+	        _logger.severe("Option " + optionToSelect.getText() + " not found in drop down box " + dropDownBox +
+	                "Check that option locator is correct! Hint: count of similar options using row locator: " +
+	                browser.row(optionToSelect.getText()).countSimilar()
+	                + ", count of similar options using div locator: " +
+	                browser.div(optionToSelect.getText()).countSimilar());
+	        throw new RuntimeException(
+	                "Option " + optionToSelect.getText() + " not found in drop down box " + dropDownBox);
+	    }
+
+	    if (isAnyOfElementsVisible(optionToSelectSimilar)){
+	        optionToSelect = getFirstVisibleElement(optionToSelectSimilar);
+
+	    }else{
+	        optionToSelect = getFirstVisibleElement(alternativeOptionToSelectSimilar);
+	    }
+	    _logger.log(Level.INFO, "Selecting the element [" + optionToSelect + "]");
+	    browser.xy(optionToSelect, 3, 3).click();
+	    if (! browser.isVisible(optionToSelect) || isAnyOfElementsVisible(browser.div("pickListMenuBody").collectSimilar())){
+	        try {
+	            Thread.sleep(500);
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();
+	        }
+	        _logger.log(Level.INFO, "Selecting the element [" + optionToSelect + "] again");
+	        browser.xy(optionToSelect, 3, 3).click();
+	    }
+	    _logger.log(Level.INFO, "Selected Option Name: " + optionToSelect.getText());
 
     }
 	
@@ -100,6 +130,9 @@ public class ExtendedSahi extends Browser {
 	public void selectComboBoxByNearCellOptionByRow(Browser browser, String comboBoxIdentifier, String nearElement, String optionToSelect){
 		selectComboBoxByNearCell(browser, comboBoxIdentifier, nearElement, browser.row(optionToSelect));
 	}
+	public void selectComboBoxByNearCellOptionByRowOrDiv(Browser browser, String comboBoxIdentifier, String nearElement, String optionToSelect){
+        selectComboBoxByNearCell(browser, comboBoxIdentifier, nearElement, browser.row(optionToSelect),browser.div(optionToSelect));
+    }
 	
 	//Select drop down with near object by div Option
 	public void selectComboBoxByNearCellOptionByDiv(Browser browser, String comboBoxIdentifier, String nearElement, String optionToSelect){
@@ -110,6 +143,9 @@ public class ExtendedSahi extends Browser {
 	public void selectComboBoxByNearCell(Browser browser, String comboBoxIdentifier, String nearElement, ElementStub optionToSelect){
 		selectDropDownByElementStub(browser, browser.div(comboBoxIdentifier).near(browser.cell(nearElement)), optionToSelect);
 	}
+	public void selectComboBoxByNearCell(Browser browser, String comboBoxIdentifier, String nearElement, ElementStub optionToSelect, ElementStub alternativeOptionToSelect){
+        selectDropDownByElementStub(browser, browser.div(comboBoxIdentifier).near(browser.cell(nearElement)), optionToSelect, alternativeOptionToSelect);
+    }
 	
 	public String getSelectedTextFromComboNearCell(Browser browser, String comboBoxIdentifier, String nearElement){
 		return browser.div(comboBoxIdentifier).near(browser.cell(nearElement)).getText();
@@ -235,6 +271,24 @@ public class ExtendedSahi extends Browser {
             }
         }
         return false;
+    }
+    public boolean isAnyOfElementsVisible(List<ElementStub> elementStubs) {
+        for (ElementStub elementStub : elementStubs) {
+            if (elementStub.isVisible()) {
+                _logger.info("Element ["+elementStub+"] is visible");
+                return true;
+            }
+        }
+        return false;
+    }
+    public ElementStub getFirstVisibleElement(List<ElementStub> elementStubs) {
+        for (ElementStub elementStub : elementStubs) {
+            if (elementStub.isVisible()) {
+                _logger.info("Element ["+elementStub+"] is visible");
+                return elementStub;
+            }
+        }
+        return null;
     }
 
     /**
