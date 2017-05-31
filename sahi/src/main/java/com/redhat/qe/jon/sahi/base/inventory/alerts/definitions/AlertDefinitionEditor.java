@@ -113,7 +113,7 @@ public class AlertDefinitionEditor {
 	 */
 	public AlertDefinitionEditor setConditionOperator(Condition.Operator fireWhen){
 		log.fine("Setting condition operator: " +fireWhen.toString());
-		tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Fire alert when :", fireWhen.toString());
+		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Fire alert when :", fireWhen.toString());
 		
 		return this;
 	}
@@ -346,7 +346,7 @@ public class AlertDefinitionEditor {
 		tasks.cell("Notifications").click();
 		tasks.cell("Add[1]").click();
 		log.fine("Adding cli script notificantion");
-		tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Notification Sender :", "CLI Script");
+		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Notification Sender :", "CLI Script");
 		
 		// TODO check that all the fields were filled successfully
 		if(userName!=null){
@@ -358,13 +358,13 @@ public class AlertDefinitionEditor {
 		}
 		
 		
-		tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR,
+		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR,
 				"Select the repository where the script should reside :", repository);
 		if(existingScript!= null){
 			// select last picker
 			int pickers = tasks.image("/comboBoxPicker.*/").countSimilar();
 			editor.selectCombo(pickers -1, existingScript);
-			//tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR,"Existing Script", existingScript);
+			//tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR,"Existing Script", existingScript);
 		}
 		if(newScript != null){
 			editor.checkRadioNearCell("UploadNewScript", "Upload New Script");
@@ -395,7 +395,7 @@ public class AlertDefinitionEditor {
 	    tasks.cell("Notifications").click();
 	    tasks.cell("Add[1]").click();
 	    log.fine("Adding system user notificantion");
-	    tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Notification Sender :", "System Users");
+	    tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Notification Sender :", "System Users");
 
 	    if(userName!=null){
 	        tasks.cell(userName).doubleClick();
@@ -425,7 +425,7 @@ public class AlertDefinitionEditor {
 	public AlertDefinitionEditor setRecovery(String recoveryAlert,boolean disabledWhenFired){
 		tasks.cell("Recovery").click();
 		log.fine("Setting recovery alert to: " + recoveryAlert+". Disabled when fired: " +Boolean.toString(disabledWhenFired));
-		tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Recover Alert :", recoveryAlert);
+		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Recover Alert :", recoveryAlert);
 		if(disabledWhenFired){
 			editor.checkRadioNearCell("disableWhenFired", "Yes");
 		}else{
@@ -464,7 +464,7 @@ public class AlertDefinitionEditor {
 	public AlertDefinitionEditor setDampening(String dampening){
 		tasks.cell("Dampening").click();
 		log.fine("Setting dampening to: " + dampening);
-		tasks.selectComboBoxByNearCellOptionByRow(tasks, COMBOBOX_SELECTOR, "Dampening :", dampening);
+		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Dampening :", dampening);
 		
 		return this;
 	}
