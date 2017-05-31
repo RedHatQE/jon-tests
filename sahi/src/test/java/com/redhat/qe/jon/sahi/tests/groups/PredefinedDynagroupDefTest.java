@@ -39,7 +39,7 @@ public class PredefinedDynagroupDefTest extends OnAgentSahiTestScript {
         expectedResult.setName(changedName);
         assertDefinitions(parsedDef,expectedResult);
     }
-    @Test(dataProvider="cannedExprParameters",dependsOnMethods={"useCannedExpressionsTest"})
+    @Test(dataProvider="cannedExprParameters",dependsOnMethods={"useCannedExpressionsTest"}, alwaysRun=true)
     public void deleteDefinitions(String providedExprName,DynagroupDef expectedResult){
         DynaGroupDefPage dynagroupDefPage = new DynaGroupDefPage(sahiTasks);
         dynagroupDefPage.navigate();
