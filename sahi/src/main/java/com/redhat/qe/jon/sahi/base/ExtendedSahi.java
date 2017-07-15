@@ -35,49 +35,26 @@ public class ExtendedSahi extends Browser {
 	        _logger.warning("More then 1 drop down box with given locator found on the page. Make sure " +
 	                "that correct one is picked. Using the one with following inner text: " + dropDownBox.getText());
 	    }
-	    browser.xy(dropDownBox, 3, 3).click();
-	    _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "]");
-
-	    List<ElementStub> optionToSelectSimilar = optionToSelect.collectSimilar();
-
+	    List<ElementStub> optionToSelectSimilar = null;
 	    int counter = 0;
-	    // if the given option is not found, wait for a while and try it again for different locator
-	    while (!waitForAnyElementsToBecomeVisible(browser, optionToSelectSimilar, optionToSelect.toString(), 2000) && counter <= 2) {
-	        for (ElementStub el : similarDropDownBoxes) {
-	            // try to click again
-	            _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "] trying again");
-	            browser.xy(el, 3, 3).click();
-	            optionToSelectSimilar = optionToSelect.collectSimilar();
-	          
-	            if (waitForAnyElementsToBecomeVisible(browser, optionToSelectSimilar, optionToSelect.toString(), 2000)) {
-	                break;
-	            }
-	            // and again (sometimes it's necessary to click twice)
-	            browser.xy(el, 3, 3).click();
-	            optionToSelectSimilar = optionToSelect.collectSimilar();
-	            if (waitForAnyElementsToBecomeVisible(browser, optionToSelectSimilar, optionToSelect.toString(), 2000)){
-	                break;
-	            }
-	        }
-	        counter++;
-	    }
+	    boolean found = false;
+        while (counter <= 2 && found == false) {
+            browser.xy(dropDownBox, 3, 3).click();
+            _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "]");
 
+            optionToSelectSimilar = optionToSelect.collectSimilar();
 
-	    if(!isAnyOfElementsVisible(optionToSelectSimilar)){
-	        _logger.severe("Option " + optionToSelect.getText() + " not found in drop down box " + dropDownBox +
-	                "Check that option locator is correct! Hint: count of similar options using row locator: " +
-	                browser.row(optionToSelect.getText()).countSimilar()
-	                + ", count of similar options using div locator: " +
-	                browser.div(optionToSelect.getText()).countSimilar());
-	        throw new RuntimeException(
-	                "Option " + optionToSelect.getText() + " not found in drop down box " + dropDownBox);
-	    }
-
-        optionToSelect = getFirstVisibleElement(optionToSelectSimilar);
-	    _logger.log(Level.INFO, "Selecting the element [" + optionToSelect + "]");
-	    browser.xy(optionToSelect, 3, 3).click();
-	    _logger.log(Level.INFO, "Selected Option Name: " + optionToSelect.getText());
-
+            for (ElementStub el : optionToSelectSimilar) {
+                browser.xy(el, 3, 3).click();
+                if (el.near(dropDownBox).isVisible()) {
+                    _logger.log(Level.INFO, "Selected Option Name: " + el.getText());
+                    found = true;
+                    break;
+                }
+                browser.xy(dropDownBox, 3, 3).click();
+            }
+            counter++;
+        }
     }
 	
 	//This method is used to select drop down on GWT web (Example- RHQ 4.x)
