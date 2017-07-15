@@ -1124,8 +1124,11 @@ public class SahiTasks extends ExtendedSahi {
     public void gotoAlertDefinationPage(String resourceName, boolean definitionsPage) {
     	//selectResource(resourceName);
     	//Above line is not selecting specific resource if we have more than one agent imported, adding the following lines,
-    	Resource agent = new Resource(this,System.getProperty("jon.agent.name"),"RHQ Agent");
-	    agent.navigate();    	
+        Resource platform = new Resource(this,System.getProperty("jon.agent.name"));
+        Resource agent = new Resource(this,System.getProperty("jon.agent.name"),"RHQ Agent");
+        // navigate to platform first to get rid of context dialog which is visible when the definition is not saved correctly
+        platform.navigate();
+        agent.navigate();
         int count = this.cell("Alerts").countSimilar();
         this.cell("Alerts").collectSimilar().get(count - 1).click();
         // trying again with different locator
@@ -1271,7 +1274,6 @@ public class SahiTasks extends ExtendedSahi {
     }
 
     public int createAlert(@Optional String resourceName, String alertName, @Optional String alertDescription, String conditionsDropDown, @Optional String conditionTextBox, String notificationType, String notificationData, @Optional String dampeningDropDown, @Optional String dampeningTextBoxData, @Optional String recoveryAlertDropDown, @Optional String disableWhenFired) {
-
         //Select Resource to define alert
         if (resourceName != null) {
             gotoAlertDefinationPage(resourceName, true);
