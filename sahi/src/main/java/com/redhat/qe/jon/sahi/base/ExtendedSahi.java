@@ -38,12 +38,12 @@ public class ExtendedSahi extends Browser {
 	    List<ElementStub> optionToSelectSimilar = null;
 	    int counter = 0;
 	    boolean found = false;
-        while (counter <= 2 && found == false) {
+        while (counter <= 5 && found == false) {
             browser.xy(dropDownBox, 3, 3).click();
             _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "]");
 
             optionToSelectSimilar = optionToSelect.collectSimilar();
-
+            _logger.log(Level.INFO, "Number of similar options to select: " + optionToSelectSimilar.size());
             for (ElementStub el : optionToSelectSimilar) {
                 browser.xy(el, 3, 3).click();
                 if (el.near(dropDownBox).exists() && el.near(dropDownBox).isVisible()) {
