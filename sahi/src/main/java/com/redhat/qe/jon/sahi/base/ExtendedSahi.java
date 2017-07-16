@@ -46,12 +46,18 @@ public class ExtendedSahi extends Browser {
 
             for (ElementStub el : optionToSelectSimilar) {
                 browser.xy(el, 3, 3).click();
-                if (el.near(dropDownBox).isVisible()) {
+                if (el.near(dropDownBox).exists() && el.near(dropDownBox).isVisible()) {
                     _logger.log(Level.INFO, "Selected Option Name: " + el.getText());
                     found = true;
                     break;
                 }
-                browser.xy(dropDownBox, 3, 3).click();
+                // this is for drop box in CLI script notification (for some reason it works this way)
+                if(dropDownBox.exists() && dropDownBox.isVisible()){
+                    browser.xy(dropDownBox, 3, 3).click();
+                }else{
+                    found = true;
+                    break;
+                }
             }
             counter++;
         }

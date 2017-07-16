@@ -1317,7 +1317,11 @@ public class SahiTasks extends ExtendedSahi {
 
 
         //Modified OK Button access, since JON 3.2 Alpha 53 release.
-        this.cell("OK").in(this.div("OKCancel")).click();
+        ElementStub okBut = this.cell("OK").in(this.div("OKCancel"));
+        okBut.click();
+        if(okBut.exists() && okBut.isVisible()){
+            okBut.click();
+        }
 
         //Add notifications
         this.cell("Notifications").click();
@@ -1345,7 +1349,18 @@ public class SahiTasks extends ExtendedSahi {
         updateTextBoxValues(dampeningTextBoxData);
 
         //Final step
-        this.xy(this.cell("Save"), 3, 3).click();
+        ElementStub saveBut = this.cell("Save");
+        waitForElementVisible(this, saveBut, "Save button", 5000);
+        count = saveBut.countSimilar();
+        saveBut = saveBut.collectSimilar().get(count-1);
+
+        _logger.info("Clicking on " + saveBut);
+        this.xy(saveBut, 3, 3).click();
+        if(saveBut.exists() && saveBut.isVisible()){
+            this.xy(saveBut, 3, 3).click();
+        }
+        this.waitForElementVisible(this, this.div("/Alert definition successfully.*/"),
+                "Successful message",Timing.WAIT_TIME);
         this.div("/Back to List/").click(); //PatternFly Change: 15-Jul-2014
 
         return getNumberAlert(alertName) - similarAlert;
