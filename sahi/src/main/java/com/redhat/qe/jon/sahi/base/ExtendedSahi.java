@@ -52,7 +52,7 @@ public class ExtendedSahi extends Browser {
                     break;
                 }
                 // this is for drop box in CLI script notification (for some reason it works this way)
-                if(dropDownBox.exists() && dropDownBox.isVisible()){
+                if(dropDownBox.exists() && dropDownBox.isVisible() && optionToSelectSimilar.size() != 0){
                     browser.xy(dropDownBox, 3, 3).click();
                 }else{
                     found = true;
