@@ -486,7 +486,7 @@ public class AlertDefinitionEditor {
 		log.fine("Saving alert definition");
 		tasks.waitForElementVisible(tasks, tasks.cell("Save"), "Save button", Timing.WAIT_TIME);
 		tasks.cell("Save").click();
-		tasks.waitForElementVisible(tasks, tasks.cell("/Alert definition successfully.*/"), 
+		tasks.waitForElementVisible(tasks, tasks.div("/Alert definition successfully.*/"),
 				"Successful message",Timing.WAIT_TIME);
 	}
 	
