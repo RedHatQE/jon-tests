@@ -41,8 +41,14 @@ public class ExtendedSahi extends Browser {
         while (counter <= 5 && found == false) {
             browser.xy(dropDownBox, 3, 3).click();
             _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "]");
-
+            waitFor(500);
             optionToSelectSimilar = optionToSelect.collectSimilar();
+            if(optionToSelectSimilar.size() == 0){
+                browser.xy(dropDownBox, 3, 3).click();
+                _logger.log(Level.INFO, "Drop Down Box [" + dropDownBox + "]");
+                waitFor(500);
+                optionToSelectSimilar = optionToSelect.collectSimilar();
+            }
             _logger.log(Level.INFO, "Number of similar options to select: " + optionToSelectSimilar.size());
             for (ElementStub el : optionToSelectSimilar) {
                 browser.xy(el, 3, 3).click();
@@ -52,9 +58,9 @@ public class ExtendedSahi extends Browser {
                     break;
                 }
                 // this is for drop box in CLI script notification (for some reason it works this way)
-                if(dropDownBox.exists() && dropDownBox.isVisible() && optionToSelectSimilar.size() != 0){
+                if (dropDownBox.exists() && dropDownBox.isVisible()) {
                     browser.xy(dropDownBox, 3, 3).click();
-                }else{
+                } else {
                     found = true;
                     break;
                 }

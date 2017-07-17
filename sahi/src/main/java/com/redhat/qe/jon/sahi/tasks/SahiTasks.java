@@ -1308,6 +1308,9 @@ public class SahiTasks extends ExtendedSahi {
             ElementStub dropDownValue = this.div(optionTmp[1]).under(this.div("selectItemText").near(this.cell(optionTmp[0])));
             _logger.info("DropDown: "+dropDown+", Is Available? "+dropDown.exists());
             dropDown.click(); //Clicking Drop Down Box
+            if(!dropDownValue.exists() && ! dropDownValue.isVisible()){
+                dropDown.click(); //Clicking Drop Down Box
+            }
             _logger.info("DropDown Value: "+dropDownValue+", Is Available? "+dropDownValue.exists());
             dropDownValue.click(); //Selecting value for the above drop down box
         }
