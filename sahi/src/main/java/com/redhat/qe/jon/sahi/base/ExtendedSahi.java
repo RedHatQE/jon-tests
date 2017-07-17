@@ -67,6 +67,13 @@ public class ExtendedSahi extends Browser {
             }
             counter++;
         }
+        if(!found){
+        _logger.severe("Option " + optionToSelect.getText() + " not found in drop down box " + dropDownBox +
+                "Check that option locator is correct! Hint: count of similar options using row locator: " +
+                browser.row(optionToSelect.getText()).countSimilar()
+                + ", count of similar options using div locator: " +
+                browser.div(optionToSelect.getText()).countSimilar());
+        }
     }
 	
 	//This method is used to select drop down on GWT web (Example- RHQ 4.x)
