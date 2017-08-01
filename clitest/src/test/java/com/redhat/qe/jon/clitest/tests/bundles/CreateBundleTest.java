@@ -54,14 +54,14 @@ public class CreateBundleTest extends CliEngine {
 	// unreachable port
 	cases.add(new BundleCase("http://"+bundleServer+":6666","refused"));
 	// wrong credentials
-	cases.add(new BundleCase("http://"+bundleServer+"/basic/"+bundleFile,"foo","bar","401 Authorization Required"));
+	cases.add(new BundleCase("http://"+bundleServer+"/basic/"+bundleFile,"foo","bar","401 Unauthorized"));
 	// wrong file
 	cases.add(new BundleCase("http://"+bundleServer+"/basic/"+bundleFile+".foo","404 Not Found"));
 	// trusted https without auth
 	cases.add(new BundleCase("https://"+bundleServer+"/"+bundleFile,"","","name=Bundle App"));
 	// with auth
 	cases.add(new BundleCase("https://"+bundleServer+"/basic/"+bundleFile,"name=Bundle App"));
-	// untrusted https
+	// untrusted https, this requires to add another certificate which is not in cacerts, adding virtual host and Listen directive in /etc/httpd/conf.d/ssl.conf
 	cases.add(new BundleCase("https://"+bundleServer+":10443/"+bundleFile,"","","peer not authenticated"));	
 	return getDataProviderArray(cases);
 	
