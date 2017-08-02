@@ -46,11 +46,9 @@ public class CreateBundleTest extends CliEngine {
 	// with basic auth
 	cases.add(new BundleCase("http://"+bundleServer+"/basic/"+bundleFile,"name=Bundle App"));	
 	// unreachable host
-	if(System.getProperty("rhq.build.version", "").contains("JON")){
-	    cases.add(new BundleCase("http://1.2.3.4","Connection timed out"));
-	}else{
-	    cases.add(new BundleCase("http://1.2.3.4","refused"));
-	}
+	
+	cases.add(new BundleCase("http://1.2.3.4","refused"));
+	
 	// unreachable port
 	cases.add(new BundleCase("http://"+bundleServer+":6666","refused"));
 	// wrong credentials
