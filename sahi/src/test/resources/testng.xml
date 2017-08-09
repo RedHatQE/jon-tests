@@ -439,7 +439,8 @@
 		</classes>
 	</test>
 
-	<test name="Setup LDAP">
+<!-- LDAP is configured via CLI script during installation -->
+	<!-- test name="Setup LDAP">
 		<classes>
 			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
 				<methods>
@@ -447,7 +448,7 @@
 				</methods>
 			</class>
 		</classes>
-	</test>
+	</test-->
 
 	<test name="GuiLDAPUserLoginTest">
 		<classes>
