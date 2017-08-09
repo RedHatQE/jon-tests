@@ -22,7 +22,8 @@ public class DashboardTest  extends SahiTestScript  {
 		sahiTasks.newDashboard();              		
 	}	
 
-	@Test (groups="DashboardTest", dependsOnMethods={"viewDashboard"})
+	// no longer available on default installation
+	//@Test (groups="DashboardTest", dependsOnMethods={"viewDashboard"})
 	public void messagePortletExists() {
 		Assert.assertTrue(sahiTasks.messagePortletExists());             		
 	}
