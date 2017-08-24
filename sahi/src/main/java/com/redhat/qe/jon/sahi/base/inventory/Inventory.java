@@ -109,14 +109,20 @@ public class Inventory extends ResourceTab{
 			ElementStub es = tasks.cell("Finish");
 			tasks.xy(es,3,3).click();
 
-			// if click does not work we send enter key and pray
-            tasks.waitFor(Timing.TIME_1S);
-			if (es.isVisible()) {
-                log.info("The [Finish] button still exists => using keypress");
+            // if click does not work we send enter key and pray
+            tasks.waitFor(Timing.TIME_5S);
+            if (es.isVisible()) {
+                log.info("The [Finish] button still visible => using keypress");
                 es.focus();
-				tasks.execute("_sahi._keyPress(_sahi._cell('Finish'), 13);"); //13 - Enter key
-			}
-		}
+                tasks.execute("_sahi._keyPress(_sahi._cell('Finish'), 13);"); //13 - Enter key
+            }
+            // if it's still visible fail the test to see what is wrong on the screenshot
+            tasks.waitFor(Timing.TIME_5S);
+            if (es.isVisible()) {
+                log.severe("The [Finish] button still visible => failing");
+                throw new RuntimeException("The [Finish] button is still visible");
+            }
+        }
 		/**
 		 * sets file to upload and starts uploading it
 		 * @param path to file to be uploaded - relative to /automatjon/jon/sahi/resources/
