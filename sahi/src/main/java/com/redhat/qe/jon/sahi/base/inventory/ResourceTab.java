@@ -84,7 +84,8 @@ public abstract class ResourceTab {
 		tasks.waitFor(Timing.WAIT_TIME);
 	}
 	private void navigateByClick(String uri) {
-		String[] tabs = uriToTabmapping.get(uri);
+	    log.finer("Navigating by click to " + uri);
+	    String[] tabs = uriToTabmapping.get(uri);
 		if (tabs==null) {
 			throw new RuntimeException("No mapping for ["+uri+"] cannot navigate by clicking!!! fix the code");
 		}
@@ -115,6 +116,7 @@ public abstract class ResourceTab {
         boolean isVisible = false;
         List <ElementStub> els = tasks.cell(cell).collectSimilar();
         for (ElementStub el : els){
+            log.finer("Checking if " + el + " is visible");
             if (el.isVisible()){
                 isVisible = true;
             }

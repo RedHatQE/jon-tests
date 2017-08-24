@@ -71,11 +71,11 @@ public class Operations extends ResourceTab {
             }
         }
         if (!tasks.cell("Create New Operation Schedule").isVisible()) {
-            tasks.waitFor(Timing.TIME_1S);
+            log.finer("Operation schedule dialog is not visible, sleeping");
+            tasks.waitFor(Timing.TIME_5S);
         }
-        if (!tasks.cell("Create New Operation Schedule").isVisible()) {
-            tasks.reloadPage();
-        }
+        raiseErrorIfCellIsNotVisible("Create New Operation Schedule");
+
         return new Operation(tasks, name);
     }
 
