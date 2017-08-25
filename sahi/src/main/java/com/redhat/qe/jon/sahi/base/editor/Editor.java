@@ -365,6 +365,7 @@ public class Editor {
             tasks.xy(picker, 3, 3).click();
         }
         log.fine("It looks like I clicked on combo");
+        log.finer("Combo box menu visiblity: " + tasks.div("pickListMenuBody").isVisible());
         List<ElementStub> cells = getSelectionCells(selection);
         if (cells.isEmpty() && pickerOver.exists()) {
             log.fine("Combo did not pop up? Trying ONE more click...");
@@ -395,6 +396,7 @@ public class Editor {
 	    throw new RuntimeException("Unable to select [" + selection + "] comboBox did NOT pop up");
 	}
 	else {
+        tasks.waitFor(Timing.WAIT_TIME);
         // lets click to all selections found starting with the last one
         log.fine("Found rows matching [" + selection + "] : " + cells.size());
         for (int i = cells.size()-1;i >= 0; i--) {
@@ -408,7 +410,7 @@ public class Editor {
                 log.fine("Selection [" + selection + "] was not visible");
             }
         }
-
+        log.finer("Combo box menu visiblity: " + tasks.div("pickListMenuBody").isVisible());
         return;
 	}
     }
