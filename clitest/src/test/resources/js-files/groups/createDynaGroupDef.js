@@ -47,6 +47,12 @@ for(var i in allLinuxPlat){
 	narrowingExpr = narrowingExpr +"memberof="+generateCompleteDynaGroupName(defNames[4],allLinuxPlat[i].name) + "\n";
 }
 
+var expectedNumberOfPools = 0;
+for(var i in allAgents){
+    jvm = allAgents[i].child({name:"JVM",resourceTypeName:"RHQ Agent JVM"})
+    expectedNumberOfPools += getExpectedNumberOfJDKMemoryPools(jvm);
+}
+
 var defDescriptions = ["This definition creates just one group with all found agents",
 		"This definition creates just one group with all found linux platforms",
 		null,null,"",null,,null,null,null,null,"Test&spec&chars12!!\"\"^()@%#ěěěěěščřžýáíé<html>hahaha</html>",null];
@@ -110,15 +116,17 @@ assertTrue(allGroups.length == expectedNumberOfGroups,"Expected number of all gr
 		", but actual is: " +allGroups.length );
 
 
+
+
 // check if number of resources in created managed groups is correct
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[0]), allAgents.length,1);
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[1]), allLinuxPlat.length,1);
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[2]), allAgents.length,10);
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[3]), 1,1);
 checkNumberOfResourcesInGroup(getManagedGroup(defNames[4]), 1,10);
-checkNumberOfResourcesInGroup(getManagedGroup(defNames[5]), allAgents.length * 5,allAgents.length * 5);
-checkNumberOfResourcesInGroup(getManagedGroup(defNames[6]), allAgents.length * 5,allAgents.length * 5);
-checkNumberOfResourcesInGroup(getManagedGroup(defNames[7]), allAgents.length * 5,allAgents.length * 5);
+checkNumberOfResourcesInGroup(getManagedGroup(defNames[5]), expectedNumberOfPools, expectedNumberOfPools);
+checkNumberOfResourcesInGroup(getManagedGroup(defNames[6]), expectedNumberOfPools,expectedNumberOfPools);
+checkNumberOfResourcesInGroup(getManagedGroup(defNames[7]), expectedNumberOfPools,expectedNumberOfPools);
 
 
 

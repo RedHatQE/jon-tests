@@ -164,3 +164,16 @@ function waitForResourceToAppearInDiscQueue(params,timeout){
 	}
 	return true;
 }
+/**
+ * Returns expected number of memory pools based on jdk version
+ * @param jvmResource
+ * @returns expected number of memory pools
+ */
+function getExpectedNumberOfJDKMemoryPools(jvmResource){
+    var versionStr = jvmResource.getProxy().version
+    if (versionStr.indexOf("1.8") != -1){
+        return 6;
+    }else{
+        return 5;
+    }
+}

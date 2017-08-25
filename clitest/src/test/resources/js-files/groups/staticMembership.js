@@ -81,9 +81,14 @@ var allMemPoolsDef = dynaGroupDefinitions.create({name:defName2,expression:"reso
 GroupDefinitionManager.calculateGroupMembership(allMemPoolsDef.id);
 
 
+var expectedNumberOfPools = 0;
+for(var i in allAgents){
+    jvm = allAgents[i].child({name:"JVM",resourceTypeName:"RHQ Agent JVM"})
+    expectedNumberOfPools += getExpectedNumberOfJDKMemoryPools(jvm);
+}
 //check that dynagroup was created
 assertDynaGroupDefParams(defName2);
-checkNumberOfResourcesInGroup(getManagedGroup(defName2), allAgents.length *5,0);
+checkNumberOfResourcesInGroup(getManagedGroup(defName2), expectedNumberOfPools,0);
 
 
 assertTrue(waitForResourceToAppearInDiscQueue({name:"RHQ Agent",resourceTypeName:"RHQ Agent"},1000*60*5), 
@@ -112,4 +117,4 @@ checkNumberOfResourcesInGroup(getManagedGroup(defName), allAgentsNow.length,1);
 
 // recalculate managed groups for 'All mem pools from All agents dynagroup' definition
 GroupDefinitionManager.calculateGroupMembership(allMemPoolsDef.id);
-checkNumberOfResourcesInGroup(getManagedGroup(defName2), allAgentsNow.length * 5,1);
+checkNumberOfResourcesInGroup(getManagedGroup(defName2), expectedNumberOfPools,1);
