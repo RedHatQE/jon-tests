@@ -31,24 +31,42 @@ public class AlertDefTemplatesPage {
     public AlertDefinitionPageSnippet editTemplate(String name){
         boolean found = false;
         int i = 0;
-        while(!found && i < 15){
-            if(tasks.div(name).exists()){
+        int countOfNameCells = tasks.cell("Name").collectSimilar().size();
+        ElementStub nameCell = tasks.cell("Name").collectSimilar().get(countOfNameCells - 1);
+        while (!found && i < 15) {
+            if (tasks.div(name).isVisible()) {
                 found = true;
-            }else{
-                int count = tasks.image("/vscroll_end.*/").countSimilar();
-                log.info("Number of vscroll elements: " + count);
-                if(tasks.image("/vscroll_end.*/["+ (count-1) +"]").isVisible()){
-                    tasks.image("/vscroll_end.*/["+ (count-1) +"]").click();
-                }else{
-                    count = tasks.image("/vscroll_Over_end.*/["+ (count-1) +"]").countSimilar();
-                    tasks.image("/vscroll_Over_end.*/["+ (count-1) +"]").click();
+            } else {
+                /**
+                 * This is just a workaround to get last templates up. When scrolling is used click on edit 
+                 * img is simply not working for some very weird reason. Not even enter key is working.
+                 */
+                nameCell.click();
+                if (tasks.div(name).isVisible()) {
+                    found = true;
+                } else {
+                    int count = tasks.image("/vscroll_end.*/").countSimilar();
+                    log.info("Number of vscroll elements: " + count);
+                    if (tasks.image("/vscroll_end.*/[" + (count - 1) + "]").isVisible()) {
+                        tasks.image("/vscroll_end.*/[" + (count - 1) + "]").click();
+                    } else {
+                        count = tasks.image("/vscroll_Over_end.*/[" + (count - 1) + "]").countSimilar();
+                        tasks.image("/vscroll_Over_end.*/[" + (count - 1) + "]").click();
+                    }
                 }
             }
         }
         if(found){
             ElementStub row = tasks.div(name).parentNode("tr");
-            tasks.image("edit.png").in(row).click();
-            tasks.waitForElementVisible(tasks, tasks.cell("New"), "New button", Timing.WAIT_TIME);
+            ElementStub editImg = tasks.image("edit.png").in(row);
+            editImg.click();
+            // if it fails try again and then fail the test
+            if(!tasks.waitForElementVisible(tasks, tasks.cell("New"), "New button", Timing.WAIT_TIME)){
+                tasks.xy(editImg.parentNode("div"),3,3).click();
+            }
+            if(!tasks.waitForElementVisible(tasks, tasks.cell("New"), "New button", Timing.WAIT_TIME)){
+                throw new RuntimeException("Alert definition templated named "+name+", was found but openning failed!!");
+            }
             
             return new AlertDefinitionPageSnippet(tasks);
         }else{
