@@ -68,7 +68,8 @@ public class AlertDefinitionEditor {
 		log.fine("Setting general options of alert definition: description:" +description+", priority: " +
 				priority.toString()+", enabled: " +Boolean.toString(enabled));
 		editor.setTextInTextAreaNearCell(TEXT_FIELD_SELECTOR, description, "Description :");
-    	tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Priority :", priority.toString());
+		editor.selectCombo(priority.toString());
+    	//tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Priority :", priority.toString());
     	
     	if(enabled){
     		editor.checkRadioNearCell("enabled", "Yes");
@@ -357,12 +358,10 @@ public class AlertDefinitionEditor {
 			editor.setPasswordNearCell("password", password, "Password :");
 		}
 		
-		
-		tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR,
-				"Select the repository where the script should reside :", repository);
+		int pickers = tasks.image("/comboBoxPicker.*/").countSimilar();
+		editor.selectCombo(pickers - 2, repository);
 		if(existingScript!= null){
 			// select last picker
-			int pickers = tasks.image("/comboBoxPicker.*/").countSimilar();
 			editor.selectCombo(pickers -1, existingScript);
 			//tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR,"Existing Script", existingScript);
 		}
@@ -379,8 +378,9 @@ public class AlertDefinitionEditor {
 		okBut.click();
 		
 		// this is a hack, sometimes first click simply doesn't work
-		tasks.waitFor(500);
+		tasks.waitFor(1000);
 		if(okBut.isVisible()){
+		    log.finer("Trying to click Ok button again");
 		    okBut.click();
 		}
 		

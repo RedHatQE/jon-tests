@@ -146,7 +146,8 @@ public class DynaGroupDefPage {
     
     private void fillFields(DynagroupDef def){
         if(def.getProvidedExprName() != null){
-            tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Provided Expression :", def.getProvidedExprName());
+            editor.selectCombo(def.getProvidedExprName());
+            //tasks.selectComboBoxByNearCellOptionByDiv(tasks, COMBOBOX_SELECTOR, "Provided Expression :", def.getProvidedExprName());
         }
         if(def.getName() != null){
             editor.setText("name", def.getName());
