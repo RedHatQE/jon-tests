@@ -1883,6 +1883,8 @@ public class SahiTasks extends ExtendedSahi {
 	    int count = this.cell("Monitoring").countSimilar();
 	    this.cell("Monitoring").collectSimilar().get(count - 1).click();
 	    this.xy(cell("Schedules"), 3,3).click();
+	    // quick fix, it takes some time to load schedules table
+	    this.waitFor(2000);
     }
     public int getMetricTableOffset(String resourceName){
     	if(resourceName != null){
