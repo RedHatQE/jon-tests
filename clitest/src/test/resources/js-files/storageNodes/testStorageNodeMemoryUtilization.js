@@ -1,3 +1,5 @@
+verbose = 2;
+var common = new _common();
 // create criteria with using storage node IP
 var crit = new StorageNodeCriteria();
 
@@ -21,6 +23,7 @@ var disk = StorageNodeManager.getLoad(node, before8hours, now);
 assertNotNull(disk, "Some load was received");
 
 // check Heap Maximum metric values
+common.info("Checking heap commited");
 assertNotNull(disk.heapCommitted.aggregate.min, "Check Heap Maximum min value not null");
 assertNotNull(disk.heapCommitted.aggregate.avg, "Check Heap Maximum avg value not null");
 assertNotNull(disk.heapCommitted.aggregate.max, "Check Heap Maximum max value not null");
@@ -29,6 +32,7 @@ assertTrue(disk.heapCommitted.aggregate.avg >= disk.heapCommitted.aggregate.min 
 assertTrue(disk.heapCommitted.aggregate.max >= disk.heapCommitted.aggregate.avg, "Check Heap Maximum max value relation");
 
 // check Heap Used metric values
+common.info("Checking heap used");
 assertNotNull(disk.heapUsed.aggregate.min, "Check Heap Used min value not null");
 assertNotNull(disk.heapUsed.aggregate.avg, "Check Heap Used avg value not null");
 assertNotNull(disk.heapUsed.aggregate.max, "Check Heap Used max value not null");
@@ -37,6 +41,7 @@ assertTrue(disk.heapUsed.aggregate.avg >= disk.heapUsed.aggregate.min && disk.he
 assertTrue(disk.heapUsed.aggregate.max >= disk.heapUsed.aggregate.avg, "Check Heap Used max value relation");
 
 //check Heap Percent Used metric values
+common.info("Checking heap used percentage");
 assertNotNull(disk.heapPercentageUsed.aggregate.min, "Check Heap Percent Used min value not null");
 assertNotNull(disk.heapPercentageUsed.aggregate.avg, "Check Heap Percent Used avg value not null");
 assertNotNull(disk.heapPercentageUsed.aggregate.max, "Check Heap Percent Used max value not null");
