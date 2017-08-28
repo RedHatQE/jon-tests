@@ -1451,8 +1451,14 @@ public class SahiTasks extends ExtendedSahi {
     public LinkedList<HashMap<String, String>> getRHQgwtTableFullDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue) {
     	return getRHQgwtTableDetails(tableName, tableCountOffset, columnsCSV, replacementKeyValue, false, 0, false, null);    	
     }
+    public LinkedList<HashMap<String, String>> getRHQgwtTableFullDetails(String tableName, String divContent, String columnsCSV, String replacementKeyValue) {
+        return getRHQgwtTableDetails(tableName, divContent, columnsCSV, replacementKeyValue, false, 0, false, null);      
+    }
     public LinkedList<HashMap<String, String>> getRHQgwtTableConditionalDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue, String condition) {
     	return getRHQgwtTableDetails(tableName, tableCountOffset, columnsCSV, replacementKeyValue, false, 0, true, condition);    	
+    }
+    public LinkedList<HashMap<String, String>> getRHQgwtTableConditionalDetails(String tableName, String divContent, String columnsCSV, String replacementKeyValue, String condition) {
+        return getRHQgwtTableDetails(tableName, divContent, columnsCSV, replacementKeyValue, false, 0, true, condition);      
     }
     public HashMap<String, String> getRHQgwtTableRowDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue, int rowNo) {
     	LinkedList<HashMap<String, String>> rowDetails = getRHQgwtTableDetails(tableName, tableCountOffset, columnsCSV, replacementKeyValue, true, rowNo, false, null);
@@ -1461,6 +1467,20 @@ public class SahiTasks extends ExtendedSahi {
     	}else{
     		return new HashMap<String, String>();
     	}  	
+    }
+    public HashMap<String, String> getRHQgwtTableRowDetails(String tableName, String divContent, String columnsCSV, String replacementKeyValue, int rowNo) {
+        LinkedList<HashMap<String, String>> rowDetails = getRHQgwtTableDetails(tableName, divContent, columnsCSV, replacementKeyValue, true, rowNo, false, null);
+        if(rowDetails.size() == 1){
+            return rowDetails.get(0);  
+        }else{
+            return new HashMap<String, String>();
+        }   
+    }
+    public LinkedList<HashMap<String, String>> getRHQgwtTableDetails(String tableName, String divContent, String columnsCSV, String replacementKeyValue, boolean singleRow, int rowNo, boolean conditional, String condition) {
+        int index = getIndexOfTableContainingDiv(divContent);
+        int noListTables = this.table(tableName).countSimilar();
+
+        return getRHQgwtTableDetails(tableName, noListTables - index -1 , columnsCSV, replacementKeyValue, singleRow, rowNo, conditional, condition);
     }
     @SuppressWarnings("unchecked")
 	public LinkedList<HashMap<String, String>> getRHQgwtTableDetails(String tableName, int tableCountOffset, String columnsCSV, String replacementKeyValue, boolean singleRow, int rowNo, boolean conditional, String condition) {
@@ -1884,7 +1904,7 @@ public class SahiTasks extends ExtendedSahi {
 	    this.cell("Monitoring").collectSimilar().get(count - 1).click();
 	    this.xy(cell("Schedules"), 3,3).click();
 	    // quick fix, it takes some time to load schedules table
-	    this.waitFor(2000);
+	    this.waitFor(5000);
     }
     public int getMetricTableOffset(String resourceName){
     	if(resourceName != null){
@@ -1895,15 +1915,20 @@ public class SahiTasks extends ExtendedSahi {
     	_logger.log(Level.FINE, "OffSet - TABLE COUNT ("+tableName+"): "+numberTableAvailable);
     	return numberTableAvailable;
     }
-    public int adjustMetricTableOffset(int orgOffset, int newOffest){
-    	/*if(orgOffset >= newOffest){
-    		return newOffest - orgOffset;
-    	}else{
-    		return 0;
-    	}*/
-    	return 0;
+    public int getIndexOfTableContainingDiv(String divContent){
+        String tableName = "listTable";
+        int index = 0;
+        int numberTableAvailable = this.table(tableName).countSimilar();
+        for(index = 0; index < numberTableAvailable; index++){
+            if(this.div(divContent).in(this.table(tableName+"["+index+"]")).isVisible()){
+                return index;
+            }
+        }
+        _logger.severe("No table containing "+divContent+" found!!");
+        throw new RuntimeException("No table containing "+divContent+" found!!");
     }
-    public LinkedList<HashMap<String, String>> getMetricTableDetails(String resourceName, int tableOffset){
+
+    public LinkedList<HashMap<String, String>> getMetricTableDetails(String resourceName, String divContent){
     	if(resourceName != null){
     		selectSchedules(resourceName);
     	}  
@@ -1912,12 +1937,11 @@ public class SahiTasks extends ExtendedSahi {
     	String replaceColumnValues = "permission_enabled_11.png=Enabled,permission_disabled_11.png=Disabled";
     	int numberTableAvailable = this.table(tableName).countSimilar();
     	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-    	int tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
-    	LinkedList<HashMap<String, String>> metricDetails = getRHQgwtTableFullDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues);
+    	LinkedList<HashMap<String, String>> metricDetails = getRHQgwtTableFullDetails(tableName, divContent, tableColumns, replaceColumnValues);
     	_logger.log(Level.INFO,"Number of Row: "+metricDetails.size());
     	return metricDetails;
     }
-    public boolean enableDisableUpdateMetric(String resourceName, String metricName, String descrition, LinkedList<HashMap<String, String>> metricDetails, boolean updateCollectionInterval, String collectionIntervalValue, boolean enable, int tableOffset){
+    public boolean enableDisableUpdateMetric(String resourceName, String metricName, String descrition, LinkedList<HashMap<String, String>> metricDetails, boolean updateCollectionInterval, String collectionIntervalValue, boolean enable, String divContent){
     	if(resourceName != null){
     		selectSchedules(resourceName);
     	}    
@@ -1927,15 +1951,13 @@ public class SahiTasks extends ExtendedSahi {
     	String tableName = "listTable";
     	String tableColumns = "Metric,Description,Type,Enabled?,Collection Interval";
     	String replaceColumnValues = "permission_enabled_11.png=Enabled,permission_disabled_11.png=Disabled";
-    	int tableOffsetNew = 0;    	
     	int numberTableAvailable = 0;
     	
     	if(metricDetails == null){
     		_logger.log(Level.INFO, "Metric table Details - NULL, reading metric table...");
     		numberTableAvailable= this.table(tableName).countSimilar();
         	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-        	tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
-        	metricDetails = getRHQgwtTableConditionalDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, "Metric="+metricName);
+        	metricDetails = getRHQgwtTableConditionalDetails(tableName, divContent, tableColumns, replaceColumnValues, "Metric="+metricName);
         	_logger.log(Level.INFO,"Number of Row: "+metricDetails.size());
     	}
     	
@@ -1953,9 +1975,7 @@ public class SahiTasks extends ExtendedSahi {
 
     	numberTableAvailable = this.table(tableName).countSimilar();
     	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-    	tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
-    	HashMap<String, String> metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
-    	_logger.log(Level.INFO, "Metric: [Old Status: "+metricDetail+"] Table Offset: "+tableOffsetNew);
+    	HashMap<String, String> metricDetail = getRHQgwtTableRowDetails(tableName, divContent, tableColumns, replaceColumnValues, rowNo);
 
     	if(updateCollectionInterval){
     		collectionInterval = collectionIntervalValue.split(" ");
@@ -2033,9 +2053,7 @@ public class SahiTasks extends ExtendedSahi {
     	this.waitFor(1000*2); //wait 2 seconds to get load table details
     	 numberTableAvailable = this.table(tableName).countSimilar();
      	_logger.log(Level.FINE, "TABLE COUNT ("+tableName+"): "+numberTableAvailable);
-         tableOffsetNew = adjustMetricTableOffset(numberTableAvailable, tableOffset);
-    	
-    	metricDetail = getRHQgwtTableRowDetails(tableName, tableOffsetNew, tableColumns, replaceColumnValues, rowNo);
+    	metricDetail = getRHQgwtTableRowDetails(tableName, divContent, tableColumns, replaceColumnValues, rowNo);
     	_logger.log(Level.INFO, "Metric: New Status: "+metricDetail);
     	if(metricDetail.get("Metric").equalsIgnoreCase(metricName)){
     		if(updateCollectionInterval){
