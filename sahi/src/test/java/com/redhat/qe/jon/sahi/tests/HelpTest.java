@@ -28,15 +28,15 @@ public class HelpTest  extends SahiTestScript  {
 		sahiTasks.helpDocumentation();
 		
 	}
-	
-	@Test (groups="HelpTest")
+	// no longer available
+	//@Test (groups="HelpTest")
 	public void helpDemoAllDemos() {
 		
 		sahiTasks.helpDemoAllDemos();
 		
 	}
-	
-	@Test (groups="HelpTest")
+	// no longer available
+	//@Test (groups="HelpTest")
 	public void helpDemosBundleProvisioning() {
 		
 		sahiTasks.helpDemoBundles();
