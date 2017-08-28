@@ -24,24 +24,20 @@ public class StorageAutoInventoryTest extends SahiTestScript {
 		platformName = System.getProperty("jon.server.host");
 		platform = new Resource(sahiTasks, platformName);
 		platform.uninventory(true);
-
-		log.info("platform name  " + platformName);
-		
-		// sleep 3 secs
-		Thread.sleep(3000);
-		
-		if(!sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell("Platforms"),
-				platformName, Timing.WAIT_TIME))
-		{
-			throw new RuntimeException(platformName + " platform was not inventoried");
-		}
 	}
 
 	@Test
 	public void checkStorageNodeElementAutoInventoried() {
-
-		log.info(platformName);
-	
+        log.info("platform name  " + platformName);
+        sahiTasks.cell("Refresh").click();
+        if (!sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell(platformName),
+                platformName, Timing.TIME_5S)) {
+            sahiTasks.cell("Refresh").click();
+        }
+        if (!sahiTasks.waitForElementVisible(sahiTasks, sahiTasks.cell(platformName),
+                platformName, Timing.TIME_5S)) {
+            throw new RuntimeException(platformName + " platform was not inventoried");
+        }
 		// call platform manual auto-discovery
 		platform.performManualAutodiscovery();
 		// navigate to platform		
