@@ -2416,6 +2416,9 @@ public class SahiTasks extends ExtendedSahi {
     //***************************************************************************************************
     public void createAlertDefinitionTemplate(String groupPanelName, String templateName, String platform){
     	this.link("Administration").click();
+    	// sometimes browser got stuck here for some reason, adding reload
+        this.reloadPage();
+        this.waitFor(1000*10);
     	this.cell(groupPanelName).click();
     	ElementStub row = this.div(platform).parentNode("tr");
         this.image("edit.png").in(row).click();
@@ -2605,6 +2608,9 @@ public class SahiTasks extends ExtendedSahi {
 		relogin(searchTestuser, password);
 		// go to Administration-->Users
 		this.link("Administration").click();
+		// sometimes browser got stuck here for some reason, adding reload
+        this.reloadPage();
+        this.waitFor(1000*10);
 		this.cell("Users").click();
 		this.link("rhqadmin").click();
 		this.waitFor(5000);
