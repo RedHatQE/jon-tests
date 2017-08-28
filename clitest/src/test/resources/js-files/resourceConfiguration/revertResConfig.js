@@ -2,6 +2,9 @@
  * @author fbrychta@redhat.com
  * 
  */
+verbose =2;
+var common = new _common();
+
 var agents = resources.find({name:"RHQ Agent",resourceTypeName:"RHQ Agent"});
 assertTrue(agents.length>0,"At least one RHQ Agent resource was found in inventory");
 var agent = agents[0];
@@ -12,6 +15,7 @@ criteria.addFilterResourceIds([new java.lang.Integer(agent.getId())]);
 criteria.fetchConfiguration(true);
 criteria.addSortCreatedTime(PageOrdering.ASC)
 var configUpdatesPre = ConfigurationManager.findResourceConfigurationUpdatesByCriteria(criteria);
+common.info("Number of configurations found before test '" + configUpdatesPre.size() +"'");
 
 var agentConfig = agent.getConfiguration();
 
@@ -35,11 +39,16 @@ assertTrue(agentConfig["rhq.agent.wait-for-server-at-startup-msecs"] == startupO
 
 //Fetch all configuration updates for resource.
 var configUpdatesPost = ConfigurationManager.findResourceConfigurationUpdatesByCriteria(criteria);
+common.info("Number of configurations found after update '" + configUpdatesPost.size() +"'");
 assertTrue(configUpdatesPre.size() + 2 == configUpdatesPost.size(), "Correct count of configuration updates was returned");
 
-println("# of config updates: " + configUpdatesPost.size());
+
 // check configuration returned in configuration update
-var originalCongigUpdate = configUpdatesPost.get(configUpdatesPost.size()-3);
+var offset = 3;
+if(configUpdatesPre.size() == 0){
+    offset = 2;
+}
+var originalCongigUpdate = configUpdatesPost.get(configUpdatesPost.size() - offset);
 var valueFromOriginalConfigUpdate = originalCongigUpdate.getConfiguration().getSimpleValue("rhq.agent.wait-for-server-at-startup-msecs");
 assertTrue(startupOriginal == valueFromOriginalConfigUpdate,
         "Correct configuration was returned from configuration update, expected value: " +startupOriginal+ ", actual: " + valueFromOriginalConfigUpdate);
