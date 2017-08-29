@@ -69,7 +69,7 @@ public class PluginsTest extends SahiTestScript {
 			agentPluginsdata.add(Arrays.asList(new Object[]{"GateIn Plugin", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"HornetQPlugin", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"Infinispan Plugin", false}));
-			agentPluginsdata.add(Arrays.asList(new Object[]{"JBoss Data Grid Server 6.2.x", false}));
+			agentPluginsdata.add(Arrays.asList(new Object[]{"JBoss Data Grid Server 6.3.x", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"JBoss Fuse 6.x", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"JBossESB", false}));
 			agentPluginsdata.add(Arrays.asList(new Object[]{"JBossESB5", false}));
