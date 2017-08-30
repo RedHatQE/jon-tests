@@ -35,6 +35,7 @@ public class BundleBase {
 	public boolean createBundleGroup(BundleGroup bundleGroup){
 		this.navigateToBundlePage();
 		_tasks.cell("New[1]").click();
+		_tasks.waitForElementVisible(_tasks, _tasks.cell("Create New Bundle Groups"), "Create New Bundle Groups", Timing.WAIT_TIME);
 		this.bundleGroup(bundleGroup);
 		return this.isBundleGroupAvailable(bundleGroup);
 	}
@@ -59,6 +60,8 @@ public class BundleBase {
 			
 		}
 		_tasks.cell("Save").click();
+		_tasks.waitForElementVisible(_tasks, _tasks.div("/Bundle Groups created.*/"),
+                "Successful message",Timing.WAIT_TIME);
 	}
 
 	public boolean createBundle(Bundle bundle){
