@@ -1643,7 +1643,11 @@ public class SahiTasks extends ExtendedSahi {
         if(fileIncludes != null){
         	String[] files = this.getCommaToArray(fileIncludes);
         	for(String fileName : files){
-        		this.image("add.png").near(this.div("Includes")).click();
+        	    this.image("add.png").near(this.div("Includes")).click();
+        		if(!this.waitForElementVisible(this, this.cell("Edit Row"), "Edit Row cell", Timing.WAIT_TIME)){
+        		    this.execute("_sahi._keyPress(_sahi._image('add.png'), 13);"); //13 - Enter key
+        		    this.waitForElementVisible(this, this.cell("Edit Row"), "Edit Row cell", Timing.WAIT_TIME);
+        		}
         		ElementStub row = this.textbox("path").parentNode("tr");
         		ElementStub checkBox = this.image("/checked/").in(row);;
                 if(checkBox.isVisible()){
@@ -1664,12 +1668,26 @@ public class SahiTasks extends ExtendedSahi {
         	for(String fileName : files){
         	    int count = this.image("add.png").countSimilar();
         	    this.image("add.png").collectSimilar().get(count - 1).click();
+        	    if(!this.waitForElementVisible(this, this.cell("Edit Row"), "Edit Row cell", Timing.WAIT_TIME)){
+                    this.execute("_sahi._keyPress(_sahi._image('add.png["+(count-1)+"]'), 13);"); //13 - Enter key
+                    this.waitForElementVisible(this, this.cell("Edit Row"), "Edit Row cell", Timing.WAIT_TIME);
+                }
                 this.textbox("path").setValue(fileName.trim());
                 _logger.log(Level.INFO, "File Name added [Excludes]: "+fileName);
                 this.cell("OK").click();
         	}    	
         } 
         this.cell("Finish").click();
+        String msg = "/Successfully added new drift detection definition.*/";
+        if (!this.waitForAnyElementsToBecomeVisible(this,
+                new ElementStub[] { this.cell(msg), this.div(msg) },
+                "Successful message", Timing.WAIT_TIME)) {
+            this.cell("Finish").click();
+            this.waitForAnyElementsToBecomeVisible(this,
+                    new ElementStub[] { this.cell(msg), this.div(msg) },
+                    "Successful message", Timing.WAIT_TIME);
+        }
+        
         
         if(this.link(driftName.trim()).exists()){
         	_logger.log(Level.INFO, "Drift Name ["+driftName.trim()+"] added successfully.");
@@ -1683,12 +1701,13 @@ public class SahiTasks extends ExtendedSahi {
     //***************************************************************************************
     //* Get Drift History tables
     //***************************************************************************************
-	public LinkedList<HashMap<String, String>> getDriftManagementHistory(String resource, int tableCountOffset) throws InterruptedException{
+	public LinkedList<HashMap<String, String>> getDriftManagementHistory(String resource, String tableDivContent) throws InterruptedException{
     	if(resource != null){
     		gotoDriftDefinationPage(resource, false);
     	}    	
     	Thread.sleep(1000);
-    	return getRHQgwtTableFullDetails("listTable", tableCountOffset, "CreationTime,Definition,Snapshot,Category,Path,Resource,Ancestry", "Drift_add_16.png=added,Drift_change_16.png=changed,Drift_remove_16.png=removed");
+    	
+    	return getRHQgwtTableFullDetails("listTable",tableDivContent, "CreationTime,Definition,Snapshot,Category,Path,Resource,Ancestry", "Drift_add_16.png=added,Drift_change_16.png=changed,Drift_remove_16.png=removed");
     }
     
     //*********************************************************************************
@@ -1782,7 +1801,7 @@ public class SahiTasks extends ExtendedSahi {
         // Redirect to history Page
         //this.xy(this.cell("History"), 3, 3).click();
         
-        LinkedList<HashMap<String, String>> driftHistory = getDriftManagementHistory(resourceName, 2);
+        LinkedList<HashMap<String, String>> driftHistory = getDriftManagementHistory(resourceName, "File SystemDrift - monitor changes in file");
         
        
         //IncludeFile Test
