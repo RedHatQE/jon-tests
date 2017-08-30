@@ -1365,6 +1365,8 @@ public class SahiTasks extends ExtendedSahi {
         this.waitForElementVisible(this, this.div("/Alert definition successfully.*/"),
                 "Successful message",Timing.WAIT_TIME);
         this.div("/Back to List/").click(); //PatternFly Change: 15-Jul-2014
+        // it takes some time to load the definitions
+        this.waitFor(1000 * 5);
 
         return getNumberAlert(alertName) - similarAlert;
     }
