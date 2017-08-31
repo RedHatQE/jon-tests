@@ -1553,6 +1553,11 @@ public class SahiTasks extends ExtendedSahi {
         } else {
         	this.link("Reports").click();
         	this.cell("Recent Drift").click();
+        	// wait and try again if first click did not work
+        	if(!this.waitForElementVisible(browser, this.cell("Category :"), "Category :", Timing.WAIT_TIME)){
+        	    this.cell("Recent Drift").click();
+        	    this.waitForElementVisible(browser, this.cell("Category :"), "Category :", Timing.WAIT_TIME);
+        	}
             //this.xy(this.cell("History"), 3, 3).click();
         }
     }
