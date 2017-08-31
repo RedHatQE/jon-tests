@@ -2590,6 +2590,11 @@ public class SahiTasks extends ExtendedSahi {
 	    public void removePermissionsFromRole(String roleName, String desc, String compGroupName, String searchTestuser, String [] permissions){
 	    	this.link("Administration").click();
 	        this.cell("Roles").click();
+	        // test was failing here, tryting to wait for new button to appear
+            if(!this.waitForElementVisible(this, this.cell("New"), "New button", Timing.WAIT_TIME)){
+                this.cell("Roles").click();
+                this.waitForElementVisible(this, this.cell("New"), "New button", Timing.WAIT_TIME);
+            }
 	        this.link(roleName).click();
 	        this.textbox("name").setValue(roleName);
 	        this.textbox("description").setValue(desc);
