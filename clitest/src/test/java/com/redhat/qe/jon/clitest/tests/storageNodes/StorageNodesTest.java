@@ -20,7 +20,7 @@ public class StorageNodesTest extends CliEngine {
 
 	}
 	
-	@Test
+	@Test(groups={"blockedByBug-1488179"})
 	public void checkStorageNodeMemoryUtilization() {
 		createJSRunner("storageNodes/testStorageNodeMemoryUtilization.js")
 		.addDepends("rhqapi.js").run();
