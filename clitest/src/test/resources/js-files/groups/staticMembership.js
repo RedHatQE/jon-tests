@@ -111,6 +111,12 @@ assertTrue(allAgents < allAgentsNow,"No new agent was imported!!");
 //wait to be sure that all newly imported resources are discovered
 sleep(1000 * 70);
 
+expectedNumberOfPools = 0;
+for(var i in allAgentsNow){
+    jvm = allAgentsNow[i].child({name:"JVM",resourceTypeName:"RHQ Agent JVM"})
+    expectedNumberOfPools += getExpectedNumberOfJDKMemoryPools(jvm);
+}
+
 // recalculate managed groups for 'All agents' definition
 GroupDefinitionManager.calculateGroupMembership(allAgentsDef.id);
 checkNumberOfResourcesInGroup(getManagedGroup(defName), allAgentsNow.length,1);
