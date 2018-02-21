@@ -17,7 +17,7 @@ def test_approved_list(licenses_dir):
     
     
     licenses_xml_file = licenses_dir.joinpath('licenses.xml')
-    root = ET.parse(licenses_xml_file).getroot()
+    root = ET.parse(licenses_xml_file.as_posix()).getroot()
     
     licenses = dict()
     # get all unique license names with urls
@@ -42,7 +42,7 @@ def test_license_urls(licenses_dir):
     errors = []
     
     licenses_xml_file = licenses_dir.joinpath('licenses.xml')
-    root = ET.parse(licenses_xml_file).getroot()
+    root = ET.parse(licenses_xml_file.as_posix()).getroot()
     
     for dep in root.find('dependencies'):
         lic_el = dep.find('licenses').find('license')
@@ -58,7 +58,7 @@ def test_licenses_exist(licenses_dir):
     errors = []
     
     licenses_xml_file = licenses_dir.joinpath('licenses.xml')
-    root = ET.parse(licenses_xml_file).getroot()
+    root = ET.parse(licenses_xml_file.as_posix()).getroot()
     
     for dep in root.find('dependencies'):
         lic_el = dep.find('licenses').find('license')
