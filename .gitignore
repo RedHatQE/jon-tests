@@ -16,3 +16,5 @@ target
 *.iml
 .idea
 *.py[oc]
+.pydevproject
+**/.cache
