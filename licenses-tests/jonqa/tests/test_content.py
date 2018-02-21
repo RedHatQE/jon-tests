@@ -12,7 +12,7 @@ rh_license_list_url = 'https://code.engineering.redhat.com/gerrit/gitweb?p=jboss
 def test_approved_list(licenses_dir):
     errors = []
     
-    r = requests.get(rh_license_list_url)
+    r = requests.get(rh_license_list_url,verify=False)
     license_list_json = r.json()
     
     
