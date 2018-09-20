@@ -2446,16 +2446,18 @@ public class SahiTasks extends ExtendedSahi {
         this.reloadPage();
         this.waitFor(1000*10);
     	this.cell(groupPanelName).click();
+    	// quick fix to wait for templates to be loaded
+    	this.waitFor(1000 * 5);
     	ElementStub row = this.div(platform).parentNode("tr");
-        this.image("edit.png").in(row).click();
+    	this.image("edit.png").in(row).click();
     	this.cell("New").click();
     	this.textbox("textItem").setValue(templateName);
     	this.textarea("textItem").setValue("Created by Automation");
     	this.cell("Save").click();
-    }
-    public boolean verifyDefinitionTemplateExists(String groupPanelName, String templateName) {
+    	this.waitForElementVisible(this, this.div("/Alert definition successfully.*/"),
+				"Successful message",Timing.WAIT_TIME);
     	this.div("/Back to List/").click();
-        return this.div(templateName).exists();
+    	Assert.assertTrue(this.div(templateName).isVisible());
     }
     
     public void navigationThruConditionsTabAlertDefTemplate(String groupPanelName, String templateName){

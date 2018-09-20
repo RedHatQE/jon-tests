@@ -1,0 +1,45 @@
+<suite name="RHQ 4.x core UI Test">
+
+	<listeners>
+		<!-- Listener to make tests annotated with @SkipIf skipped -->
+		<listener class-name="com.redhat.qe.auto.testng.SkipTestNGListener" />
+		<!-- Listener to send report to Report Engine Server -->
+		<listener class-name="com.redhat.reportengine.client.ReportEngineClientTestNGListener"
+			/>
+		<listener class-name="com.redhat.qe.tools.checklog.CheckLogTestNGListener" />
+		<!-- Listener to clear pop-up's if any on test failure-->
+		<listener class-name="com.redhat.qe.jon.sahi.tasks.ClearBrowserScreenListener"
+			/>
+		<!-- Listener to ignore tests which reproduce known and still unfixed bugs -->
+	</listeners>
+
+	<test name="GuiLoginTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
+				<parameter name="gui.username" value="rhqadmin"/>
+				<parameter name="gui.password" value="rhqadmin"/>
+				<methods>
+					<include name="loginTest"></include>
+				</methods>
+			</class>
+		</classes>
+		</test>
+
+    <test name="ResourceGroupAlertDefinitionTest">
+        <classes>
+            <class name="com.redhat.qe.jon.sahi.tests.alerts.ResourceGroupAlertDefinitionTest">
+            </class>
+        </classes>
+    </test>
+	<test name="GuiLogoutTest">
+		<classes>
+			<class name="com.redhat.qe.jon.sahi.base.LoginLogoutTest">
+				<methods>
+					<include name="logoutTest"></include>
+				</methods>
+			</class>
+		</classes>
+	</test>
+	
+
+</suite>

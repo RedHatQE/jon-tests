@@ -17,7 +17,7 @@ public class AlertDefinitionTemplateTest extends SahiTestScript{
 	public void createAlertDefinitionTemplate(String groupPanelName, String templateName, String platform){
 		sahiTasks.createAlertDefinitionTemplate(groupPanelName, templateName, platform);
 	}
-	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="checkDefinitionTemplateExists")
+	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="createAlertDefinitionTemplate")
 	public void navigationWithConditionsTab(String groupPanelName, String templateName, String platform){
 		sahiTasks.navigationThruConditionsTabAlertDefTemplate(groupPanelName, templateName);
 	}
@@ -38,10 +38,6 @@ public class AlertDefinitionTemplateTest extends SahiTestScript{
 	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="navigationWithDampeningTab")
 	public void deleteAlertDefinitionTemplate(String groupPanelName, String templateName, String platform){
 		Assert.assertFalse(sahiTasks.deleteAlertDefinitionTemplate(templateName), "Template ["+templateName+"] deletion status");
-	}
-	@Test (groups="alertDefinitionsTemplate", dataProvider="sample alert definition data", dependsOnMethods="createAlertDefinitionTemplate")
-	public void checkDefinitionTemplateExists(String groupPanelName, String templateName, String platform){
-		Assert.assertTrue(sahiTasks.verifyDefinitionTemplateExists(groupPanelName, templateName));
 	}
 	
 	@DataProvider(name="sample alert definition data")
