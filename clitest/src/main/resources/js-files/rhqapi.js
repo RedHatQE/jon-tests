@@ -4083,9 +4083,16 @@ var Resource = function (param) {
 				return;
 			}
 			// TODO see https://bugzilla.redhat.com/show_bug.cgi?id=1020374
+			// when update fails it's automatically doing rollback to previous configuration so getLatestResourceConfigurationUpdate returns Success
+			// we need to use findResourceConfigurationUpdatesByCriteria to get failed configuration update
+			// this can still faile when updating configuration for the same resource concurently
 			if (update.status == ConfigurationUpdateStatus.INPROGRESS) {
+				var resConfCri = new ResourceConfigurationUpdateCriteria();
+				resConfCri.addFilterResourceIds([_id]);
+				resConfCri.addSortCreatedTime(PageOrdering.DESC);
 				var pred = function() {
-					var up = ConfigurationManager.getLatestResourceConfigurationUpdate(_id);
+
+					var up = ConfigurationManager.findResourceConfigurationUpdatesByCriteria(resConfCri).get(0);
 					if (up) {
 						return up.status != ConfigurationUpdateStatus.INPROGRESS;
 					}
@@ -4095,7 +4102,7 @@ var Resource = function (param) {
 				if (!result) {
 					throw "Resource configuration update timed out!";
 				}
-				update = ConfigurationManager.getLatestResourceConfigurationUpdate(_id);
+				update = ConfigurationManager.findResourceConfigurationUpdatesByCriteria(resConfCri).get(0);
 			}
 			common.debug("Configuration update finished with status : "+update.status);
 			if (update.status == ConfigurationUpdateStatus.FAILURE) {
