@@ -55,4 +55,9 @@ public class BzCliTest extends CliEngine {
             .addDepends("jon-common.js")
             .run();
     }
+    @Test(groups={"blockedByBug-1654277"})
+    public void bz1654277() {
+        createJSRunner("bugs/bz1654277.js")
+            .run();
+    }
 }
