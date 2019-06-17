@@ -5,6 +5,7 @@ from rhq.dampenings import *
 from testcase import RHQAlertTest
 from nose.plugins.attrib import attr
 from bzchecker import blockedBy
+import unittest
 
 @attr('single','numeric','range')
 class FireMeasurementValueRangeAlert(RHQAlertTest):
@@ -13,6 +14,7 @@ class FireMeasurementValueRangeAlert(RHQAlertTest):
     '''
     @attr('outside-exclusive')
     @blockedBy('1035890')
+    @unittest.skip("blocking bug closed")
     def test_rangeOutsideExclusive(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')
@@ -34,6 +36,7 @@ class FireMeasurementValueThresholdAlert(RHQAlertTest):
     metric is higher/lower/equal to defined value)
     '''
     @blockedBy('1035890')
+    @unittest.skip("blocking bug closed")
     def test_threshold(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')
@@ -54,6 +57,7 @@ class FireMeasurementValueChange(RHQAlertTest):
     metric)
     '''
     @blockedBy('1035890')
+    @unittest.skip("blocking bug closed")
     def test_MeasurementValueChange(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')
@@ -76,6 +80,7 @@ class FireTraitAlert(RHQAlertTest):
     changes and matches given pattern'''
 
     @blockedBy('1035890')
+    @unittest.skip("blocking bug closed")
     def test_traitValueChange(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')
