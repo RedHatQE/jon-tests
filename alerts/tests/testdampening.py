@@ -5,6 +5,7 @@ from rhq.dampenings import *
 from testcase import *
 from nose.plugins.attrib import attr
 from bzchecker import blockedBy
+import unittest
 
 @attr('dampening','once')
 class AlertDampeningOnce(RHQAlertTest):
@@ -73,6 +74,7 @@ class AlertDampeningOnce(RHQAlertTest):
  
     @attr('event','syntetic')
     @blockedBy('1035890')
+    @unittest.skip("blocking bug closed")
     def test_dampeningOnceEventSynteticPlatform(self):
         s = self.rhqServer()
         p = s.newPlatform(avail='UP')
